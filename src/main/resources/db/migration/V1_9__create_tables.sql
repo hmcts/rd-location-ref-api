@@ -3,6 +3,7 @@ create table region (
 	description varchar(256),
 	created_time timestamp,
 	updated_time timestamp,
+	welsh_description varchar(256),
 	CONSTRAINT region_id_pk PRIMARY KEY (region_id)
 );
 
@@ -28,6 +29,7 @@ create table district_family_jurisdiction (
 	description varchar(256),
 	created_time timestamp,
 	updated_time timestamp,
+	welsh_description varchar(256),
 	CONSTRAINT district_family_jurisdiction_id_pk PRIMARY KEY (district_family_jurisdiction_id)
 );
 
@@ -44,6 +46,7 @@ create table district_civil_jurisdiction (
 	description varchar(256),
 	created_time timestamp,
 	updated_time timestamp,
+	welsh_description varchar(256),
 	CONSTRAINT district_civil_jurisdiction_id_pk PRIMARY KEY (district_civil_jurisdiction_id)
 
 );
@@ -55,16 +58,6 @@ create table court_district_civil_jurisdiction_assoc(
 	created_time timestamp,
 	updated_time timestamp,
 	CONSTRAINT court_district_civil_jurisdiction_assoc_id_pk PRIMARY KEY (court_district_civil_jurisdiction_assoc_id));
-
-create table building_loaction_status (
-	building_loaction_status_id varchar(16) NOT NULL,
-	status varchar(32),
-	welsh_status varchar(16),
-	created_time timestamp,
-	updated_time timestamp,
-	CONSTRAINT building_loaction_status_id_pk PRIMARY KEY (building_loaction_status_id)
-
-);
 
 create table cluster (
 	cluster_id varchar(16) NOT NULL,
