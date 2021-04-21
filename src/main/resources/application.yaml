@@ -60,22 +60,6 @@ spring:
       poolName: LRDHikariCP
       maxLifetime: 1800000
       connectionTimeout: 30000
-    tomcat:
-      max-active: 10
-      max-idle: 10
-      min-idle: 2
-      max-wait: 10000
-      test-on-borrow: true
-      test-on-connect: true
-      test-on-idle: true
-      validation-query: "SELECT 1"
-      time-between-eviction-runs-millis: 10000
-      test-while-idle: true
-      test-on-return: true
-      remove-abandoned: true
-      remove-abandoned-timeout: 60
-      log-abandoned: true
-      abandon-when-percentage-full: 0
 
 security:
   anonymousPaths:
@@ -99,7 +83,7 @@ idam:
     microservice: rd_location_ref_api
     url: ${S2S_URL:http://rpe-service-auth-provider-aat.service.core-compute-aat.internal}
   s2s-authorised:
-    services: ${LRD_S2S_AUTHORISED_SERVICES:rd_location_ref_api,payment_app}
+    services: ${LRD_S2S_AUTHORISED_SERVICES:rd_location_ref_api,payment_app,rd_caseworker_ref_api}
   api.url: ${idam_url:https://idam-api.aat.platform.hmcts.net}
 
 oidc.issuer: ${OIDC_ISSUER_URL:https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/hmcts}
@@ -112,5 +96,3 @@ launchdarkly:
     environment: ${LAUNCH_DARKLY_ENV:local}
     user: rd
 
-logging.level.com.zaxxer.hikari.HikariConfig: DEBUG
-logging.level.com.zaxxer.hikari: DEBUG
