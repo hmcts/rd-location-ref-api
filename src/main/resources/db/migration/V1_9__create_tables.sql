@@ -77,8 +77,8 @@ create table cluster (
 
 create table court_location_category(
   court_location_category_id varchar(16) NOT NULL,
-	court_location_category varchar(32),
-	welsh_court_location_category varchar(32),
+	court_location_category varchar(128),
+	welsh_court_location_category varchar(128),
 	created_time timestamp,
 	updated_time timestamp,
 	CONSTRAINT court_location_category_id_pk PRIMARY KEY (court_location_category_id)) ;
@@ -113,7 +113,7 @@ create table court_location(
 	open_for_public boolean,
 	court_address varchar(512),
 	postcode varchar(8),
-	phone_number varchar(16),
+	phone_number varchar(128),
 	closed_date timestamp,
 	court_location_code varchar(8),
 	dx_address varchar(16),
