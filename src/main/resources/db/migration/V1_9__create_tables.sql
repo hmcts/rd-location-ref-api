@@ -123,14 +123,6 @@ create table court_location(
 	constraint court_location_code_uq unique (court_location_code)
 );
 
-create table judicial_location_mapping(
-	judicial_location_mapping_id varchar(16),
-	epimms_id varchar(16),
-	judicial_building_location_id varchar(64),
-	created_time timestamp,
-	updated_time timestamp
-);
-
 alter table BUILDING_LOCATION add CONSTRAINT building_location_region_id_fk FOREIGN KEY (region_id)
 REFERENCES REGION (region_id);
 
@@ -176,7 +168,3 @@ REFERENCES COURT_LOCATION (court_location_id);
 alter table court_district_civil_jurisdiction_assoc add CONSTRAINT dcj_court_district_civil_jurisdiction_id_fk
 FOREIGN KEY (district_civil_jurisdiction_id)
 REFERENCES DISTRICT_CIVIL_JURISDICTION (district_civil_jurisdiction_id);
-
-alter table JUDICIAL_LOCATION_MAPPING add CONSTRAINT judicial_location_mapping_epimms_id_fk
-FOREIGN KEY (epimms_id)
-REFERENCES BUILDING_LOCATION (epimms_id);
