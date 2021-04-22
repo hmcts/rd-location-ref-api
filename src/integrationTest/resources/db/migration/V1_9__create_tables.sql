@@ -88,7 +88,7 @@ create table court_location_category_service_assoc(
 create table building_location_status(
 	building_location_status_id varchar(16),
 	status varchar(32),
-	welsh_status varchar(16),
+	welsh_status varchar(32),
 	created_time timestamp,
 	updated_time timestamp,
 	constraint building_location_status_id_pk primary key (building_location_status_id)
