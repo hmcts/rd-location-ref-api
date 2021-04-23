@@ -65,6 +65,7 @@ public class LrdServiceImplTest {
         when(serviceRepository.findByServiceCode(any())).thenReturn(service);
         when(serToCcdCsTypeRep.findByCcdCaseTypeIgnoreCase(any())).thenReturn(serviceToCcdCaseTypeAssoc);
         when(serToCcdCsTypeRep.findByCcdServiceNameInIgnoreCase(any())).thenReturn(List.of(serviceToCcdCaseTypeAssoc));
+        when(serToCcdCsTypeRep.findAll()).thenReturn(List.of(serviceToCcdCaseTypeAssoc));
         when(serviceRepository.findAll()).thenReturn(services);
 
     }
@@ -149,7 +150,7 @@ public class LrdServiceImplTest {
 
         assertThat(lrdOrgInfoServiceResponses).isNotNull();
         assertThat(lrdOrgInfoServiceResponses.size()).isEqualTo(1);
-        verify(serviceRepository, times(1)).findAll();
+        verify(serToCcdCsTypeRep, times(1)).findAll();
 
     }
 
