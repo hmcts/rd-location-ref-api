@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -58,6 +60,7 @@ public class Service implements Serializable {
     private LocalDateTime lastUpdate;
 
     @OneToMany(targetEntity = ServiceToCcdCaseTypeAssoc.class, mappedBy = "service")
+    @Fetch(FetchMode.SUBSELECT)
     private List<ServiceToCcdCaseTypeAssoc> serviceToCcdCaseTypeAssocs = new ArrayList<>();
 
     @ManyToOne
