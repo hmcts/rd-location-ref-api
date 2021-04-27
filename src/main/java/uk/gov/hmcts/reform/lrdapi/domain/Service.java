@@ -29,7 +29,10 @@ import javax.validation.constraints.Size;
 @NamedEntityGraph(
         name = "Service.alljoins",
         attributeNodes = {
-                @NamedAttributeNode(value = "serviceToCcdCaseTypeAssocs"),
+                @NamedAttributeNode(value = "jurisdiction"),
+                @NamedAttributeNode(value = "orgBusinessArea"),
+                @NamedAttributeNode(value = "orgUnit"),
+                @NamedAttributeNode(value = "orgSubBusinessArea"),
         }
 )
 public class Service implements Serializable {

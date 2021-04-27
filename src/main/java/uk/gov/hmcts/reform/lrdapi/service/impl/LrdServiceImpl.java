@@ -15,8 +15,13 @@ import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityGraph;
+import javax.persistence.EntityManager;
 
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
@@ -34,6 +39,9 @@ public class LrdServiceImpl implements LrdService {
     @Autowired
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
 
+    @Autowired
+    EntityManager entityManager;
+
     @Override
     public List<LrdOrgInfoServiceResponse> retrieveOrgServiceDetails(String serviceCode,
                                                                      String ccdCaseType, String ccdServiceNames) {
@@ -42,7 +50,9 @@ public class LrdServiceImpl implements LrdService {
         List<Service> services = null;
         final List<LrdOrgInfoServiceResponse> orgInfoServiceResponses = new ArrayList<>();
         if (StringUtils.isNotBlank(serviceCode)) {
-
+//            EntityGraph<?> entityGraph = entityManager.getEntityGraph("alljoins");
+//            Map<String, Object> properties = new HashMap<>();
+//            properties.put("javax.persistence.fetchgraph", entityGraph);
             servicePojo = serviceRepository.findByServiceCode(serviceCode.trim().toUpperCase());
             ifServiceResponseNullThrowException(servicePojo);
             orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(servicePojo));
@@ -72,8 +82,12 @@ public class LrdServiceImpl implements LrdService {
                                                        new LrdOrgInfoServiceResponse(association.getService())));
 
         } else {
+            long time1 = System.currentTimeMillis();
 
             services = serviceRepository.findAll();
+
+            log.info("{}:: Time taken to process the given file is {}", loggingComponentName,
+                     (System.currentTimeMillis() - time1));
 
             if (null == services) {
                 throw new EmptyResultDataAccessException(1);

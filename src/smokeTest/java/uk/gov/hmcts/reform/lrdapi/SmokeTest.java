@@ -25,7 +25,7 @@ public class SmokeTest {
     private final String targetInstance =
         StringUtils.defaultIfBlank(
             System.getenv("TEST_URL"),
-            "http://localhost:8090"
+            "http://localhost:8099"
         );
 
     @Test
@@ -37,21 +37,11 @@ public class SmokeTest {
         RestAssured.baseURI = targetInstance;
         RestAssured.useRelaxedHTTPSValidation();
 
-        Response response = SerenityRest
+        SerenityRest
             .given()
             .relaxedHTTPSValidation()
-            .header(CONTENT_TYPE, APPLICATION_JSON_VALUE)
-            .get("/")
-            .andReturn();
-        log.info("Response::" + response);
-        if (null != response && response.statusCode() == 200) {
-            log.info("Response::" + response.body().asString());
-            assertThat(response.body().asString())
-                .contains("Welcome to the Location Ref Data API");
-
-        } else {
-
-            Assert.fail();
-        }
+            .get("/health")
+            .then()
+            .statusCode(200);
     }
 }
