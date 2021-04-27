@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
@@ -35,6 +37,7 @@ public class Jurisdiction implements Serializable {
     private String  description;
 
     @OneToMany(targetEntity = Service.class, mappedBy = "jurisdiction")
+    @Fetch(FetchMode.SUBSELECT)
     private List<Service> services = new ArrayList<>();
 
     public Jurisdiction(Long jurisdictionId, String  description) {

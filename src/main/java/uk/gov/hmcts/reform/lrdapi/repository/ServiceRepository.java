@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
 
+    @EntityGraph(value = "Service.alljoins")
     Service findByServiceCode(String serviceCode);
 
     @EntityGraph(value = "Service.alljoins")
