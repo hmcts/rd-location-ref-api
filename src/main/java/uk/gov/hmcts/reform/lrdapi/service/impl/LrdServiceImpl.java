@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
@@ -83,9 +82,9 @@ public class LrdServiceImpl implements LrdService {
             if (null == services) {
                 throw new EmptyResultDataAccessException(1);
             }
-            services.forEach(service -> {
+            services.forEach(service ->
                 orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(service));
-            });
+            );
 
         }
         return orgInfoServiceResponses;

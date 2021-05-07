@@ -108,7 +108,7 @@ create table court_location(
 	postcode varchar(8) NOT NULL,
 	phone_number varchar(128),
 	closed_date timestamp,
-	court_location_code varchar(8) NOT NULL,
+	court_location_code varchar(8),
 	dx_address varchar(16),
 	welsh_court_location_name varchar(256),
 	welsh_court_address varchar(512),
