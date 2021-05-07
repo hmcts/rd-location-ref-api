@@ -60,8 +60,17 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC", LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses.size()).isEqualTo(2);
+        assertThat(responses.size()).isEqualTo(1);
         responseVerification(responses);
+    }
+
+    @Test
+    public void returnOrgServiceDetailsByMultipleCcdServiceNames200() throws JsonProcessingException {
+
+        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC,CCDSERVICENAME2", LrdOrgInfoServiceResponse[].class);
+
+        assertThat(responses.size()).isEqualTo(2);
     }
 
     @Test

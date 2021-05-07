@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
+import static java.util.Objects.nonNull;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,5 +45,24 @@ public class ServiceToCcdCaseTypeAssoc implements Serializable {
     @ManyToOne
     @JoinColumn(name = "service_code",referencedColumnName = "service_code", insertable = false, updatable = false)
     private Service service;
+
+    public boolean equals(Object o) {
+        if(nonNull(o)) {
+            ServiceToCcdCaseTypeAssoc assoc = (ServiceToCcdCaseTypeAssoc)o;
+            if (this == assoc) return true;
+            if (nonNull(this.ccdServiceName) && nonNull(this.getService()) && nonNull(assoc.getService())) {
+                return this.ccdServiceName.equals(assoc.ccdServiceName) &&
+                    this.getService().getServiceCode().equals(assoc.getService().getServiceCode());
+            }
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        if (nonNull(this.ccdServiceName)) {
+            return this.ccdServiceName.length();
+        }
+        return 1;
+    }
 
 }
