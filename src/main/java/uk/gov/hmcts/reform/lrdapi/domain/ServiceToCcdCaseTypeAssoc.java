@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import static java.util.Objects.nonNull;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.validation.constraints.Size;
+
+import static java.util.Objects.nonNull;
 
 
 @Entity(name = "service_to_ccd_case_type_assoc")
@@ -47,12 +47,14 @@ public class ServiceToCcdCaseTypeAssoc implements Serializable {
     private Service service;
 
     public boolean equals(Object o) {
-        if(nonNull(o)) {
+        if (nonNull(o) && o instanceof ServiceToCcdCaseTypeAssoc) {
             ServiceToCcdCaseTypeAssoc assoc = (ServiceToCcdCaseTypeAssoc)o;
-            if (this == assoc) return true;
+            if (this == assoc) {
+                return true;
+            }
             if (nonNull(this.ccdServiceName) && nonNull(this.getService()) && nonNull(assoc.getService())) {
-                return this.ccdServiceName.equals(assoc.ccdServiceName) &&
-                    this.getService().getServiceCode().equals(assoc.getService().getServiceCode());
+                return this.ccdServiceName.equals(assoc.ccdServiceName)
+                    && this.getService().getServiceCode().equals(assoc.getService().getServiceCode());
             }
         }
         return false;

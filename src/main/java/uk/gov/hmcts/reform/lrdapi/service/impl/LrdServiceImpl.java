@@ -37,9 +37,9 @@ public class LrdServiceImpl implements LrdService {
     @Override
     public List<LrdOrgInfoServiceResponse> retrieveOrgServiceDetails(String serviceCode,
                                                                      String ccdCaseType, String ccdServiceNames) {
-        Service servicePojo = null;
-        ServiceToCcdCaseTypeAssoc serToCcdCaseType = null;
-        List<Service> services = null;
+        Service servicePojo;
+        ServiceToCcdCaseTypeAssoc serToCcdCaseType;
+        List<Service> services;
         final List<LrdOrgInfoServiceResponse> orgInfoServiceResponses = new ArrayList<>();
         if (StringUtils.isNotBlank(serviceCode)) {
 
@@ -83,7 +83,7 @@ public class LrdServiceImpl implements LrdService {
                 throw new EmptyResultDataAccessException(1);
             }
             services.forEach(service ->
-                orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(service));
+                orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(service))
             );
 
         }

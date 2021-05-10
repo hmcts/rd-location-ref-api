@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -22,9 +21,10 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
+@SuppressWarnings("unchecked")
 public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
-    @SuppressWarnings("unchecked")
+    public static final String HTTP_STATUS = "http_status";
     @Test
     public void returnsOrgServiceDetailsByServiceCodeWithStatusCode200() throws JsonProcessingException {
 
@@ -41,7 +41,7 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByServiceCode("A1A7", ErrorResponse.class);
 
-        assertThat(errorResponseMap.get("http_status").toString()).isEqualTo("404 NOT_FOUND");
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -68,7 +68,8 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
     public void returnOrgServiceDetailsByMultipleCcdServiceNames200() throws JsonProcessingException {
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC,CCDSERVICENAME2", LrdOrgInfoServiceResponse[].class);
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC,CCDSERVICENAME2",
+                                                               LrdOrgInfoServiceResponse[].class);
 
         assertThat(responses.size()).isEqualTo(2);
     }
@@ -88,7 +89,7 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
         Map<String, Object> errorResponseMap  = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("someRandomServiceName", ErrorResponse.class);
 
-        assertThat(errorResponseMap.get("http_status").toString()).isEqualTo("404 NOT_FOUND");
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.NOT_FOUND);
     }
 
     @Test
@@ -107,7 +108,7 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdCaseType("ccCaseType1", ErrorResponse.class);
 
-        assertThat(errorResponseMap.get("http_status").toString()).isEqualTo("404 NOT_FOUND");
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.NOT_FOUND);
 
     }
 
@@ -131,14 +132,14 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdCaseType("ccCaseType1", ErrorResponse.class);
-        assertThat(errorResponseMap.get("http_status")).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
-            .contains("lrd-disable-retrieve-org".concat(SPACE).concat(FORBIDDEN_EXCEPTION_LD));
+            .contains("lrd-disable-retrieve-org".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
-    private void responseVerification(List<LrdOrgInfoServiceResponse> responses) throws JsonProcessingException {
+    private void responseVerification(List<LrdOrgInfoServiceResponse> responses) {
 
-        responses.stream().forEach(response -> {
+        responses.forEach(response -> {
             assertThat(response.getServiceId()).isEqualTo(3);
             assertThat(response.getBusinessArea()).isEqualToIgnoringCase("Civil, Family and Tribunals");
             assertThat(response.getOrgUnit()).isEqualToIgnoringCase("HMCTS");
