@@ -61,7 +61,9 @@ resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
 
 module "db-rd-location-ref-api" {
   source              = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product             = join("-", [var.product, var.component, "postgres-db"])
+  name                = join("-", [var.product, var.component, "postgres-db"])
+  product             = var.product
+  component           = var.component
   location            = var.location
   subscription        = var.subscription
   env                 = var.env
