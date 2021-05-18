@@ -21,7 +21,7 @@
   "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/_GET": "ignore",
   "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/orgServices?ccdCaseType=ccdCaseType&ccdServiceNames=ccdServiceNames&serviceCode=serviceCode_GET": "ignore",
-  "10054_Cookie without SameSite Attribute_http://****-aat.service.core-compute-aat.internal/refdata/location/orgServices?ccdCaseType=ccdCaseType&ccdServiceNames=ccdServiceNames&serviceCode=serviceCode_GET" : "ignore",
-  "10054_Cookie without SameSite Attribute_http://****-aat.service.core-compute-aat.internal/_GET" : "ignore",
-  "10054_Cookie without SameSite Attribute_http://****-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore"
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/orgServices?ccdCaseType=ccdCaseType&ccdServiceNames=ccdServiceNames&serviceCode=serviceCode_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore"
 }
