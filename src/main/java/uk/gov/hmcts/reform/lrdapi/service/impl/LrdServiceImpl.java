@@ -5,10 +5,17 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.BuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
+import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
+import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.domain.Service;
 import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
+import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
@@ -18,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 
@@ -30,6 +38,15 @@ public class LrdServiceImpl implements LrdService {
 
     @Autowired
     ServiceRepository serviceRepository;
+
+    @Autowired
+    BuildingLocationRepository buildingLocationRepository;
+
+    @Autowired
+    ClusterRepository clusterRepository;
+
+    @Autowired
+    RegionRepository regionRepository;
 
     @Autowired
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
@@ -94,5 +111,20 @@ public class LrdServiceImpl implements LrdService {
         if (null == service) {
             throw new EmptyResultDataAccessException(1);
         }
+    }
+
+    public ResponseEntity<BuildingLocationResponse> retrieveBuildingLocationByEpimsId(String epimsId) {
+
+        BuildingLocation buildingLocation = buildingLocationRepository.findByEpimmsId(epimsId);
+
+        if (isEmpty(buildingLocation)) {
+            throw new ResourceNotFoundException("No Building Location found with the given epims ID");
+        }
+
+        Cluster cluster = clusterRepository.findByClusterId(buildingLocation.getClusterId());
+
+        Region region = regionRepository.findByRegionId(buildingLocation.getRegionId());
+
+        return new BuildingLocationResponse(buildingLocation, cluster, region);
     }
 }

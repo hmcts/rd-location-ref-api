@@ -8,21 +8,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.BuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
-        path = "/refdata/location/orgServices"
+        path = "/refdata/location"
 )
 @RestController
 @Slf4j
@@ -62,7 +65,10 @@ public class LrdApiController  {
                     message = "Internal Server Error"
             )
     })
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(
+        path = "/orgServices",
+        produces = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Object> retrieveOrgServiceDetails(
         @RequestParam(value = "serviceCode", required = false) String serviceCode,
         @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,
@@ -79,6 +85,54 @@ public class LrdApiController  {
         }
         lrdOrgInfoServiceResponse = lrdService.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceNames);
         return ResponseEntity.status(200).body(lrdOrgInfoServiceResponse);
+    }
+
+
+    @ApiOperation(
+            value = "This API will retrieve a Building Location's details for the given epims ID",
+            authorizations = {
+                    @Authorization(value = "ServiceAuthorization"),
+                    @Authorization(value = "Authorization")
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    code = 200,
+                    message = "Successfully retrieved a Building Location's details",
+                    response = LrdOrgInfoServiceResponse.class,
+                    responseContainer = "list"
+            ),
+            @ApiResponse(
+                    code = 400,
+                    message = "Bad Request"
+            ),
+            @ApiResponse(
+                    code = 401,
+                    message = "Forbidden Error: Access denied"
+            ),
+            @ApiResponse(
+                    code = 404,
+                    message = "No Building Location found with the given ID"
+            ),
+            @ApiResponse(
+                    code = 500,
+                    message = "Internal Server Error"
+            )
+    })
+    @GetMapping(
+        path = "/building-locations/epims/{epims_id}",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<BuildingLocationResponse> retrieveBuildingLocationDetailsByEpimsId(
+        @RequestParam(value = "epims_id", required = false) String epimsId) {
+
+        log.info("Inside retrieveBuildingLocationDetailsByEpimsId");
+
+        if (isEmpty(epimsId)) {
+            throw new InvalidRequestException("No epims ID provided");
+        }
+
+        return lrdService.retrieveBuildingLocationByEpimsId(epimsId.strip());
     }
 
 }
