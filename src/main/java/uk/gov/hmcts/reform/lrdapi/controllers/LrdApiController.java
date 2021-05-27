@@ -34,7 +34,7 @@ public class LrdApiController {
     LrdService lrdService;
 
     private static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
-    private static final String REG_EXP_WHITE_SPACE = ".*\\s.*";
+    private static final String REG_EXP_WHITE_SPACE = "\\s";
 
     @ApiOperation(
         value = "This API will retrieve service code details association with ccd case type",
@@ -83,7 +83,7 @@ public class LrdApiController {
         String inputValue = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
             .filter(StringUtils::isNotBlank).collect(Collectors.joining());
         inputValue = StringUtils.trim(inputValue);
-        if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).matches()
+        if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
             || !Pattern.compile(REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
             return ResponseEntity.status(400).body("Bad request, message contains special characters or white spaces");
         }
