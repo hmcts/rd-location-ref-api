@@ -23,10 +23,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 public class LrdApiControllerTest {
 
     @InjectMocks
     private LrdApiController lrdApiController;
+
+
 
     LrdService lrdServiceMock;
 
@@ -121,6 +124,42 @@ public class LrdApiControllerTest {
         final HttpStatus expectedHttpStatus = HttpStatus.OK;
         serviceCode = "";
         ccdCaseType = null;
+        ccdServiceName = "";
+        ResponseEntity<?> actual = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+    }
+
+    @Test
+    public void testRetrieveOrgServiceDetailsbyPassingSpecialCharInInput() {
+        final HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
+        serviceCode = "abcd@£";
+        ccdCaseType = "";
+        ccdServiceName = "";
+        ResponseEntity<?> actual = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+    }
+
+    @Test
+    public void testRetrieveOrgServiceDetailsbyPassingWhiteSpaceInInput() {
+        final HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
+        serviceCode = " Select from employee ";
+        ccdCaseType = "";
+        ccdServiceName = "";
+        ResponseEntity<?> actual = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+    }
+
+    @Test
+    public void testRetrieveOrgServiceDetailsbyPassingUnderScoreInInput() {
+        final HttpStatus expectedHttpStatus = HttpStatus.OK;
+        serviceCode = " abcd_jgh ";
+        ccdCaseType = "";
         ccdServiceName = "";
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
