@@ -7,18 +7,21 @@ import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.BuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -33,6 +36,9 @@ public class LrdApiController  {
 
     @Autowired
     LrdService lrdService;
+
+    @Autowired
+    LrdBuildingLocationService buildingLocationService;
 
     @ApiOperation(
             value = "This API will retrieve service code details association with ccd case type",
@@ -123,16 +129,27 @@ public class LrdApiController  {
         path = "/building-locations/epims/{epims_id}",
         produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<BuildingLocationResponse> retrieveBuildingLocationDetailsByEpimsId(
+    public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
         @RequestParam(value = "epims_id", required = false) String epimsId) {
 
-        log.info("Inside retrieveBuildingLocationDetailsByEpimsId");
+        log.info("Obtaining building locations for epimm id: "+epimsId);
 
         if (isEmpty(epimsId)) {
-            throw new InvalidRequestException("No epims ID provided");
+            throw new InvalidRequestException("No epimm id provided");
         }
 
-        return lrdService.retrieveBuildingLocationByEpimsId(epimsId.strip());
+        if(!isStringInExpectedFormat(epimsId.strip(), "\\d+")) {
+            throw new InvalidRequestException("epimm id is expected to be a number");
+        }
+
+        LrdBuildingLocationResponse response = buildingLocationService.retrieveBuildingLocationByEpimsId(epimsId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    private boolean isStringInExpectedFormat(String stringToEvaluate, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(stringToEvaluate);
+        return matcher.matches();
     }
 
 }

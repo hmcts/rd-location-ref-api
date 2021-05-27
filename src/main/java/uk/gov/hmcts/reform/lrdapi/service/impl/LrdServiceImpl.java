@@ -8,7 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.BuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
@@ -38,15 +38,6 @@ public class LrdServiceImpl implements LrdService {
 
     @Autowired
     ServiceRepository serviceRepository;
-
-    @Autowired
-    BuildingLocationRepository buildingLocationRepository;
-
-    @Autowired
-    ClusterRepository clusterRepository;
-
-    @Autowired
-    RegionRepository regionRepository;
 
     @Autowired
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
@@ -113,18 +104,4 @@ public class LrdServiceImpl implements LrdService {
         }
     }
 
-    public ResponseEntity<BuildingLocationResponse> retrieveBuildingLocationByEpimsId(String epimsId) {
-
-        BuildingLocation buildingLocation = buildingLocationRepository.findByEpimmsId(epimsId);
-
-        if (isEmpty(buildingLocation)) {
-            throw new ResourceNotFoundException("No Building Location found with the given epims ID");
-        }
-
-        Cluster cluster = clusterRepository.findByClusterId(buildingLocation.getClusterId());
-
-        Region region = regionRepository.findByRegionId(buildingLocation.getRegionId());
-
-        return new BuildingLocationResponse(buildingLocation, cluster, region);
-    }
 }

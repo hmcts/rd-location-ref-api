@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,9 +18,11 @@ import javax.validation.constraints.Size;
 
 @Entity(name = "building_location")
 @NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
+@Builder
 public class BuildingLocation implements Serializable {
 
     @Id
@@ -45,9 +45,10 @@ public class BuildingLocation implements Serializable {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    @Column(name = "building_location_status_id")
     @Size(max = 16)
-    private String buildingLocationStatusId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "building_location_status_id")
+    private BuildingLocationStatus buildingLocationStatus;
 
     @Column(name = "area")
     @Size(max = 16)
@@ -56,12 +57,12 @@ public class BuildingLocation implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "region_id")
     @Size(max = 16)
-    private String regionId;
+    private Region region;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cluster_id")
     @Size(max = 16)
-    private String clusterId;
+    private Cluster cluster;
 
     @Column(name = "court_finder_url")
     @Size(max = 512)
@@ -74,20 +75,5 @@ public class BuildingLocation implements Serializable {
     @Column(name = "address", nullable = false)
     @Size(max = 512)
     private String address;
-
-    public BuildingLocation(String buildingLocationId, String epimmsId, String buildingLocationName,
-                            String buildingLocationStatusId, String area, String regionId, String clusterId,
-                            String courtFinderUrl, String postcode, String address) {
-        this.buildingLocationId = buildingLocationId;
-        this.epimmsId = epimmsId;
-        this.buildingLocationName = buildingLocationName;
-        this.buildingLocationStatusId = buildingLocationStatusId;
-        this.area = area;
-        this.regionId = regionId;
-        this.clusterId = clusterId;
-        this.courtFinderUrl = courtFinderUrl;
-        this.postcode = postcode;
-        this.address = address;
-    }
 
 }

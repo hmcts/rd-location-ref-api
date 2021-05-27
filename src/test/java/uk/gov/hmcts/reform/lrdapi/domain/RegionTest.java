@@ -8,7 +8,7 @@ public class RegionTest {
 
     @Test
     public void testRegionConstructor() {
-        Region region = new Region("ID", "Description", "Welsh Descrption");
+        Region region = new Region("ID", "Description", "Welsh Description");
 
         assertThat(region.getRegionId()).isEqualTo("ID");
         assertThat(region.getDescription()).isEqualTo("Description");

@@ -9,8 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -45,8 +44,8 @@ public class Region implements Serializable {
     @Column(name = "last_updated")
     private LocalDateTime lastUpdated;
 
-    @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "regionId")
-    private List<BuildingLocation> buildingLocations = new ArrayList<>();
+    @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "region")
+    private Set<BuildingLocation> buildingLocationSet;
 
     public Region(String regionId, String description, String welshDescription) {
         this.regionId = regionId;
