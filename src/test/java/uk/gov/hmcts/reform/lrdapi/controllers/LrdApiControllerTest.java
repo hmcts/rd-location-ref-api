@@ -30,7 +30,6 @@ public class LrdApiControllerTest {
     private LrdApiController lrdApiController;
 
 
-
     LrdService lrdServiceMock;
 
     List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse = new ArrayList<>();
@@ -131,28 +130,22 @@ public class LrdApiControllerTest {
         assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
     }
 
-    @Test
+    @Test(expected = InvalidRequestException.class)
     public void testRetrieveOrgServiceDetailsbyPassingSpecialCharInInput() {
-        final HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
         serviceCode = "abcd@£";
         ccdCaseType = "";
         ccdServiceName = "";
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
     }
 
-    @Test
+    @Test(expected = InvalidRequestException.class)
     public void testRetrieveOrgServiceDetailsbyPassingWhiteSpaceInInput() {
-        final HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
         serviceCode = " Select from employee ";
         ccdCaseType = "";
         ccdServiceName = "";
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
     }
 
     @Test
@@ -165,5 +158,35 @@ public class LrdApiControllerTest {
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+    }
+
+    @Test
+    public void testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput() {
+        final HttpStatus expectedHttpStatus = HttpStatus.OK;
+        serviceCode = "";
+        ccdCaseType = "";
+        ccdServiceName = "abcd, cdef";
+        ResponseEntity<?> actual = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThat(actual).isNotNull();
+        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput_fail() {
+        serviceCode = "";
+        ccdCaseType = "";
+        ccdServiceName = "abcd,, cdef";
+        ResponseEntity<?> actual = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput_fail_1() {
+        serviceCode = "";
+        ccdCaseType = "";
+        ccdServiceName = "abcd, cdef,";
+        ResponseEntity<?> actual = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
     }
 }
