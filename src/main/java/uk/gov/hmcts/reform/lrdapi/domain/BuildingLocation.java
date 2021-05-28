@@ -38,11 +38,11 @@ public class BuildingLocation implements Serializable {
     private String buildingLocationName;
 
     @CreatedDate
-    @Column(name = "created")
+    @Column(name = "created_time")
     private LocalDateTime created;
 
     @LastModifiedDate
-    @Column(name = "last_updated")
+    @Column(name = "updated_time")
     private LocalDateTime lastUpdated;
 
     @Size(max = 16)

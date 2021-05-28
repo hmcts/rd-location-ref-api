@@ -28,11 +28,11 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
-        path = "/refdata/location"
+    path = "/refdata/location"
 )
 @RestController
 @Slf4j
-public class LrdApiController  {
+public class LrdApiController {
 
     @Autowired
     LrdService lrdService;
@@ -41,35 +41,35 @@ public class LrdApiController  {
     LrdBuildingLocationService buildingLocationService;
 
     @ApiOperation(
-            value = "This API will retrieve service code details association with ccd case type",
-            authorizations = {
-                    @Authorization(value = "ServiceAuthorization"),
-                    @Authorization(value = "Authorization")
-            }
+        value = "This API will retrieve service code details association with ccd case type",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
     )
     @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
-                    response = LrdOrgInfoServiceResponse.class,
-                    responseContainer = "list"
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = "Bad Request"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Forbidden Error: Access denied"
-            ),
-            @ApiResponse(
-                    code = 404,
-                    message = "No Service found with the given ID"
-            ),
-            @ApiResponse(
-                    code = 500,
-                    message = "Internal Server Error"
-            )
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            response = LrdOrgInfoServiceResponse.class,
+            responseContainer = "list"
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No Service found with the given ID"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
     })
     @GetMapping(
         path = "/orgServices",
@@ -95,35 +95,35 @@ public class LrdApiController  {
 
 
     @ApiOperation(
-            value = "This API will retrieve a Building Location's details for the given epims ID",
-            authorizations = {
-                    @Authorization(value = "ServiceAuthorization"),
-                    @Authorization(value = "Authorization")
-            }
+        value = "This API will retrieve a Building Location's details for the given epims ID",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
     )
     @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "Successfully retrieved a Building Location's details",
-                    response = LrdOrgInfoServiceResponse.class,
-                    responseContainer = "list"
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = "Bad Request"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Forbidden Error: Access denied"
-            ),
-            @ApiResponse(
-                    code = 404,
-                    message = "No Building Location found with the given ID"
-            ),
-            @ApiResponse(
-                    code = 500,
-                    message = "Internal Server Error"
-            )
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved a Building Location's details",
+            response = LrdOrgInfoServiceResponse.class,
+            responseContainer = "list"
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No Building Location found with the given ID"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
     })
     @GetMapping(
         path = "/building-locations/epims/{epims_id}",
@@ -132,13 +132,13 @@ public class LrdApiController  {
     public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
         @RequestParam(value = "epims_id", required = false) String epimsId) {
 
-        log.info("Obtaining building locations for epimm id: "+epimsId);
+        log.info("Obtaining building locations for epimm id: " + epimsId);
 
         if (isEmpty(epimsId)) {
             throw new InvalidRequestException("No epimm id provided");
         }
 
-        if(!isStringInExpectedFormat(epimsId.strip(), "\\d+")) {
+        if (!isStringInExpectedFormat(epimsId.strip(), "\\d+")) {
             throw new InvalidRequestException("epimm id is expected to be a number");
         }
 

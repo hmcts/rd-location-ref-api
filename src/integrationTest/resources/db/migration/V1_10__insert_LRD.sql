@@ -1,45 +1,42 @@
 insert into cluster(
+    cluster_id,
     cluster_name,
     welsh_cluster_name,
     updated_time)
 values(
+    '0123',
     'Cluster A',
     'Clwstwr A',
-    timezone('utc', now()))
+    now())
 ;
 
 insert into building_location_status(
+    building_location_status_id,
     status,
     welsh_status,
     updated_time)
 values(
+    '4567',
     'Status A',
     'Statws A',
-    timezone('utc', now()))
+    now())
 ;
 
 insert into region(
+    region_id,
     description,
     welsh_description,
     updated_time)
 values(
+    '8910',
     'Description A',
     'Disgrifiad A',
-    timezone('utc', now()))
-;
-
-insert into building_location_status(
-    status,
-    welsh_status,
-    updated_time)
-values(
-    'Status A',
-    'Statws A',
-    timezone('utc', now()))
+    now())
 ;
 
 insert into
   building_location(
+    building_location_id,
     region_id,
     building_location_status_id,
     cluster_id,
@@ -48,37 +45,18 @@ insert into
     area,
     court_finder_url,
     postcode,
-    address)
-select
-  1,
-  (
-  select
-    region_id
-  from
-    REGION
-  where
-    description = 'Description A'
-  ) as region_id, (
-    select
-    building_location_status_id
-  from
-    BUILDING_LOCATION_STATUS
-  where
-    status = 'Status A'
-  ) as building_location_status_id, (
-   select
-    cluster_id
-  from
-    CLUSTER
-  where
-    cluster_name = 'Cluster A'
-  ) as cluster_id,
-  '123456789' as epimms_id,
+    address,
+    updated_time)
+values(
+  '22041995',
+  '8910',
+  '4567',
+  '0123',
+  '123456789',
   'Building Location A',
   'Area A',
   'Court Finder URL',
   'WX67 2YZ',
   '1 Street, London',
-   timezone('utc', now())
-from
-  REGION;
+  now())
+;

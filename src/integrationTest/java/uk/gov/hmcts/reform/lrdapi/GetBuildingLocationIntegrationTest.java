@@ -28,7 +28,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
-            lrdApiClient.findBuildingLocationByEPIMMId("815833", LrdBuildingLocationResponse.class);
+            lrdApiClient.findBuildingLocationByEPIMMId("123456789", LrdBuildingLocationResponse.class);
 
         assertNotNull(response);
         responseVerification(response);
@@ -39,7 +39,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
-            lrdApiClient.findBuildingLocationByEPIMMId(" 815833 ", LrdBuildingLocationResponse.class);
+            lrdApiClient.findBuildingLocationByEPIMMId(" 123456789 ", LrdBuildingLocationResponse.class);
 
         assertNotNull(response);
         responseVerification(response);
@@ -81,7 +81,16 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     private void responseVerification(LrdBuildingLocationResponse response) {
-
+        assertThat(response.getBuildingLocationId()).isEqualTo("22041995");
+        assertThat(response.getRegionId()).isEqualTo("8910");
+        assertThat(response.getClusterId()).isEqualTo("0123");
+        assertThat(response.getBuildingLocationStatus()).isEqualTo("Status A");
+        assertThat(response.getEpimmsId()).isEqualTo("123456789");
+        assertThat(response.getBuildingLocationName()).isEqualTo("Building Location A");
+        assertThat(response.getArea()).isEqualTo("Area A");
+        assertThat(response.getPostcode()).isEqualTo("WX67 2YZ");
+        assertThat(response.getAddress()).isEqualTo("1 Street, London");
+        assertThat(response.getCourtFinderUrl()).isEqualTo("Court Finder URL");
     }
 
     @Test

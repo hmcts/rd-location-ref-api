@@ -37,12 +37,12 @@ public class Region implements Serializable {
     private String welshDescription;
 
     @CreatedDate
-    @Column(name = "created")
-    private LocalDateTime created;
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
 
     @LastModifiedDate
-    @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
+    @Column(name = "updated_time")
+    private LocalDateTime updatedTime;
 
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "region")
     private Set<BuildingLocation> buildingLocationSet;

@@ -40,15 +40,15 @@ public class Cluster implements Serializable {
     private String welshClusterName;
 
     @CreatedDate
-    @Column(name = "created")
-    private LocalDateTime created;
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
 
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "cluster")
     private Set<BuildingLocation> buildingLocations = new HashSet<>();
 
     @LastModifiedDate
-    @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
+    @Column(name = "updated_time")
+    private LocalDateTime updatedTime;
 
     public Cluster(String clusterId, String clusterName, String welshClusterName) {
         this.clusterId = clusterId;
