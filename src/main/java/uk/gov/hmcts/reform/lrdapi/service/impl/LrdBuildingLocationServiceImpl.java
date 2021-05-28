@@ -24,7 +24,7 @@ public class LrdBuildingLocationServiceImpl implements LrdBuildingLocationServic
         BuildingLocation buildingLocation = buildingLocationRepository.findByEpimmsId(epimsId);
 
         if (isEmpty(buildingLocation)) {
-            throw new ResourceNotFoundException("No Building Location found with the given epims ID - "+epimsId);
+            throw new ResourceNotFoundException("No Building Location found with the given epims ID: " + epimsId);
         }
 
         return LrdBuildingLocationResponse.builder()
