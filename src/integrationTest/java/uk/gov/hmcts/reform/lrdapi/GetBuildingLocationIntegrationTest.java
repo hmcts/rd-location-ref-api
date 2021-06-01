@@ -5,10 +5,13 @@ import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +56,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             lrdApiClient.findBuildingLocationByEPIMMId("", LrdBuildingLocationResponse.class);
 
         assertNotNull(response);
-        responseVerification(response);
     }
 
     @Test
@@ -94,20 +96,21 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_LaunchDarklyFlagSetToOff_ShouldReturnErrorResponseWithStatusCode403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
             "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
-            "lrd-disable-retrieve-org"
+            "lrd_location_api"
         );
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findOrgServiceDetailsByCcdCaseType("ccCaseType1", ErrorResponse.class);
+            lrdApiClient.findBuildingLocationByEPIMMId("815833", ErrorResponse.class);
         assertThat(errorResponseMap).containsEntry("http_status", HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
-            .contains("lrd-disable-retrieve-org".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
+            .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
 }

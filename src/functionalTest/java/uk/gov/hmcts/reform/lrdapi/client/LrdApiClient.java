@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
@@ -63,10 +64,32 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return Arrays.asList(response.getBody().as(LrdOrgInfoServiceResponse[].class));
+            return Arrays.asList(response.getBody().as(LrdBuildingLocationResponse.class));
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
+    }
+
+    public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(HttpStatus expectedStatus, String param) {
+        Response response = withUnauthenticatedRequest_NoBearerToken()
+            .get("/building-locations/epims/"+param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        return response.getBody().as(ErrorResponse.class);
+    }
+
+    public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(HttpStatus expectedStatus, String param) {
+        Response response = withUnauthenticatedRequest_NoS2SToken()
+            .get("/building-locations/epims/"+param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        return response.getBody().as(ErrorResponse.class);
     }
 
     public String getWelcomePage() {
@@ -81,7 +104,7 @@ public class LrdApiClient {
             .asString();
     }
 
-    private RequestSpecification withUnauthenticatedRequest() {
+    public RequestSpecification withUnauthenticatedRequest() {
         return SerenityRest.given()
             .relaxedHTTPSValidation()
             .baseUri(lrdApiUrl)
@@ -89,6 +112,23 @@ public class LrdApiClient {
             .header("Accepts", APPLICATION_JSON_VALUE);
     }
 
+    public RequestSpecification withUnauthenticatedRequest_NoBearerToken() {
+        return SerenityRest.given()
+            .relaxedHTTPSValidation()
+            .baseUri(lrdApiUrl)
+            .header("Content-Type", APPLICATION_JSON_VALUE)
+            .header("Accepts", APPLICATION_JSON_VALUE)
+            .header(SERVICE_HEADER, "Bearer " + s2sToken);
+    }
+
+    private RequestSpecification withUnauthenticatedRequest_NoS2SToken() {
+        return SerenityRest.with()
+            .relaxedHTTPSValidation()
+            .baseUri(lrdApiUrl)
+            .header("Content-Type", APPLICATION_JSON_VALUE)
+            .header("Accepts", APPLICATION_JSON_VALUE)
+            .header(AUTHORIZATION_HEADER, "Bearer " + idamOpenIdClient.getOpenIdToken());
+    }
 
     public RequestSpecification getMultipleAuthHeaders() {
         return SerenityRest.with()
