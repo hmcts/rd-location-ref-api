@@ -33,7 +33,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class LrdApiController {
 
-    private static final String NUMERIC_CHAR_REGEX = "\\d+";
+    private static final String NumericRegex = "\\d+";
 
     @Autowired
     LrdService lrdService;
@@ -133,17 +133,18 @@ public class LrdApiController {
     public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
         @RequestParam(value = "epims_id", required = false) String epimsId) {
 
-        log.info("Obtaining building locations for epimm id: "+epimsId);
+        log.info("Obtaining building locations for epimm id: " + epimsId);
 
         if (isEmpty(epimsId)) {
             throw new InvalidRequestException("No epimm id provided");
         }
 
-        if(!ValidationUtils.isStringInExpectedFormat(epimsId.strip(), NUMERIC_CHAR_REGEX)) {
+        if (!ValidationUtils.isStringInExpectedFormat(epimsId.strip(), NumericRegex)) {
             throw new InvalidRequestException("epimm id is expected to be a number");
         }
 
-        LrdBuildingLocationResponse response = buildingLocationService.retrieveBuildingLocationByEpimsId(epimsId);
+        LrdBuildingLocationResponse response =
+            buildingLocationService.retrieveBuildingLocationByEpimsId(epimsId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

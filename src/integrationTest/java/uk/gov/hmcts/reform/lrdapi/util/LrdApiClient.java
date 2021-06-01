@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 
 import java.util.Arrays;
@@ -85,7 +84,7 @@ public class LrdApiClient {
         return mapApiResponse(responseEntity,expectedClass);
     }
 
-    public Object findBuildingLocationByEPIMMId(String s, Class clazz) throws JsonProcessingException {
+    public Object findBuildingLocationByEpimmId(String s, Class clazz) throws JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + s, clazz, "");
         return mapSingleObjectOnlyResponse(responseEntity, clazz);
     }

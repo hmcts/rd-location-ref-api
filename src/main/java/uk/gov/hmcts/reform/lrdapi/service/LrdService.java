@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.lrdapi.service;
 
-import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 
 import java.util.List;

@@ -6,41 +6,41 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ValidationUtilsTest {
 
-    private String REGEX_NUMERIC_ONLY="\\d+";
+    private String regexNumeric = "\\d+";
 
     @Test
-    public void testInvalidEPIMSIDInput_Alphanumeric() {
-        assertThat(ValidationUtils.isStringInExpectedFormat("1QWERTY", REGEX_NUMERIC_ONLY))
+    public void testInvalidEpimsIdInput_Alphanumeric() {
+        assertThat(ValidationUtils.isStringInExpectedFormat("1QWERTY", regexNumeric))
             .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void testInvalidEPIMSIDInput_Alphabetic() {
-        assertThat(ValidationUtils.isStringInExpectedFormat("QWERTY", REGEX_NUMERIC_ONLY))
+    public void testInvalidEpimsIdInput_Alphabetic() {
+        assertThat(ValidationUtils.isStringInExpectedFormat("QWERTY", regexNumeric))
             .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void testInvalidEPIMSIDInput_Space() {
-        assertThat(ValidationUtils.isStringInExpectedFormat(" ", REGEX_NUMERIC_ONLY))
+    public void testInvalidEpimsIdInput_Space() {
+        assertThat(ValidationUtils.isStringInExpectedFormat(" ", regexNumeric))
             .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void testInvalidEPIMSIDInput_SpecialCharacters() {
-        assertThat(ValidationUtils.isStringInExpectedFormat("!@$$£", REGEX_NUMERIC_ONLY))
+    public void testInvalidEpimsIdInput_SpecialCharacters() {
+        assertThat(ValidationUtils.isStringInExpectedFormat("!@$$£", regexNumeric))
             .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void testInvalidEPIMSIDInput_NegativeIntegers() {
-        assertThat(ValidationUtils.isStringInExpectedFormat("-1", REGEX_NUMERIC_ONLY))
+    public void testInvalidEpimsIdInput_NegativeIntegers() {
+        assertThat(ValidationUtils.isStringInExpectedFormat("-1", regexNumeric))
             .isEqualTo(Boolean.FALSE);
     }
 
     @Test
-    public void testValidEPIMSIDInput() {
-        assertThat(ValidationUtils.isStringInExpectedFormat("1", REGEX_NUMERIC_ONLY))
+    public void testValidEpimsIdInput() {
+        assertThat(ValidationUtils.isStringInExpectedFormat("1", regexNumeric))
             .isEqualTo(Boolean.TRUE);
     }
 

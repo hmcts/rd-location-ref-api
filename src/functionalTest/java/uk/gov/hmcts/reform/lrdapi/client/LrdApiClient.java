@@ -57,7 +57,7 @@ public class LrdApiClient {
 
     public Object retrieveBuildingLocationDetailsByEpimsId(HttpStatus expectedStatus, String param) {
         Response response = getMultipleAuthHeaders()
-            .get("/building-locations/epims/"+param)
+            .get("/building-locations/epims/" + param)
             .andReturn();
 
         response.then()
@@ -70,9 +70,10 @@ public class LrdApiClient {
         }
     }
 
-    public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(HttpStatus expectedStatus, String param) {
+    public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(HttpStatus expectedStatus,
+                                                                                String param) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
-            .get("/building-locations/epims/"+param)
+            .get("/building-locations/epims/" + param)
             .andReturn();
 
         response.then()
@@ -83,7 +84,7 @@ public class LrdApiClient {
 
     public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(HttpStatus expectedStatus, String param) {
         Response response = withUnauthenticatedRequest_NoS2SToken()
-            .get("/building-locations/epims/"+param)
+            .get("/building-locations/epims/" + param)
             .andReturn();
 
         response.then()

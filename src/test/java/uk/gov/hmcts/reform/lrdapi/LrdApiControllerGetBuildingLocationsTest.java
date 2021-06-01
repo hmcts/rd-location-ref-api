@@ -16,7 +16,9 @@ import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LrdApiControllerGetBuildingLocationsTest {
@@ -33,7 +35,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test
-    public void testGetBuildingLocations_ValidEPIMMSIdGiven_ShouldReturnStatusCode200() {
+    public void testGetBuildingLocations_ValidEpimmsIdGiven_ShouldReturnStatusCode200() {
         when(lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(anyString()))
             .thenReturn(new LrdBuildingLocationResponse());
         ResponseEntity<Object> responseEntity =
@@ -43,7 +45,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test
-    public void testGetBuildingLocations_EPIMMSIdWithASpaceGiven_ShouldReturnStatusCode200() {
+    public void testGetBuildingLocations_EpimmsIdWithASpaceGiven_ShouldReturnStatusCode200() {
         when(lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(anyString()))
             .thenReturn(new LrdBuildingLocationResponse());
         ResponseEntity<Object> responseEntity =
@@ -53,7 +55,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_NullEPIMMSIDGiven_ShouldReturnStatusCode400() {
+    public void testGetBuildingLocations_NullEpimmsIdGiven_ShouldReturnStatusCode400() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId(null);
 
@@ -63,7 +65,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_StringEPIMMSIDGiven_ShouldReturnStatusCode400() {
+    public void testGetBuildingLocations_StringEpimmsIdGiven_ShouldReturnStatusCode400() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId("QWERTY");
 
@@ -73,7 +75,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_AlphaNumericEPIMMSIDGiven_ShouldReturnStatusCode400() {
+    public void testGetBuildingLocations_AlphaNumericEpimmsIdGiven_ShouldReturnStatusCode400() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId("1234QWERTY");
 
@@ -83,7 +85,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_SpecialCharactersInEPIMMSIDGiven_ShouldReturnStatusCode400() {
+    public void testGetBuildingLocations_SpecialCharactersInEpimmsIdGiven_ShouldReturnStatusCode400() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId("@£$%^");
 

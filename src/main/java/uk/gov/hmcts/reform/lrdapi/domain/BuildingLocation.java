@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,10 +21,10 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
 @Entity(name = "building_location")
-@NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Getter
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Setter
 @Builder
 public class BuildingLocation implements Serializable {

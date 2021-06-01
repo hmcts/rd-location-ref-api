@@ -60,9 +60,6 @@ public class BuildingLocationTest {
 
     @Test
     public void testBuildingLocationSetters() {
-        BuildingLocation buildingLocation = new BuildingLocation();
-
-        LocalDateTime now = LocalDateTime.now();
 
         BuildingLocationStatus status = new BuildingLocationStatus();
         status.setStatus("LIVE");
@@ -76,6 +73,8 @@ public class BuildingLocationTest {
         cluster.setClusterId("clusterId");
         cluster.setClusterName("cluster name");
 
+        BuildingLocation buildingLocation = new BuildingLocation();
+
         buildingLocation.setBuildingLocationId("buildingLocationId");
         buildingLocation.setEpimmsId("epimmsId");
         buildingLocation.setBuildingLocationName("buildingLocationName");
@@ -86,6 +85,8 @@ public class BuildingLocationTest {
         buildingLocation.setCourtFinderUrl("courtFinderUrl");
         buildingLocation.setPostcode("postcode");
         buildingLocation.setAddress("address");
+
+        LocalDateTime now = LocalDateTime.now();
         buildingLocation.setCreated(now);
         buildingLocation.setLastUpdated(now);
 

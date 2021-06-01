@@ -2,11 +2,9 @@ package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
@@ -16,13 +14,14 @@ import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocationStatus;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
-import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class LrdBuildingLocationServiceTest {
@@ -39,10 +38,11 @@ public class LrdBuildingLocationServiceTest {
     }
 
     @Test
-    public void test_RetrieveBuildingLocationsByEPIMMID() {
+    public void test_RetrieveBuildingLocationsByEpimmsID() {
 
         when(buildingLocationRepository.findByEpimmsId(anyString())).thenReturn(prepareBuildingLocation());
-        LrdBuildingLocationResponse buildingLocation = lrdBuildingLocationService.retrieveBuildingLocationByEpimsId("1");
+        LrdBuildingLocationResponse buildingLocation =
+            lrdBuildingLocationService.retrieveBuildingLocationByEpimsId("1");
 
         assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
