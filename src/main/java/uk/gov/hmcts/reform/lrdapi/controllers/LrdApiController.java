@@ -5,20 +5,23 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
+import uk.gov.hmcts.reform.lrdapi.util.ConstraintValidation;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -35,39 +38,40 @@ public class LrdApiController {
     @Autowired
     LrdService lrdService;
 
+
     @Autowired
     LrdBuildingLocationService buildingLocationService;
 
     @ApiOperation(
-            value = "This API will retrieve service code details association with ccd case type",
-            authorizations = {
-                    @Authorization(value = "ServiceAuthorization"),
-                    @Authorization(value = "Authorization")
-            }
+        value = "This API will retrieve service code details association with ccd case type",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
     )
     @ApiResponses({
-            @ApiResponse(
-                    code = 200,
-                    message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
-                    response = LrdOrgInfoServiceResponse.class,
-                    responseContainer = "list"
-            ),
-            @ApiResponse(
-                    code = 400,
-                    message = "Bad Request"
-            ),
-            @ApiResponse(
-                    code = 401,
-                    message = "Forbidden Error: Access denied"
-            ),
-            @ApiResponse(
-                    code = 404,
-                    message = "No Service found with the given ID"
-            ),
-            @ApiResponse(
-                    code = 500,
-                    message = "Internal Server Error"
-            )
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            response = LrdOrgInfoServiceResponse.class,
+            responseContainer = "list"
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No Service found with the given ID"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
     })
     @GetMapping(
         path = "/orgServices",
@@ -78,6 +82,8 @@ public class LrdApiController {
         @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,
         @RequestParam(value = "ccdServiceNames", required = false) String ccdServiceNames) {
         log.info("Inside retrieveOrgServiceDetails");
+
+        ConstraintValidation.validateInputParameters(serviceCode, ccdCaseType, ccdServiceNames);
         List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse = null;
 
         long requestParamSize = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
