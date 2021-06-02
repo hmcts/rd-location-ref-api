@@ -46,13 +46,21 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     @Test
-    public void retrieveBuildLocations_NoEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_NoEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode404() throws
         JsonProcessingException {
 
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
-            lrdApiClient.findBuildingLocationByEpimmId("", LrdBuildingLocationResponse.class);
-
-        assertNotNull(response);
+        Map<String, String> launchDarklyMap = new HashMap<>();
+        launchDarklyMap.put(
+            "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
+            "lrd_location_api"
+        );
+        when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(true);
+        when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findBuildingLocationByEpimmId("", Map.class);
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -104,7 +112,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByEpimmId("815833", ErrorResponse.class);
+            lrdApiClient.findBuildingLocationByEpimmId("123456789", ErrorResponse.class);
         assertThat(errorResponseMap).containsEntry("http_status", HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));

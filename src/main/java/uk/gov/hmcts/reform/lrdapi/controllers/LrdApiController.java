@@ -9,10 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
@@ -131,7 +128,7 @@ public class LrdApiController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
-        @RequestParam(value = "epims_id", required = false) String epimsId) {
+        @PathVariable(value = "epims_id") String epimsId) {
 
         log.info("Obtaining building locations for epimm id: " + epimsId);
 

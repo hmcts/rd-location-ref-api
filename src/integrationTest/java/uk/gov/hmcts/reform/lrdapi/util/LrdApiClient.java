@@ -84,8 +84,8 @@ public class LrdApiClient {
         return mapApiResponse(responseEntity,expectedClass);
     }
 
-    public Object findBuildingLocationByEpimmId(String s, Class clazz) throws JsonProcessingException {
-        ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + s, clazz, "");
+    public Object findBuildingLocationByEpimmId(String epimmId, Class clazz) throws JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + epimmId, clazz, "");
         return mapSingleObjectOnlyResponse(responseEntity, clazz);
     }
 
@@ -109,6 +109,7 @@ public class LrdApiClient {
         throws JsonProcessingException {
 
         HttpStatus status = responseEntity.getStatusCode();
+        System.out.println("Response Status: " + status);
         if (status.is2xxSuccessful()) {
             return objectMapper.convertValue(responseEntity.getBody(), clazz);
         } else {
@@ -135,6 +136,7 @@ public class LrdApiClient {
         } catch (HttpStatusCodeException ex) {
             return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
         }
+        System.out.println("Response: "+responseEntity);
 
         return responseEntity;
     }
