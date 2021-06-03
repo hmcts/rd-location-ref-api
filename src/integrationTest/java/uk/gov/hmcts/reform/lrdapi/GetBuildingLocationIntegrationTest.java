@@ -47,24 +47,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NoEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode404() throws
-        JsonProcessingException {
-
-        Map<String, String> launchDarklyMap = new HashMap<>();
-        launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
-            "lrd_location_api"
-        );
-        when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(true);
-        when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByEpimmId("", Map.class);
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_StringEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
