@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -85,13 +84,6 @@ public class LrdApiController {
         log.info("Inside retrieveOrgServiceDetails");
         ConstraintValidation.validateInputParameters(serviceCode, ccdCaseType, ccdServiceNames);
         List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse = null;
-        long requestParamSize = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
-            .filter(StringUtils::isNotBlank)
-            .count();
-        if (requestParamSize > 1) {
-            throw new InvalidRequestException("Please provide only 1 of 3 params: "
-                                                  + "serviceCode, ccdCaseType, ccdServiceNames.");
-        }
         lrdOrgInfoServiceResponse = lrdService.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceNames);
         return ResponseEntity.status(200).body(lrdOrgInfoServiceResponse);
     }
@@ -133,15 +125,20 @@ public class LrdApiController {
     )
     public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
         @PathVariable(value = "epims_id") String epimsId) {
+
         log.info("Obtaining building locations for epimm id: " + epimsId);
+
         if (isEmpty(epimsId)) {
             throw new InvalidRequestException("No epimm id provided");
         }
+
         if (!ValidationUtils.isStringInExpectedFormat(epimsId.strip(), NumericRegex)) {
             throw new InvalidRequestException("epimm id is expected to be a number");
         }
+
         LrdBuildingLocationResponse response =
             buildingLocationService.retrieveBuildingLocationByEpimsId(epimsId);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 }
