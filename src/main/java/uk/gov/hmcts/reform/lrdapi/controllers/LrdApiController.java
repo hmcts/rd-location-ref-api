@@ -22,7 +22,6 @@ import uk.gov.hmcts.reform.lrdapi.util.ConstraintValidation;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;

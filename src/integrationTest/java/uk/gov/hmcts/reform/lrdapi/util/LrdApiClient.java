@@ -136,8 +136,6 @@ public class LrdApiClient {
         } catch (HttpStatusCodeException ex) {
             return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
         }
-        System.out.println("Response: "+responseEntity);
-
         return responseEntity;
     }
 
