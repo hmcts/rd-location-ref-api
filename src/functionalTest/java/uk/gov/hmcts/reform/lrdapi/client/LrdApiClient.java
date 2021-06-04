@@ -25,6 +25,8 @@ public class LrdApiClient {
 
     private static final String SERVICE_HEADER = "ServiceAuthorization";
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BASE_URL = "/refdata/location";
+
 
     private final String lrdApiUrl;
     private  String s2sToken;
@@ -42,7 +44,7 @@ public class LrdApiClient {
 
     public Object retrieveOrgServiceInfo(HttpStatus expectedStatus, String param) {
         Response response = getMultipleAuthHeaders()
-            .get("/refdata/location/orgServices" + param)
+            .get(BASE_URL + "/orgServices" + param)
             .andReturn();
 
         response.then()
@@ -57,7 +59,7 @@ public class LrdApiClient {
 
     public Object retrieveBuildingLocationDetailsByEpimsId(HttpStatus expectedStatus, String param) {
         Response response = getMultipleAuthHeaders()
-            .get("/building-locations/epims/" + param)
+            .get(BASE_URL + "/building-locations/epims/" + param)
             .andReturn();
 
         response.then()
@@ -70,27 +72,20 @@ public class LrdApiClient {
         }
     }
 
-    public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(HttpStatus expectedStatus,
-                                                                                String param) {
+    public Response retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(String param) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
-            .get("/building-locations/epims/" + param)
+            .get(BASE_URL + "/building-locations/epims/" + param)
             .andReturn();
 
-        response.then()
-            .assertThat()
-            .statusCode(expectedStatus.value());
-        return response.getBody().as(ErrorResponse.class);
+        return response;
     }
 
-    public ErrorResponse retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(HttpStatus expectedStatus, String param) {
+    public Response retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(String param) {
         Response response = withUnauthenticatedRequest_NoS2SToken()
-            .get("/building-locations/epims/" + param)
+            .get(BASE_URL + "/building-locations/epims/" + param)
             .andReturn();
 
-        response.then()
-            .assertThat()
-            .statusCode(expectedStatus.value());
-        return response.getBody().as(ErrorResponse.class);
+        return response;
     }
 
     public String getWelcomePage() {

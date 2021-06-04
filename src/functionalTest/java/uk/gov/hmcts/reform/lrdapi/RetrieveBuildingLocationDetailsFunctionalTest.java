@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.restassured.response.Response;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.Test;
@@ -25,7 +26,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_WithStatusCode_200() throws JsonProcessingException {
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
+        ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "1");
         //POST API to be used to pre-insert the test data once available. Tech Debt for now.
         assertThat(response).isNotNull();
@@ -34,15 +35,15 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocations_WithStatusCode_404() throws JsonProcessingException {
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "1QWERTY");
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "1");
         assertThat(response).isNotNull();
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = false)
     public void shouldNotRetrieveBuildingLocations_WhenToggleOff_WithStatusCode_403() throws JsonProcessingException {
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
+        ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.FORBIDDEN, "1");
         assertThat(response).isNotNull();
     }
@@ -50,19 +51,21 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_UnauthorizedDueToNoBearerToken_ShouldReturnStatusCode401() {
-        ErrorResponse response =
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(HttpStatus.UNAUTHORIZED, "1");
+        Response response =
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId_NoBearerToken("1");
 
         assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_UnauthorizedDueToNoS2SToken_ShouldReturnStatusCode401() {
-        ErrorResponse response =
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(HttpStatus.UNAUTHORIZED, "1");
+        Response response =
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId_NoS2SToken("1");
 
         assertThat(response).isNotNull();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }
