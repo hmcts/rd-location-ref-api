@@ -33,6 +33,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.JwtTokenUtil.generateToken;
 public class LrdApiClient {
 
     private static final String APP_BASE_PATH = "/refdata/location/orgServices";
+    private static final String BUILDING_LOCATION_API_STR = "/refdata/location/building-locations/epims/";
 
     private static  String JWT_TOKEN = null;
     private final Integer lrdApiPort;
@@ -83,6 +84,11 @@ public class LrdApiClient {
         return mapApiResponse(responseEntity,expectedClass);
     }
 
+    public Object findBuildingLocationByEpimmId(String epimmId, Class clazz) throws JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + epimmId, clazz, "");
+        return mapSingleObjectOnlyResponse(responseEntity, clazz);
+    }
+
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
         JsonProcessingException {
 
@@ -90,6 +96,22 @@ public class LrdApiClient {
         if (status.is2xxSuccessful()) {
             return Arrays.asList((LrdOrgInfoServiceResponse[]) objectMapper.convertValue(
                 responseEntity.getBody(), expectedClass));
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+    }
+
+    private Object mapSingleObjectOnlyResponse(ResponseEntity<Object> responseEntity, Class clazz)
+        throws JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+        System.out.println("Response Status: " + status);
+        if (status.is2xxSuccessful()) {
+            return objectMapper.convertValue(responseEntity.getBody(), clazz);
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
@@ -114,7 +136,6 @@ public class LrdApiClient {
         } catch (HttpStatusCodeException ex) {
             return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
         }
-
         return responseEntity;
     }
 
