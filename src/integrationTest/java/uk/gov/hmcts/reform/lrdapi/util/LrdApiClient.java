@@ -33,7 +33,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.JwtTokenUtil.generateToken;
 public class LrdApiClient {
 
     private static final String APP_BASE_PATH = "/refdata/location/orgServices";
-    private static final String BUILDING_LOCATION_API_STR = "/refdata/location/building-locations/epims/";
+    private static final String BUILDING_LOCATION_API_STR = "/refdata/location/building-locations";
 
     private static  String JWT_TOKEN = null;
     private final Integer lrdApiPort;
