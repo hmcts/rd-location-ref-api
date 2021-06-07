@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -40,11 +41,12 @@ public class LrdBuildingLocationServiceTest {
     }
 
     @Test
-    public void test_RetrieveBuildingLocationsByEpimmsID() {
+    public void test_RetrieveBuildingLocationsByEpimsID() {
 
-        when(buildingLocationRepository.findByEpimmsId(anyString())).thenReturn(prepareBuildingLocation());
+        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareBuildingLocation());
+
         List<LrdBuildingLocationResponse> buildingLocations =
-            lrdBuildingLocationService.retrieveBuildingLocationByEpimsId("1");
+            lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(getListOfEpimIds());
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
@@ -64,9 +66,15 @@ public class LrdBuildingLocationServiceTest {
 
     @Test(expected = ResourceNotFoundException.class)
     public void test_RetrieveBuildingLocations_NoBuildLocationFound() {
-        when(buildingLocationRepository.findByEpimmsId(anyString())).thenReturn(null);
-        lrdBuildingLocationService.retrieveBuildingLocationByEpimsId("1");
-        verify(buildingLocationRepository.findByEpimmsId(anyString()), times(1));
+        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
+        lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(getListOfEpimIds());
+        verify(buildingLocationRepository.findByEpimmsIdIn(anyList()), times(1));
+    }
+
+    private List<String> getListOfEpimIds() {
+        List<String> epimIdList = new ArrayList<>();
+        epimIdList.add("1");
+        return epimIdList;
     }
 
     private List<BuildingLocation> prepareBuildingLocation() {
