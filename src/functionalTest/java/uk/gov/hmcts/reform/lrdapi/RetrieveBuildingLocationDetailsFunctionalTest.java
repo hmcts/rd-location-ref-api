@@ -33,6 +33,33 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveAllBuildingLocations_NoEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "");
+        //POST API to be used to pre-insert the test data once available. Tech Debt for now.
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveBuildingLocations_MultipleEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "");
+        //POST API to be used to pre-insert the test data once available. Tech Debt for now.
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveAllBuildingLocations_AllEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "");
+        //POST API to be used to pre-insert the test data once available. Tech Debt for now.
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocations_WithStatusCode_404() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "1");
