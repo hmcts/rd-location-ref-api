@@ -413,3 +413,86 @@ values(
     '2',
     'CLOSED')
 ;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '1',
+    'National')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '2',
+    'London')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '3',
+    'Midlands')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '4',
+    'North East')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '5',
+    'North West')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '6',
+    'South East')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '7',
+    'South West')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '8',
+    'Wales')
+;
+
+insert into region(
+    region_id,
+    description
+    )
+values(
+    '9',
+    'Scotland')
+;
+
+
