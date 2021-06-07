@@ -397,3 +397,19 @@ values(
     'War Pensions & Armed Forces Compensation Chamber',
     ' ')
 ;
+
+insert into building_location_status(
+    building_location_status_id,
+    status)
+values(
+    '1',
+    'OPEN')
+;
+
+insert into building_location_status(
+    building_location_status_id,
+    status)
+values(
+    '2',
+    'CLOSED')
+;
