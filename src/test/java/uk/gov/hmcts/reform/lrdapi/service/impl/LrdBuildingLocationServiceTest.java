@@ -16,6 +16,8 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,8 +43,10 @@ public class LrdBuildingLocationServiceTest {
     public void test_RetrieveBuildingLocationsByEpimmsID() {
 
         when(buildingLocationRepository.findByEpimmsId(anyString())).thenReturn(prepareBuildingLocation());
-        LrdBuildingLocationResponse buildingLocation =
+        List<LrdBuildingLocationResponse> buildingLocations =
             lrdBuildingLocationService.retrieveBuildingLocationByEpimsId("1");
+
+        LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
         assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
@@ -65,7 +69,8 @@ public class LrdBuildingLocationServiceTest {
         verify(buildingLocationRepository.findByEpimmsId(anyString()), times(1));
     }
 
-    private BuildingLocation prepareBuildingLocation() {
+    private List<BuildingLocation> prepareBuildingLocation() {
+
         BuildingLocationStatus status = new BuildingLocationStatus();
         status.setStatus("LIVE");
         status.setBuildingStatusId("1");
@@ -80,20 +85,24 @@ public class LrdBuildingLocationServiceTest {
 
         LocalDateTime now = LocalDateTime.now();
 
-        return BuildingLocation.builder()
-            .epimmsId("epimmsId")
-            .buildingLocationId("buildingLocationId")
-            .buildingLocationName("buildingLocationName")
-            .buildingLocationStatus(status)
-            .region(region)
-            .address("address")
-            .cluster(cluster)
-            .courtFinderUrl("courtFinderUrl")
-            .area("area")
-            .postcode("postcode")
-            .created(now)
-            .lastUpdated(now)
-            .build();
+        List<BuildingLocation> locations = new ArrayList<>();
+
+        locations.add(BuildingLocation.builder()
+                         .epimmsId("epimmsId")
+                         .buildingLocationId("buildingLocationId")
+                         .buildingLocationName("buildingLocationName")
+                         .buildingLocationStatus(status)
+                         .region(region)
+                         .address("address")
+                         .cluster(cluster)
+                         .courtFinderUrl("courtFinderUrl")
+                         .area("area")
+                         .postcode("postcode")
+                         .created(now)
+                         .lastUpdated(now)
+                         .build());
+
+        return locations;
     }
 
 }

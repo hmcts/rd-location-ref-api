@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import javax.validation.constraints.Size;
 @EntityListeners(AuditingEntityListener.class)
 @Setter
 @Builder
+@EqualsAndHashCode
 public class BuildingLocation implements Serializable {
 
     @Id

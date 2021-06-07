@@ -54,33 +54,33 @@ public class LrdApiControllerGetBuildingLocationsTest {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_NullEpimmsIdGiven_ShouldReturnStatusCode400() {
+    @Test
+    public void testGetBuildingLocations_NullEpimmsIdGiven_ShouldReturnStatusCode200() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId(null);
 
         assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(lrdBuildingLocationService, times(0)).retrieveBuildingLocationByEpimsId(anyString());
     }
 
-    @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_StringEpimmsIdGiven_ShouldReturnStatusCode400() {
+    @Test
+    public void testGetBuildingLocations_StringEpimmsIdGiven_ShouldReturnStatusCode200() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId("QWERTY");
 
         assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(lrdBuildingLocationService, times(0)).retrieveBuildingLocationByEpimsId(anyString());
     }
 
-    @Test(expected = InvalidRequestException.class)
-    public void testGetBuildingLocations_AlphaNumericEpimmsIdGiven_ShouldReturnStatusCode400() {
+    @Test
+    public void testGetBuildingLocations_AlphaNumericEpimmsIdGiven_ShouldReturnStatusCode200() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetailsByEpimsId("1234QWERTY");
 
         assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(lrdBuildingLocationService, times(0)).retrieveBuildingLocationByEpimsId(anyString());
     }
 
