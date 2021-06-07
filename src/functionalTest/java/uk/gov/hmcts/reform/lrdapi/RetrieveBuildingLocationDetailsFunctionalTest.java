@@ -26,7 +26,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_WithStatusCode_200() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "1");
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "?epimms_id=1");
         //POST API to be used to pre-insert the test data once available. Tech Debt for now.
         assertThat(response).isNotNull();
     }
@@ -44,7 +44,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_MultipleEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "");
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "?epimms_id=1,2");
         //POST API to be used to pre-insert the test data once available. Tech Debt for now.
         assertThat(response).isNotNull();
     }
@@ -53,7 +53,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_AllEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "");
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "?epimms_id=ALL");
         //POST API to be used to pre-insert the test data once available. Tech Debt for now.
         assertThat(response).isNotNull();
     }
