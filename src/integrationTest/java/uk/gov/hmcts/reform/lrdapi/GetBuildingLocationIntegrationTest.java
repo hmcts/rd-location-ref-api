@@ -10,10 +10,13 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -24,34 +27,72 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
     @Test
+    @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_ValidEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
-            lrdApiClient.findBuildingLocationByEpimmId("123456789", LrdBuildingLocationResponse.class);
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=123456789", LrdBuildingLocationResponse.class);
 
         assertNotNull(response);
-        responseVerification(response);
+        responseVerification(response, "ONE");
     }
 
     @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_TwoValidEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=123456789,123456", LrdBuildingLocationResponse.class);
+
+        assertNotNull(response);
+        responseVerification(response, "TWO");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_NoEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=", LrdBuildingLocationResponse.class);
+
+        assertNotNull(response);
+        responseVerification(response, "ALL");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_NullEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=null", LrdBuildingLocationResponse.class);
+
+        assertNotNull(response);
+        responseVerification(response, "ALL");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void getBuildLocations_ValidEpimmsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
         throws JsonProcessingException {
 
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
-            lrdApiClient.findBuildingLocationByEpimmId(" 123456789 ", LrdBuildingLocationResponse.class);
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id= 123456789 ", LrdBuildingLocationResponse.class);
 
         assertNotNull(response);
-        responseVerification(response);
+        responseVerification(response, "ONE");
     }
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_StringEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_InvalidEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByEpimmId("QWERTY", ErrorResponse.class);
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=-1111", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
@@ -59,27 +100,14 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NonExistingEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_NonStandardCharsEpimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByEpimmId("-1111", ErrorResponse.class);
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=!@£@$", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
-    }
-
-    private void responseVerification(LrdBuildingLocationResponse response) {
-        assertThat(response.getBuildingLocationId()).isEqualTo("22041995");
-        assertThat(response.getRegionId()).isEqualTo("8910");
-        assertThat(response.getClusterId()).isEqualTo("0123");
-        assertThat(response.getBuildingLocationStatus()).isEqualTo("Status A");
-        assertThat(response.getEpimmsId()).isEqualTo("123456789");
-        assertThat(response.getBuildingLocationName()).isEqualTo("Building Location A");
-        assertThat(response.getArea()).isEqualTo("Area A");
-        assertThat(response.getPostcode()).isEqualTo("WX67 2YZ");
-        assertThat(response.getAddress()).isEqualTo("1 Street, London");
-        assertThat(response.getCourtFinderUrl()).isEqualTo("Court Finder URL");
     }
 
     @Test
@@ -98,6 +126,89 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         assertThat(errorResponseMap).containsEntry("http_status", HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
+    }
+
+    private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
+        if(responseType.equalsIgnoreCase("ONE")) {
+            assertIterableEquals(response, prepareSingleLocationResponse());
+        } else if (responseType.equalsIgnoreCase("TWO")) {
+            assertIterableEquals(response, prepareTwoLocationResponse());
+        } else {
+            assertIterableEquals(response, prepareAllLocationResponse());
+        }
+
+    }
+
+    private List<LrdBuildingLocationResponse> prepareSingleLocationResponse() {
+
+        List<LrdBuildingLocationResponse> locationResponses = new ArrayList<>();
+
+        LrdBuildingLocationResponse response = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041995")
+            .regionId("8910")
+            .region("Description A")
+            .clusterId("0123")
+            .clusterName("Cluster A")
+            .buildingLocationStatus("Status A")
+            .epimmsId("123456789")
+            .buildingLocationName("Building Location A")
+            .area("Area A")
+            .postcode("WX67 2YZ")
+            .address("1 Street, London")
+            .courtFinderUrl("Court Finder URL")
+            .build();
+
+        locationResponses.add(response);
+
+        return locationResponses;
+    }
+
+    private List<LrdBuildingLocationResponse> prepareTwoLocationResponse() {
+
+        List<LrdBuildingLocationResponse> locationResponses = prepareSingleLocationResponse();
+
+        LrdBuildingLocationResponse response2 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041996")
+            .regionId("891011")
+            .region("Description B")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Status B")
+            .epimmsId("123456")
+            .buildingLocationName("Building Location B")
+            .area("Area B")
+            .postcode("SW19 2YZ")
+            .address("2 Street, London")
+            .courtFinderUrl("Court Finder URL 2")
+            .build();
+
+        locationResponses.add(response2);
+
+        return locationResponses;
+    }
+
+    private List<LrdBuildingLocationResponse> prepareAllLocationResponse() {
+
+        List<LrdBuildingLocationResponse> locationResponses = prepareTwoLocationResponse();
+
+        LrdBuildingLocationResponse response3 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041997")
+            .regionId("891011")
+            .region("Description B")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Status B")
+            .epimmsId("epimmsId1234")
+            .buildingLocationName("Building Location C")
+            .area("Area C")
+            .postcode("EC2A 2YZ")
+            .address("3 Street, London")
+            .courtFinderUrl("Court Finder URL 3")
+            .build();
+
+        locationResponses.add(response3);
+
+        return locationResponses;
     }
 
 }
