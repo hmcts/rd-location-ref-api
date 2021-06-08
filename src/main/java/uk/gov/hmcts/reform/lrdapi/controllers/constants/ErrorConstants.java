@@ -15,7 +15,13 @@ public enum ErrorConstants {
 
     CONFLICT_EXCEPTION("10 : Error was caused by duplicate key exception"),
 
-    ACCESS_EXCEPTION("9 : Access Denied");
+    ACCESS_EXCEPTION("9 : Access Denied"),
+
+    FILE_UPLOAD_IN_PROGRESS("9 : File upload is already in progress."
+                                + " Please try again once existing file upload is completed");
+
+    public static final String USER_NAME_PATTERN = "^[A-Za-z0-9]+[\\w!#$%&'’.*+/=?`{|}~^-]+"
+        + "(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*";
 
     private final String errorMessage;
 

@@ -284,6 +284,10 @@ repositories {
 
 dependencies {
 
+    //compile files('lib/rd-data-load.jar')
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+    compile fileTree(dir: 'lib', includes: ['*.tar'])
+
     implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
@@ -292,7 +296,7 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.2'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.2'
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: versions.springHystrix
     implementation group: 'org.springframework.retry', name: 'spring-retry', version: '1.2.5.RELEASE'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot

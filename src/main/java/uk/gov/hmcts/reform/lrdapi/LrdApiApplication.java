@@ -9,9 +9,8 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 
 @EnableJpaAuditing
 @EnableJpaRepositories
-@SpringBootApplication
-@EnableFeignClients(basePackages = {
-    "uk.gov.hmcts.reform.lrdapi" },
+@SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform")
+@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.lrdapi" },
     basePackageClasses = { IdamApi.class }
 )
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
