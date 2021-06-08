@@ -9,6 +9,10 @@ import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Slf4j
@@ -19,27 +23,32 @@ public class LrdBuildingLocationServiceImpl implements LrdBuildingLocationServic
     BuildingLocationRepository buildingLocationRepository;
 
     @Override
-    public LrdBuildingLocationResponse retrieveBuildingLocationByEpimsId(String epimsId) {
+    public List<LrdBuildingLocationResponse> retrieveBuildingLocationByEpimsId(List<String> epimsIds) {
 
-        BuildingLocation buildingLocation = buildingLocationRepository.findByEpimmsId(epimsId);
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByEpimmsIdIn(epimsIds);
 
-        if (isEmpty(buildingLocation)) {
-            throw new ResourceNotFoundException("No Building Location found with the given epims ID: " + epimsId);
+        if (isEmpty(buildingLocations)) {
+            throw new ResourceNotFoundException("No Building Locations found with the given epims ID: " + epimsIds);
         }
 
-        return LrdBuildingLocationResponse.builder()
-            .buildingLocationId(buildingLocation.getBuildingLocationId())
-            .buildingLocationName(buildingLocation.getBuildingLocationName())
-            .buildingLocationStatus(buildingLocation.getBuildingLocationStatus().getStatus())
-            .address(buildingLocation.getAddress())
-            .area(buildingLocation.getArea())
-            .epimmsId(buildingLocation.getEpimmsId())
-            .clusterId(buildingLocation.getCluster().getClusterId())
-            .clusterName(buildingLocation.getCluster().getClusterName())
-            .regionId(buildingLocation.getRegion().getRegionId())
-            .region(buildingLocation.getRegion().getDescription())
-            .courtFinderUrl(buildingLocation.getCourtFinderUrl())
-            .postcode(buildingLocation.getPostcode())
-            .build();
+        return buildingLocations.stream().map((location) -> LrdBuildingLocationResponse.builder()
+            .buildingLocationId(location.getBuildingLocationId())
+            .buildingLocationName(location.getBuildingLocationName())
+            .buildingLocationStatus(location.getBuildingLocationStatus().getStatus())
+            .address(location.getAddress())
+            .area(location.getArea())
+            .epimmsId(location.getEpimmsId())
+            .clusterId(location.getCluster().getClusterId())
+            .clusterName(location.getCluster().getClusterName())
+            .regionId(location.getRegion().getRegionId())
+            .region(location.getRegion().getDescription())
+            .courtFinderUrl(location.getCourtFinderUrl())
+            .postcode(location.getPostcode())
+            .build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<LrdBuildingLocationResponse> getAllBuildingLocations() {
+        return null;
     }
 }

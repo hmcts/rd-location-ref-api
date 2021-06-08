@@ -46,6 +46,26 @@ public class LrdApiControllerGetBuildingLocationsTest {
     }
 
     @Test
+    public void testGetBuildingLocations_AllEpimmsIdGiven_ShouldReturnStatusCode200() {
+        when(lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(anyList()))
+            .thenReturn(new ArrayList<>());
+        ResponseEntity<Object> responseEntity =
+            lrdApiController.retrieveBuildingLocationDetailsByEpimsId("ALL");
+        verify(lrdBuildingLocationService, times(1)).getAllBuildingLocations();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void testGetBuildingLocations_lowerAllEpimmsIdGiven_ShouldReturnStatusCode200() {
+        when(lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(anyList()))
+            .thenReturn(new ArrayList<>());
+        ResponseEntity<Object> responseEntity =
+            lrdApiController.retrieveBuildingLocationDetailsByEpimsId("all");
+        verify(lrdBuildingLocationService, times(1)).getAllBuildingLocations();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
     public void testGetBuildingLocations_EpimmsIdWithASpaceGiven_ShouldReturnStatusCode200() {
         when(lrdBuildingLocationService.retrieveBuildingLocationByEpimsId(anyList()))
             .thenReturn(new ArrayList<>());
