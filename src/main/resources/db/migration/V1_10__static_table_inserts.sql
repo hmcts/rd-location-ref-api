@@ -1,660 +1,343 @@
 insert into court_location_category(
     court_location_category_id,
     court_location_category,
-    welsh_court_location_category)
+    welsh_court_location_category,
+    created_time
+    )
 values(
     '1',
     'Admin Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '2',
     'Admiralty and Commercial Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '3',
     'Agricultural Land and Drainage Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '4',
     'Asylum Support Appeals',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '5',
     'Bankruptcy Court (High Court)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '6',
     'Business and Property Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '7',
     'Central London County Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '8',
     'Central London County Court (Bankruptcy)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '9',
     'Chancery Division',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '10',
     'County Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '11',
     'Court of Appeal Civil Division',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '12',
     'Court of Appeal Criminal Division',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '13',
     'Court of Protection',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '14',
     'Criminal Injuries Compensation',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '15',
     'Crown Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '16',
     'Employment Appeal Tribunal (England and Wales)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '17',
     'Employment Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '18',
     'Family Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '19',
     'Gangmasters Licensing Appeals',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '20',
     'General Regulatory Chamber',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '21',
     'High Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '22',
     'Housing Centre',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '23',
     'Immigration and Asylum Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '24',
     'Lands Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '25',
     'Magistrates Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '26',
     'Patents Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '27',
     'Probate',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '28',
     'Queen''s Bench Division (General)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '29',
     'Queen''s Bench Division Administrative Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '30',
     'Residential Property Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '31',
     'Social Security and Child Support Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '32',
     'Special Immigration Appeals Commission',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '33',
     'Tax Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '34',
     'Technology & Construction Court',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '35',
     'Tribunals',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '36',
     'Upper Tier Immigration and Asylum Tribunal',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '37',
     'Upper Tribunal (Administrative Appeals Chamber)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '38',
     'Upper Tribunal (Lands Chamber)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '39',
     'Upper Tribunal (Tax and Chancery Chamber)',
-    ' ')
-;
-
-insert into court_location_category(
-    court_location_category_id,
-    court_location_category,
-    welsh_court_location_category)
-values(
+    ' ',
+    now()),
+    (
     '40',
     'War Pensions & Armed Forces Compensation Chamber',
-    ' ')
+    ' ',
+    now())
 ;
 
 insert into building_location_status(
     building_location_status_id,
-    status)
+    status,
+    created_time)
 values(
     '1',
-    'OPEN')
-;
-
-insert into building_location_status(
-    building_location_status_id,
-    status)
-values(
+    'OPEN',
+    now()),
+    (
     '2',
-    'CLOSED')
+    'CLOSED',
+    now())
 ;
 
 insert into region(
     region_id,
-    description
+    description,
+    created_time
     )
 values(
     '1',
-    'National')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'National',
+    now()),
+    (
     '2',
-    'London')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'London',
+    now()),
+    (
     '3',
-    'Midlands')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'Midlands',
+    now()),
+    (
     '4',
-    'North East')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'North East',
+    now()),
+    (
     '5',
-    'North West')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'North West',
+    now()),
+    (
     '6',
-    'South East')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'South East',
+    now()),
+    (
     '7',
-    'South West')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'South West',
+    now()),
+    (
     '8',
-    'Wales')
-;
-
-insert into region(
-    region_id,
-    description
-    )
-values(
+    'Wales',
+    now()),
+    (
     '9',
-    'Scotland')
+    'Scotland',
+    now())
 ;
 
 insert into cluster(
     cluster_id,
-    cluster_name
+    cluster_name,
+    created_time
     )
 values(
     '1',
-    'Avon, Somerset and Gloucestershire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Avon, Somerset and Gloucestershire',
+    now()),
+    (
     '2',
-    'Bedfordshire, Cambridgeshire, Hertfordshire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Bedfordshire, Cambridgeshire, Hertfordshire',
+    now()),
+    (
     '3',
-    'Cheshire and Merseyside')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Cheshire and Merseyside',
+    now()),
+    (
     '4',
-    'Cleveland, Durham, Northumbria')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Cleveland, Durham, Northumbria',
+    now()),
+    (
     '5',
-    'Cumbria and Lancashire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Cumbria and Lancashire',
+    now()),
+    (
     '6',
-    'Derbyshire and Nottinghamshire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Derbyshire and Nottinghamshire',
+    now()),
+    (
     '7',
-    'Devon, Cornwall, Dorset')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Devon, Cornwall, Dorset',
+    now()),
+    (
     '8',
-    'Greater Manchester')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Greater Manchester',
+    now()),
+    (
     '9',
-    'Hampshire, Wiltshire, IOW')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Hampshire, Wiltshire, IOW',
+    now()),
+    (
     '10',
-    'Humber and South Yorkshire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Humber and South Yorkshire',
+    now()),
+    (
     '11',
-    'Kent')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Kent',
+    now()),
+    (
     '12',
-    'Leicestershire, Lincolnshire, Rutland, Northamptonshire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Leicestershire, Lincolnshire, Rutland, Northamptonshire',
+    now()),
+    (
     '13',
-    'Norfolk, Essex, Suffolk')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Norfolk, Essex, Suffolk',
+    now()),
+    (
     '14',
-    'North and West Yorkshire')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'North and West Yorkshire',
+    now()),
+    (
     '15',
-    'Staffordshire and West Mercia')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Staffordshire and West Mercia',
+    now()),
+    (
     '16',
-    'Surrey and Sussex')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Surrey and Sussex',
+    now()),
+    (
     '17',
-    'Thames Valley')
-;
-
-insert into cluster(
-    cluster_id,
-    cluster_name
-    )
-values(
+    'Thames Valley',
+    now()),
+    (
     '18',
-    'West Midlands and Warwickshire')
+    'West Midlands and Warwickshire',
+    now())
 ;
-
-
