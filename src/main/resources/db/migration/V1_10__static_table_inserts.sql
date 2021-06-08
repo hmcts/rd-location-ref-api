@@ -495,4 +495,166 @@ values(
     'Scotland')
 ;
 
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '1',
+    'Avon, Somerset and Gloucestershire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '2',
+    'Bedfordshire, Cambridgeshire, Hertfordshire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '3',
+    'Cheshire and Merseyside')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '4',
+    'Cleveland, Durham, Northumbria')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '5',
+    'Cumbria and Lancashire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '6',
+    'Derbyshire and Nottinghamshire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '7',
+    'Devon, Cornwall, Dorset')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '8',
+    'Greater Manchester')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '9',
+    'Hampshire, Wiltshire, IOW')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '10',
+    'Humber and South Yorkshire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '11',
+    'Kent')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '12',
+    'Leicestershire, Lincolnshire, Rutland, Northamptonshire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '13',
+    'Norfolk, Essex, Suffolk')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '14',
+    'North and West Yorkshire')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '15',
+    'Staffordshire and West Mercia')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '16',
+    'Surrey and Sussex')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '17',
+    'Thames Valley')
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name
+    )
+values(
+    '18',
+    'West Midlands and Warwickshire')
+;
+
 
