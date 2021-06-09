@@ -6,10 +6,11 @@ import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,9 +22,10 @@ import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 import uk.gov.hmcts.reform.lrdapi.util.ConstraintValidation;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
@@ -33,7 +35,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class LrdApiController {
 
-    private static final String NumericRegex = "\\d+";
+    private static final String AlphaNumericRegex = "[0-9a-zA-Z_]+";
+
+    private static final String CSV_DELIMITER = ",";
+
+    @Value("${loggingComponentName}")
+    private String loggingComponentName;
 
     @Autowired
     LrdService lrdService;
@@ -88,7 +95,8 @@ public class LrdApiController {
     }
 
     @ApiOperation(
-        value = "This API will retrieve a Building Location's details for the given epims ID",
+        value = "This API will retrieve a Building Location details for the provided list of epims IDs. "
+            + "The list of ids are passed as comma separated values.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -119,24 +127,48 @@ public class LrdApiController {
         )
     })
     @GetMapping(
-        path = "/building-locations/epims/{epims_id}",
+        path = "/building-locations",
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
-        @PathVariable(value = "epims_id") String epimsId) {
+        @RequestParam(value = "epimms_id", required = false) String epimsIds) {
 
-        log.info("Obtaining building locations for epimm id: " + epimsId);
+        log.info("{} : Obtaining building locations for epim id(s): {}", loggingComponentName, epimsIds);
 
-        if (isEmpty(epimsId)) {
-            throw new InvalidRequestException("No epimm id provided");
+        if (epimsIds.strip().equalsIgnoreCase("ALL") || ObjectUtils.isEmpty(epimsIds)) {
+            List<LrdBuildingLocationResponse> response =
+                buildingLocationService.getAllBuildingLocations();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        if (!ValidationUtils.isStringInExpectedFormat(epimsId.strip(), NumericRegex)) {
-            throw new InvalidRequestException("epimm id is expected to be a number");
+        List<String> epimsIdList = new ArrayList<>(Arrays.asList(epimsIds.split(CSV_DELIMITER)));
+        epimsIdList.replaceAll(String::trim);
+        if (epimsIdList.isEmpty()) {
+            throw new InvalidRequestException("Bad Request - Invalid epims id(s): " + epimsIds + " passed.");
         }
 
-        LrdBuildingLocationResponse response =
-            buildingLocationService.retrieveBuildingLocationByEpimsId(epimsId);
+        if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, "ALL")) {
+            List<LrdBuildingLocationResponse> response =
+                buildingLocationService.getAllBuildingLocations();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+
+        List<String> invalidIdentifiers =
+            ValidationUtils.findInvalidIdentifiers(epimsIdList, AlphaNumericRegex);
+
+        if (!invalidIdentifiers.isEmpty()) {
+            log.warn("{} : Invalid epim id(s): {} are passed in the request.", loggingComponentName,
+                     Arrays.toString(invalidIdentifiers.toArray()));
+
+            if (epimsIdList.size() == invalidIdentifiers.size()) {
+                throw new InvalidRequestException("Bad Request - Invalid epims id(s): "
+                                                      + Arrays.toString(invalidIdentifiers.toArray()) + " passed.");
+            }
+            epimsIdList.removeAll(invalidIdentifiers);
+        }
+
+        List<LrdBuildingLocationResponse> response =
+            buildingLocationService.retrieveBuildingLocationByEpimsIds(epimsIdList);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

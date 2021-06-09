@@ -30,6 +30,19 @@ public class LrdBuildingLocationServiceImpl implements LrdBuildingLocationServic
             throw new ResourceNotFoundException("No Building Locations found with the given epims ID: " + epimsIds);
         }
 
+        return buildResponse(buildingLocations);
+    }
+
+    @Override
+    public List<LrdBuildingLocationResponse> getAllBuildingLocations() {
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findAll();
+        if (isEmpty(buildingLocations)) {
+            throw new ResourceNotFoundException("There are no building locations available at the moment.");
+        }
+        return buildResponse(buildingLocations);
+    }
+
+    private List<LrdBuildingLocationResponse> buildResponse(List<BuildingLocation> buildingLocations) {
         return buildingLocations.stream().map((location) -> LrdBuildingLocationResponse.builder()
             .buildingLocationId(location.getBuildingLocationId())
             .buildingLocationName(location.getBuildingLocationName())
@@ -44,10 +57,5 @@ public class LrdBuildingLocationServiceImpl implements LrdBuildingLocationServic
             .courtFinderUrl(location.getCourtFinderUrl())
             .postcode(location.getPostcode())
             .build()).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<LrdBuildingLocationResponse> getAllBuildingLocations() {
-        return null;
     }
 }
