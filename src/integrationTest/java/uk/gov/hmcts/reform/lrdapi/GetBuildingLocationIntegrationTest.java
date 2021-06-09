@@ -28,7 +28,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_ValidEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -40,7 +40,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_TwoValidEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_TwoValidEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -52,7 +52,19 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NoEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_OneValidEpimsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=123456789,ALL", LrdBuildingLocationResponse.class);
+
+        assertNotNull(response);
+        responseVerification(response, "ALL");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_NoEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -64,19 +76,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NullEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=null", LrdBuildingLocationResponse.class);
-
-        assertNotNull(response);
-        responseVerification(response, "ALL");
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void getBuildLocations_ValidEpimmsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
+    public void getBuildLocations_ValidEpimsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
         throws JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -88,7 +88,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_InvalidEpimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_InvalidEpimsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -100,11 +100,59 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NonStandardCharsEpimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_NonStandardCharsEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=!@£@$", ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_AsteriskEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=*", ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_AsteriskAlongWithValidEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=123456789, *", ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_TwoCommaOnlyGivenAsEpimsId_ReturnErrorResponseAndStatusCode400() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=,,", ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_TwoCommaWithValidEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=123456789,,", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
@@ -130,16 +178,15 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
         if(responseType.equalsIgnoreCase("ONE")) {
-            assertIterableEquals(response, prepareSingleLocationResponse());
+            assertIterableEquals(response, getSingleLocationResponse());
         } else if (responseType.equalsIgnoreCase("TWO")) {
-            assertIterableEquals(response, prepareTwoLocationResponse());
+            assertIterableEquals(response, getTwoLocationResponse());
         } else {
-            assertIterableEquals(response, prepareAllLocationResponse());
+            assertIterableEquals(response, getAllLocationResponse());
         }
-
     }
 
-    private List<LrdBuildingLocationResponse> prepareSingleLocationResponse() {
+    private List<LrdBuildingLocationResponse> getSingleLocationResponse() {
 
         List<LrdBuildingLocationResponse> locationResponses = new ArrayList<>();
 
@@ -163,9 +210,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         return locationResponses;
     }
 
-    private List<LrdBuildingLocationResponse> prepareTwoLocationResponse() {
+    private List<LrdBuildingLocationResponse> getTwoLocationResponse() {
 
-        List<LrdBuildingLocationResponse> locationResponses = prepareSingleLocationResponse();
+        List<LrdBuildingLocationResponse> locationResponses = getSingleLocationResponse();
 
         LrdBuildingLocationResponse response2 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041996")
@@ -187,9 +234,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         return locationResponses;
     }
 
-    private List<LrdBuildingLocationResponse> prepareAllLocationResponse() {
+    private List<LrdBuildingLocationResponse> getAllLocationResponse() {
 
-        List<LrdBuildingLocationResponse> locationResponses = prepareTwoLocationResponse();
+        List<LrdBuildingLocationResponse> locationResponses = getTwoLocationResponse();
 
         LrdBuildingLocationResponse response3 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041997")
