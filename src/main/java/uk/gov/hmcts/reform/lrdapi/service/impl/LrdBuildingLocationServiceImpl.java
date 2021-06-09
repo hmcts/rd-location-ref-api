@@ -9,7 +9,6 @@ import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,7 @@ public class LrdBuildingLocationServiceImpl implements LrdBuildingLocationServic
     BuildingLocationRepository buildingLocationRepository;
 
     @Override
-    public List<LrdBuildingLocationResponse> retrieveBuildingLocationByEpimsId(List<String> epimsIds) {
+    public List<LrdBuildingLocationResponse> retrieveBuildingLocationByEpimsIds(List<String> epimsIds) {
 
         List<BuildingLocation> buildingLocations = buildingLocationRepository.findByEpimmsIdIn(epimsIds);
 

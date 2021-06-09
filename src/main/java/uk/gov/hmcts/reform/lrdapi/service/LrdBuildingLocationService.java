@@ -12,7 +12,7 @@ public interface LrdBuildingLocationService {
      * @param epimsId A list of epimm id of the building location
      * @return The the response object containing the details of the requested building location
      */
-    List<LrdBuildingLocationResponse> retrieveBuildingLocationByEpimsId(List<String> epimsId);
+    List<LrdBuildingLocationResponse> retrieveBuildingLocationByEpimsIds(List<String> epimsId);
 
     /**
      * Method to retrieve all the building locations.
