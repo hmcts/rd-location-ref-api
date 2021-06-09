@@ -97,7 +97,7 @@ public class LrdBuildingLocationServiceTest {
         assertThat(buildingLocations.size()).isEqualTo(2);
 
         buildingLocations.forEach(buildingLocation -> {
-            if(buildingLocation.getEpimmsId().equalsIgnoreCase("epimmsId")) {
+            if (buildingLocation.getEpimmsId().equalsIgnoreCase("epimmsId")) {
                 assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
                 assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
                 assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
