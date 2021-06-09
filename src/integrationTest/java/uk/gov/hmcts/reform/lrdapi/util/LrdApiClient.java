@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 
 import java.util.Arrays;
@@ -39,6 +40,7 @@ public class LrdApiClient {
     private final Integer lrdApiPort;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
+
     private String baseUrl;
 
     private String issuer;
@@ -86,7 +88,7 @@ public class LrdApiClient {
 
     public Object findBuildingLocationByEpimmId(String epimmId, Class clazz) throws JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + epimmId, clazz, "");
-        return mapSingleObjectOnlyResponse(responseEntity, clazz);
+        return mapBuildingLocationResponse(responseEntity, clazz);
     }
 
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
@@ -105,13 +107,13 @@ public class LrdApiClient {
         }
     }
 
-    private Object mapSingleObjectOnlyResponse(ResponseEntity<Object> responseEntity, Class clazz)
+    private Object mapBuildingLocationResponse(ResponseEntity<Object> responseEntity, Class clazz)
         throws JsonProcessingException {
 
         HttpStatus status = responseEntity.getStatusCode();
-        System.out.println("Response Status: " + status);
         if (status.is2xxSuccessful()) {
-            return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            return Arrays.asList((LrdBuildingLocationResponse[])
+                                     objectMapper.convertValue(responseEntity.getBody(), clazz));
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
