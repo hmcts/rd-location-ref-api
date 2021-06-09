@@ -8,8 +8,14 @@ public final class ValidationUtils {
     private ValidationUtils() {
     }
 
-    public static List<String> findInvalidIdentifiers(List<String> epimsIdList, String regex) {
-        return epimsIdList.stream()
+    /**
+     * A util method to find all the invalid identifiers in the list of identifiers provided in the request.
+     * @param idList The list of provided identifiers.
+     * @param regex The regex to be used to test the validity of the identifiers in the provided list.
+     * @return The list of identifiers that failed to satisfy the validity regex passed.
+     */
+    public static List<String> findInvalidIdentifiers(List<String> idList, String regex) {
+        return idList.stream()
             .filter(id -> !id.matches(regex))
             .collect(Collectors.toList());
     }
