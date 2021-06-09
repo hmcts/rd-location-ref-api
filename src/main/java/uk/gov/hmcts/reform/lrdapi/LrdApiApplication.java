@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import uk.gov.hmcts.reform.idam.client.IdamApi;
 
 @EnableJpaAuditing
+@SpringBootApplication(scanBasePackages = {"uk.gov.hmcts.reform", "uk.gov.hmcts.reform.lib"})
 @EnableJpaRepositories
-@SpringBootApplication(scanBasePackages = "uk.gov.hmcts.reform")
-@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.lrdapi" },
+@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.lrdapi"},
+
     basePackageClasses = { IdamApi.class }
 )
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class

@@ -1,5 +1,32 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.multipart.MultipartFile;
+import uk.gov.hmcts.reform.lib.audit.domain.RowDomain;
+import uk.gov.hmcts.reform.lib.excel.adapter.service.ExcelAdapterService;
+import uk.gov.hmcts.reform.lib.excel.adapter.service.ExcelValidatorService;
+import uk.gov.hmcts.reform.lib.util.AuditStatus;
+import uk.gov.hmcts.reform.lib.validator.service.IValidationService;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.ExceptionMapper;
+import uk.gov.hmcts.reform.lrdapi.domain.CaseWorkerProfile;
+import uk.gov.hmcts.reform.lrdapi.domain.JsrFileErrors;
+import uk.gov.hmcts.reform.lrdapi.domain.LrdException;
+import uk.gov.hmcts.reform.lrdapi.domain.LrdFileUploadResponse;
+import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
+import uk.gov.hmcts.reform.lrdapi.repository.LrdExceptionRepository;
+
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+
 import static com.microsoft.applicationinsights.web.dependencies.apachecommons.lang3.StringUtils.SPACE;
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -12,36 +39,17 @@ import static uk.gov.hmcts.reform.lib.util.ExcelAdapterConstants.RECORDS_FAILED;
 import static uk.gov.hmcts.reform.lib.util.ExcelAdapterConstants.RECORDS_UPLOADED;
 import static uk.gov.hmcts.reform.lib.util.ExcelAdapterConstants.REQUEST_FAILED_FILE_UPLOAD_JSR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REQUEST_COMPLETED_SUCCESSFULLY;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.multipart.MultipartFile;
-import uk.gov.hmcts.reform.lib.audit.domain.ExceptionEntity;
-import uk.gov.hmcts.reform.lib.audit.domain.RowDomain;
-import uk.gov.hmcts.reform.lib.excel.adapter.service.ExcelAdapterService;
-import uk.gov.hmcts.reform.lib.excel.adapter.service.ExcelValidatorService;
-import uk.gov.hmcts.reform.lib.excel.adapter.service.impl.ExcelValidatorServiceImpl;
-import uk.gov.hmcts.reform.lib.repository.ExceptionRepository;
-import uk.gov.hmcts.reform.lib.util.AuditStatus;
-import uk.gov.hmcts.reform.lib.validator.service.IValidationService;
-import uk.gov.hmcts.reform.lrdapi.controllers.advice.ExceptionMapper;
-import uk.gov.hmcts.reform.lrdapi.domain.JsrFileErrors;
-import uk.gov.hmcts.reform.lrdapi.domain.LrdFileUploadResponse;
-import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REQUIRED_CW_SHEET_NAME;
 
 @Service
 @Slf4j
 public class FileUploadServiceImpl {
+
+    @Value("${excel.acceptableBuildingHeaders}")
+    private List<String> acceptableBuildingHeaders;
+
+    @Value("${excel.acceptableCourtLocationHeaders}")
+    private List<String> acceptableCourtLocationHeaders;
 
     @Autowired
     ExcelValidatorService excelValidatorService;
@@ -56,7 +64,7 @@ public class FileUploadServiceImpl {
     private String loggingComponentName;
 
     @Autowired
-    ExceptionRepository exceptionRepository;
+    LrdExceptionRepository exceptionRepository;
 
     @Autowired
     @Lazy
@@ -69,9 +77,10 @@ public class FileUploadServiceImpl {
 
         try {
             long jobId = validationService.getAuditJobId();
-            Class<? extends RowDomain> ob = null;
+            Class<? extends RowDomain> ob = CaseWorkerProfile.class;
             long time2 = System.currentTimeMillis();
-            List<RowDomain> lrdRecords = (List<RowDomain>) excelAdaptorService.parseExcel(excelValidatorService.validateExcelFile(file), ob);
+            List<RowDomain> lrdRecords = (List<RowDomain>) excelAdaptorService.parseExcel(
+                excelValidatorService.validateExcelFile(file), REQUIRED_CW_SHEET_NAME, acceptableBuildingHeaders, ob);
 
             log.info("{}::Time taken to parse the given file {} is {}",
                      loggingComponentName, file.getOriginalFilename(), (System.currentTimeMillis() - time2));
@@ -107,20 +116,17 @@ public class FileUploadServiceImpl {
     }
 
     private void auditLog(MultipartFile file, Exception ex) {
-        long jobId = validationService.updateAuditStatus(FAILURE, file.getOriginalFilename(),
-                                                         jwtConverter.getUserInfo());
+        long jobId = validationService.updateAuditStatus(FAILURE, file.getOriginalFilename());
         log.error("{}:: Failed File Upload for job {}", loggingComponentName, jobId);
         validationService.logFailures(ex.getMessage(), 0L);
     }
 
     public ResponseEntity<Object> sendResponse(MultipartFile file, AuditStatus status, int totalRecords) {
-        List<ExceptionEntity> exceptionRecordsList = exceptionRepository
-            .findByJobId(validationService.getAuditJobId());
+        List<LrdException> exceptionRecordsList = exceptionRepository.findByJobId(validationService.getAuditJobId());
         LrdFileUploadResponse lrdFileUploadResponse = createResponse(totalRecords, exceptionRecordsList);
         status = (nonNull(exceptionRecordsList) && (exceptionRecordsList.size()) > 0)
             ? PARTIAL_SUCCESS : status;
-        long jobId = validationService.updateAuditStatus(status, file.getOriginalFilename(),
-                                                         jwtConverter.getUserInfo());
+        long jobId = validationService.updateAuditStatus(status, file.getOriginalFilename());
         log.info("{}:: Completed File Upload for Job {} with status {}", loggingComponentName, jobId, status);
         return ResponseEntity.ok().body(lrdFileUploadResponse);
     }
@@ -130,13 +136,13 @@ public class FileUploadServiceImpl {
      *
      * @return LrdFileUploadResponse lrdFileUploadResponse
      */
-    private LrdFileUploadResponse createResponse(int totalRecords, List<ExceptionEntity> exceptionLrdList) {
+    private LrdFileUploadResponse createResponse(int totalRecords, List<LrdException> exceptionLrdList) {
         var lrdFileUploadResponseBuilder = LrdFileUploadResponse.builder();
 
         if (isNotEmpty(exceptionLrdList)) {
 
-            Map<String, List<ExceptionEntity>> failedRecords = exceptionLrdList.stream()
-                .collect(groupingBy(ExceptionEntity::getExcelRowId));
+            Map<String, List<LrdException>> failedRecords = exceptionLrdList.stream()
+                .collect(groupingBy(LrdException::getExcelRowId));
 
             LinkedList<JsrFileErrors> jsrFileErrors = new LinkedList<>();
 
@@ -144,9 +150,14 @@ public class FileUploadServiceImpl {
                 .sorted(Comparator.comparingInt(s -> Integer.valueOf(s.getKey())))
                 .forEachOrdered(map ->
                                     map.getValue().forEach(jsrInvalid ->
-                                                               jsrFileErrors.add(JsrFileErrors.builder().rowId(jsrInvalid.getExcelRowId())
-                                                                                     .errorDescription(jsrInvalid.getErrorDescription())
-                                                                                     .filedInError(jsrInvalid.getFieldInError()).build())));
+                                                               jsrFileErrors.add(JsrFileErrors.builder()
+                                                                                     .rowId(jsrInvalid.getExcelRowId())
+                                                                                     .errorDescription(
+                                                                                         jsrInvalid
+                                                                                              .getErrorDescription())
+                                                                                     .filedInError(
+                                                                                         jsrInvalid.getFieldInError())
+                                                                                     .build())));
 
             String detailedMessage = constructDetailedMessage(totalRecords, failedRecords);
             return lrdFileUploadResponseBuilder.message(REQUEST_FAILED_FILE_UPLOAD_JSR)
@@ -166,7 +177,7 @@ public class FileUploadServiceImpl {
         }
     }
 
-    private String constructDetailedMessage(int totalRecords, Map<String, List<ExceptionEntity>> failedRecords) {
+    private String constructDetailedMessage(int totalRecords, Map<String, List<LrdException>> failedRecords) {
         String detailedMessage = format(RECORDS_FAILED, failedRecords.size());
         //get the uploaded records excluding failed records
         int uploadedRecords = totalRecords - failedRecords.size();

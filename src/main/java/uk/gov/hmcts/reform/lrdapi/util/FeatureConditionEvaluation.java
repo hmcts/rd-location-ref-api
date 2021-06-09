@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.util;
 
 import com.auth0.jwt.JWT;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.StringUtils.SPACE;
+import static uk.gov.hmcts.reform.lib.util.ExcelAdapterConstants.SPACE;
 
 @Component
 @AllArgsConstructor

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import uk.gov.hmcts.reform.lrdapi.util.AuditInterceptor;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation;
 
 
@@ -19,11 +20,18 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
     }
 
     @Autowired
+    AuditInterceptor auditInterceptor;
+
+    @Autowired
     private FeatureConditionEvaluation featureConditionEvaluation;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(featureConditionEvaluation)
             .addPathPatterns("/refdata/location/orgServices/**");
+
+        //Audit Interceptor
+        registry.addInterceptor(auditInterceptor)
+            .addPathPatterns("/refdata/location/upload-file");
     }
 }

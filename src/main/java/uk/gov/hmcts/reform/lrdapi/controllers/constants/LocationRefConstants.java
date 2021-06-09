@@ -32,7 +32,7 @@ public class LocationRefConstants {
     public static final String NO_WORK_AREA_PRESENT = "You must add details of at least one area of work"
         + " and upload the file again";
     public static final String NO_USER_TYPE_PRESENT = "You must add a user type and upload the file again";
-
+    public static final String REQUIRED_CW_SHEET_NAME = "Case Worker Data";
 
 
 }
