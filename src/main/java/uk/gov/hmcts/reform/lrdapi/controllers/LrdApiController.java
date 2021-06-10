@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -136,8 +135,8 @@ public class LrdApiController {
         if (epimsIds.strip().equalsIgnoreCase(LocationRefConstants.ALL) || isEmpty(epimsIds)) {
             return getAllBuildingLocations();
         }
-        List<String> epimsIdList = ValidationUtils.
-            checkIfValidCsvIdentifiersAndReturnList(epimsIds, EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
+        List<String> epimsIdList = ValidationUtils
+            .checkIfValidCsvIdentifiersAndReturnList(epimsIds, EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
         if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
             return getAllBuildingLocations();
         }
