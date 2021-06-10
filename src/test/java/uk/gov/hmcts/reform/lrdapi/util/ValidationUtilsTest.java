@@ -10,12 +10,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 
 public class ValidationUtilsTest {
 
     private static final String AlphaNumericRegex = "[0-9a-zA-Z_]+";
+    private static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
+        + "Invalid epims id(s): %s  passed.";
 
     @Test
     public void testFindInvalidIdentifiers_SingleIdGiven_InvalidInputSpecialChars() {
@@ -115,57 +115,54 @@ public class ValidationUtilsTest {
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_ValidCsvIdsGiven_ShouldReturnList() {
         assertThat(ValidationUtils
-                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343"
-                           , anyString())).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343",
+                           "anyString")).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_ComboCsvIdsGiven_ShouldReturnList() {
         assertThat(ValidationUtils
-                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343,, ,"
-                           , anyString())).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343,, ,",
+                           "anyString")).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_InvalidCsvIdsGiven_ShouldThrowException() {
         assertThrows(InvalidRequestException.class, () -> ValidationUtils
-            .checkIfValidCsvIdentifiersAndReturnList(",,"
-                , anyString()));
+            .checkIfValidCsvIdentifiersAndReturnList(",,", EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
     }
 
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_InvalidCsvIdsGiven_ShouldThrowException_2() {
         assertThrows(InvalidRequestException.class, () -> ValidationUtils
-            .checkIfValidCsvIdentifiersAndReturnList(",, ,   "
-                , anyString()));
+            .checkIfValidCsvIdentifiersAndReturnList(",, ,   ", EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
     }
 
     @Test
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_NoInvalidIdsGiven_ShouldNotRemoveAnyFromList() {
         List<String> idList = getMultipleValidIdList();
-        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, any(),
-                                                                      anyString(), anyString());
+        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, getLogger(),
+                                                                      "anyString",
+                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
         assertThat(idList).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
     @Test
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_ComboIdsGiven_ShouldRemoveInvalidIdsFromList() {
-        Logger logger = LoggerFactory.getLogger(ValidationUtilsTest.class);
         List<String> idList = getMultipleValidIdList();
         idList.addAll(getMultipleInvalidIdList()); //Total of 5 ids in the list, 3 Valid and 2 invalid
-        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, logger,
-                                                                      anyString(), anyString());
+        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, getLogger(),
+                                                                      "anyString",
+                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
         assertThat(idList).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
     @Test
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_AllInvalidIdsGiven_ShouldThrowException() {
-        Logger logger = LoggerFactory.getLogger(ValidationUtilsTest.class);
         assertThrows(InvalidRequestException.class, () ->
             ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(getMultipleInvalidIdList(), AlphaNumericRegex,
-                                                                          logger, anyString(),
-                                                                          "Bad Request - "
-                                                                              + "Invalid epims id(s): %s  passed."));
+                                                                          getLogger(), "anyString",
+                                                                          EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
     }
 
     private List<String> getSingleInvalidIdList() {
@@ -187,6 +184,10 @@ public class ValidationUtilsTest {
         invalidIdList.add("1234");
         invalidIdList.add("qwerty_12343");
         return invalidIdList;
+    }
+
+    private Logger getLogger() {
+        return  LoggerFactory.getLogger(ValidationUtilsTest.class);
     }
 
 
