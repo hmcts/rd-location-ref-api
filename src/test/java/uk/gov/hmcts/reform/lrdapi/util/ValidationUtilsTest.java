@@ -1,11 +1,17 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 public class ValidationUtilsTest {
 
@@ -104,6 +110,62 @@ public class ValidationUtilsTest {
         idList.addAll(getMultipleValidIdList());
         idList.add("ALL");
         assertThat(ValidationUtils.isListContainsTextIgnoreCase(idList, "All")).isTrue();
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_ValidCsvIdsGiven_ShouldReturnList() {
+        assertThat(ValidationUtils
+                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343"
+                           , anyString())).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_ComboCsvIdsGiven_ShouldReturnList() {
+        assertThat(ValidationUtils
+                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343,, ,"
+                           , anyString())).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_InvalidCsvIdsGiven_ShouldThrowException() {
+        assertThrows(InvalidRequestException.class, () -> ValidationUtils
+            .checkIfValidCsvIdentifiersAndReturnList(",,"
+                , anyString()));
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_InvalidCsvIdsGiven_ShouldThrowException_2() {
+        assertThrows(InvalidRequestException.class, () -> ValidationUtils
+            .checkIfValidCsvIdentifiersAndReturnList(",, ,   "
+                , anyString()));
+    }
+
+    @Test
+    public void testCheckForInvalidIdentifiersAndRemoveFromIdList_NoInvalidIdsGiven_ShouldNotRemoveAnyFromList() {
+        List<String> idList = getMultipleValidIdList();
+        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, any(),
+                                                                      anyString(), anyString());
+        assertThat(idList).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+    }
+
+    @Test
+    public void testCheckForInvalidIdentifiersAndRemoveFromIdList_ComboIdsGiven_ShouldRemoveInvalidIdsFromList() {
+        Logger logger = LoggerFactory.getLogger(ValidationUtilsTest.class);
+        List<String> idList = getMultipleValidIdList();
+        idList.addAll(getMultipleInvalidIdList()); //Total of 5 ids in the list, 3 Valid and 2 invalid
+        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, logger,
+                                                                      anyString(), anyString());
+        assertThat(idList).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+    }
+
+    @Test
+    public void testCheckForInvalidIdentifiersAndRemoveFromIdList_AllInvalidIdsGiven_ShouldThrowException() {
+        Logger logger = LoggerFactory.getLogger(ValidationUtilsTest.class);
+        assertThrows(InvalidRequestException.class, () ->
+            ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(getMultipleInvalidIdList(), AlphaNumericRegex,
+                                                                          logger, anyString(),
+                                                                          "Bad Request - "
+                                                                              + "Invalid epims id(s): %s  passed."));
     }
 
     private List<String> getSingleInvalidIdList() {

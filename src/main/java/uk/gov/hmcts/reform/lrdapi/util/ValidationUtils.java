@@ -1,11 +1,121 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 
-public final class ValidationUtils {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ValidationUtils {
 
     private ValidationUtils() {
+
+    }
+
+    private static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
+    private static final String REG_EXP_WHITE_SPACE = "\\s";
+    private static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
+        + "',' comma and '_' underscore allowed only";
+    private static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
+        + "serviceCode, ccdCaseType, ccdServiceNames.";
+    private static final String REG_EXP_COMMA_DILIMETER = ",(?!\\\\s)";
+
+    public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
+
+        long requestParamSize = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
+            .filter(StringUtils::isNotBlank)
+            .count();
+        if (requestParamSize > 1) {
+            throw new InvalidRequestException(EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM);
+        }
+        if (StringUtils.isNotBlank(ccdServiceNames)) {
+            ccdServiceNames = ccdServiceNames.trim();
+            if (StringUtils.startsWith(ccdServiceNames, ",") || StringUtils.endsWith(ccdServiceNames, ",")) {
+                throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
+            }
+            for (String str : ccdServiceNames.trim().split(REG_EXP_COMMA_DILIMETER)) {
+                if (StringUtils.isEmpty(str.trim())) {
+                    throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
+                }
+                checkSpecialCharacters(str);
+            }
+        } else {
+            String inputValue = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
+                .filter(StringUtils::isNotBlank).collect(Collectors.joining());
+            checkSpecialCharacters(inputValue);
+        }
+        return true;
+    }
+
+    private static void checkSpecialCharacters(String inputValue) {
+        inputValue = StringUtils.trim(inputValue);
+        if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
+            || !Pattern.compile(REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
+            throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
+        }
+    }
+
+    /**
+     * Method to check if the passed identifiers are a valid comma separated values.
+     * If identified as valid, the comma separated identifier values are converted to list of strings and are returned.
+     * If identified as invalid, it throws an {@InvalidRequestException} to mark the request as BAD_REQUEST.
+     *
+     *
+     * @param csvIds The comma separated identifiers passed in the request.
+     * @param exceptionMessage The message to be included in the {@InvalidRequestException} when thrown.
+     *                         The message is expected to have a place holder - "%s" within the string, which is
+     *                         later replaced by the list of passed comma separated identifiers.
+     * @return The list of identifiers that are created from the passed comma separated identifiers.
+     */
+    public static List<String> checkIfValidCsvIdentifiersAndReturnList(String csvIds, String exceptionMessage) {
+        List<String> idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
+        idList.replaceAll(String::trim);
+        idList.removeAll(Collections.singleton(LocationRefConstants.EMPTY_STR));
+        if (idList.isEmpty()) {
+            throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
+        }
+        return idList;
+    }
+
+    /**
+     * Method to check for invalid identifiers in the passed idList using the passed regex.
+     * If present, it prints a warning message in the log file with the identified list of invalid identifiers
+     * If the number of invalid identifiers is equal to the actual identifiers passed,
+     * it throws an {@InvalidRequestException}. If not, it just removes the identified invalid identifiers from
+     * the actual identifier list passed in the request.
+     * @param idList The actual identifier list passed in the request.
+     * @param regex The regex that is used to check for the validity of the passed list of identifiers.
+     * @param log The {@Slf4j} logger.
+     * @param componentName The LRD API logger name.
+     * @param exceptionMessage The message to be included in the {@InvalidRequestException} when thrown.
+     *                         The message is expected to have a place holder - "%s" within the string, which is
+     *                         later replaced by the list of passed comma separated identifiers.
+     */
+    public static void checkForInvalidIdentifiersAndRemoveFromIdList(List<String> idList,
+                                                                     String regex,
+                                                                     Logger log,
+                                                                     String componentName,
+                                                                     String exceptionMessage) {
+
+        List<String> invalidIdentifiers = findInvalidIdentifiers(idList, regex);
+        if (!invalidIdentifiers.isEmpty()) {
+            log.warn("{} : Invalid epim id(s): {} are passed in the request.", componentName,
+                     Arrays.toString(invalidIdentifiers.toArray()));
+
+            if (idList.size() == invalidIdentifiers.size()) {
+                throw new InvalidRequestException(String.format(
+                    exceptionMessage,
+                    Arrays.toString(invalidIdentifiers.toArray())));
+            }
+            idList.removeAll(invalidIdentifiers);
+        }
     }
 
     /**
@@ -29,4 +139,5 @@ public final class ValidationUtils {
     public static boolean isListContainsTextIgnoreCase(List<String> idList, String searchText) {
         return idList.stream().anyMatch(searchText::equalsIgnoreCase);
     }
+
 }
