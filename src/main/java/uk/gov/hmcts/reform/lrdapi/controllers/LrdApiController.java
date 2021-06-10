@@ -23,11 +23,11 @@ import java.util.List;
 
 import static java.lang.System.currentTimeMillis;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lib.util.ExcelAdapterConstants.REQUEST_COMPLETED_SUCCESSFULLY;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BAD_REQUEST;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FORBIDDEN_ERROR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INTERNAL_SERVER_ERROR;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REQUEST_COMPLETED_SUCCESSFULLY;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.UNAUTHORIZED_ERROR;
 
 @RequestMapping(

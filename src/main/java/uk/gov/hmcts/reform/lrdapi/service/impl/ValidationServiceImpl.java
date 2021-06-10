@@ -30,6 +30,8 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static org.apache.logging.log4j.util.Strings.EMPTY;
+import static uk.gov.hmcts.reform.lib.util.RdCommonsUtil.getKeyField;
+import static uk.gov.hmcts.reform.lib.util.RdCommonsUtil.getKeyFieldValue;
 
 @Component
 @Slf4j
@@ -51,8 +53,6 @@ public class ValidationServiceImpl implements IValidationService {
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter;
 
     private long auditJobId;
-
-    List<LrdException> lrdExceptions;
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -78,7 +78,7 @@ public class ValidationServiceImpl implements IValidationService {
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void saveJsrExceptionsForJob(long jobId) {
         Set<ConstraintViolation<RowDomain>> constraintViolationSet = jsrValidatorInitializer.getConstraintViolations();
-        lrdExceptions = new LinkedList<>();
+        List<LrdException> lrdExceptions = new LinkedList<>();
         AtomicReference<Field> field = new AtomicReference<>();
         //if JSR violation present then only persist exception
         ofNullable(constraintViolationSet).ifPresent(constraintViolations ->
@@ -90,7 +90,7 @@ public class ValidationServiceImpl implements IValidationService {
                                                                  jobId
                                                              );
                                                              if (isNull(field.get())) {
-                                                                 field.set(getKeyFiled(
+                                                                 field.set(getKeyField(
                                                                      constraintViolation.getRootBean()).get());
                                                                  ReflectionUtils.makeAccessible(field.get());
                                                              }

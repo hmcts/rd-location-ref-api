@@ -98,3 +98,6 @@ launchdarkly:
     environment: ${LAUNCH_DARKLY_ENV:local}
     user: rd
 
+excel:
+  acceptableBuildingHeaders: ${EXCEL_ACCEPTABLE_CW_HEADERS:}
+  acceptableCourtLocationHeaders: ${EXCEL_ACCEPTABLE_SERVICE_ROLE_MAPPING_HEADERS:}
