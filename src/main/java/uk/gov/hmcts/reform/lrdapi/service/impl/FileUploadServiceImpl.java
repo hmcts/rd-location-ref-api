@@ -31,7 +31,6 @@ import static uk.gov.hmcts.reform.lib.util.AuditStatus.SUCCESS;
 import static uk.gov.hmcts.reform.lib.util.FileUploadResponseUtil.createResponse;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_PARAM_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_SHEET_NAME;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_PARAM_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_SHEET_NAME;
 
 @Service

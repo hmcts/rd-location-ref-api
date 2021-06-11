@@ -178,7 +178,7 @@ public class LrdServiceImpl implements LrdService {
     }
 
     private String convertIntToString(Integer id) {
-        if(nonNull(id)) {
+        if (nonNull(id)) {
             return id.toString();
         }
         return null;

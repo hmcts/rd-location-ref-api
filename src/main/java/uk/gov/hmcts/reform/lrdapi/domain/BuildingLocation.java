@@ -34,7 +34,7 @@ public class BuildingLocation implements Serializable {
     @Size(max = 16)
     private String buildingLocationId;
 
-    @Column(name = "epimms_id")
+    @Column(name = "epimms_id", unique = true)
     @Size(max = 16)
     @NotNull
     private String epimmsId;

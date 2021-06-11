@@ -9,9 +9,9 @@ import uk.gov.hmcts.reform.lrdapi.domain.CourtLocationCategory;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.LocationStaticValueRepositoryAccessor;
 
-import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.PostConstruct;
 
 @Component
 public class LocationStaticValueRepositoryAccessorImpl implements LocationStaticValueRepositoryAccessor {

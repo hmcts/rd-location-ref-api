@@ -30,7 +30,8 @@ public class CourtLocation implements Serializable {
     private String courtLocationId;
 
     @ManyToOne
-    @JoinColumn(name = "epimms_id", nullable = false)
+    @JoinColumn(name = "epimms_id", referencedColumnName = "epimms_id",
+        nullable = false)
     private BuildingLocation buildingLocation;
 
     @Column(name = "court_location_name")
