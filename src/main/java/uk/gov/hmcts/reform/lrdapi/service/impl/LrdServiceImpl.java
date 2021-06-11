@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
@@ -136,13 +139,15 @@ public class LrdServiceImpl implements LrdService {
 
     private BuildingLocation mapBuildingToBuildingLocation(Building buildingRecord) {
         BuildingLocation buildingLocation = new BuildingLocation();
-        buildingLocation.setEpimmsId(buildingRecord.getEpimsId());
+        //TODO: temporary, change this
+        buildingLocation.setBuildingLocationId(RandomStringUtils.randomNumeric(15));
+        buildingLocation.setEpimmsId(convertIntToString(buildingRecord.getEpimsId()));
         buildingLocation.setBuildingLocationName(buildingRecord.getBuildingLocationName());
         buildingLocation.setBuildingLocationStatus(
-            getBuildingLocationStatus(buildingRecord.getStatusId()).orElse(null));
+            getBuildingLocationStatus(convertIntToString(buildingRecord.getStatusId())).orElse(null));
         buildingLocation.setArea(buildingRecord.getArea());
-        buildingLocation.setRegion(getRegion(buildingRecord.getRegionId()).orElse(null));
-        buildingLocation.setCluster(getCluster(buildingRecord.getClusterId()).orElse(null));
+        buildingLocation.setRegion(getRegion(convertIntToString(buildingRecord.getRegionId())).orElse(null));
+        buildingLocation.setCluster(getCluster(convertIntToString(buildingRecord.getClusterId())).orElse(null));
         buildingLocation.setCourtFinderUrl(buildingRecord.getCourtFinderUrl());
         buildingLocation.setPostcode(buildingRecord.getPostcode());
         buildingLocation.setAddress(buildingRecord.getAddress());
@@ -150,7 +155,39 @@ public class LrdServiceImpl implements LrdService {
         return buildingLocation;
     }
 
+    private CourtLocation mapCourtToCourtLocation(Court courtRecord) {
+        CourtLocation courtLocation = new CourtLocation();
+        courtLocation.setCourtLocationId(RandomStringUtils.randomNumeric(15));
+        courtLocation.setBuildingLocation(getBuildingLocation(convertIntToString(courtRecord.getEpimsId())));
+        courtLocation.setCourtLocationName(courtRecord.getCourtLocationName());
+        courtLocation.setRegion(getRegion(convertIntToString(courtRecord.getRegionId())).orElse(null));
+        courtLocation.setCourtLocationCategory(getCourtLocationCategory(
+            convertIntToString(courtRecord.getCourtLocationCategoryId())));
+        courtLocation.setCluster(getCluster(convertIntToString(courtRecord.getClusterId())).orElse(null));
+        courtLocation.setOpenForPublic(Boolean.valueOf(courtRecord.getOpenForPublic()));
+        courtLocation.setCourtAddress(courtRecord.getCourtAddress());
+        courtLocation.setPostcode(courtRecord.getPostcode());
+        courtLocation.setPhoneNumber(courtRecord.getPhoneNumber());
+        courtLocation.setClosedDate(courtRecord.getClosedDate());
+        courtLocation.setCourtLocationCode(courtRecord.getCourtLocationCode());
+        courtLocation.setDxAddress(courtRecord.getDxAddress());
+        courtLocation.setWelshCourtLocationName(courtRecord.getWelshCourtLocationName());
+        courtLocation.setWelshCourtAddress(courtRecord.getWelshCourtAddress());
+
+        return courtLocation;
+    }
+
+    private String convertIntToString(Integer id) {
+        if(nonNull(id)) {
+            return id.toString();
+        }
+        return null;
+    }
+
     private Optional<BuildingLocationStatus> getBuildingLocationStatus(String statusId) {
+        if (isNull(statusId)) {
+            return Optional.empty();
+        }
         return locationStaticValueRepositoryAccessor.getBuildingLocationStatus()
             .stream()
             .filter(buildingLocationStatus ->
@@ -159,6 +196,9 @@ public class LrdServiceImpl implements LrdService {
     }
 
     private Optional<Region> getRegion(String regionId) {
+        if (isNull(regionId)) {
+            return Optional.empty();
+        }
         return locationStaticValueRepositoryAccessor.getRegions()
             .stream()
             .filter(region ->
@@ -167,6 +207,9 @@ public class LrdServiceImpl implements LrdService {
     }
 
     private Optional<Cluster> getCluster(String clusterId) {
+        if (isNull(clusterId)) {
+            return Optional.empty();
+        }
         return locationStaticValueRepositoryAccessor.getClusters()
             .stream()
             .filter(cluster ->
@@ -181,25 +224,6 @@ public class LrdServiceImpl implements LrdService {
         courtLocationRepository.saveAll(courtLocations);
     }
 
-    private CourtLocation mapCourtToCourtLocation(Court courtRecord) {
-        CourtLocation courtLocation = new CourtLocation();
-        courtLocation.setBuildingLocation(getBuildingLocation(courtRecord.getEpimsId()));
-        courtLocation.setCourtLocationName(courtRecord.getCourtLocationName());
-        courtLocation.setRegion(getRegion(courtRecord.getRegionId()).orElse(null));
-        courtLocation.setCourtLocationCategory(getCourtLocationCategory(courtRecord.getCourtLocationCategoryId()));
-        courtLocation.setCluster(getCluster(courtRecord.getClusterId()).orElse(null));
-        courtLocation.setOpenForPublic(Boolean.valueOf(courtRecord.getOpenForPublic()));
-        courtLocation.setCourtAddress(courtRecord.getCourtAddress());
-        courtLocation.setPostcode(courtRecord.getPostcode());
-        courtLocation.setPhoneNumber(courtRecord.getPhoneNumber());
-        courtLocation.setClosedDate(courtRecord.getClosedDate());
-        courtLocation.setCourtLocationCode(courtRecord.getCourtLocationCode());
-        courtLocation.setDxAddress(courtRecord.getDxAddress());
-        courtLocation.setWelshCourtLocationName(courtRecord.getWelshCourtLocationName());
-        courtLocation.setWelshCourtAddress(courtRecord.getWelshCourtAddress());
-
-        return courtLocation;
-    }
 
     private BuildingLocation getBuildingLocation(String epimsId) {
         return buildingLocationRepository.findByEpimmsId(epimsId);

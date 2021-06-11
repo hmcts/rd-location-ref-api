@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.lib.util.MappingField;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_ADDRESS_MISSING;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_NAME_MISSING;
@@ -27,21 +28,21 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 public class Court extends RowDomain implements Serializable {
 
     @MappingField(columnName = "ePIMS_ID")
-    @NotEmpty(message = EPIMS_ID_MISSING)
-    private String epimsId;
+    @NotNull(message = EPIMS_ID_MISSING)
+    private Integer epimsId;
 
     @MappingField(columnName = "Court_Location_Name")
     @NotEmpty(message = COURT_LOCATION_NAME_MISSING)
     private String courtLocationName;
 
     @MappingField(columnName = "Region_ID")
-    private String regionId;
+    private Integer regionId;
 
     @MappingField(columnName = "Court_Location_Category_ID")
-    private String courtLocationCategoryId;
+    private Integer courtLocationCategoryId;
 
     @MappingField(columnName = "Cluster_ID")
-    private String clusterId;
+    private Integer clusterId;
 
     @MappingField(columnName = "Open_For_Public")
     @NotEmpty(message = OPEN_FOR_PUBLIC_MISSING)

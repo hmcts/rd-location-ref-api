@@ -130,7 +130,7 @@ public class LrdApiController {
     public ResponseEntity<Object> locationFileUpload(@RequestParam(FILE) MultipartFile file,
                                                      @PathVariable("location-type") @NotBlank String locationType) {
 
-        ConstraintValidation.validateFileType(locationType);
+        ConstraintValidation.validateFileTypeParam(locationType);
         long time1 = currentTimeMillis();
         ResponseEntity<Object> responseEntity = fileUploadService.processFile(file, locationType);
         log.info("{}::Total Time taken to upload the given file is {}", loggingComponentName,

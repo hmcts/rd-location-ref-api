@@ -29,9 +29,9 @@ import static uk.gov.hmcts.reform.lib.util.AuditStatus.FAILURE;
 import static uk.gov.hmcts.reform.lib.util.AuditStatus.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.lib.util.AuditStatus.SUCCESS;
 import static uk.gov.hmcts.reform.lib.util.FileUploadResponseUtil.createResponse;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_FILE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_PARAM_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_SHEET_NAME;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_FILE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_PARAM_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_SHEET_NAME;
 
 @Service
@@ -69,8 +69,7 @@ public class FileUploadServiceImpl {
 
         try {
             long jobId = validationService.getAuditJobId();
-            boolean isBuildingLocation = BUILDING_LOCATION_FILE.equals(locationType)
-                || COURT_LOCATION_FILE.equals(locationType);
+            boolean isBuildingLocation = BUILDING_LOCATION_PARAM_NAME.equals(locationType);
             Class<? extends RowDomain> ob = isBuildingLocation ? Building.class : Court.class;
             List<String> acceptableHeaders = isBuildingLocation
                 ? acceptableBuildingHeaders : acceptableCourtLocationHeaders;
@@ -98,7 +97,6 @@ public class FileUploadServiceImpl {
             }
             if (isNotEmpty(lrdRecords)) {
                 log.info("persisting LRD records");
-                //TODO: call dao service to persist records from excel
                 lrdService.createLocations(lrdRecords, isBuildingLocation);
             }
 

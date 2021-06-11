@@ -14,8 +14,8 @@ public class LocationRefConstants {
         "Unauthorized Error : The requested resource is restricted and requires authentication";
     public static final String FORBIDDEN_ERROR = "Forbidden Error: Access denied for invalid permissions";
     public static final String FILE = "file";
-    public static final String BUILDING_LOCATION_FILE = "building";
-    public static final String COURT_LOCATION_FILE = "court";
+    public static final String BUILDING_LOCATION_PARAM_NAME = "building";
+    public static final String COURT_LOCATION_PARAM_NAME = "court";
     public static final String USER_NAME_PATTERN = "^[A-Za-z0-9]+[\\w!#$%&'’.*+/=?`{|}~^-]+"
         + "(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*";
     public static final String NAME_REGEX = "^[a-zA-Z' .-]{1,127}$";

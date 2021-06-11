@@ -32,6 +32,6 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
         //Audit Interceptor
         registry.addInterceptor(auditInterceptor)
-            .addPathPatterns("/refdata/location/upload-file");
+            .addPathPatterns("/refdata/location/{location-type}/upload-file");
     }
 }

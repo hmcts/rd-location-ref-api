@@ -46,8 +46,6 @@ public class AuditInterceptor implements HandlerInterceptor {
     private String loggingComponentName;
 
     @Override
-
-    @Secured("lrd-admin")
     public boolean preHandle(HttpServletRequest request,
                              @NotNull HttpServletResponse response, @NotNull Object handler) {
 

@@ -58,9 +58,9 @@ public class ConstraintValidation {
         }
     }
 
-    public static void validateFileType(String locationType) {
-        if (!(LocationRefConstants.BUILDING_LOCATION_FILE.equals(locationType)
-            || LocationRefConstants.COURT_LOCATION_FILE.equals(locationType))) {
+    public static void validateFileTypeParam(String locationType) {
+        if (!(LocationRefConstants.BUILDING_LOCATION_PARAM_NAME.equalsIgnoreCase(locationType)
+            || LocationRefConstants.COURT_LOCATION_PARAM_NAME.equalsIgnoreCase(locationType))) {
             throw new InvalidRequestException(EXCEPTION_MSG_INCORRECT_LOCATION_FILE);
         }
     }
