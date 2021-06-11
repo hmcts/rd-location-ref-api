@@ -13,10 +13,12 @@ import uk.gov.hmcts.reform.lib.excel.adapter.service.ExcelAdapterService;
 import uk.gov.hmcts.reform.lib.excel.adapter.service.ExcelValidatorService;
 import uk.gov.hmcts.reform.lib.util.AuditStatus;
 import uk.gov.hmcts.reform.lib.validator.service.IValidationService;
+import uk.gov.hmcts.reform.lrdapi.client.domain.Building;
+import uk.gov.hmcts.reform.lrdapi.client.domain.Court;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ExceptionMapper;
-import uk.gov.hmcts.reform.lrdapi.domain.CaseWorkerProfile;
 import uk.gov.hmcts.reform.lrdapi.domain.LrdException;
 import uk.gov.hmcts.reform.lrdapi.repository.LrdExceptionRepository;
+import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 
 import java.util.List;
 
@@ -27,7 +29,10 @@ import static uk.gov.hmcts.reform.lib.util.AuditStatus.FAILURE;
 import static uk.gov.hmcts.reform.lib.util.AuditStatus.PARTIAL_SUCCESS;
 import static uk.gov.hmcts.reform.lib.util.AuditStatus.SUCCESS;
 import static uk.gov.hmcts.reform.lib.util.FileUploadResponseUtil.createResponse;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REQUIRED_CW_SHEET_NAME;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_FILE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.BUILDING_LOCATION_SHEET_NAME;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_FILE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_LOCATION_SHEET_NAME;
 
 @Service
 @Slf4j
@@ -54,17 +59,25 @@ public class FileUploadServiceImpl {
     @Autowired
     LrdExceptionRepository exceptionRepository;
 
+    @Autowired
+    LrdService lrdService;
+
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Object> processFile(MultipartFile file) {
+    public ResponseEntity<Object> processFile(MultipartFile file, String locationType) {
 
         AuditStatus status = SUCCESS;
 
         try {
             long jobId = validationService.getAuditJobId();
-            Class<? extends RowDomain> ob = CaseWorkerProfile.class;
-            long time2 = currentTimeMillis();
+            boolean isBuildingLocation = BUILDING_LOCATION_FILE.equals(locationType)
+                || COURT_LOCATION_FILE.equals(locationType);
+            Class<? extends RowDomain> ob = isBuildingLocation ? Building.class : Court.class;
+            List<String> acceptableHeaders = isBuildingLocation
+                ? acceptableBuildingHeaders : acceptableCourtLocationHeaders;
+            long time2 = System.currentTimeMillis();
             List<RowDomain> lrdRecords = (List<RowDomain>) excelAdaptorService.parseExcel(
-                excelValidatorService.validateExcelFile(file), REQUIRED_CW_SHEET_NAME, acceptableBuildingHeaders, ob);
+                excelValidatorService.validateExcelFile(file), isBuildingLocation
+                    ? BUILDING_LOCATION_SHEET_NAME : COURT_LOCATION_SHEET_NAME, acceptableHeaders, ob);
 
             log.info("{}::Time taken to parse the given file {} is {}",
                      loggingComponentName, file.getOriginalFilename(), (currentTimeMillis() - time2));
@@ -86,6 +99,7 @@ public class FileUploadServiceImpl {
             if (isNotEmpty(lrdRecords)) {
                 log.info("persisting LRD records");
                 //TODO: call dao service to persist records from excel
+                lrdService.createLocations(lrdRecords, isBuildingLocation);
             }
 
             return sendResponse(file, status, totalRecords);

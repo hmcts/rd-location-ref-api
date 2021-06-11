@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.util;
 
 import org.apache.commons.lang.StringUtils;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -19,6 +20,7 @@ public class ConstraintValidation {
         + "',' comma and '_' underscore allowed only";
     private static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
         + "serviceCode, ccdCaseType, ccdServiceNames.";
+    private static final String EXCEPTION_MSG_INCORRECT_LOCATION_FILE = "Please provide correct location file type";
     private static final String REG_EXP_COMMA_DILIMETER = ",(?!\\\\s)";
 
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
@@ -53,6 +55,13 @@ public class ConstraintValidation {
         if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
             || !Pattern.compile(REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
             throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
+        }
+    }
+
+    public static void validateFileType(String locationType) {
+        if (!(LocationRefConstants.BUILDING_LOCATION_FILE.equals(locationType)
+            || LocationRefConstants.COURT_LOCATION_FILE.equals(locationType))) {
+            throw new InvalidRequestException(EXCEPTION_MSG_INCORRECT_LOCATION_FILE);
         }
     }
 }

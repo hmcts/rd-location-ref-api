@@ -99,5 +99,9 @@ launchdarkly:
     user: rd
 
 excel:
-  acceptableBuildingHeaders: ${EXCEL_ACCEPTABLE_CW_HEADERS:}
-  acceptableCourtLocationHeaders: ${EXCEL_ACCEPTABLE_SERVICE_ROLE_MAPPING_HEADERS:}
+  acceptableBuildingHeaders: ${EXCEL_ACCEPTABLE_BUILDING_LOCATION_HEADERS:Building_Location_id,ePIMS_ID,Building_Location_Name,Status ID,
+                  Area,Region_ID,Cluster_ID,Court_Finder_URL,Postcode,Address}
+  acceptableCourtLocationHeaders: ${EXCEL_ACCEPTABLE_COURT_LOCATION_HEADERS:Court_Location_id,ePIMS_ID,
+                  Court_Location_Name,Region_ID,Court_Location_Category_ID,Cluster_ID,Open_For_Public,Court_Address,
+                  Postcode,Phone_Number,Closed_Date,Court_Location_Code,Dx_Address,Welsh_Court_Location_Name,
+                  Welsh_Court_Address}
