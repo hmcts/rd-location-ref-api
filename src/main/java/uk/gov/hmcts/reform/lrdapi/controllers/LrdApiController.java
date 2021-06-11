@@ -94,7 +94,8 @@ public class LrdApiController {
 
     @ApiOperation(
         value = "This API will retrieve a Building Location details for the provided list of epims IDs. "
-            + "The list of ids are passed as comma separated values.",
+            + "The list of ids are passed as comma separated values. "
+            + "If no epims id is passed, this endpoint returns all the available building locations.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -103,8 +104,8 @@ public class LrdApiController {
     @ApiResponses({
         @ApiResponse(
             code = 200,
-            message = "Successfully retrieved a Building Location's details",
-            response = LrdOrgInfoServiceResponse.class,
+            message = "Successfully retrieved the building Location details",
+            response = LrdOrgInfoServiceResponse[].class,
             responseContainer = "list"
         ),
         @ApiResponse(
@@ -132,7 +133,7 @@ public class LrdApiController {
         @RequestParam(value = "epimms_id", required = false) String epimsIds) {
 
         log.info("{} : Obtaining building locations for epim id(s): {}", loggingComponentName, epimsIds);
-        if (epimsIds.strip().equalsIgnoreCase(LocationRefConstants.ALL) || isEmpty(epimsIds)) {
+        if (isEmpty(epimsIds) || epimsIds.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
             return getAllBuildingLocations();
         }
         List<String> epimsIdList = ValidationUtils
