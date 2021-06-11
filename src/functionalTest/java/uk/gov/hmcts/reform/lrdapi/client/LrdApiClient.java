@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -57,15 +58,19 @@ public class LrdApiClient {
     }
 
     public Object retrieveBuildingLocationDetailsByEpimsId(HttpStatus expectedStatus, String param) {
+        String queryParam = "";
+        if (!isEmpty(param)) {
+            queryParam = param;
+        }
         Response response = getMultipleAuthHeaders()
-            .get(BASE_URL + "/building-locations/epims/" + param)
+            .get(BASE_URL + "/building-locations" + queryParam)
             .andReturn();
 
         response.then()
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return Arrays.asList(response.getBody().as(LrdBuildingLocationResponse.class));
+            return Arrays.asList(response.getBody().as(LrdBuildingLocationResponse[].class));
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
@@ -73,7 +78,7 @@ public class LrdApiClient {
 
     public Response retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(String param) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
-            .get(BASE_URL + "/building-locations/epims/" + param)
+            .get(BASE_URL + "/building-locations" + param)
             .andReturn();
 
         return response;
@@ -81,7 +86,7 @@ public class LrdApiClient {
 
     public Response retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(String param) {
         Response response = withUnauthenticatedRequest_NoS2SToken()
-            .get(BASE_URL + "/building-locations/epims/" + param)
+            .get(BASE_URL + "/building-locations" + param)
             .andReturn();
 
         return response;
