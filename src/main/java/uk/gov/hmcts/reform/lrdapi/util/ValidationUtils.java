@@ -67,7 +67,6 @@ public class ValidationUtils {
      * If identified as valid, the comma separated identifier values are converted to list of strings and are returned.
      * If identified as invalid, it throws an {@InvalidRequestException} to mark the request as BAD_REQUEST.
      *
-     *
      * @param csvIds The comma separated identifiers passed in the request.
      * @param exceptionMessage The message to be included in the {@InvalidRequestException} when thrown.
      *                         The message is expected to have a place holder - "%s" within the string, which is
@@ -75,7 +74,7 @@ public class ValidationUtils {
      * @return The list of identifiers that are created from the passed comma separated identifiers.
      */
     public static List<String> checkIfValidCsvIdentifiersAndReturnList(String csvIds, String exceptionMessage) {
-        List<String> idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
+        var idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
         idList.replaceAll(String::trim);
         idList.removeAll(Collections.singleton(LocationRefConstants.EMPTY_STR));
         if (idList.isEmpty()) {
@@ -106,13 +105,11 @@ public class ValidationUtils {
 
         List<String> invalidIdentifiers = findInvalidIdentifiers(idList, regex);
         if (!invalidIdentifiers.isEmpty()) {
-            log.warn("{} : Invalid epim id(s): {} are passed in the request.", componentName,
-                     Arrays.toString(invalidIdentifiers.toArray()));
+            String errorDescription = String.format(exceptionMessage, Arrays.toString(invalidIdentifiers.toArray()));
+            log.warn("{} : {}", componentName, errorDescription);
 
             if (idList.size() == invalidIdentifiers.size()) {
-                throw new InvalidRequestException(String.format(
-                    exceptionMessage,
-                    Arrays.toString(invalidIdentifiers.toArray())));
+                throw new InvalidRequestException(errorDescription);
             }
             idList.removeAll(invalidIdentifiers);
         }

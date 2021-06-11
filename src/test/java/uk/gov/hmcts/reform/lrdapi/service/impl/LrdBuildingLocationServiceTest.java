@@ -128,13 +128,13 @@ public class LrdBuildingLocationServiceTest {
     }
 
     private List<String> getListContainingOneEpimId() {
-        List<String> epimIdList = new ArrayList<>();
+        var epimIdList = new ArrayList<String>();
         epimIdList.add("1");
         return epimIdList;
     }
 
     private List<String> getListContainingMultipleEpimIds() {
-        List<String> epimIdList = new ArrayList<>();
+        var epimIdList = new ArrayList<String>();
         epimIdList.addAll(getListContainingOneEpimId());
         epimIdList.add("2");
         return epimIdList;
@@ -142,7 +142,7 @@ public class LrdBuildingLocationServiceTest {
 
     private List<BuildingLocation> prepareBuildingLocation() {
 
-        List<BuildingLocation> locations = new ArrayList<>();
+        var locations = new ArrayList<BuildingLocation>();
 
         locations.add(BuildingLocation.builder()
                          .epimmsId("epimmsId")
@@ -163,7 +163,7 @@ public class LrdBuildingLocationServiceTest {
     }
 
     private List<BuildingLocation> prepareMultiBuildLocationResponse() {
-        List<BuildingLocation> locations = new ArrayList<>();
+        var locations = new ArrayList<BuildingLocation>();
         locations.addAll(prepareBuildingLocation());
         locations.add(BuildingLocation.builder()
                           .epimmsId("epimmsId222")
