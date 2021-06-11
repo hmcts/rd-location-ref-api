@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 
 import java.util.ArrayList;
@@ -26,6 +27,10 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 @WithTags({@WithTag("testType:Integration")})
 public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
+    private static final String ONE_STR = "ONE";
+    private static final String TWO_STR = "TWO";
+    public static final String HTTP_STATUS_STR = "http_status";
+
     @Test
     @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_ValidEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
@@ -36,7 +41,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                        LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "ONE");
+        responseVerification(response, ONE_STR);
     }
 
     @Test
@@ -49,7 +54,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                        LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "TWO");
+        responseVerification(response, TWO_STR);
     }
 
     @Test
@@ -62,7 +67,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                        LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "ALL");
+        responseVerification(response, LocationRefConstants.ALL);
     }
 
     @Test
@@ -74,7 +79,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=", LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "ALL");
+        responseVerification(response, LocationRefConstants.ALL);
     }
 
     @Test
@@ -87,7 +92,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                        LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "ONE");
+        responseVerification(response, ONE_STR);
     }
 
     @Test
@@ -99,7 +104,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=-1111", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -111,7 +116,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=!@£@$", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -123,7 +128,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=*", LrdBuildingLocationResponse[].class);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -136,7 +141,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                        LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "ONE");
+        responseVerification(response, ONE_STR);
     }
 
     @Test
@@ -148,7 +153,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=,,", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -161,7 +166,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                        LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, "ONE");
+        responseVerification(response, ONE_STR);
     }
 
     @Test
@@ -177,15 +182,15 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findBuildingLocationByEpimmId("?epimms_id=123456789", ErrorResponse.class);
-        assertThat(errorResponseMap).containsEntry("http_status", HttpStatus.FORBIDDEN);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
     private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
-        if (responseType.equalsIgnoreCase("ONE")) {
+        if (ONE_STR.equalsIgnoreCase(responseType)) {
             assertIterableEquals(response, getSingleLocationResponse());
-        } else if (responseType.equalsIgnoreCase("TWO")) {
+        } else if (TWO_STR.equalsIgnoreCase(responseType)) {
             assertThat(response).hasSize(2).hasSameElementsAs(getTwoLocationResponse());
         } else {
             assertThat(response).hasSize(3).hasSameElementsAs(getAllLocationResponse());
@@ -194,7 +199,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     private List<LrdBuildingLocationResponse> getSingleLocationResponse() {
 
-        List<LrdBuildingLocationResponse> locationResponses = new ArrayList<>();
+        var locationResponses = new ArrayList<LrdBuildingLocationResponse>();
 
         LrdBuildingLocationResponse response = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041995")
