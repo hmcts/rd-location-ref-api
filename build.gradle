@@ -1,7 +1,7 @@
 buildscript {
     repositories {
-        mavenLocal()
         jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath("net.serenity-bdd:serenity-gradle-plugin:2.3.6")
@@ -276,10 +276,9 @@ project.tasks['sonarqube'].group = "Verification"
 
 repositories {
 
-  //maven {
-    //url "https://dl.bintray.com/hmcts/hmcts-maven"
-  //}
-  mavenLocal()
+  maven {
+    url 'https://jitpack.io'
+  }
   jcenter()
 }
 
@@ -343,8 +342,7 @@ dependencies {
     //Fix for CVE-2021-29425
     implementation 'commons-io:commons-io:2.8.0'
 
-    //implementation 'com.github.hmcts:data-ingestion-lib:0.4.4.0'
-    implementation 'uk.gov.hmcts.reform:rd-commons-lib:DEV-SNAPSHOT'
+    implementation 'com.github.hmcts:rd-commons-lib:0.0.5_Beta'
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
