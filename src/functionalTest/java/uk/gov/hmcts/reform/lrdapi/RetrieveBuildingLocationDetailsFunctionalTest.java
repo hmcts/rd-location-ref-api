@@ -62,7 +62,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocations_WithStatusCode_404() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "?epimms_id=1");
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND, "?epimms_id=aaazzzzzzzzzzzzz");
         assertThat(response).isNotNull();
     }
 
