@@ -85,7 +85,7 @@ public class CourtLocation implements Serializable {
     private String courtLocationCode;
 
     @Column(name = "dx_address")
-    @Size(max = 16)
+    @Size(max = 64)
     private String dxAddress;
 
     @Column(name = "welsh_court_location_name")

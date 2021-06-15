@@ -81,7 +81,10 @@ public class LrdApiController {
             message = "Internal Server Error"
         )
     })
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
+    @GetMapping(
+        path = "/orgServices",
+        produces = APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<Object> retrieveOrgServiceDetails(
         @RequestParam(value = "serviceCode", required = false) String serviceCode,
         @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,

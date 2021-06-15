@@ -28,7 +28,8 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(featureConditionEvaluation)
-            .addPathPatterns("/refdata/location/orgServices/**");
+            .addPathPatterns("/refdata/location/orgServices/**")
+            .addPathPatterns("/refdata/location/{location-type}/upload-file");
 
         //Audit Interceptor
         registry.addInterceptor(auditInterceptor)

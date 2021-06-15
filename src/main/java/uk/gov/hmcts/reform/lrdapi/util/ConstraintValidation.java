@@ -20,7 +20,8 @@ public class ConstraintValidation {
         + "',' comma and '_' underscore allowed only";
     private static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
         + "serviceCode, ccdCaseType, ccdServiceNames.";
-    private static final String EXCEPTION_MSG_INCORRECT_LOCATION_FILE = "Please provide correct location file type";
+    private static final String EXCEPTION_INCORRECT_LOCATION_TYPE_PARAM =
+        "Incorrect location type parameter used. Please provide the correct parameter: building or court";
     private static final String REG_EXP_COMMA_DILIMETER = ",(?!\\\\s)";
 
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
@@ -61,7 +62,7 @@ public class ConstraintValidation {
     public static void validateFileTypeParam(String locationType) {
         if (!(LocationRefConstants.BUILDING_LOCATION_PARAM_NAME.equalsIgnoreCase(locationType)
             || LocationRefConstants.COURT_LOCATION_PARAM_NAME.equalsIgnoreCase(locationType))) {
-            throw new InvalidRequestException(EXCEPTION_MSG_INCORRECT_LOCATION_FILE);
+            throw new InvalidRequestException(EXCEPTION_INCORRECT_LOCATION_TYPE_PARAM);
         }
     }
 }

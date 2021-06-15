@@ -29,9 +29,7 @@ import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
@@ -137,6 +135,13 @@ public class LrdServiceImpl implements LrdService {
         buildingLocationRepository.saveAll(buildingLocations);
     }
 
+    private void populateCourtLocation(List<RowDomain> lrdRecords) {
+        List<CourtLocation> courtLocations = new ArrayList<>();
+        lrdRecords.forEach(courtRecord ->
+                               courtLocations.add(mapCourtToCourtLocation((Court) courtRecord)));
+        courtLocationRepository.saveAll(courtLocations);
+    }
+
     private BuildingLocation mapBuildingToBuildingLocation(Building buildingRecord) {
         BuildingLocation buildingLocation = new BuildingLocation();
         //TODO: temporary, change this
@@ -144,10 +149,10 @@ public class LrdServiceImpl implements LrdService {
         buildingLocation.setEpimmsId(convertIntToString(buildingRecord.getEpimsId()));
         buildingLocation.setBuildingLocationName(buildingRecord.getBuildingLocationName());
         buildingLocation.setBuildingLocationStatus(
-            getBuildingLocationStatus(convertIntToString(buildingRecord.getStatusId())).orElse(null));
+            getBuildingLocationStatus(convertIntToString(buildingRecord.getStatusId())));
         buildingLocation.setArea(buildingRecord.getArea());
-        buildingLocation.setRegion(getRegion(convertIntToString(buildingRecord.getRegionId())).orElse(null));
-        buildingLocation.setCluster(getCluster(convertIntToString(buildingRecord.getClusterId())).orElse(null));
+        buildingLocation.setRegion(getRegion(convertIntToString(buildingRecord.getRegionId())));
+        buildingLocation.setCluster(getCluster(convertIntToString(buildingRecord.getClusterId())));
         buildingLocation.setCourtFinderUrl(buildingRecord.getCourtFinderUrl());
         buildingLocation.setPostcode(buildingRecord.getPostcode());
         buildingLocation.setAddress(buildingRecord.getAddress());
@@ -160,10 +165,10 @@ public class LrdServiceImpl implements LrdService {
         courtLocation.setCourtLocationId(RandomStringUtils.randomNumeric(15));
         courtLocation.setBuildingLocation(getBuildingLocation(convertIntToString(courtRecord.getEpimsId())));
         courtLocation.setCourtLocationName(courtRecord.getCourtLocationName());
-        courtLocation.setRegion(getRegion(convertIntToString(courtRecord.getRegionId())).orElse(null));
+        courtLocation.setRegion(getRegion(convertIntToString(courtRecord.getRegionId())));
         courtLocation.setCourtLocationCategory(getCourtLocationCategory(
             convertIntToString(courtRecord.getCourtLocationCategoryId())));
-        courtLocation.setCluster(getCluster(convertIntToString(courtRecord.getClusterId())).orElse(null));
+        courtLocation.setCluster(getCluster(convertIntToString(courtRecord.getClusterId())));
         courtLocation.setOpenForPublic(Boolean.valueOf(courtRecord.getOpenForPublic()));
         courtLocation.setCourtAddress(courtRecord.getCourtAddress());
         courtLocation.setPostcode(courtRecord.getPostcode());
@@ -181,47 +186,44 @@ public class LrdServiceImpl implements LrdService {
         if (nonNull(id)) {
             return id.toString();
         }
+        return StringUtils.EMPTY;
+    }
+
+
+    private BuildingLocationStatus getBuildingLocationStatus(String statusId) {
+        if (StringUtils.isNotEmpty(statusId)) {
+            return locationStaticValueRepositoryAccessor.getBuildingLocationStatus()
+                .stream()
+                .filter(buildingLocationStatus ->
+                            statusId.equalsIgnoreCase(buildingLocationStatus.getBuildingLocationStatusId()))
+                .findFirst()
+                .orElse(null);
+        }
         return null;
     }
 
-    private Optional<BuildingLocationStatus> getBuildingLocationStatus(String statusId) {
-        if (isNull(statusId)) {
-            return Optional.empty();
+    private Region getRegion(String regionId) {
+        if (StringUtils.isNotEmpty(regionId)) {
+            return locationStaticValueRepositoryAccessor.getRegions()
+                .stream()
+                .filter(region ->
+                            regionId.equalsIgnoreCase(region.getRegionId()))
+                .findFirst()
+                .orElse(null);
         }
-        return locationStaticValueRepositoryAccessor.getBuildingLocationStatus()
-            .stream()
-            .filter(buildingLocationStatus ->
-                        statusId.equalsIgnoreCase(buildingLocationStatus.getBuildingLocationStatusId()))
-            .findFirst();
+        return null;
     }
 
-    private Optional<Region> getRegion(String regionId) {
-        if (isNull(regionId)) {
-            return Optional.empty();
+    private Cluster getCluster(String clusterId) {
+        if (StringUtils.isNotEmpty(clusterId)) {
+            return locationStaticValueRepositoryAccessor.getClusters()
+                .stream()
+                .filter(cluster ->
+                            clusterId.equalsIgnoreCase(cluster.getClusterId()))
+                .findFirst()
+                .orElse(null);
         }
-        return locationStaticValueRepositoryAccessor.getRegions()
-            .stream()
-            .filter(region ->
-                        regionId.equalsIgnoreCase(region.getRegionId()))
-            .findFirst();
-    }
-
-    private Optional<Cluster> getCluster(String clusterId) {
-        if (isNull(clusterId)) {
-            return Optional.empty();
-        }
-        return locationStaticValueRepositoryAccessor.getClusters()
-            .stream()
-            .filter(cluster ->
-                        clusterId.equalsIgnoreCase(cluster.getClusterId()))
-            .findFirst();
-    }
-
-    private void populateCourtLocation(List<RowDomain> lrdRecords) {
-        List<CourtLocation> courtLocations = new ArrayList<>();
-        lrdRecords.forEach(courtRecord ->
-                               courtLocations.add(mapCourtToCourtLocation((Court) courtRecord)));
-        courtLocationRepository.saveAll(courtLocations);
+        return null;
     }
 
 
@@ -230,12 +232,15 @@ public class LrdServiceImpl implements LrdService {
     }
 
     private CourtLocationCategory getCourtLocationCategory(String courtLocationCategoryId) {
-        return locationStaticValueRepositoryAccessor.getCourtLocationCategories()
-            .stream()
-            .filter(courtLocationCategory ->
-                        courtLocationCategoryId.equalsIgnoreCase(courtLocationCategory.getCourtLocationCategoryId()))
-            .findFirst()
-            .get();
+        if (StringUtils.isNotEmpty(courtLocationCategoryId)) {
+            return locationStaticValueRepositoryAccessor.getCourtLocationCategories()
+                .stream()
+                .filter(courtLocationCategory ->
+                           courtLocationCategoryId.equalsIgnoreCase(courtLocationCategory.getCourtLocationCategoryId()))
+                .findFirst()
+                .orElse(null);
+        }
+        return null;
     }
 
 
