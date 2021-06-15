@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
-import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
+import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class LrdApiControllerGetBuildingLocationsTest {
 
     @Mock
-    LrdBuildingLocationService lrdBuildingLocationService;
+    ILrdBuildingLocationService lrdBuildingLocationService;
 
     @InjectMocks
     LrdApiController lrdApiController;

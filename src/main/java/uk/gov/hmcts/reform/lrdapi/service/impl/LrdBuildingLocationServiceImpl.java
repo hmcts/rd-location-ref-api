@@ -7,7 +7,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
-import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
+import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Slf4j
 @Service
-public class LrdBuildingLocationServiceImpl implements LrdBuildingLocationService {
+public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationService {
 
     @Autowired
     BuildingLocationRepository buildingLocationRepository;

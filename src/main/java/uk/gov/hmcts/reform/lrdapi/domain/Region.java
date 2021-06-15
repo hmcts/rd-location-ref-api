@@ -5,21 +5,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 @Entity(name = "region")
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 public class Region implements Serializable {
@@ -28,11 +25,11 @@ public class Region implements Serializable {
     @Size(max = 16)
     private String regionId;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     @Size(max = 256)
     private String description;
 
-    @Column(name = "welsh_description", nullable = false)
+    @Column(name = "welsh_description")
     @Size(max = 256)
     private String welshDescription;
 

@@ -4,7 +4,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationRespon
 
 import java.util.List;
 
-public interface LrdBuildingLocationService {
+public interface ILrdBuildingLocationService {
 
     /**
      * Method to retrieve the details of the requested building location.

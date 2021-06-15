@@ -19,13 +19,10 @@ public class ValidationUtils {
 
     }
 
-    private static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
-    private static final String REG_EXP_WHITE_SPACE = "\\s";
     private static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
         + "',' comma and '_' underscore allowed only";
     private static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
         + "serviceCode, ccdCaseType, ccdServiceNames.";
-    private static final String REG_EXP_COMMA_DILIMETER = ",(?!\\\\s)";
 
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
 
@@ -37,10 +34,11 @@ public class ValidationUtils {
         }
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
-            if (StringUtils.startsWith(ccdServiceNames, ",") || StringUtils.endsWith(ccdServiceNames, ",")) {
+            if (StringUtils.startsWith(ccdServiceNames, LocationRefConstants.COMMA)
+                || StringUtils.endsWith(ccdServiceNames, LocationRefConstants.COMMA)) {
                 throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
             }
-            for (String str : ccdServiceNames.trim().split(REG_EXP_COMMA_DILIMETER)) {
+            for (String str : ccdServiceNames.trim().split(LocationRefConstants.REG_EXP_COMMA_DILIMETER)) {
                 if (StringUtils.isEmpty(str.trim())) {
                     throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
                 }
@@ -56,8 +54,8 @@ public class ValidationUtils {
 
     private static void checkSpecialCharacters(String inputValue) {
         inputValue = StringUtils.trim(inputValue);
-        if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
-            || !Pattern.compile(REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
+        if (Pattern.compile(LocationRefConstants.REG_EXP_WHITE_SPACE).matcher(inputValue).find()
+            || !Pattern.compile(LocationRefConstants.REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
             throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
         }
     }
@@ -74,9 +72,9 @@ public class ValidationUtils {
      * @return The list of identifiers that are created from the passed comma separated identifiers.
      */
     public static List<String> checkIfValidCsvIdentifiersAndReturnList(String csvIds, String exceptionMessage) {
-        var idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
+        var idList = new ArrayList<>(Arrays.asList(csvIds.split(LocationRefConstants.REG_EXP_COMMA_DILIMETER)));
         idList.replaceAll(String::trim);
-        idList.removeAll(Collections.singleton(LocationRefConstants.EMPTY_STR));
+        idList.removeAll(Collections.singleton(StringUtils.EMPTY));
         if (idList.isEmpty()) {
             throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
         }

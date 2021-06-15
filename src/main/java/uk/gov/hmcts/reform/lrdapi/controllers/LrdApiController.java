@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
-import uk.gov.hmcts.reform.lrdapi.service.LrdBuildingLocationService;
+import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
@@ -44,7 +44,7 @@ public class LrdApiController {
     LrdService lrdService;
 
     @Autowired
-    LrdBuildingLocationService buildingLocationService;
+    ILrdBuildingLocationService buildingLocationService;
 
     @ApiOperation(
         value = "This API will retrieve service code details association with ccd case type",
