@@ -11,10 +11,6 @@ public class BuildingLocationTest {
     @Test
     public void testBuildingLocationBuilder() {
 
-        BuildingLocationStatus status = new BuildingLocationStatus();
-        status.setStatus("LIVE");
-        status.setBuildingStatusId("1");
-
         Region region = new Region();
         region.setRegionId("regionId");
         region.setDescription("region");
@@ -30,7 +26,7 @@ public class BuildingLocationTest {
                 .epimmsId("epimmsId")
                 .buildingLocationId("buildingLocationId")
                 .buildingLocationName("buildingLocationName")
-                .buildingLocationStatus(status)
+                .buildingLocationStatus("LIVE")
                 .region(region)
                 .address("address")
                 .cluster(cluster)
@@ -45,7 +41,7 @@ public class BuildingLocationTest {
         assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
         assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-        assertThat(buildingLocation.getBuildingLocationStatus().getStatus()).isEqualTo("LIVE");
+        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
         assertThat(buildingLocation.getArea()).isEqualTo("area");
         assertThat(buildingLocation.getRegion().getRegionId()).isEqualTo("regionId");
         assertThat(buildingLocation.getRegion().getDescription()).isEqualTo("region");
@@ -78,7 +74,7 @@ public class BuildingLocationTest {
         buildingLocation.setBuildingLocationId("buildingLocationId");
         buildingLocation.setEpimmsId("epimmsId");
         buildingLocation.setBuildingLocationName("buildingLocationName");
-        buildingLocation.setBuildingLocationStatus(status);
+        buildingLocation.setBuildingLocationStatus("LIVE");
         buildingLocation.setArea("area");
         buildingLocation.setRegion(region);
         buildingLocation.setCluster(cluster);
@@ -93,7 +89,7 @@ public class BuildingLocationTest {
         assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
         assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-        assertThat(buildingLocation.getBuildingLocationStatus().getStatus()).isEqualTo("LIVE");
+        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
         assertThat(buildingLocation.getArea()).isEqualTo("area");
         assertThat(buildingLocation.getRegion().getRegionId()).isEqualTo("regionId");
         assertThat(buildingLocation.getRegion().getDescription()).isEqualTo("region");

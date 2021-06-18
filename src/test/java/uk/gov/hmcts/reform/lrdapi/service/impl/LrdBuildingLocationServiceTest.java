@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
-import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocationStatus;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
@@ -148,7 +147,7 @@ public class LrdBuildingLocationServiceTest {
                          .epimmsId("epimmsId")
                          .buildingLocationId("buildingLocationId")
                          .buildingLocationName("buildingLocationName")
-                         .buildingLocationStatus(getBuildingLocationStatus())
+                         .buildingLocationStatus("LIVE")
                          .region(getRegion())
                          .address("address")
                          .cluster(getCluster())
@@ -169,7 +168,7 @@ public class LrdBuildingLocationServiceTest {
                           .epimmsId("epimmsId222")
                           .buildingLocationId("buildingLocationId_2")
                           .buildingLocationName("buildingLocationName_2")
-                          .buildingLocationStatus(getBuildingLocationStatus())
+                          .buildingLocationStatus("LIVE")
                           .region(getRegion())
                           .address("address 2")
                           .cluster(getCluster())
@@ -200,14 +199,4 @@ public class LrdBuildingLocationServiceTest {
         region.setDescription("region");
         return region;
     }
-
-    private BuildingLocationStatus getBuildingLocationStatus() {
-        BuildingLocationStatus status = new BuildingLocationStatus();
-        status.setStatus("LIVE");
-        status.setBuildingStatusId("1");
-        return status;
-    }
-
-
-
 }
