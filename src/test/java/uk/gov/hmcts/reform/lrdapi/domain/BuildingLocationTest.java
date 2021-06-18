@@ -57,10 +57,6 @@ public class BuildingLocationTest {
     @Test
     public void testBuildingLocationSetters() {
 
-        BuildingLocationStatus status = new BuildingLocationStatus();
-        status.setStatus("LIVE");
-        status.setBuildingStatusId("1");
-
         Region region = new Region();
         region.setRegionId("regionId");
         region.setDescription("region");
