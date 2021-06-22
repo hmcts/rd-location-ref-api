@@ -76,6 +76,21 @@ public class LrdApiClient {
         }
     }
 
+    public Object retrieveRegionInfo(HttpStatus expectedStatus, String param) {
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/region" + param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return Arrays.asList(response.getBody().as(LrdOrgInfoServiceResponse[].class));
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
     public Response retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(String param) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
             .get(BASE_URL + "/building-locations" + param)
