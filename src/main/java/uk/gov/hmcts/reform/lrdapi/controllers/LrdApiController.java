@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
+import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
@@ -45,6 +48,9 @@ public class LrdApiController {
 
     @Autowired
     ILrdBuildingLocationService buildingLocationService;
+
+    @Autowired
+    RegionService regionService;
 
     @ApiOperation(
         value = "This API will retrieve service code details association with ccd case type",
@@ -144,11 +150,62 @@ public class LrdApiController {
         ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
                                                                       AlphaNumericRegex, log,
                                                                       loggingComponentName,
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
+                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
         List<LrdBuildingLocationResponse> response =
             buildingLocationService.retrieveBuildingLocationByEpimsIds(epimsIdList);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+    @ApiOperation(
+        value = "This API will retrieve region details for the given region description",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            response = LrdRegionResponse.class
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No Service found with the given ID"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
+    })
+    @GetMapping(
+        path = "/region",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retriveRegionDetails(
+        @RequestParam(value = "region", required = false) String region) {
+        log.info("Inside retriveRegionDetails");
+
+        if (isEmpty(region)) {
+            throw new InvalidRequestException("No description provided");
+        }
+
+        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+
 
     private ResponseEntity<Object> getAllBuildingLocations() {
         List<LrdBuildingLocationResponse> response =
