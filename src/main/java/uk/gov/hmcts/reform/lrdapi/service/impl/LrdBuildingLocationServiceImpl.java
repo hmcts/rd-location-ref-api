@@ -46,7 +46,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         return buildingLocations.stream().map((location) -> LrdBuildingLocationResponse.builder()
             .buildingLocationId(location.getBuildingLocationId())
             .buildingLocationName(location.getBuildingLocationName())
-            .buildingLocationStatus(location.getBuildingLocationStatus().getStatus())
+            .buildingLocationStatus(location.getBuildingLocationStatus())
             .address(location.getAddress())
             .area(location.getArea())
             .epimmsId(location.getEpimmsId())
