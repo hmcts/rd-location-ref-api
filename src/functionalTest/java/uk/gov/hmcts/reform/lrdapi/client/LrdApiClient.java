@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return Arrays.asList(response.getBody().as(LrdOrgInfoServiceResponse[].class));
+            return response.getBody().as(LrdRegionResponse.class);
         } else {
             return response.getBody().as(ErrorResponse.class);
         }

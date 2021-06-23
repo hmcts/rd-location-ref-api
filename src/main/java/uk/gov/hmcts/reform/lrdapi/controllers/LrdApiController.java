@@ -150,15 +150,14 @@ public class LrdApiController {
         ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
                                                                       AlphaNumericRegex, log,
                                                                       loggingComponentName,
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
-        );
+                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
         List<LrdBuildingLocationResponse> response =
             buildingLocationService.retrieveBuildingLocationByEpimsIds(epimsIdList);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @ApiOperation(
-        value = "This API will retrieve region details for the given region description",
+        value = "This API will retrieve Region details for the given Region description",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
