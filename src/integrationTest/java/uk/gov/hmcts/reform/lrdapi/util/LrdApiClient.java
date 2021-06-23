@@ -86,8 +86,9 @@ public class LrdApiClient {
         return mapApiResponse(responseEntity,expectedClass);
     }
 
-    public Object findBuildingLocationByEpimmId(String epimmId, Class clazz) throws JsonProcessingException {
-        ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + epimmId, clazz, "");
+    public Object findBuildingLocationByGivenQueryParam(String queryParam, Class<?> clazz) throws JsonProcessingException {
+        ResponseEntity<Object> responseEntity =
+            getRequest(BUILDING_LOCATION_API_STR + queryParam, clazz, "");
         return mapBuildingLocationResponse(responseEntity, clazz);
     }
 

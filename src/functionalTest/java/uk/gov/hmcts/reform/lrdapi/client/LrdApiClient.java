@@ -92,6 +92,22 @@ public class LrdApiClient {
         return response;
     }
 
+    public Object retrieveBuildingLocationDetailsByBuildingName(HttpStatus expectedStatus, String param) {
+
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/building-locations" + param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return Arrays.asList(response.getBody().as(LrdBuildingLocationResponse[].class));
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
     public String getWelcomePage() {
         return withUnauthenticatedRequest()
             .get("/")

@@ -94,4 +94,32 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveBuildingLocationsForValidBuildingName_WithStatusCode_200() {
+        //Currently we get 404 as the Api to insert data into database is yet to be implemented
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByBuildingName(HttpStatus.NOT_FOUND,
+                                         "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE");
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldNotRetrieveBuildingLocationsForInValidBuildingName_WithStatusCode_404() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByEpimsId(HttpStatus.NOT_FOUND,
+                                     "?building_location_name=Invalid");
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = false)
+    public void shouldNotRetrieveBuildingLocationsForGivenBuildingName_WhenToggleOff_WithStatusCode_403() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByBuildingName(HttpStatus.FORBIDDEN,
+                                          "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE");
+        assertThat(response).isNotNull();
+    }
+
 }
