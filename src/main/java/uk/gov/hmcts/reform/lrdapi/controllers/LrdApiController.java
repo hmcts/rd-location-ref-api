@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
@@ -150,7 +151,8 @@ public class LrdApiController {
         ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
                                                                       AlphaNumericRegex, log,
                                                                       loggingComponentName,
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
+                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
         List<LrdBuildingLocationResponse> response =
             buildingLocationService.retrieveBuildingLocationByEpimsIds(epimsIdList);
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -192,9 +194,8 @@ public class LrdApiController {
     )
     public ResponseEntity<Object> retriveRegionDetails(
         @RequestParam(value = "region", required = false) String region) {
-        log.info("Inside retriveRegionDetails");
 
-        if (isEmpty(region)) {
+        if (isBlank(region)) {
             throw new InvalidRequestException("No description provided");
         }
 
@@ -202,8 +203,6 @@ public class LrdApiController {
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-
 
 
     private ResponseEntity<Object> getAllBuildingLocations() {
