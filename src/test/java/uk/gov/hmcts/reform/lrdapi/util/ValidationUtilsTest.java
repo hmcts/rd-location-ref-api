@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
 import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
@@ -25,34 +27,11 @@ public class ValidationUtilsTest {
             .isEqualTo(identifiers);
     }
 
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputChars() {
+    @ParameterizedTest
+    @ValueSource(strings = {"QWERTY", "1234", "qwerty1234", "qwerty_1234"})
+    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputChars(String value) {
         var identifiers = new ArrayList<String>();
-        identifiers.add("QWERTY");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
-    }
-
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputNumeric() {
-        var identifiers = new ArrayList<String>();
-        identifiers.add("1234");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
-    }
-
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumeric() {
-        var identifiers = new ArrayList<String>();
-        identifiers.add("qwerty1234");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
-    }
-
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumericUnderscore() {
-        var identifiers = new ArrayList<String>();
-        identifiers.add("qwerty_1234");
+        identifiers.add(value);
         assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
             .isEqualTo(0);
     }
