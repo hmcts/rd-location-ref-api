@@ -55,6 +55,7 @@ public class LrdApiController {
 
     @ApiOperation(
         value = "This API will retrieve service code details association with ccd case type",
+        notes = "No roles required to access this API",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -103,6 +104,7 @@ public class LrdApiController {
         value = "This API will retrieve a Building Location details for the provided list of epims IDs. "
             + "The list of ids are passed as comma separated values. "
             + "If no epims id is passed, this endpoint returns all the available building locations.",
+        notes = "No roles required to access this API",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -160,6 +162,7 @@ public class LrdApiController {
 
     @ApiOperation(
         value = "This API will retrieve Region details for the given Region description",
+        notes = "No roles required to access this API",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
