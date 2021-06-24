@@ -20,7 +20,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 @ActiveProfiles("functional")
 public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
 
-    public static final String mapKey = "LrdApiController.retriveRegionDetails";
+    public static final String mapKey = "LrdApiController.retrieveRegionDetails";
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)

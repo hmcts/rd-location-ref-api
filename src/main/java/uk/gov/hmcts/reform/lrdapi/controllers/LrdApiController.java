@@ -192,7 +192,7 @@ public class LrdApiController {
         path = "/region",
         produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> retriveRegionDetails(
+    public ResponseEntity<Object> retrieveRegionDetails(
         @RequestParam(value = "region", required = false) String region) {
 
         if (isBlank(region)) {

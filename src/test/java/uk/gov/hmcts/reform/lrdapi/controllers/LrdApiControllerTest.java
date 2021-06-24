@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
-import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
@@ -313,7 +312,7 @@ public class LrdApiControllerTest {
     @Test
     public void testGetRegionDetails_ByDescription_Returns200() {
         ResponseEntity<Object> responseEntity =
-            lrdApiController.retriveRegionDetails("London");
+            lrdApiController.retrieveRegionDetails("London");
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -323,7 +322,7 @@ public class LrdApiControllerTest {
     @Test(expected = InvalidRequestException.class)
     public void testGetRegionDetails_ByMissingDescription_Returns400() {
         ResponseEntity<Object> responseEntity =
-            lrdApiController.retriveRegionDetails("");
+            lrdApiController.retrieveRegionDetails("");
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
