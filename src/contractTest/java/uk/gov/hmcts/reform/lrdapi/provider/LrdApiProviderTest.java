@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
+import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdServiceImpl;
 
 import java.time.LocalDateTime;
@@ -52,6 +53,9 @@ public class LrdApiProviderTest {
 
     @MockBean
     ILrdBuildingLocationService lrdBuildingLocationService;
+
+    @MockBean
+    RegionService regionService;
 
     @MockBean
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
