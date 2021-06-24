@@ -22,7 +22,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public static final String HTTP_STATUS = "http_status";
 
     @Test
-    public void returnsRegionDetailsByDescriptionWithStatusCode200() throws JsonProcessingException {
+    public void returnsRegionDetailsByDescriptionWithStatusCode_200() throws JsonProcessingException {
 
         LrdRegionResponse response = (LrdRegionResponse)
             lrdApiClient.findRegionDetailsByDescription("London", LrdRegionResponse.class);
@@ -39,6 +39,16 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
 
 
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void doesNotReturnRegionDetailsByMissingDescriptionWithStatusCode_400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findRegionDetailsByDescription("", ErrorResponse.class);
+
+
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
     }
 
     private void responseVerification(LrdRegionResponse response) {
