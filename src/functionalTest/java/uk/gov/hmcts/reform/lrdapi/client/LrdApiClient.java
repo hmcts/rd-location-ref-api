@@ -79,7 +79,7 @@ public class LrdApiClient {
 
     public Object retrieveRegionInfo(HttpStatus expectedStatus, String param) {
         Response response = getMultipleAuthHeaders()
-            .get(BASE_URL + "/region" + param)
+            .get(BASE_URL + "/region?region=" + param)
             .andReturn();
 
         response.then()

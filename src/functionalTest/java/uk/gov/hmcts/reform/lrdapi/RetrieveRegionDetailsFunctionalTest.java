@@ -55,7 +55,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
     private void responseVerification(LrdRegionResponse response) {
         assertThat(response.getRegionId()).isEqualTo("2");
         assertThat(response.getDescription()).isEqualTo("London");
-        assertThat(response.getWelshDescription()).isEqualTo("");
+        assertThat(response.getWelshDescription()).isNull();
     }
 
 }
