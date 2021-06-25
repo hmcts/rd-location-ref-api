@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
-import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
@@ -26,8 +24,11 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 import java.util.List;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
 
 @RequestMapping(
     path = "/refdata/location"
@@ -35,11 +36,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Slf4j
 public class LrdApiController {
-
-    private static final String AlphaNumericRegex = "[0-9a-zA-Z_]+";
-
-    private static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
-        + "Invalid epims id(s): %s  passed.";
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -142,16 +138,16 @@ public class LrdApiController {
         @RequestParam(value = "epimms_id", required = false) String epimsIds) {
 
         log.info("{} : Obtaining building locations for epim id(s): {}", loggingComponentName, epimsIds);
-        if (isEmpty(epimsIds) || epimsIds.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
+        if (isEmpty(epimsIds) || epimsIds.strip().equalsIgnoreCase(ALL)) {
             return getAllBuildingLocations();
         }
         List<String> epimsIdList = ValidationUtils
             .checkIfValidCsvIdentifiersAndReturnList(epimsIds, EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
-        if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
+        if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, ALL)) {
             return getAllBuildingLocations();
         }
         ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
-                                                                      AlphaNumericRegex, log,
+                                                                      ALPHA_NUMERIC_REGEX, log,
                                                                       loggingComponentName,
                                                                       EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
         );
@@ -198,9 +194,7 @@ public class LrdApiController {
     public ResponseEntity<Object> retrieveRegionDetails(
         @RequestParam(value = "region", required = false) String region) {
 
-        if (isBlank(region)) {
-            throw new InvalidRequestException("No description provided");
-        }
+        checkRegionDescriptionIsValid(region);
 
         LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
 
