@@ -22,7 +22,7 @@ public class RegionServiceImpl implements RegionService {
         Region region = regionRepository.findByDescriptionIgnoreCase(description);
 
         if (isEmpty(region)) {
-            throw new ResourceNotFoundException("No Region found with the given description");
+            throw new ResourceNotFoundException("No Region found with the given description: " + description);
         }
 
         return new LrdRegionResponse(region);
