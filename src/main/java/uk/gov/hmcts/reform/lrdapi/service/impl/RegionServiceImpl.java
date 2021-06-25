@@ -19,7 +19,7 @@ public class RegionServiceImpl implements RegionService {
     RegionRepository regionRepository;
 
     public LrdRegionResponse retrieveRegionByRegionDescription(String description) {
-        Region region = regionRepository.findByDescription(description);
+        Region region = regionRepository.findByDescriptionIgnoreCase(description);
 
         if (isEmpty(region)) {
             throw new ResourceNotFoundException("No Region found with the given description");

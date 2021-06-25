@@ -7,6 +7,6 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 @Repository
 public interface RegionRepository extends JpaRepository<Region, String> {
 
-    Region findByDescription(String description);
+    Region findByDescriptionIgnoreCase(String description);
 
 }

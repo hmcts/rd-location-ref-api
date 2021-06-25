@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,11 +34,11 @@ public class RegionServiceImplTest {
         when(regionMock.getRegionId()).thenReturn("2");
         when(regionMock.getDescription()).thenReturn("London");
         when(regionMock.getWelshDescription()).thenReturn("Llundain");
-        when(regionRepositoryMock.findByDescription("London")).thenReturn(regionMock);
     }
 
     @Test
     public void testRetrieveRegionByRegionDescription() {
+        when(regionRepositoryMock.findByDescriptionIgnoreCase(any())).thenReturn(regionMock);
 
         LrdRegionResponse response = regionService.retrieveRegionByRegionDescription("London");
 
@@ -46,12 +47,26 @@ public class RegionServiceImplTest {
         assertThat(response.getDescription()).isEqualTo("London");
         assertThat(response.getWelshDescription()).isEqualTo("Llundain");
 
-        verify(regionRepositoryMock, times(1)).findByDescription("London");
+        verify(regionRepositoryMock, times(1)).findByDescriptionIgnoreCase("London");
+    }
+
+    @Test
+    public void testRetrieveRegionByRegionDescriptionCaseInsensitive() {
+        when(regionRepositoryMock.findByDescriptionIgnoreCase(any())).thenReturn(regionMock);
+
+        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription("LoNdOn");
+
+        assertThat(response).isNotNull();
+        assertThat(response.getRegionId()).isEqualTo("2");
+        assertThat(response.getDescription()).isEqualTo("London");
+        assertThat(response.getWelshDescription()).isEqualTo("Llundain");
+
+        verify(regionRepositoryMock, times(1)).findByDescriptionIgnoreCase("LoNdOn");
     }
 
     @Test(expected = ResourceNotFoundException.class)
-    public void testRetrieveRegionByRegionDescriptionThrows404ForInvalidDescription() {
-        regionService.retrieveRegionByRegionDescription("Invalid Description");
+    public void testRetrieveRegionByRegionDescriptionThrows404ForUnknownDescription() {
+        regionService.retrieveRegionByRegionDescription("Unknown Description");
     }
 
 }
