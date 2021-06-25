@@ -77,7 +77,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=", LrdBuildingLocationResponse[].class);
+            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=",
+                                                               LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
         responseVerification(response, LocationRefConstants.ALL);
@@ -193,10 +194,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         LrdBuildingLocationResponse expectedResponse = getBuildingLocationSampleResponse();
 
-        LrdBuildingLocationResponse actualResponse = (LrdBuildingLocationResponse)
-            lrdApiClient
+        LrdBuildingLocationResponse actualResponse =
+            (LrdBuildingLocationResponse) lrdApiClient
                 .findBuildingLocationByGivenQueryParam(
-                    "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE",
+                    "?building_location_name=Building Location A",
                     LrdBuildingLocationResponse.class);
 
         assertNotNull(actualResponse);
@@ -223,15 +224,15 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetailsByBuildingLocationName",
+            "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
             "lrd_location_api"
         );
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam
-                    ("?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE", ErrorResponse.class);
+                .findBuildingLocationByGivenQueryParam(
+                    "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE", ErrorResponse.class);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
@@ -239,15 +240,30 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400ForEmptyBuildingLocationName() throws
+    public void shouldReturn400WhenMoreThanOneQueryParamsPassed() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam("?building_location_name=", ErrorResponse.class);
+                .findBuildingLocationByGivenQueryParam("?building_location_name=test&epimms_id=123456789",
+                    ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldReturnAllBuildingLocationsWithStatus200WhenAllQueryParamsAreEmpty() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam("?building_location_name=&epimms_id=",
+                                                               LrdBuildingLocationResponse[].class);
+
+        assertNotNull(response);
+        responseVerification(response, LocationRefConstants.ALL);
     }
 
     private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
