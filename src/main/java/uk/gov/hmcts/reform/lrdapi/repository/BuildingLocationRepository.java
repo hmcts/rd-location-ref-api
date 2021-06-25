@@ -11,6 +11,6 @@ public interface BuildingLocationRepository extends JpaRepository<BuildingLocati
 
     List<BuildingLocation> findByEpimmsIdIn(List<String> epimmsId);
 
-    BuildingLocation findByBuildingLocationName(String buildingLocationName);
+    BuildingLocation findByBuildingLocationNameIgnoreCase(String buildingLocationName);
 
 }

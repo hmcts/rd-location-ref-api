@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
@@ -85,19 +86,26 @@ public class LrdApiController {
     }
 
     @ApiOperation(
-        value = "This API will retrieve a Building Location details for the provided list of epims IDs. "
-            + "The list of ids are passed as comma separated values. "
+        value = "This API will retrieve the Building Location details for the request param provided"
+            + "For the request param 'epimms_id', the value can be a list of ids are passed as comma separated values. "
             + "If no epims id is passed, this endpoint returns all the available building locations.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
-        }
+        },
+        notes = "Any valid IDAM role is sufficient to access this API \n"
+            + "For the request param 'epimms_id', "
+            + "the value can be a single id for which single LrdBuildingLocationResponse object would be returned or "
+            + "list of ids with comma separated values for which list of LrdBuildingLocationResponse objects would be "
+            + "returned \n"
+            + "For the request param 'building_location_name', the value can be a building location name for which "
+            + "single LrdBuildingLocationResponse object would be returned"
     )
     @ApiResponses({
         @ApiResponse(
             code = 200,
             message = "Successfully retrieved the building Location details",
-            response = LrdOrgInfoServiceResponse[].class,
+            response = LrdBuildingLocationResponse[].class,
             responseContainer = "list"
         ),
         @ApiResponse(

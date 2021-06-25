@@ -51,7 +51,9 @@ public class ValidationUtils {
             .filter(StringUtils::isNotBlank)
             .count();
         if (requestParamSize > 1) {
-            throw new InvalidRequestException(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM);
+            throw new InvalidRequestException(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, params.length,
+                                                            Arrays.toString(params)
+            ));
         }
     }
 

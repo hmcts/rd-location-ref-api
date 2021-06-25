@@ -50,7 +50,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private Object retrieveDetailsByBuildingLocationName(String buildingLocationName) {
-        BuildingLocation buildingLocation = buildingLocationRepository.findByBuildingLocationName(
+        BuildingLocation buildingLocation = buildingLocationRepository.findByBuildingLocationNameIgnoreCase(
             buildingLocationName);
         if (Objects.isNull(buildingLocation)) {
             throw new ResourceNotFoundException(String.format(

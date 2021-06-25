@@ -89,7 +89,8 @@ public class LrdBuildingLocationServiceTest {
     public void test_RetrieveBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
         lrdBuildingLocationService.retrieveBuildingLocationDetails("123", "");
-        verify(buildingLocationRepository, times(0)).findByBuildingLocationName(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
         verify(buildingLocationRepository, times(0)).findAll();
     }
 
@@ -99,14 +100,15 @@ public class LrdBuildingLocationServiceTest {
         lrdBuildingLocationService
             .retrieveBuildingLocationDetails("", "");
         verify(buildingLocationRepository, times(1)).findAll();
-        verify(buildingLocationRepository, times(0)).findByBuildingLocationName(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
         verify(buildingLocationRepository, times(0)).findByEpimmsIdIn(anyList());
     }
 
     @Test
     public void test_RetrieveBuildingLocationsByBuildingLocationName() {
 
-        when(buildingLocationRepository.findByBuildingLocationName("test"))
+        when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase("test"))
             .thenReturn(prepareBuildingLocation().get(0));
 
         LrdBuildingLocationResponse buildingLocation =
@@ -125,14 +127,15 @@ public class LrdBuildingLocationServiceTest {
         assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
         assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
         assertThat(buildingLocation.getAddress()).isEqualTo("address");
-        verify(buildingLocationRepository, times(1)).findByBuildingLocationName("test");
+        verify(buildingLocationRepository, times(1))
+            .findByBuildingLocationNameIgnoreCase("test");
         verify(buildingLocationRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(buildingLocationRepository, times(0)).findAll();
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void shouldThrowResourceNotFoundExceptionForInvalidBuildingLocationName() {
-        when(buildingLocationRepository.findByBuildingLocationName("test"))
+        when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase("test"))
             .thenReturn(null);
 
         lrdBuildingLocationService
