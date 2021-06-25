@@ -16,7 +16,7 @@ public class LocationRefConstants {
         + "Invalid epims id(s): %s  passed.";
     public static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
         + "',' comma and '_' underscore allowed only";
-        public static final String EXCEPTION_MSG_REGION_SPCL_CHAR = "Param contains special characters. "
+    public static final String EXCEPTION_MSG_REGION_SPCL_CHAR = "Param contains special characters. "
         + "Comma, apostrophe and whitespace allowed only";
     public static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
         + "serviceCode, ccdCaseType, ccdServiceNames.";
