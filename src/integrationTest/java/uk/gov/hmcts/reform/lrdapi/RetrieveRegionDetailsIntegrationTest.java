@@ -32,6 +32,16 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     }
 
     @Test
+    public void returnsRegionDetailsByDescriptionCaseInsensitiveWithStatusCode_200() throws JsonProcessingException {
+
+        LrdRegionResponse response = (LrdRegionResponse)
+            lrdApiClient.findRegionDetailsByDescription("LoNdOn", LrdRegionResponse.class);
+
+        assertThat(response).isNotNull();
+        responseVerification(response);
+    }
+
+    @Test
     public void doesNotReturnRegionDetailsByInvalidDescriptionWithStatusCode_404() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
