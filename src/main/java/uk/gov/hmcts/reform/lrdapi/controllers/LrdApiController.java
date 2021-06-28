@@ -127,7 +127,7 @@ public class LrdApiController {
         path = "/building-locations",
         produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
+    public ResponseEntity<Object> retrieveBuildingLocationDetails(
         @RequestParam(value = "epimms_id", required = false) String epimsIds,
         @RequestParam(value = "building_location_name", required = false) String buildingLocationName) {
 

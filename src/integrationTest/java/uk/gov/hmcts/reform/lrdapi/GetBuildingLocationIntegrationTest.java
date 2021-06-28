@@ -177,7 +177,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
+            "LrdApiController.retrieveBuildingLocationDetails",
             "lrd_location_api"
         );
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
@@ -224,7 +224,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
+            "LrdApiController.retrieveBuildingLocationDetails",
             "lrd_location_api"
         );
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);

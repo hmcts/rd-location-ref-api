@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SuppressWarnings("unchecked")
 public class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctionalTest {
 
-    private static final String mapKey = "LrdApiController.retrieveBuildingLocationDetailsByEpimsId";
+    private static final String mapKey = "LrdApiController.retrieveBuildingLocationDetails";
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
