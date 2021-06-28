@@ -86,9 +86,7 @@ public class LrdApiController {
     }
 
     @ApiOperation(
-        value = "This API will retrieve the Building Location details for the request param provided"
-            + "For the request param 'epimms_id', the value can be a list of ids are passed as comma separated values. "
-            + "If no epims id is passed, this endpoint returns all the available building locations.",
+        value = "This API will retrieve the Building Location details for the request param provided",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")

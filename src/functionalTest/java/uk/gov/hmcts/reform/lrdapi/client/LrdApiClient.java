@@ -57,7 +57,8 @@ public class LrdApiClient {
         }
     }
 
-    public Object retrieveBuildingLocationDetailsByEpimsId(HttpStatus expectedStatus, String param) {
+    public Object retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus expectedStatus, String param,
+                                                                   Class<?> clazz) {
         String queryParam = "";
         if (!isEmpty(param)) {
             queryParam = param;
@@ -70,13 +71,17 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return Arrays.asList(response.getBody().as(LrdBuildingLocationResponse[].class));
+            if (clazz.isArray()) {
+                return Arrays.asList(response.getBody().as(clazz));
+            } else {
+                return response.getBody().as(clazz);
+            }
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
     }
 
-    public Response retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(String param) {
+    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoBearerToken(String param) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
             .get(BASE_URL + "/building-locations" + param)
             .andReturn();
@@ -84,7 +89,7 @@ public class LrdApiClient {
         return response;
     }
 
-    public Response retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(String param) {
+    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoS2SToken(String param) {
         Response response = withUnauthenticatedRequest_NoS2SToken()
             .get(BASE_URL + "/building-locations" + param)
             .andReturn();
