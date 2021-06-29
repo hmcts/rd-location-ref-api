@@ -18,6 +18,6 @@ public class LocationRefConstants {
         + "',' comma and '_' underscore allowed only";
     public static final String EXCEPTION_MSG_REGION_SPCL_CHAR = "Param contains special characters. "
         + "Comma, apostrophe and whitespace allowed only";
-    public static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
-        + "serviceCode, ccdCaseType, ccdServiceNames.";
+    public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s params: %s";
+
 }

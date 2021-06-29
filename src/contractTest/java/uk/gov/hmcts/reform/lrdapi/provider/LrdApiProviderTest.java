@@ -40,7 +40,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -51,8 +50,8 @@ import static org.mockito.Mockito.when;
     host = "${PACT_BROKER_URL:localhost}",
     port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
     @VersionSelector(tag = "master")})
-@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class, LrdBuildingLocationServiceImpl.class})
-@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class, RegionServiceImpl.class})
+@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class,
+    LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
 @IgnoreNoPactsToVerify
 public class LrdApiProviderTest {
@@ -62,9 +61,6 @@ public class LrdApiProviderTest {
 
     @MockBean
     RegionRepository regionRepository;
-
-    @MockBean
-    ILrdBuildingLocationService lrdBuildingLocationService;
 
     @MockBean
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;

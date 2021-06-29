@@ -24,9 +24,6 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
 
 @RequestMapping(
@@ -188,13 +185,6 @@ public class LrdApiController {
 
         LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-
-    private ResponseEntity<Object> getAllBuildingLocations() {
-        List<LrdBuildingLocationResponse> response =
-            buildingLocationService.getAllBuildingLocations();
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
