@@ -21,8 +21,10 @@ import uk.gov.hmcts.reform.lrdapi.domain.Jurisdiction;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgBusinessArea;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgSubBusinessArea;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgUnit;
+import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.domain.Service;
 import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
+import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
@@ -50,6 +52,9 @@ public class LrdApiProviderTest {
 
     @MockBean
     ServiceRepository serviceRepository;
+
+    @MockBean
+    RegionRepository regionRepository;
 
     @MockBean
     ILrdBuildingLocationService lrdBuildingLocationService;
@@ -114,5 +119,11 @@ public class LrdApiProviderTest {
             .thenReturn(serviceToCcdCaseTypeAssoc);
         when(serviceToCcdCaseTypeAssocRepositry.findByCcdServiceNameInIgnoreCase(any()))
             .thenReturn(List.of(serviceToCcdCaseTypeAssoc));
+    }
+
+    @State({"Region Details exist"})
+    public void toReturnRegionDetails() {
+        Region region = new Region("2", "London", "");
+        when(regionRepository.findByDescriptionIgnoreCase("London")).thenReturn(region);
     }
 }
