@@ -21,17 +21,11 @@ public class ValidationUtils {
 
     private static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
         + "',' comma and '_' underscore allowed only";
-    private static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
-        + "serviceCode, ccdCaseType, ccdServiceNames.";
+    private static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s params: %s";
 
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
 
-        long requestParamSize = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
-            .filter(StringUtils::isNotBlank)
-            .count();
-        if (requestParamSize > 1) {
-            throw new InvalidRequestException(EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM);
-        }
+        validateInputParamSize(serviceCode, ccdCaseType, ccdServiceNames);
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
             if (StringUtils.startsWith(ccdServiceNames, LocationRefConstants.COMMA)
@@ -50,6 +44,17 @@ public class ValidationUtils {
             checkSpecialCharacters(inputValue);
         }
         return true;
+    }
+
+    public static void validateInputParamSize(String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(StringUtils::isNotBlank)
+            .count();
+        if (requestParamSize > 1) {
+            throw new InvalidRequestException(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, params.length,
+                                                            Arrays.toString(params)
+            ));
+        }
     }
 
     private static void checkSpecialCharacters(String inputValue) {

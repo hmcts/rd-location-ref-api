@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -39,12 +40,14 @@ public class LrdBuildingLocationServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test_RetrieveBuildingLocationsByEpimsIDs_OneIdPassed() {
 
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareBuildingLocation());
 
         List<LrdBuildingLocationResponse> buildingLocations =
-            lrdBuildingLocationService.retrieveBuildingLocationByEpimsIds(getListContainingOneEpimId());
+            (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+                .retrieveBuildingLocationDetails("1", "");
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
@@ -63,33 +66,80 @@ public class LrdBuildingLocationServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test_RetrieveBuildingLocationsByEpimsIDs_MultipleIdsPassed() {
 
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareMultiBuildLocationResponse());
         List<LrdBuildingLocationResponse> buildingLocations =
-            lrdBuildingLocationService.retrieveBuildingLocationByEpimsIds(getListContainingMultipleEpimIds());
+            (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+                .retrieveBuildingLocationDetails("1,2", "");
         verifyMultiResponse(buildingLocations);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testGetAllBuildingLocations() {
         when(buildingLocationRepository.findAll()).thenReturn(prepareMultiBuildLocationResponse());
-        List<LrdBuildingLocationResponse> buildingLocations = lrdBuildingLocationService.getAllBuildingLocations();
+        List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
+            lrdBuildingLocationService.retrieveBuildingLocationDetails("", "");
         verifyMultiResponse(buildingLocations);
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void test_RetrieveBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
-        lrdBuildingLocationService.retrieveBuildingLocationByEpimsIds(getListContainingOneEpimId());
-        verify(buildingLocationRepository.findByEpimmsIdIn(anyList()), times(1));
+        lrdBuildingLocationService.retrieveBuildingLocationDetails("123", "");
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void test_GetAllBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findAll()).thenReturn(null);
-        lrdBuildingLocationService.getAllBuildingLocations();
-        verify(buildingLocationRepository.findAll(), times(1));
+        lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "");
+        verify(buildingLocationRepository, times(1)).findAll();
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findByEpimmsIdIn(anyList());
+    }
+
+    @Test
+    public void test_RetrieveBuildingLocationsByBuildingLocationName() {
+
+        when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase("test"))
+            .thenReturn(prepareBuildingLocation().get(0));
+
+        LrdBuildingLocationResponse buildingLocation =
+            (LrdBuildingLocationResponse) lrdBuildingLocationService
+                .retrieveBuildingLocationDetails("", "test");
+
+        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+        assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
+        assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
+        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
+        assertThat(buildingLocation.getArea()).isEqualTo("area");
+        assertThat(buildingLocation.getRegionId()).isEqualTo("regionId");
+        assertThat(buildingLocation.getRegion()).isEqualTo("region");
+        assertThat(buildingLocation.getClusterId()).isEqualTo("clusterId");
+        assertThat(buildingLocation.getClusterName()).isEqualTo("cluster name");
+        assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
+        assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
+        assertThat(buildingLocation.getAddress()).isEqualTo("address");
+        verify(buildingLocationRepository, times(1))
+            .findByBuildingLocationNameIgnoreCase("test");
+        verify(buildingLocationRepository, times(0)).findByEpimmsIdIn(anyList());
+        verify(buildingLocationRepository, times(0)).findAll();
+    }
+
+    @Test(expected = ResourceNotFoundException.class)
+    public void shouldThrowResourceNotFoundExceptionForInvalidBuildingLocationName() {
+        when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase("test"))
+            .thenReturn(null);
+
+        lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "test");
     }
 
     private void verifyMultiResponse(List<LrdBuildingLocationResponse> buildingLocations) {
@@ -124,19 +174,6 @@ public class LrdBuildingLocationServiceTest {
                 assertThat(buildingLocation.getAddress()).isEqualTo("address 2");
             }
         });
-    }
-
-    private List<String> getListContainingOneEpimId() {
-        var epimIdList = new ArrayList<String>();
-        epimIdList.add("1");
-        return epimIdList;
-    }
-
-    private List<String> getListContainingMultipleEpimIds() {
-        var epimIdList = new ArrayList<String>();
-        epimIdList.addAll(getListContainingOneEpimId());
-        epimIdList.add("2");
-        return epimIdList;
     }
 
     private List<BuildingLocation> prepareBuildingLocation() {

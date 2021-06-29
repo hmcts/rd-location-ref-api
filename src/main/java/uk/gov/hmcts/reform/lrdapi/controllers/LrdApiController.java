@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
@@ -22,7 +21,6 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
 
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequestMapping(
@@ -31,11 +29,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @Slf4j
 public class LrdApiController {
-
-    private static final String AlphaNumericRegex = "[0-9a-zA-Z_]+";
-
-    private static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
-        + "Invalid epims id(s): %s  passed.";
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -93,19 +86,24 @@ public class LrdApiController {
     }
 
     @ApiOperation(
-        value = "This API will retrieve a Building Location details for the provided list of epims IDs. "
-            + "The list of ids are passed as comma separated values. "
-            + "If no epims id is passed, this endpoint returns all the available building locations.",
+        value = "This API will retrieve the Building Location details for the request param provided",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
-        }
+        },
+        notes = "Any valid IDAM role is sufficient to access this API \n"
+            + "For the request param 'epimms_id', "
+            + "the value can be a single id for which single LrdBuildingLocationResponse object would be returned or "
+            + "list of ids with comma separated values for which list of LrdBuildingLocationResponse objects would be "
+            + "returned \n"
+            + "For the request param 'building_location_name', the value can be a building location name for which "
+            + "single LrdBuildingLocationResponse object would be returned"
     )
     @ApiResponses({
         @ApiResponse(
             code = 200,
             message = "Successfully retrieved the building Location details",
-            response = LrdOrgInfoServiceResponse[].class,
+            response = LrdBuildingLocationResponse[].class,
             responseContainer = "list"
         ),
         @ApiResponse(
@@ -129,31 +127,13 @@ public class LrdApiController {
         path = "/building-locations",
         produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> retrieveBuildingLocationDetailsByEpimsId(
-        @RequestParam(value = "epimms_id", required = false) String epimsIds) {
+    public ResponseEntity<Object> retrieveBuildingLocationDetails(
+        @RequestParam(value = "epimms_id", required = false) String epimsIds,
+        @RequestParam(value = "building_location_name", required = false) String buildingLocationName) {
 
-        log.info("{} : Obtaining building locations for epim id(s): {}", loggingComponentName, epimsIds);
-        if (isEmpty(epimsIds) || epimsIds.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
-            return getAllBuildingLocations();
-        }
-        List<String> epimsIdList = ValidationUtils
-            .checkIfValidCsvIdentifiersAndReturnList(epimsIds, EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
-        if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
-            return getAllBuildingLocations();
-        }
-        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
-                                                                      AlphaNumericRegex, log,
-                                                                      loggingComponentName,
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
-        List<LrdBuildingLocationResponse> response =
-            buildingLocationService.retrieveBuildingLocationByEpimsIds(epimsIdList);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    private ResponseEntity<Object> getAllBuildingLocations() {
-        List<LrdBuildingLocationResponse> response =
-            buildingLocationService.getAllBuildingLocations();
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        ValidationUtils.validateInputParamSize(epimsIds, buildingLocationName);
+        Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds, buildingLocationName);
+        return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
     }
 
 }
