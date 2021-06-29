@@ -30,12 +30,7 @@ public class ValidationUtils {
 
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
 
-        long requestParamSize = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
-            .filter(StringUtils::isNotBlank)
-            .count();
-        if (requestParamSize > 1) {
-            throw new InvalidRequestException(EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM);
-        }
+        validateInputParamSize(serviceCode, ccdCaseType, ccdServiceNames);
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
             if (StringUtils.startsWith(ccdServiceNames, COMMA)
@@ -54,6 +49,17 @@ public class ValidationUtils {
             checkSpecialCharacters(inputValue);
         }
         return true;
+    }
+
+    public static void validateInputParamSize(String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(StringUtils::isNotBlank)
+            .count();
+        if (requestParamSize > 1) {
+            throw new InvalidRequestException(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, params.length,
+                                                            Arrays.toString(params)
+            ));
+        }
     }
 
     private static void checkSpecialCharacters(String inputValue) {

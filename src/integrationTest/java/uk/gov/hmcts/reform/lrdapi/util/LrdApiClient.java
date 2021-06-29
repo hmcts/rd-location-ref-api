@@ -88,6 +88,10 @@ public class LrdApiClient {
     public Object findBuildingLocationByEpimmId(String epimmId, Class clazz) throws JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(
             APP_BASE_PATH + "/building-locations" + epimmId, clazz, "");
+    public Object findBuildingLocationByGivenQueryParam(String queryParam, Class<?> clazz)
+        throws JsonProcessingException {
+        ResponseEntity<Object> responseEntity =
+            getRequest(BUILDING_LOCATION_API_STR + queryParam, clazz, "");
         return mapBuildingLocationResponse(responseEntity, clazz);
     }
 
@@ -133,9 +137,14 @@ public class LrdApiClient {
         throws JsonProcessingException {
 
         HttpStatus status = responseEntity.getStatusCode();
+
         if (status.is2xxSuccessful()) {
-            return Arrays.asList((LrdBuildingLocationResponse[])
-                                     objectMapper.convertValue(responseEntity.getBody(), clazz));
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdBuildingLocationResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(

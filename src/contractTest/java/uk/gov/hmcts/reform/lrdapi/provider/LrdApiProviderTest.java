@@ -17,6 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.LrdApiController;
+import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
+import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.Jurisdiction;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgBusinessArea;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgSubBusinessArea;
@@ -24,10 +26,11 @@ import uk.gov.hmcts.reform.lrdapi.domain.OrgUnit;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.domain.Service;
 import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
+import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
-import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
+import uk.gov.hmcts.reform.lrdapi.service.impl.LrdBuildingLocationServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.service.impl.RegionServiceImpl;
 
@@ -38,6 +41,8 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -46,6 +51,7 @@ import static org.mockito.Mockito.when;
     host = "${PACT_BROKER_URL:localhost}",
     port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
     @VersionSelector(tag = "master")})
+@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class, LrdBuildingLocationServiceImpl.class})
 @ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class, RegionServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
 @IgnoreNoPactsToVerify
@@ -62,6 +68,9 @@ public class LrdApiProviderTest {
 
     @MockBean
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
+
+    @MockBean
+    BuildingLocationRepository buildingLocationRepository;
 
     @Autowired
     LrdApiController lrdApiController;
@@ -117,6 +126,42 @@ public class LrdApiProviderTest {
             .thenReturn(serviceToCcdCaseTypeAssoc);
         when(serviceToCcdCaseTypeAssocRepositry.findByCcdServiceNameInIgnoreCase(any()))
             .thenReturn(List.of(serviceToCcdCaseTypeAssoc));
+    }
+
+    @State({"Building Location details exist for the request provided"})
+    public void toReturnBuildingLocationDetails() {
+        Cluster cluster = new Cluster();
+        cluster.setClusterId("456");
+        cluster.setClusterName("ClusterXYZ");
+        cluster.setWelshClusterName("ClusterABC");
+        cluster.setCreatedTime(LocalDateTime.now());
+        cluster.setUpdatedTime(LocalDateTime.now());
+
+        Region region = new Region();
+        region.setCreatedTime(LocalDateTime.now());
+        region.setDescription("Region XYZ");
+        region.setRegionId("123");
+        region.setUpdatedTime(LocalDateTime.now());
+        region.setWelshDescription("Region ABC");
+
+        BuildingLocation buildingLocation = BuildingLocation.builder()
+            .buildingLocationStatus("OPEN")
+            .area("Area 1")
+            .buildingLocationId("123")
+            .buildingLocationName("Taylor House Tribunal Hearing Centre")
+            .courtFinderUrl("https://testUrl.com")
+            .created(LocalDateTime.now())
+            .epimmsId("4567")
+            .lastUpdated(LocalDateTime.now())
+            .postcode("XY2 YY3")
+            .region(region)
+            .cluster(cluster)
+            .address("Address 123")
+            .build();
+
+        when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase(anyString())).thenReturn(buildingLocation);
+        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(buildingLocation));
+        when(buildingLocationRepository.findAll()).thenReturn(List.of(buildingLocation));
     }
 
     @State({"Region Details exist"})
