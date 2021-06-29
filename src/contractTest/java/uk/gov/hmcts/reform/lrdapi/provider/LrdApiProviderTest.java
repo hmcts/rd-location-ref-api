@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.LrdApiController;
+import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Jurisdiction;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgBusinessArea;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgSubBusinessArea;
@@ -28,8 +29,8 @@ import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
-import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdServiceImpl;
+import uk.gov.hmcts.reform.lrdapi.service.impl.RegionServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -45,7 +47,7 @@ import static org.mockito.Mockito.when;
     host = "${PACT_BROKER_URL:localhost}",
     port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
     @VersionSelector(tag = "master")})
-@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class})
+@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class, RegionServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
 @IgnoreNoPactsToVerify
 public class LrdApiProviderTest {
@@ -58,9 +60,6 @@ public class LrdApiProviderTest {
 
     @MockBean
     ILrdBuildingLocationService lrdBuildingLocationService;
-
-    @MockBean
-    RegionService regionService;
 
     @MockBean
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
@@ -124,6 +123,6 @@ public class LrdApiProviderTest {
     @State({"Region Details exist"})
     public void toReturnRegionDetails() {
         Region region = new Region("2", "London", "");
-        when(regionRepository.findByDescriptionIgnoreCase("London")).thenReturn(region);
+        when(regionRepository.findByDescriptionIgnoreCase(anyString())).thenReturn(region);
     }
 }
