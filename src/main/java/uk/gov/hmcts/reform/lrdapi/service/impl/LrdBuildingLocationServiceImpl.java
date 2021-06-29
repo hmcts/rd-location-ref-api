@@ -18,7 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.AlphaNumericRegex;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 
 
@@ -71,7 +71,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             return getAllBuildingLocations();
         }
         ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
-                                                                      AlphaNumericRegex, log,
+                                                                      ALPHA_NUMERIC_REGEX, log,
                                                                       loggingComponentName,
                                                                       EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
         );

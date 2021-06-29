@@ -9,6 +9,7 @@ import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
 import java.io.IOException;
@@ -75,6 +76,21 @@ public class LrdApiClient {
             } else {
                 return response.getBody().as(clazz);
             }
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
+    public Object retrieveRegionInfo(HttpStatus expectedStatus, String param) {
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/region?region=" + param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return response.getBody().as(LrdRegionResponse.class);
         } else {
             return response.getBody().as(ErrorResponse.class);
         }

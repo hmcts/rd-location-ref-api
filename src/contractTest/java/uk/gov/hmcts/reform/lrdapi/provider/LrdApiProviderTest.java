@@ -27,10 +27,12 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.domain.Service;
 import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdBuildingLocationServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdServiceImpl;
+import uk.gov.hmcts.reform.lrdapi.service.impl.RegionServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -48,13 +50,17 @@ import static org.mockito.Mockito.when;
     host = "${PACT_BROKER_URL:localhost}",
     port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
     @VersionSelector(tag = "master")})
-@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class, LrdBuildingLocationServiceImpl.class})
+@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class,
+    LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
 @IgnoreNoPactsToVerify
 public class LrdApiProviderTest {
 
     @MockBean
     ServiceRepository serviceRepository;
+
+    @MockBean
+    RegionRepository regionRepository;
 
     @MockBean
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
@@ -152,5 +158,11 @@ public class LrdApiProviderTest {
         when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase(anyString())).thenReturn(buildingLocation);
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(buildingLocation));
         when(buildingLocationRepository.findAll()).thenReturn(List.of(buildingLocation));
+    }
+
+    @State({"Region Details exist"})
+    public void toReturnRegionDetails() {
+        Region region = new Region("2", "London", "");
+        when(regionRepository.findByDescriptionIgnoreCase(anyString())).thenReturn(region);
     }
 }

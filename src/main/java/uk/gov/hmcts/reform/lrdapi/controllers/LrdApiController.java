@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
+import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
 
 @RequestMapping(
     path = "/refdata/location"
@@ -39,8 +42,12 @@ public class LrdApiController {
     @Autowired
     ILrdBuildingLocationService buildingLocationService;
 
+    @Autowired
+    RegionService regionService;
+
     @ApiOperation(
         value = "This API will retrieve service code details association with ccd case type",
+        notes = "No roles required to access this API",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -134,6 +141,51 @@ public class LrdApiController {
         ValidationUtils.validateInputParamSize(epimsIds, buildingLocationName);
         Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds, buildingLocationName);
         return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+    }
+
+    @ApiOperation(
+        value = "This API will retrieve Region details for the given Region description",
+        notes = "No roles required to access this API",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            response = LrdRegionResponse.class
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No Service found with the given ID"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
+    })
+    @GetMapping(
+        path = "/region",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retrieveRegionDetails(
+        @RequestParam(value = "region", required = false) String region) {
+
+        checkRegionDescriptionIsValid(region);
+
+        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
