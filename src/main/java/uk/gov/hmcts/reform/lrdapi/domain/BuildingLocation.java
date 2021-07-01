@@ -51,10 +51,9 @@ public class BuildingLocation implements Serializable {
     @Column(name = "updated_time")
     private LocalDateTime lastUpdated;
 
-    @Size(max = 16)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "building_location_status_id")
-    private BuildingLocationStatus buildingLocationStatus;
+    @Size(max = 32)
+    @Column(name = "building_location_status")
+    private String buildingLocationStatus;
 
     @Column(name = "area")
     @Size(max = 16)

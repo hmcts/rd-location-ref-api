@@ -33,8 +33,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.JwtTokenUtil.generateToken;
 @PropertySource(value = "/integrationTest/resources/application-test.yml")
 public class LrdApiClient {
 
-    private static final String APP_BASE_PATH = "/refdata/location/orgServices";
-    private static final String BUILDING_LOCATION_API_STR = "/refdata/location/building-locations";
+    private static final String APP_BASE_PATH = "/refdata/location";
 
     private static  String JWT_TOKEN = null;
     private final Integer lrdApiPort;
@@ -58,37 +57,46 @@ public class LrdApiClient {
 
     public Object findOrgServiceDetailsByServiceCode(String serviceCode, Class expectedClass) throws
         JsonProcessingException {
-        ResponseEntity<Object> responseEntity = getRequest(APP_BASE_PATH + "?serviceCode={serviceCode}",
-                                                           expectedClass, serviceCode);
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/orgServices?serviceCode={serviceCode}", expectedClass, serviceCode);
         return mapApiResponse(responseEntity,expectedClass);
     }
 
     public Object findOrgServiceDetailsByCcdCaseType(String ccdCaseType, Class expectedClass) throws
         JsonProcessingException {
 
-        ResponseEntity<Object> responseEntity = getRequest(APP_BASE_PATH + "?ccdCaseType={ccdCaseType}",
-                                                           expectedClass, ccdCaseType);
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/orgServices?ccdCaseType={ccdCaseType}", expectedClass, ccdCaseType);
         return mapApiResponse(responseEntity,expectedClass);
     }
 
     public Object findOrgServiceDetailsByCcdServiceName(String ccdServiceNames, Class expectedClass) throws
         JsonProcessingException {
 
-        ResponseEntity<Object> responseEntity = getRequest(APP_BASE_PATH + "?ccdServiceNames={ccdServiceNames}",
-                                                           expectedClass, ccdServiceNames);
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/orgServices?ccdServiceNames={ccdServiceNames}", expectedClass, ccdServiceNames);
         return mapApiResponse(responseEntity,expectedClass);
     }
 
     public Object findOrgServiceDetailsByDefaultAll(Class expectedClass) throws
         JsonProcessingException {
-        ResponseEntity<Object> responseEntity = getRequest(APP_BASE_PATH,
-                                                           expectedClass, "");
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/orgServices", expectedClass, "");
         return mapApiResponse(responseEntity,expectedClass);
     }
 
-    public Object findBuildingLocationByEpimmId(String epimmId, Class clazz) throws JsonProcessingException {
-        ResponseEntity<Object> responseEntity = getRequest(BUILDING_LOCATION_API_STR + epimmId, clazz, "");
+    public Object findBuildingLocationByGivenQueryParam(String queryParam, Class<?> clazz)
+        throws JsonProcessingException {
+        ResponseEntity<Object> responseEntity =
+            getRequest(APP_BASE_PATH + "/building-locations" + queryParam, clazz, "");
         return mapBuildingLocationResponse(responseEntity, clazz);
+    }
+
+    public Object findRegionDetailsByDescription(String region, Class expectedClass) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/region?region={region}", expectedClass, region);
+        return mapRegionResponse(responseEntity,expectedClass);
     }
 
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
@@ -107,13 +115,33 @@ public class LrdApiClient {
         }
     }
 
+    private Object mapRegionResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
+        JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+        if (status.is2xxSuccessful()) {
+            return objectMapper.convertValue(responseEntity.getBody(), expectedClass);
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+    }
+
     private Object mapBuildingLocationResponse(ResponseEntity<Object> responseEntity, Class clazz)
         throws JsonProcessingException {
 
         HttpStatus status = responseEntity.getStatusCode();
+
         if (status.is2xxSuccessful()) {
-            return Arrays.asList((LrdBuildingLocationResponse[])
-                                     objectMapper.convertValue(responseEntity.getBody(), clazz));
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdBuildingLocationResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
