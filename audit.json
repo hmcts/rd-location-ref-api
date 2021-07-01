@@ -23,5 +23,20 @@
   "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/orgServices?ccdCaseType=ccdCaseType&ccdServiceNames=ccdServiceNames&serviceCode=serviceCode_GET": "ignore",
   "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/orgServices?ccdCaseType=ccdCaseType&ccdServiceNames=ccdServiceNames&serviceCode=serviceCode_GET" : "ignore",
   "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/_GET" : "ignore",
-  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore"
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/v2/api-docs_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?epimms_id=epimms_id_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?epimms_id=epimms_id_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?epimms_id=epimms_id_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?epimms_id=epimms_id_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?epimms_id=epimms_id_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore"
 }

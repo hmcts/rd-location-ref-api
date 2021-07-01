@@ -9,11 +9,13 @@ import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -24,6 +26,7 @@ public class LrdApiClient {
 
     private static final String SERVICE_HEADER = "ServiceAuthorization";
     private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BASE_URL = "/refdata/location";
 
     private final String lrdApiUrl;
     private  String s2sToken;
@@ -41,7 +44,7 @@ public class LrdApiClient {
 
     public Object retrieveOrgServiceInfo(HttpStatus expectedStatus, String param) {
         Response response = getMultipleAuthHeaders()
-            .get("/refdata/location/orgServices" + param)
+            .get(BASE_URL + "/orgServices" + param)
             .andReturn();
 
         response.then()
@@ -52,6 +55,61 @@ public class LrdApiClient {
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
+    }
+
+    public Object retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus expectedStatus, String param,
+                                                                   Class<?> clazz) {
+        String queryParam = "";
+        if (!isEmpty(param)) {
+            queryParam = param;
+        }
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/building-locations" + queryParam)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            if (clazz.isArray()) {
+                return Arrays.asList(response.getBody().as(clazz));
+            } else {
+                return response.getBody().as(clazz);
+            }
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
+    public Object retrieveRegionInfo(HttpStatus expectedStatus, String param) {
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/region?region=" + param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return response.getBody().as(LrdRegionResponse.class);
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
+    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoBearerToken(String param) {
+        Response response = withUnauthenticatedRequest_NoBearerToken()
+            .get(BASE_URL + "/building-locations" + param)
+            .andReturn();
+
+        return response;
+    }
+
+    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoS2SToken(String param) {
+        Response response = withUnauthenticatedRequest_NoS2SToken()
+            .get(BASE_URL + "/building-locations" + param)
+            .andReturn();
+
+        return response;
     }
 
     public String getWelcomePage() {
@@ -66,7 +124,7 @@ public class LrdApiClient {
             .asString();
     }
 
-    private RequestSpecification withUnauthenticatedRequest() {
+    public RequestSpecification withUnauthenticatedRequest() {
         return SerenityRest.given()
             .relaxedHTTPSValidation()
             .baseUri(lrdApiUrl)
@@ -74,6 +132,23 @@ public class LrdApiClient {
             .header("Accepts", APPLICATION_JSON_VALUE);
     }
 
+    public RequestSpecification withUnauthenticatedRequest_NoBearerToken() {
+        return SerenityRest.given()
+            .relaxedHTTPSValidation()
+            .baseUri(lrdApiUrl)
+            .header("Content-Type", APPLICATION_JSON_VALUE)
+            .header("Accepts", APPLICATION_JSON_VALUE)
+            .header(SERVICE_HEADER, "Bearer " + s2sToken);
+    }
+
+    private RequestSpecification withUnauthenticatedRequest_NoS2SToken() {
+        return SerenityRest.with()
+            .relaxedHTTPSValidation()
+            .baseUri(lrdApiUrl)
+            .header("Content-Type", APPLICATION_JSON_VALUE)
+            .header("Accepts", APPLICATION_JSON_VALUE)
+            .header(AUTHORIZATION_HEADER, "Bearer " + idamOpenIdClient.getOpenIdToken());
+    }
 
     public RequestSpecification getMultipleAuthHeaders() {
         return SerenityRest.with()
