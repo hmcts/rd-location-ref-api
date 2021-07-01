@@ -16,8 +16,8 @@ import uk.gov.hmcts.reform.lrdapi.service.LrdService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 
@@ -37,9 +37,9 @@ public class LrdServiceImpl implements LrdService {
     @Override
     public List<LrdOrgInfoServiceResponse> retrieveOrgServiceDetails(String serviceCode,
                                                                      String ccdCaseType, String ccdServiceNames) {
-        Service servicePojo = null;
-        ServiceToCcdCaseTypeAssoc serToCcdCaseType = null;
-        List<Service> services = null;
+        Service servicePojo;
+        ServiceToCcdCaseTypeAssoc serToCcdCaseType;
+        List<Service> services;
         final List<LrdOrgInfoServiceResponse> orgInfoServiceResponses = new ArrayList<>();
         if (StringUtils.isNotBlank(serviceCode)) {
 
@@ -62,12 +62,16 @@ public class LrdServiceImpl implements LrdService {
                 .findByCcdServiceNameInIgnoreCase(serviceNameList
                                                       .stream()
                                                       .map(String::trim)
-                                                      .collect(Collectors.toList()));
+                                                      .collect(toList()));
 
             if (CollectionUtils.isEmpty(serviceToCcdCaseTypeAssocs)) {
                 throw new EmptyResultDataAccessException(1);
             }
-            serviceToCcdCaseTypeAssocs.forEach(association ->
+
+            List<ServiceToCcdCaseTypeAssoc> distinctAssociations =
+                serviceToCcdCaseTypeAssocs.stream().distinct().collect(toList());
+
+            distinctAssociations.forEach(association ->
                                                    orgInfoServiceResponses.add(
                                                        new LrdOrgInfoServiceResponse(association.getService())));
 
@@ -78,9 +82,9 @@ public class LrdServiceImpl implements LrdService {
             if (null == services) {
                 throw new EmptyResultDataAccessException(1);
             }
-            services.forEach(service -> {
-                orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(service));
-            });
+            services.forEach(service ->
+                orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(service))
+            );
 
         }
         return orgInfoServiceResponses;

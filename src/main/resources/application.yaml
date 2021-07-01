@@ -15,13 +15,14 @@ management:
 spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         default_schema: locrefdata
         jdbc:
           lob:
             non_contextual_creation: true
+          time_zone: UTC
 
   main:
     allow-bean-definition-overriding: true
@@ -60,6 +61,8 @@ spring:
       poolName: LRDHikariCP
       maxLifetime: 1800000
       connectionTimeout: 30000
+  config:
+    import: "optional:configtree:/mnt/secrets/rd/"
 
 security:
   anonymousPaths:

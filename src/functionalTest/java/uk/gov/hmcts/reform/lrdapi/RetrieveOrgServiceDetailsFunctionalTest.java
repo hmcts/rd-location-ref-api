@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.SPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner.getFeatureFlagName;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
@@ -58,7 +57,7 @@ public class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFuncti
                 HttpStatus.OK,
                 "?ccdServiceNames=cMc"
             );
-        assertThat(responses.size()).isEqualTo(2);
+        assertThat(responses.size()).isEqualTo(1);
     }
 
     @SuppressWarnings("unchecked")
@@ -75,7 +74,7 @@ public class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFuncti
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = false)
     public void should_retrieve_403_when_Api_toggled_off() {
-        String exceptionMessage = getFeatureFlagName().concat(SPACE).concat(FORBIDDEN_EXCEPTION_LD);
+        String exceptionMessage = getFeatureFlagName().concat(" ").concat(FORBIDDEN_EXCEPTION_LD);
         validateErrorResponse(
             (ErrorResponse) lrdApiClient.retrieveOrgServiceInfo(
                 HttpStatus.FORBIDDEN, ""),
@@ -100,11 +99,5 @@ public class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFuncti
             assertThat(response.getCcdCaseTypes().size()).isPositive();
 
         });
-    }
-
-    public void validateErrorResponse(ErrorResponse errorResponse, String expectedErrorMessage,
-                                      String expectedErrorDescription) {
-        assertThat(errorResponse.getErrorDescription()).isEqualTo(expectedErrorDescription);
-        assertThat(errorResponse.getErrorMessage()).isEqualTo(expectedErrorMessage);
     }
 }
