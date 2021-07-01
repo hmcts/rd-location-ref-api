@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.lrdapi.util;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
-import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,32 +12,32 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.logging.log4j.util.Strings.isBlank;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_REGION_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
+
 public class ValidationUtils {
 
     private ValidationUtils() {
 
     }
 
-    private static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
-        + "',' comma and '_' underscore allowed only";
-    private static final String EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM = "Please provide only 1 of 3 params: "
-        + "serviceCode, ccdCaseType, ccdServiceNames.";
-
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
 
-        long requestParamSize = Stream.of(serviceCode, ccdCaseType, ccdServiceNames)
-            .filter(StringUtils::isNotBlank)
-            .count();
-        if (requestParamSize > 1) {
-            throw new InvalidRequestException(EXCEPTION_MSG_ONLY_ONE_OF_THREE_PARAM);
-        }
+        validateInputParamSize(serviceCode, ccdCaseType, ccdServiceNames);
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
-            if (StringUtils.startsWith(ccdServiceNames, LocationRefConstants.COMMA)
-                || StringUtils.endsWith(ccdServiceNames, LocationRefConstants.COMMA)) {
+            if (StringUtils.startsWith(ccdServiceNames, COMMA)
+                || StringUtils.endsWith(ccdServiceNames, COMMA)) {
                 throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
             }
-            for (String str : ccdServiceNames.trim().split(LocationRefConstants.REG_EXP_COMMA_DILIMETER)) {
+            for (String str : ccdServiceNames.trim().split(REG_EXP_COMMA_DILIMETER)) {
                 if (StringUtils.isEmpty(str.trim())) {
                     throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
                 }
@@ -52,10 +51,21 @@ public class ValidationUtils {
         return true;
     }
 
+    public static void validateInputParamSize(String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(StringUtils::isNotBlank)
+            .count();
+        if (requestParamSize > 1) {
+            throw new InvalidRequestException(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, params.length,
+                                                            Arrays.toString(params)
+            ));
+        }
+    }
+
     private static void checkSpecialCharacters(String inputValue) {
         inputValue = StringUtils.trim(inputValue);
-        if (Pattern.compile(LocationRefConstants.REG_EXP_WHITE_SPACE).matcher(inputValue).find()
-            || !Pattern.compile(LocationRefConstants.REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
+        if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
+            || !Pattern.compile(REG_EXP_SPCL_CHAR).matcher(inputValue).matches()) {
             throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
         }
     }
@@ -65,14 +75,14 @@ public class ValidationUtils {
      * If identified as valid, the comma separated identifier values are converted to list of strings and are returned.
      * If identified as invalid, it throws an {@InvalidRequestException} to mark the request as BAD_REQUEST.
      *
-     * @param csvIds The comma separated identifiers passed in the request.
+     * @param csvIds           The comma separated identifiers passed in the request.
      * @param exceptionMessage The message to be included in the {@InvalidRequestException} when thrown.
      *                         The message is expected to have a place holder - "%s" within the string, which is
      *                         later replaced by the list of passed comma separated identifiers.
      * @return The list of identifiers that are created from the passed comma separated identifiers.
      */
     public static List<String> checkIfValidCsvIdentifiersAndReturnList(String csvIds, String exceptionMessage) {
-        var idList = new ArrayList<>(Arrays.asList(csvIds.split(LocationRefConstants.REG_EXP_COMMA_DILIMETER)));
+        var idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
         idList.replaceAll(String::trim);
         idList.removeAll(Collections.singleton(StringUtils.EMPTY));
         if (idList.isEmpty()) {
@@ -87,10 +97,11 @@ public class ValidationUtils {
      * If the number of invalid identifiers is equal to the actual identifiers passed,
      * it throws an {@InvalidRequestException}. If not, it just removes the identified invalid identifiers from
      * the actual identifier list passed in the request.
-     * @param idList The actual identifier list passed in the request.
-     * @param regex The regex that is used to check for the validity of the passed list of identifiers.
-     * @param log The {@Slf4j} logger.
-     * @param componentName The LRD API logger name.
+     *
+     * @param idList           The actual identifier list passed in the request.
+     * @param regex            The regex that is used to check for the validity of the passed list of identifiers.
+     * @param log              The {@Slf4j} logger.
+     * @param componentName    The LRD API logger name.
      * @param exceptionMessage The message to be included in the {@InvalidRequestException} when thrown.
      *                         The message is expected to have a place holder - "%s" within the string, which is
      *                         later replaced by the list of passed comma separated identifiers.
@@ -115,8 +126,9 @@ public class ValidationUtils {
 
     /**
      * A util method to find all the invalid identifiers in the list of identifiers provided in the request.
+     *
      * @param idList The list of provided identifiers.
-     * @param regex The regex to be used to test the validity of the identifiers in the provided list.
+     * @param regex  The regex to be used to test the validity of the identifiers in the provided list.
      * @return The list of identifiers that failed to satisfy the validity regex passed.
      */
     public static List<String> findInvalidIdentifiers(List<String> idList, String regex) {
@@ -127,12 +139,24 @@ public class ValidationUtils {
 
     /**
      * A util method to find all the invalid identifiers in the list of identifiers provided in the request.
-     * @param idList The list of provided identifiers.
+     *
+     * @param idList     The list of provided identifiers.
      * @param searchText The regex to be used to test the validity of the identifiers in the provided list.
      * @return The list of identifiers that failed to satisfy the validity regex passed.
      */
     public static boolean isListContainsTextIgnoreCase(List<String> idList, String searchText) {
         return idList.stream().anyMatch(searchText::equalsIgnoreCase);
+    }
+
+    public static void checkRegionDescriptionIsValid(String region) {
+
+        if (isBlank(region)) {
+            throw new InvalidRequestException("No Region Description provided");
+        }
+
+        if (!Pattern.compile(REGION_NAME_REGEX).matcher(region).matches()) {
+            throw new InvalidRequestException(EXCEPTION_MSG_REGION_SPCL_CHAR);
+        }
     }
 
 }
