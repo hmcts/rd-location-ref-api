@@ -13,9 +13,11 @@ import uk.gov.hmcts.reform.lrdapi.client.LrdApiClient;
 import uk.gov.hmcts.reform.lrdapi.client.S2sClient;
 import uk.gov.hmcts.reform.lrdapi.config.Oauth2;
 import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ContextConfiguration(classes = {TestConfigProperties.class, Oauth2.class})
 @ComponentScan("uk.gov.hmcts.reform.lrdapi")
@@ -76,6 +78,12 @@ public abstract class AuthorizationFunctionalTest {
 
     public static String generateRandomEmail() {
         return String.format(EMAIL_TEMPLATE, randomAlphanumeric(10));
+    }
+
+    public void validateErrorResponse(ErrorResponse errorResponse, String expectedErrorMessage,
+                               String expectedErrorDescription) {
+        assertThat(errorResponse.getErrorDescription()).isEqualTo(expectedErrorDescription);
+        assertThat(errorResponse.getErrorMessage()).isEqualTo(expectedErrorMessage);
     }
 
 
