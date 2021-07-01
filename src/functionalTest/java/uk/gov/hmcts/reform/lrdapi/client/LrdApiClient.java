@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
 import java.io.IOException;
@@ -57,7 +57,8 @@ public class LrdApiClient {
         }
     }
 
-    public Object retrieveBuildingLocationDetailsByEpimsId(HttpStatus expectedStatus, String param) {
+    public Object retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus expectedStatus, String param,
+                                                                   Class<?> clazz) {
         String queryParam = "";
         if (!isEmpty(param)) {
             queryParam = param;
@@ -70,13 +71,32 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return Arrays.asList(response.getBody().as(LrdBuildingLocationResponse[].class));
+            if (clazz.isArray()) {
+                return Arrays.asList(response.getBody().as(clazz));
+            } else {
+                return response.getBody().as(clazz);
+            }
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
     }
 
-    public Response retrieveBuildingLocationDetailsByEpimsId_NoBearerToken(String param) {
+    public Object retrieveRegionInfo(HttpStatus expectedStatus, String param) {
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/region?region=" + param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return response.getBody().as(LrdRegionResponse.class);
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
+    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoBearerToken(String param) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
             .get(BASE_URL + "/building-locations" + param)
             .andReturn();
@@ -84,7 +104,7 @@ public class LrdApiClient {
         return response;
     }
 
-    public Response retrieveBuildingLocationDetailsByEpimsId_NoS2SToken(String param) {
+    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoS2SToken(String param) {
         Response response = withUnauthenticatedRequest_NoS2SToken()
             .get(BASE_URL + "/building-locations" + param)
             .andReturn();
