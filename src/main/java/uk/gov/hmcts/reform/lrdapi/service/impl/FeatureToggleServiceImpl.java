@@ -38,7 +38,11 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
             "lrd-get-org-services-flag"
         );
         launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetailsByEpimsId",
+            "LrdApiController.retrieveBuildingLocationDetails",
+            "lrd_location_api"
+        );
+        launchDarklyMap.put(
+            "LrdApiController.retrieveRegionDetails",
             "lrd_location_api"
         );
     }

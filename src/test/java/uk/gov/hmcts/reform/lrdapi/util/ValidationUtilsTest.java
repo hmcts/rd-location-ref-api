@@ -165,6 +165,16 @@ public class ValidationUtilsTest {
                                                                           EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
     }
 
+    @Test(expected = InvalidRequestException.class)
+    public void testCheckRegionDescriptionIsValid_WhenRegionIsBlank_ThrowsException() {
+        ValidationUtils.checkRegionDescriptionIsValid("");
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void testCheckRegionDescriptionIsValid_WhenRegionContainsInvalidCharacters_ThrowsException() {
+        ValidationUtils.checkRegionDescriptionIsValid("L*nd@n");
+    }
+
     private List<String> getSingleInvalidIdList() {
         var invalidIdList = new ArrayList<String>();
         invalidIdList.add("!@£$");
