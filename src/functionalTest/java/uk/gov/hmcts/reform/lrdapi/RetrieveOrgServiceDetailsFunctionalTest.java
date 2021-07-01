@@ -100,10 +100,4 @@ public class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFuncti
 
         });
     }
-
-    public void validateErrorResponse(ErrorResponse errorResponse, String expectedErrorMessage,
-                                      String expectedErrorDescription) {
-        assertThat(errorResponse.getErrorDescription()).isEqualTo(expectedErrorDescription);
-        assertThat(errorResponse.getErrorMessage()).isEqualTo(expectedErrorMessage);
-    }
 }
