@@ -109,8 +109,8 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
         ErrorResponse response = (ErrorResponse)
             lrdApiClient
                 .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
-                               "?building_location_name=Taylor House Tribunal Hearing Centre",
-                                                                          LrdBuildingLocationResponse.class);
+                                                                  "?building_location_name=Taylor House Tribunal Hearing Centre",
+                                                                  LrdBuildingLocationResponse.class);
         assertThat(response).isNotNull();
     }
 
@@ -130,8 +130,74 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
         ErrorResponse response = (ErrorResponse)
             lrdApiClient
                 .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN,
-                             "?building_location_name=Taylor House Tribunal Hearing Centre",
+                                                                  "?building_location_name=Taylor House Tribunal Hearing Centre",
+                                                                  LrdBuildingLocationResponse.class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveBuildingLocationsForValidRegionId_WithStatusCode_200() {
+        //Currently we get 404 as the Api to insert data into database is yet to be implemented
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient
+                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+                                                                  "?region_id=1",
+                                                                  LrdBuildingLocationResponse.class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldNotRetrieveBuildingLocationsForInValidRegionId_WithStatusCode_404() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+                                                                          "?region_id=Invalid",
                                                                           LrdBuildingLocationResponse.class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = false)
+    public void shouldNotRetrieveBuildingLocationsForGivenRegionId_WhenToggleOff_WithStatusCode_403() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient
+                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN,
+                                                                  "?region_id=1",
+                                                                  LrdBuildingLocationResponse.class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveBuildingLocationsForValidClusterId_WithStatusCode_200() {
+        //Currently we get 404 as the Api to insert data into database is yet to be implemented
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient
+                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+                                                                  "?cluster_id=1",
+                                                                  LrdBuildingLocationResponse.class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldNotRetrieveBuildingLocationsForInvalidClusterId_WithStatusCode_404() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+                                                                          "?cluster_id=Invalid",
+                                                                          LrdBuildingLocationResponse.class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = false)
+    public void shouldNotRetrieveBuildingLocationsForGivenClusterId_WhenToggleOff_WithStatusCode_403() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient
+                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN,
+                                                                  "?cluster_id=1",
+                                                                  LrdBuildingLocationResponse.class);
         assertThat(response).isNotNull();
     }
 
