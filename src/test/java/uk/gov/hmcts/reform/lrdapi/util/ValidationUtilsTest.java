@@ -30,7 +30,7 @@ public class ValidationUtilsTest {
         var identifiers = new ArrayList<String>();
         identifiers.add("QWERTY");
         assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+            .isZero();
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ValidationUtilsTest {
         var identifiers = new ArrayList<String>();
         identifiers.add("1234");
         assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+            .isZero();
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ValidationUtilsTest {
         var identifiers = new ArrayList<String>();
         identifiers.add("qwerty1234");
         assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+            .isZero();
     }
 
     @Test
@@ -54,7 +54,7 @@ public class ValidationUtilsTest {
         var identifiers = new ArrayList<String>();
         identifiers.add("qwerty_1234");
         assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+            .isZero();
     }
 
     @Test

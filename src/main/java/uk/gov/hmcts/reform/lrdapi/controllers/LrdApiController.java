@@ -136,9 +136,11 @@ public class LrdApiController {
     )
     public ResponseEntity<Object> retrieveBuildingLocationDetails(
         @RequestParam(value = "epimms_id", required = false) String epimsIds,
-        @RequestParam(value = "building_location_name", required = false) String buildingLocationName) {
+        @RequestParam(value = "building_location_name", required = false) String buildingLocationName,
+        @RequestParam(value = "region_id", required = false) String regionId,
+        @RequestParam(value = "cluster_id", required = false) String clusterId) {
 
-        ValidationUtils.validateInputParamSize(epimsIds, buildingLocationName);
+        ValidationUtils.validateInputParamSize(epimsIds, buildingLocationName, regionId, clusterId);
         Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds, buildingLocationName);
         return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
     }
