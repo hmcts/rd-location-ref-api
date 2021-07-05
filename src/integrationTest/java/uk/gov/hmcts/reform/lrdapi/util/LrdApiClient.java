@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -127,7 +128,8 @@ public class LrdApiClient {
 
         HttpStatus status = responseEntity.getStatusCode();
         if (status.is2xxSuccessful()) {
-            return objectMapper.convertValue(responseEntity.getBody(), expectedClass);
+            return Arrays.asList((LrdRegionResponse[]) objectMapper.convertValue(
+                responseEntity.getBody(), expectedClass));
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(

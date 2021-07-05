@@ -26,7 +26,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByDescriptionWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsByDescription("London", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsByDescription("London", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerification(response, 1);
@@ -36,7 +36,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByDescriptionsWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsByDescription("London, Midlands", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsByDescription("London, Midlands", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerification(response, 2);
@@ -46,7 +46,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByDescriptionAllWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsByDescription("ALL", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsByDescription("ALL", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerificationForAll(response);
@@ -56,7 +56,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByDescriptionCaseInsensitiveWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsByDescription("LoNdOn", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsByDescription("LoNdOn", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerification(response, 1);
@@ -66,7 +66,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByIdWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsById("1", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsById("2", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerification(response, 1);
@@ -76,7 +76,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByIdsWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsById("1, 2", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsById("2, 3", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerification(response, 2);
@@ -86,7 +86,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public void returnsRegionDetailsByIdAllWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsById("ALL", LrdRegionResponse.class);
+            lrdApiClient.findRegionDetailsById("ALL", LrdRegionResponse[].class);
 
         assertThat(response).isNotNull();
         responseVerificationForAll(response);
@@ -122,24 +122,24 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
         assertThat(response.get(1).getRegionId()).isEqualTo("3");
         assertThat(response.get(1).getDescription()).isEqualTo("Midlands");
         assertThat(response.get(1).getWelshDescription()).isNull();
-        assertThat(response.get(0).getRegionId()).isEqualTo("4");
-        assertThat(response.get(0).getDescription()).isEqualTo("North East");
-        assertThat(response.get(0).getWelshDescription()).isNull();
-        assertThat(response.get(0).getRegionId()).isEqualTo("5");
-        assertThat(response.get(0).getDescription()).isEqualTo("North West");
-        assertThat(response.get(0).getWelshDescription()).isNull();
-        assertThat(response.get(1).getRegionId()).isEqualTo("6");
-        assertThat(response.get(1).getDescription()).isEqualTo("South East");
-        assertThat(response.get(1).getWelshDescription()).isNull();
-        assertThat(response.get(0).getRegionId()).isEqualTo("7");
-        assertThat(response.get(0).getDescription()).isEqualTo("South West");
-        assertThat(response.get(0).getWelshDescription()).isNull();
-        assertThat(response.get(0).getRegionId()).isEqualTo("8");
-        assertThat(response.get(0).getDescription()).isEqualTo("Wales");
-        assertThat(response.get(0).getWelshDescription()).isNull();
-        assertThat(response.get(1).getRegionId()).isEqualTo("9");
-        assertThat(response.get(1).getDescription()).isEqualTo("Scotland");
-        assertThat(response.get(1).getWelshDescription()).isNull();
+        assertThat(response.get(2).getRegionId()).isEqualTo("4");
+        assertThat(response.get(2).getDescription()).isEqualTo("North East");
+        assertThat(response.get(2).getWelshDescription()).isNull();
+        assertThat(response.get(3).getRegionId()).isEqualTo("5");
+        assertThat(response.get(3).getDescription()).isEqualTo("North West");
+        assertThat(response.get(3).getWelshDescription()).isNull();
+        assertThat(response.get(4).getRegionId()).isEqualTo("6");
+        assertThat(response.get(4).getDescription()).isEqualTo("South East");
+        assertThat(response.get(4).getWelshDescription()).isNull();
+        assertThat(response.get(5).getRegionId()).isEqualTo("7");
+        assertThat(response.get(5).getDescription()).isEqualTo("South West");
+        assertThat(response.get(5).getWelshDescription()).isNull();
+        assertThat(response.get(6).getRegionId()).isEqualTo("8");
+        assertThat(response.get(6).getDescription()).isEqualTo("Wales");
+        assertThat(response.get(6).getWelshDescription()).isNull();
+        assertThat(response.get(7).getRegionId()).isEqualTo("9");
+        assertThat(response.get(7).getDescription()).isEqualTo("Scotland");
+        assertThat(response.get(7).getWelshDescription()).isNull();
     }
 
 }

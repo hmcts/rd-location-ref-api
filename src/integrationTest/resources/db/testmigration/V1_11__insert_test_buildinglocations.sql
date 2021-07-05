@@ -25,12 +25,10 @@ values(
 insert into region(
     region_id,
     description,
-    welsh_description,
     updated_time)
 values(
-    '891011',
-    'Description B',
-    'Disgrifiad B',
+    '2',
+    'London',
     now())
 ;
 
@@ -49,7 +47,7 @@ insert into
     updated_time)
 values(
   '22041996',
-  '891011',
+  '2',
   '45678',
   '01234',
   '123456',
@@ -76,7 +74,7 @@ insert into
     updated_time)
 values(
   '22041997',
-  '891011',
+  '2',
   '45678',
   '01234',
   'epimmsId1234',
