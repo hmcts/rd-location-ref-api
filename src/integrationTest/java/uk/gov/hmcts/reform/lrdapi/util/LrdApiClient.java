@@ -95,7 +95,14 @@ public class LrdApiClient {
     public Object findRegionDetailsByDescription(String region, Class expectedClass) throws
         JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(
-            APP_BASE_PATH + "/region?region={region}", expectedClass, region);
+            APP_BASE_PATH + "/regions?region={region}", expectedClass, region);
+        return mapRegionResponse(responseEntity,expectedClass);
+    }
+
+    public Object findRegionDetailsById(String regionId, Class expectedClass) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/regions?regionId={regionId}", expectedClass, regionId);
         return mapRegionResponse(responseEntity,expectedClass);
     }
 
