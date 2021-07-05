@@ -11,6 +11,8 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner.getFeatureFlagName;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
@@ -24,22 +26,79 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
     public void getRegionDetailsByDescriptionWithStatusCode_200() {
-        LrdRegionResponse response = (LrdRegionResponse)
-            lrdApiClient.retrieveRegionInfo(HttpStatus.OK, "London");
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "London");
 
         assertThat(response).isNotNull();
-        responseVerification(response);
+        responseVerification(response, 1);
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    public void getRegionDetailsByDescriptionWithTrailingSpacesWithStatusCode_200() {
-        LrdRegionResponse response = (LrdRegionResponse)
-            lrdApiClient.retrieveRegionInfo(HttpStatus.OK, " London  ");
+    @SuppressWarnings("unchecked")
+    public void getRegionDetailsByDescriptionsWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "London, Midlands");
 
         assertThat(response).isNotNull();
-        responseVerification(response);
+        responseVerification(response, 2);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
+    public void getRegionDetailsByDescriptionWithTrailingSpacesWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, " London  ");
+
+        assertThat(response).isNotNull();
+        responseVerification(response, 1);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
+    public void getRegionDetailsByDescriptionAllWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "ALL");
+
+        assertThat(response).isNotNull();
+        responseVerificationForAll(response);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
+    public void getRegionDetailsByIdWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2");
+
+        assertThat(response).isNotNull();
+        responseVerification(response, 1);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
+    public void getRegionDetailsByIdsWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2,3");
+
+        assertThat(response).isNotNull();
+        responseVerification(response, 2);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
+    public void getRegionDetailsByIdAllWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "ALL");
+
+        assertThat(response).isNotNull();
+        responseVerificationForAll(response);
     }
 
     @Test
@@ -47,15 +106,48 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
     public void should_retrieve_403_when_Api_toggled_off() {
         String exceptionMessage = getFeatureFlagName().concat(" ").concat(FORBIDDEN_EXCEPTION_LD);
         validateErrorResponse(
-            (ErrorResponse) lrdApiClient.retrieveRegionInfo(HttpStatus.FORBIDDEN, ""),
+            (ErrorResponse) lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.FORBIDDEN, ""),
             exceptionMessage, exceptionMessage
         );
     }
 
-    private void responseVerification(LrdRegionResponse response) {
-        assertThat(response.getRegionId()).isEqualTo("2");
-        assertThat(response.getDescription()).isEqualTo("London");
-        assertThat(response.getWelshDescription()).isNull();
+    private void responseVerification(List<LrdRegionResponse> response, int expectedRegions) {
+        assertThat(response.size()).isEqualTo(expectedRegions);
+        assertThat(response.get(0).getRegionId()).isEqualTo("2");
+        assertThat(response.get(0).getDescription()).isEqualTo("London");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+        if (expectedRegions == 2) {
+            assertThat(response.get(1).getRegionId()).isEqualTo("3");
+            assertThat(response.get(1).getDescription()).isEqualTo("Midlands");
+            assertThat(response.get(1).getWelshDescription()).isNull();
+        }
     }
 
+    private void responseVerificationForAll(List<LrdRegionResponse> response) {
+        assertThat(response.size()).isEqualTo(8);
+        assertThat(response.get(0).getRegionId()).isEqualTo("2");
+        assertThat(response.get(0).getDescription()).isEqualTo("London");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+        assertThat(response.get(1).getRegionId()).isEqualTo("3");
+        assertThat(response.get(1).getDescription()).isEqualTo("Midlands");
+        assertThat(response.get(1).getWelshDescription()).isNull();
+        assertThat(response.get(0).getRegionId()).isEqualTo("4");
+        assertThat(response.get(0).getDescription()).isEqualTo("North East");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+        assertThat(response.get(0).getRegionId()).isEqualTo("5");
+        assertThat(response.get(0).getDescription()).isEqualTo("North West");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+        assertThat(response.get(1).getRegionId()).isEqualTo("6");
+        assertThat(response.get(1).getDescription()).isEqualTo("South East");
+        assertThat(response.get(1).getWelshDescription()).isNull();
+        assertThat(response.get(0).getRegionId()).isEqualTo("7");
+        assertThat(response.get(0).getDescription()).isEqualTo("South West");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+        assertThat(response.get(0).getRegionId()).isEqualTo("8");
+        assertThat(response.get(0).getDescription()).isEqualTo("Wales");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+        assertThat(response.get(1).getRegionId()).isEqualTo("9");
+        assertThat(response.get(1).getDescription()).isEqualTo("Scotland");
+        assertThat(response.get(1).getWelshDescription()).isNull();
+    }
 }

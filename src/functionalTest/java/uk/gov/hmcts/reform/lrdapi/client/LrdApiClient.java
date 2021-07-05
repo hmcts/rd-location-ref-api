@@ -81,9 +81,24 @@ public class LrdApiClient {
         }
     }
 
-    public Object retrieveRegionInfo(HttpStatus expectedStatus, String param) {
+    public Object retrieveRegionInfoByRegionDescription(HttpStatus expectedStatus, String param) {
         Response response = getMultipleAuthHeaders()
-            .get(BASE_URL + "/region?region=" + param)
+            .get(BASE_URL + "/regions?region=" + param)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return response.getBody().as(LrdRegionResponse[].class);
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
+    }
+
+    public Object retrieveRegionInfoByRegionId(HttpStatus expectedStatus, String param) {
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/regions?regionId=" + param)
             .andReturn();
 
         response.then()
