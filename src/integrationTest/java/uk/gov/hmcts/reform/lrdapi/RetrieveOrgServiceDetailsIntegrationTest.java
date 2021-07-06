@@ -156,4 +156,41 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
         });
 
     }
+
+    @Test
+    public void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200() throws JsonProcessingException {
+
+        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName(" aLL ", LrdOrgInfoServiceResponse[].class);
+
+        assertThat(responses.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void returnOrgServiceDetailsByMultiCcdSerNamesAllOther200() throws JsonProcessingException {
+
+        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName("All, CMC",
+                                                               LrdOrgInfoServiceResponse[].class);
+
+        assertThat(responses.size()).isEqualTo(3);
+    }
+
+    @Test
+    public void returnOrgServiceDetailsByMultiCcdSerNamesTwoCommaNotFound400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap  = (Map<String, Object>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC, ,Divorce", ErrorResponse.class);
+
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void returnOrgServiceDetailsByMultiCcdSerNamesSpclChaNotFound400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap  = (Map<String, Object>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName(", &", ErrorResponse.class);
+
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.BAD_REQUEST);
+    }
 }
