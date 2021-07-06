@@ -28,7 +28,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_WithStatusCode_200() throws JsonProcessingException {
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+        final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833",
                 LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
@@ -37,7 +37,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_NoEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+        final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, null,
                                                                           LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
@@ -46,7 +46,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_MultipleEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+        final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833"
                 + ",219164",LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
@@ -55,7 +55,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_AllEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
+        final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=ALL",
                                                                           LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
@@ -103,7 +103,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocationsForValidBuildingName_WithStatusCode_200() {
-        LrdBuildingLocationResponse response = (LrdBuildingLocationResponse)
+        final var response = (LrdBuildingLocationResponse)
             lrdApiClient
                 .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
                                "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE",

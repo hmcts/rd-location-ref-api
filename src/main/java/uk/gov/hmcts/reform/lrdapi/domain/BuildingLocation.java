@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -81,4 +82,11 @@ public class BuildingLocation implements Serializable {
     @Size(max = 512)
     private String address;
 
+    public Optional<Cluster> getCluster() {
+        return Optional.ofNullable(cluster);
+    }
+
+    public Optional<Region> getRegion() {
+        return Optional.ofNullable(region);
+    }
 }
