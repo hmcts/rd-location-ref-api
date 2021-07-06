@@ -17,6 +17,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_REGION_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
@@ -157,6 +158,10 @@ public class ValidationUtils {
         if (!Pattern.compile(REGION_NAME_REGEX).matcher(region).matches()) {
             throw new InvalidRequestException(EXCEPTION_MSG_REGION_SPCL_CHAR);
         }
+    }
+
+    public static boolean isRegexSatisfied(String stringToEvaluate, String regex) {
+        return Pattern.compile(regex).matcher(stringToEvaluate).matches();
     }
 
 }

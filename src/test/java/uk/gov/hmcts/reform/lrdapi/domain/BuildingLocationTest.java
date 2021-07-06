@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +25,7 @@ public class BuildingLocationTest {
         BuildingLocation buildingLocation =
             BuildingLocation.builder()
                 .epimmsId("epimmsId")
-                .buildingLocationId("buildingLocationId")
+                .buildingLocationId(Long.valueOf(1))
                 .buildingLocationName("buildingLocationName")
                 .buildingLocationStatus("LIVE")
                 .region(region)
@@ -38,7 +39,7 @@ public class BuildingLocationTest {
                 .build();
 
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo(Long.valueOf(1));
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
         assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
         assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
@@ -67,7 +68,7 @@ public class BuildingLocationTest {
 
         BuildingLocation buildingLocation = new BuildingLocation();
 
-        buildingLocation.setBuildingLocationId("buildingLocationId");
+        buildingLocation.setBuildingLocationId(Long.valueOf(1));
         buildingLocation.setEpimmsId("epimmsId");
         buildingLocation.setBuildingLocationName("buildingLocationName");
         buildingLocation.setBuildingLocationStatus("LIVE");
@@ -82,7 +83,7 @@ public class BuildingLocationTest {
         buildingLocation.setCreated(now);
         buildingLocation.setLastUpdated(now);
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo(BigInteger.valueOf(1));
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
         assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
         assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");

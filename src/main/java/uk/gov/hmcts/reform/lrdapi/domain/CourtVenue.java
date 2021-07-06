@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity(name = "court_venue")
@@ -28,14 +27,12 @@ import java.time.LocalDateTime;
 public class CourtVenue implements Serializable {
 
     @Id
-    private BigInteger courtVenueId;
-
-    private String epimmsId;
+    private Long courtVenueId;
 
     private String siteName;
 
     @CreatedDate
-    private LocalDateTime createTime;
+    private LocalDateTime createdTime;
 
     @LastModifiedDate
     private LocalDateTime updatedTime;
@@ -50,7 +47,7 @@ public class CourtVenue implements Serializable {
     @JoinColumn(name = "cluster_id")
     private Cluster cluster;
 
-    private String openForPublic;
+    private Boolean openForPublic;
 
     private String courtAddress;
 
@@ -62,6 +59,8 @@ public class CourtVenue implements Serializable {
 
     private String courtLocationCode;
 
+    private String dxAddress;
+
     private String welshSiteName;
 
     private String welshCourtAddress;
@@ -71,5 +70,9 @@ public class CourtVenue implements Serializable {
     private String courtName;
 
     private LocalDateTime courtOpenDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "epimms_id")
+    private BuildingLocation buildingLocation;
 
 }

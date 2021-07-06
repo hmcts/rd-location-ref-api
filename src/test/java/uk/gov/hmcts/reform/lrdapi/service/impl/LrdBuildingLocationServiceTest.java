@@ -47,7 +47,7 @@ public class LrdBuildingLocationServiceTest {
 
         List<LrdBuildingLocationResponse> buildingLocations =
             (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("1", "");
+                .retrieveBuildingLocationDetails("1", "",  "", "");
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
@@ -72,7 +72,7 @@ public class LrdBuildingLocationServiceTest {
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareMultiBuildLocationResponse());
         List<LrdBuildingLocationResponse> buildingLocations =
             (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("1,2", "");
+                .retrieveBuildingLocationDetails("1,2", "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
 
@@ -81,14 +81,14 @@ public class LrdBuildingLocationServiceTest {
     public void testGetAllBuildingLocations() {
         when(buildingLocationRepository.findAll()).thenReturn(prepareMultiBuildLocationResponse());
         List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
-            lrdBuildingLocationService.retrieveBuildingLocationDetails("", "");
+            lrdBuildingLocationService.retrieveBuildingLocationDetails("", "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void test_RetrieveBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
-        lrdBuildingLocationService.retrieveBuildingLocationDetails("123", "");
+        lrdBuildingLocationService.retrieveBuildingLocationDetails("123", "",  "", "");
         verify(buildingLocationRepository, times(0))
             .findByBuildingLocationNameIgnoreCase(anyString());
         verify(buildingLocationRepository, times(0)).findAll();
@@ -98,7 +98,7 @@ public class LrdBuildingLocationServiceTest {
     public void test_GetAllBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findAll()).thenReturn(null);
         lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "");
+            .retrieveBuildingLocationDetails("", "",  "", "");
         verify(buildingLocationRepository, times(1)).findAll();
         verify(buildingLocationRepository, times(0))
             .findByBuildingLocationNameIgnoreCase(anyString());
@@ -113,7 +113,7 @@ public class LrdBuildingLocationServiceTest {
 
         LrdBuildingLocationResponse buildingLocation =
             (LrdBuildingLocationResponse) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "test");
+                .retrieveBuildingLocationDetails("", "test",  "", "");
 
         assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
@@ -139,7 +139,7 @@ public class LrdBuildingLocationServiceTest {
             .thenReturn(null);
 
         lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "test");
+            .retrieveBuildingLocationDetails("", "test", "", "");
     }
 
     private void verifyMultiResponse(List<LrdBuildingLocationResponse> buildingLocations) {
@@ -147,7 +147,7 @@ public class LrdBuildingLocationServiceTest {
 
         buildingLocations.forEach(buildingLocation -> {
             if (buildingLocation.getEpimmsId().equalsIgnoreCase("epimmsId")) {
-                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("1");
                 assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
                 assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
                 assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
@@ -160,7 +160,7 @@ public class LrdBuildingLocationServiceTest {
                 assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
                 assertThat(buildingLocation.getAddress()).isEqualTo("address");
             } else {
-                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId_2");
+                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("2");
                 assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId222");
                 assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName_2");
                 assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
@@ -182,7 +182,7 @@ public class LrdBuildingLocationServiceTest {
 
         locations.add(BuildingLocation.builder()
                          .epimmsId("epimmsId")
-                         .buildingLocationId("buildingLocationId")
+                         .buildingLocationId(Long.valueOf(1))
                          .buildingLocationName("buildingLocationName")
                          .buildingLocationStatus("LIVE")
                          .region(getRegion())
@@ -203,7 +203,7 @@ public class LrdBuildingLocationServiceTest {
         locations.addAll(prepareBuildingLocation());
         locations.add(BuildingLocation.builder()
                           .epimmsId("epimmsId222")
-                          .buildingLocationId("buildingLocationId_2")
+                          .buildingLocationId(Long.valueOf(1))
                           .buildingLocationName("buildingLocationName_2")
                           .buildingLocationStatus("LIVE")
                           .region(getRegion())
