@@ -177,7 +177,7 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    public void returnOrgServiceDetailsByMultiCcdSerNamesTwoCommaNotFound400() throws JsonProcessingException {
+    public void returnOrgServiceDetailsByMultiCcdSerNamesTwoCommaBadRequest400() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap  = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC, ,Divorce", ErrorResponse.class);
@@ -186,7 +186,7 @@ public class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    public void returnOrgServiceDetailsByMultiCcdSerNamesSpclChaNotFound400() throws JsonProcessingException {
+    public void returnOrgServiceDetailsByMultiCcdSerNamesSpclChaBadRequest400() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap  = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName(", &", ErrorResponse.class);
