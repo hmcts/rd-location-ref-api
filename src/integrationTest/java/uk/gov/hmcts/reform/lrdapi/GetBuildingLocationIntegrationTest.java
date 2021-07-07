@@ -290,8 +290,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     private LrdBuildingLocationResponse getBuildingLocationSampleResponse() {
         return LrdBuildingLocationResponse.builder()
                 .buildingLocationId("22041995")
-                .regionId("8910")
-                .region("Description A")
+                .regionId("1")
+                .region("National")
                 .clusterId("0123")
                 .clusterName("Cluster A")
                 .buildingLocationStatus("Status A")
@@ -310,8 +310,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         LrdBuildingLocationResponse response2 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041996")
-            .regionId("891011")
-            .region("Description B")
+            .regionId("2")
+            .region("London")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Status B")
@@ -334,8 +334,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         LrdBuildingLocationResponse response3 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041997")
-            .regionId("891011")
-            .region("Description B")
+            .regionId("2")
+            .region("London")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Status B")
