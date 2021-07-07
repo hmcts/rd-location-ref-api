@@ -147,20 +147,25 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
     private LrdBuildingLocationResponse buildResponse(BuildingLocation location, Set<CourtVenue> courtVenues) {
         Set<CourtVenueResponse> courtVenueResponses =  getCourtVenueResponses(courtVenues);
-        return LrdBuildingLocationResponse.builder()
-            .buildingLocationId(location.getBuildingLocationId().toString())
-            .buildingLocationName(location.getBuildingLocationName())
-            .buildingLocationStatus(location.getBuildingLocationStatus())
-            .address(location.getAddress())
-            .area(location.getArea())
-            .epimmsId(location.getEpimmsId())
-            .clusterId(location.getCluster().getClusterId())
-            .clusterName(location.getCluster().getClusterName())
-            .regionId(location.getRegion().getRegionId())
-            .region(location.getRegion().getDescription())
+        LrdBuildingLocationResponse.LrdBuildingLocationResponseBuilder lrdBuildingLocationResponseBuilder =
+            LrdBuildingLocationResponse.builder()
+                .buildingLocationId(location.getBuildingLocationId().toString())
+                .buildingLocationName(location.getBuildingLocationName())
+                .buildingLocationStatus(location.getBuildingLocationStatus())
+                .address(location.getAddress())
+                .area(location.getArea())
+                .epimmsId(location.getEpimmsId());
+        location.getCluster().ifPresent(cluster -> {
+            lrdBuildingLocationResponseBuilder.clusterId(cluster.getClusterId());
+            lrdBuildingLocationResponseBuilder.clusterName(cluster.getClusterName());
+        });
+        location.getRegion().ifPresent(region -> {
+            lrdBuildingLocationResponseBuilder.regionId(region.getRegionId());
+            lrdBuildingLocationResponseBuilder.region(region.getDescription());
+        });
+        return lrdBuildingLocationResponseBuilder
             .courtFinderUrl(location.getCourtFinderUrl())
             .postcode(location.getPostcode())
-            .courtVenues(courtVenueResponses)
             .build();
     }
 
