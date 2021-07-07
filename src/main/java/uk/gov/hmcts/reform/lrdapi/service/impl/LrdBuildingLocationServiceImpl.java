@@ -127,6 +127,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private Object retrieveBuildingLocationsByName(String buildingLocationName) {
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findAll();
         BuildingLocation buildingLocation = buildingLocationRepository.findByBuildingLocationNameIgnoreCase(
             buildingLocationName);
         if (isNull(buildingLocation)) {
@@ -154,7 +155,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         );
 
 
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByEpimmsIdIn(epimsIdList);
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByEpimmsId(epimsIdList);
 
         if (isEmpty(buildingLocations)) {
             throw new ResourceNotFoundException("No Building Locations found with the given epims ID: " + epimsIdList);
@@ -193,7 +194,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private List<LrdBuildingLocationResponse> getAllBuildingLocations() {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findAll();
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByBuildingLocationStatusOpen();
         if (isEmpty(buildingLocations)) {
             throw new ResourceNotFoundException("There are no building locations available at the moment.");
         }

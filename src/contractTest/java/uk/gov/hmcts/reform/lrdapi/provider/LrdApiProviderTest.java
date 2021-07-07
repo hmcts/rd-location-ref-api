@@ -143,7 +143,7 @@ public class LrdApiProviderTest {
         BuildingLocation buildingLocation = BuildingLocation.builder()
             .buildingLocationStatus("OPEN")
             .area("Area 1")
-            .buildingLocationId("123")
+            .buildingLocationId(123L)
             .buildingLocationName("Taylor House Tribunal Hearing Centre")
             .courtFinderUrl("https://testUrl.com")
             .created(LocalDateTime.now())
@@ -156,7 +156,7 @@ public class LrdApiProviderTest {
             .build();
 
         when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase(anyString())).thenReturn(buildingLocation);
-        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(buildingLocation));
+        when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(List.of(buildingLocation));
         when(buildingLocationRepository.findAll()).thenReturn(List.of(buildingLocation));
     }
 

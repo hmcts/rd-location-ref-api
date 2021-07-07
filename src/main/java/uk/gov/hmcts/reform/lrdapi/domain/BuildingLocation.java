@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -83,8 +85,8 @@ public class BuildingLocation implements Serializable {
     @Size(max = 512)
     private String address;
 
-    @OneToMany(targetEntity = CourtVenue.class
-        , mappedBy = "buildingLocation")
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
     @Builder.Default
     private Set<CourtVenue> courtVenues = new HashSet<>();
 

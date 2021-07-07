@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -30,6 +31,9 @@ public class CourtVenue implements Serializable {
     private Long courtVenueId;
 
     private String siteName;
+
+    @Column(name = "epimms_id")
+    private String epimmsId;
 
     @CreatedDate
     private LocalDateTime createdTime;
@@ -72,7 +76,8 @@ public class CourtVenue implements Serializable {
     private LocalDateTime courtOpenDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "epimms_id")
+    @JoinColumn(name = "epimms_id", referencedColumnName = "epimms_id",
+        insertable = false, updatable = false, nullable = false)
     private BuildingLocation buildingLocation;
 
 }
