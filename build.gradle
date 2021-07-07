@@ -201,6 +201,7 @@ task contract(type: Test) {
 }
 
 task runProviderPactVerification(type: Test) {
+    useJUnitPlatform()
     testClassesDirs = sourceSets.contractTest.output.classesDirs
     classpath = sourceSets.contractTest.runtimeClasspath
     systemProperty 'pact.verifier.publishResults', System.getProperty('pact.verifier.publishResults')
