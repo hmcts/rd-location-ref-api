@@ -31,7 +31,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateInputParam
 )
 @RestController
 @Slf4j
-public class LrdApiControllerOrgServiceTest {
+public class LrdApiController {
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -184,7 +184,7 @@ public class LrdApiControllerOrgServiceTest {
 
         validateInputParamSize(region, regionId);
 
-        Object response = regionService.retrieveRegionDetails(region, regionId);
+        Object response = regionService.retrieveRegionDetails(regionId, region);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
