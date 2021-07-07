@@ -33,6 +33,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     private static final String ONE_STR = "ONE";
     private static final String TWO_STR = "TWO";
+    private static final String ALL_OPEN_STR = "ALL_OPEN";
     public static final String HTTP_STATUS_STR = "http_status";
 
     @Test
@@ -84,7 +85,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                                LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, LocationRefConstants.ALL);
+        responseVerification(response, ALL_OPEN_STR);
     }
 
     @Test
@@ -249,11 +250,11 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
                 .findBuildingLocationByGivenQueryParam(
-                    "?cluster_id=0123",
+                    "?cluster_id=01234",
                     LrdBuildingLocationResponse[].class);
 
         assertNotNull(actualResponse);
-        responseVerification(actualResponse, ONE_STR);
+        responseVerification(actualResponse, LocationRefConstants.ALL);
     }
 
     @Test
@@ -449,7 +450,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                                                                LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
-        responseVerification(response, LocationRefConstants.ALL);
+        responseVerification(response, ALL_OPEN_STR);
     }
 
     private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
@@ -457,8 +458,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             assertIterableEquals(response, getSingleLocationResponse());
         } else if (TWO_STR.equalsIgnoreCase(responseType)) {
             assertThat(response).hasSize(2).hasSameElementsAs(getTwoLocationResponse());
+        } else if (LocationRefConstants.ALL.equalsIgnoreCase(responseType)) {
+            assertThat(response).hasSize(4).hasSameElementsAs(getAllLocationResponse());
         } else {
-            assertThat(response).hasSize(3).hasSameElementsAs(getAllLocationResponse());
+            assertThat(response).hasSize(3).hasSameElementsAs(getAllOpenLocationResponse());
         }
     }
 
@@ -527,8 +530,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                 .buildingLocationId("22041995")
                 .regionId("8910")
                 .region("Description A")
-                .clusterId("0123")
-                .clusterName("Cluster A")
+                .clusterId("01234")
+                .clusterName("Cluster B")
                 .buildingLocationStatus("Open")
                 .epimmsId("123456789")
                 .buildingLocationName("Building Location A")
@@ -613,7 +616,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         return locationResponses;
     }
 
-    private List<LrdBuildingLocationResponse> getAllLocationResponse() {
+    private List<LrdBuildingLocationResponse> getAllOpenLocationResponse() {
         Set<CourtVenueResponse> courtVenueResponses = new HashSet<>();
         CourtVenueResponse response1 = CourtVenueResponse.builder()
             .courtType("17")
@@ -697,6 +700,28 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         locationResponses.add(locationResponses3);
 
+        return locationResponses;
+    }
+
+    private List<LrdBuildingLocationResponse> getAllLocationResponse() {
+        List<LrdBuildingLocationResponse> locationResponses = getAllOpenLocationResponse();
+        LrdBuildingLocationResponse locationResponses4 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041998")
+            .regionId("891011")
+            .region("Description B")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Closed")
+            .epimmsId("123EpimmsId456")
+            .buildingLocationName("Building Location 4")
+            .area("Area D")
+            .postcode("EC2A 3AQ")
+            .address("4 Street, London")
+            .courtFinderUrl("Court Finder URL 4")
+            .courtVenues(new HashSet<>())
+            .build();
+
+        locationResponses.add(locationResponses4);
         return locationResponses;
     }
 

@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -29,8 +30,8 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NUMERIC_REGEX;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
 
 
 @Slf4j
@@ -76,7 +77,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             return retrieveBuildingLocationsByClusterId(clusterId);
         }
 
-        return getAllBuildingLocations();
+        return getAllBuildingLocations(() -> buildingLocationRepository.findByBuildingLocationStatusOpen());
     }
 
     private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByClusterId(String clusterId) {
@@ -111,19 +112,18 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByEpimmsId(String epimmsId) {
         log.info("{} : Obtaining building locations for epimms id(s): {}", loggingComponentName, epimmsId);
         if (epimmsId.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
-            return getAllBuildingLocations();
+            return getAllBuildingLocations(() -> buildingLocationRepository.findAll());
         }
         List<String> epimsIdList = ValidationUtils
             .checkIfValidCsvIdentifiersAndReturnList(epimmsId, EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
         if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
-            return getAllBuildingLocations();
+            return getAllBuildingLocations(() -> buildingLocationRepository.findAll());
         }
         ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
                                                                       ALPHA_NUMERIC_REGEX, log,
                                                                       loggingComponentName,
                                                                       EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
         );
-
 
         List<BuildingLocation> buildingLocations = buildingLocationRepository.findByEpimmsId(epimsIdList);
 
@@ -166,16 +166,13 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .collect(Collectors.toUnmodifiableSet());
     }
 
-    private List<LrdBuildingLocationResponse> getAllBuildingLocations() {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByBuildingLocationStatusOpen();
+    private List<LrdBuildingLocationResponse> getAllBuildingLocations(
+                                            Supplier<List<BuildingLocation>> buildingLocationSupplier) {
+        List<BuildingLocation> buildingLocations = buildingLocationSupplier.get();
         if (isEmpty(buildingLocations)) {
             throw new ResourceNotFoundException("There are no building locations available at the moment.");
         }
-        return buildingLocations
-            .stream()
-            .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
-            .collect(Collectors.toList());
-
+        return getBuildingLocationListResponse(buildingLocations);
     }
 
     private void validateNumericFilter(String id, String invalidExceptionMsg) {
@@ -187,7 +184,8 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         }
     }
 
-    private List<LrdBuildingLocationResponse> getBuildingLocationListResponse(List<BuildingLocation> buildingLocations) {
+    private List<LrdBuildingLocationResponse> getBuildingLocationListResponse(
+                                                List<BuildingLocation> buildingLocations) {
         return buildingLocations
             .stream()
             .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
