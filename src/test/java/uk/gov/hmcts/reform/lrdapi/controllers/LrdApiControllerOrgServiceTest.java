@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
-import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +29,13 @@ import static org.mockito.Mockito.when;
 public class LrdApiControllerOrgServiceTest {
 
     @InjectMocks
-    private LrdApiControllerOrgServiceTest lrdApiController;
+    private LrdApiController lrdApiController;
 
     @Mock
     ILrdBuildingLocationService lrdBuildingLocationService;
 
     @Mock
     LrdService lrdServiceMock;
-
-    @Mock
-    RegionService regionServiceMock;
 
     List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse = new ArrayList<>();
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverterMock;
@@ -286,24 +282,5 @@ public class LrdApiControllerOrgServiceTest {
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("1234QWERTY", "");
     }
-
-    @Test
-    public void testGetRegionDetails_ByDescription_Returns200() {
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveRegionDetails("London", "");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(regionServiceMock, times(1)).retrieveRegionByRegionDescription("London");
-    }
-
-//    @Test(expected = InvalidRequestException.class)
-//    public void testGetRegionDetails_ByMissingDescription_Returns400() {
-//        ResponseEntity<Object> responseEntity =
-//            lrdApiController.retrieveRegionDetails("");
-//
-//        assertThat(responseEntity).isNotNull();
-//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-//    }
 
 }
