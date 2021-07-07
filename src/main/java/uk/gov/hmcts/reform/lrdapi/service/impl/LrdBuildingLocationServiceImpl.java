@@ -19,10 +19,7 @@ import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -84,8 +81,6 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             Optional<Cluster> cluster = clusterRepository.findById(clusterId);
             if(cluster.isPresent()) {
                 buildingLocations = cluster.get().getBuildingLocations();
-//                courtVenues = cluster.get().getCourtVenues();
-//                createMapByEpimsId(courtVenues);
                 if(isEmpty(buildingLocations)) {
                     throw new ResourceNotFoundException(
                         String.format("No building locations found for cluster id - %s", clusterId));
@@ -103,22 +98,6 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .collect(Collectors.toList());
     }
 
-    private Map<String, List<CourtVenue>> createMapByEpimsId(Set<CourtVenue> courtVenues) {
-        Map<String, List<CourtVenue>> epimsIdCourtVenueMap = new HashMap<>();
-        String epimsId;
-        for(CourtVenue court: courtVenues) {
-            epimsId = court.getBuildingLocation().getEpimmsId();
-            if(epimsIdCourtVenueMap.containsKey(epimsId)) {
-                epimsIdCourtVenueMap.get(epimsId).add(court);
-            } else {
-                List<CourtVenue> courtVenueList = new ArrayList<>();
-                courtVenueList.add(court);
-                epimsIdCourtVenueMap.put(epimsId, courtVenueList);
-            }
-        }
-        return epimsIdCourtVenueMap;
-    }
-
     private Object retrieveBuildingLocationsByRegionId(String regionId) {
         if(isRegexSatisfied(regionId, NUMERIC_REGEX)) {
 
@@ -127,7 +106,6 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private Object retrieveBuildingLocationsByName(String buildingLocationName) {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findAll();
         BuildingLocation buildingLocation = buildingLocationRepository.findByBuildingLocationNameIgnoreCase(
             buildingLocationName);
         if (isNull(buildingLocation)) {

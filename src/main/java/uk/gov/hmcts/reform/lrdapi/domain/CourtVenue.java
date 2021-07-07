@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -25,11 +27,13 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @EqualsAndHashCode
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"epimms_id","site_name","court_type_id"}))
 public class CourtVenue implements Serializable {
 
     @Id
     private Long courtVenueId;
 
+    @Column(name = "site_name")
     private String siteName;
 
     @Column(name = "epimms_id")
@@ -45,6 +49,7 @@ public class CourtVenue implements Serializable {
     @JoinColumn(name = "region_id")
     private Region region;
 
+    @Column(name = "court_type_id")
     private String courtTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)

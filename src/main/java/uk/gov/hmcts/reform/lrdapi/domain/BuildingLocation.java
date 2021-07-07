@@ -10,11 +10,9 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -30,10 +28,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Setter
 @Builder
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "courtVenues")
 public class BuildingLocation implements Serializable {
 
     @Id
@@ -85,7 +82,6 @@ public class BuildingLocation implements Serializable {
     @Size(max = 512)
     private String address;
 
-    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
     @Builder.Default
     private Set<CourtVenue> courtVenues = new HashSet<>();
