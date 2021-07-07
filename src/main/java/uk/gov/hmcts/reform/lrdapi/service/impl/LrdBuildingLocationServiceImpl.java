@@ -166,6 +166,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         return lrdBuildingLocationResponseBuilder
             .courtFinderUrl(location.getCourtFinderUrl())
             .postcode(location.getPostcode())
+            .courtVenues(courtVenueResponses)
             .build();
     }
 

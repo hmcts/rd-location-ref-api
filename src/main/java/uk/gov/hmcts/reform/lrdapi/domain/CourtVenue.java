@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Entity(name = "court_venue")
 @AllArgsConstructor
@@ -84,5 +85,21 @@ public class CourtVenue implements Serializable {
     @JoinColumn(name = "epimms_id", referencedColumnName = "epimms_id",
         insertable = false, updatable = false, nullable = false)
     private BuildingLocation buildingLocation;
+
+    public Optional<LocalDateTime> getClosedDate() {
+        return Optional.ofNullable(closedDate);
+    }
+
+    public Optional<LocalDateTime> getCourtOpenDate() {
+        return Optional.ofNullable(courtOpenDate);
+    }
+
+    public Optional<Cluster> getCluster() {
+        return Optional.ofNullable(cluster);
+    }
+
+    public Optional<Region> getRegion() {
+        return Optional.ofNullable(region);
+    }
 
 }

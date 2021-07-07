@@ -88,6 +88,7 @@ public class BuildingLocation implements Serializable {
     public Optional<Region> getRegion() {
         return Optional.ofNullable(region);
     }
+
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
     @Builder.Default
     private Set<CourtVenue> courtVenues = new HashSet<>();
