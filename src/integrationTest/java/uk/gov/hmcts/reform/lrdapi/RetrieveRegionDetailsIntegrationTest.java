@@ -53,6 +53,19 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     }
 
     @Test
+    public void returnsRegionDetailsByDescriptionNationalAndAllWithStatusCode_200() throws JsonProcessingException {
+
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.findRegionDetailsByDescription("National, ALL", LrdRegionResponse[].class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.size()).isEqualTo(9);
+        assertThat(response.get(0).getRegionId()).isEqualTo("1");
+        assertThat(response.get(0).getDescription()).isEqualTo("National");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+    }
+
+    @Test
     public void returnsRegionDetailsByDescriptionCaseInsensitiveWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
@@ -93,6 +106,19 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     }
 
     @Test
+    public void returnsRegionDetailsById1AndAllWithStatusCode_200() throws JsonProcessingException {
+
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.findRegionDetailsById("1, ALL", LrdRegionResponse[].class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.size()).isEqualTo(9);
+        assertThat(response.get(0).getRegionId()).isEqualTo("1");
+        assertThat(response.get(0).getDescription()).isEqualTo("National");
+        assertThat(response.get(0).getWelshDescription()).isNull();
+    }
+
+    @Test
     public void doesNotReturnRegionDetailsByInvalidDescriptionWithStatusCode_404() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -100,6 +126,26 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
 
 
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    public void doesNotReturnRegionByInvalidDescriptionSpecialCharWithStatusCode_400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findRegionDetailsByDescription("Lo£nd*on", ErrorResponse.class);
+
+
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void doesNotReturnRegionByInvalidIdnSpecialCharWithStatusCode_400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findRegionDetailsByDescription("1*", ErrorResponse.class);
+
+
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
     }
 
     private void responseVerification(List<LrdRegionResponse> response, int expectedRegions) {
