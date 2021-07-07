@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
 
 @RequestMapping(
@@ -140,7 +141,7 @@ public class LrdApiController {
         @RequestParam(value = "region_id", required = false) String regionId,
         @RequestParam(value = "cluster_id", required = false) String clusterId) {
 
-        ValidationUtils.validateInputParamSize(epimsIds, buildingLocationName, regionId, clusterId);
+        checkIfSingleValuePresent(epimsIds, buildingLocationName, regionId, clusterId);
         Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds,
                                                                                         buildingLocationName,
                                                                                         regionId,
@@ -191,6 +192,10 @@ public class LrdApiController {
         LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    private static void validate() {
+
     }
 
 }

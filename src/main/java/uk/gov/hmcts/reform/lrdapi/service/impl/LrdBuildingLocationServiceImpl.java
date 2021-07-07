@@ -10,7 +10,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.CourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
-import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ClusterRepository;
@@ -20,7 +19,6 @@ import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,9 +26,11 @@ import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 
 
 @Slf4j
@@ -57,6 +57,8 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
                                                   String buildingLocationName,
                                                   String regionId,
                                                   String clusterId) {
+        String invalidExceptionMsg;
+
         if (isNotBlank(epimmsIds)) {
             return retrieveBuildingLocationsByEpimmsId(epimmsIds);
         }
@@ -64,45 +66,35 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
         if(isNotBlank(regionId)) {
+            invalidExceptionMsg = String.format("Invalid region id passed - %s", regionId);
+            validateNumericFilter(regionId, invalidExceptionMsg);
             return retrieveBuildingLocationsByRegionId(regionId);
         }
         if(isNotBlank(clusterId)) {
+            invalidExceptionMsg = String.format("Invalid cluster id passed - %s", clusterId);
+            validateNumericFilter(clusterId, invalidExceptionMsg);
             return retrieveBuildingLocationsByClusterId(clusterId);
         }
 
         return getAllBuildingLocations();
-
     }
 
-    private Object retrieveBuildingLocationsByClusterId(String clusterId) {
-        Set<BuildingLocation> buildingLocations;
-        Set<CourtVenue> courtVenues;
-        if(isRegexSatisfied(clusterId, NUMERIC_REGEX)) {
-            Optional<Cluster> cluster = clusterRepository.findById(clusterId);
-            if(cluster.isPresent()) {
-                buildingLocations = cluster.get().getBuildingLocations();
-                if(isEmpty(buildingLocations)) {
-                    throw new ResourceNotFoundException(
-                        String.format("No building locations found for cluster id - %s", clusterId));
-                }
-            } else {
-                throw new ResourceNotFoundException(String.format(
-                    "Cluster id: %s doesn't exist!", clusterId));
-            }
-        } else {
-            throw new InvalidRequestException(String.format("Cluster id - %s is in invalid format!", clusterId));
-        }
-        return buildingLocations
-            .stream()
-            .map(building -> this.buildResponse(building, building.getCourtVenues()))
-            .collect(Collectors.toList());
+    private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByClusterId(String clusterId) {
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByClusterId(clusterId);
+        handleIfBuildingLocationsEmpty(buildingLocations,
+                                       "No building locations found for cluster id: - %s",
+                                       clusterId);
+
+        return getBuildingLocationListResponse(buildingLocations);
     }
 
-    private Object retrieveBuildingLocationsByRegionId(String regionId) {
-        if(isRegexSatisfied(regionId, NUMERIC_REGEX)) {
+    private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByRegionId(String regionId) {
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByRegionId(regionId);
+        handleIfBuildingLocationsEmpty(buildingLocations,
+                                       "No building locations found for region id: - %s",
+                                       regionId);
 
-        }
-        return new Object();
+        return getBuildingLocationListResponse(buildingLocations);
     }
 
     private Object retrieveBuildingLocationsByName(String buildingLocationName) {
@@ -139,10 +131,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             throw new ResourceNotFoundException("No Building Locations found with the given epims ID: " + epimsIdList);
         }
 
-        return buildingLocations
-            .stream()
-            .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
-            .collect(Collectors.toList());
+        return getBuildingLocationListResponse(buildingLocations);
     }
 
     private LrdBuildingLocationResponse buildResponse(BuildingLocation location, Set<CourtVenue> courtVenues) {
@@ -187,5 +176,32 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
             .collect(Collectors.toList());
 
+    }
+
+    private void validateNumericFilter(String id, String invalidExceptionMsg) {
+        checkIfSingleValuePresent(id.split(COMMA));
+        if(!isRegexSatisfied(id, NUMERIC_REGEX)) {
+            invalidExceptionMsg = String.format(invalidExceptionMsg, id);
+            log.error(invalidExceptionMsg);
+            throw new InvalidRequestException(invalidExceptionMsg);
+        }
+    }
+
+    private List<LrdBuildingLocationResponse> getBuildingLocationListResponse(List<BuildingLocation> buildingLocations) {
+        return buildingLocations
+            .stream()
+            .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
+            .collect(Collectors.toList());
+    }
+
+    private void handleIfBuildingLocationsEmpty(List<BuildingLocation> buildingLocations,
+                                                String noLocationsMsg,
+                                                String id) {
+        if(isEmpty(buildingLocations)) {
+            noLocationsMsg =
+                String.format(noLocationsMsg, id);
+            log.error(noLocationsMsg);
+            throw new ResourceNotFoundException(noLocationsMsg);
+        }
     }
 }

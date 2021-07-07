@@ -243,6 +243,189 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> actualResponse =
+            (List<LrdBuildingLocationResponse>) lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id=0123",
+                    LrdBuildingLocationResponse[].class);
+
+        assertNotNull(actualResponse);
+        responseVerification(actualResponse, ONE_STR);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_MultipleClusterIdPassed_ShouldReturn400() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id=1,2",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_NonNumericClusterIdPassed_ShouldReturn400() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id=Invalid",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_ClusterIdWithNoLocationsPassed_ShouldReturn404() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id=25",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_NonExistingClusterId_ShouldReturn404() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id=25000000000",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ClusterId_LdFlagSetToOff_ShouldReturn403()
+        throws Exception {
+        Map<String, String> launchDarklyMap = new HashMap<>();
+        launchDarklyMap.put(
+            "LrdApiController.retrieveBuildingLocationDetails",
+            "lrd_location_api"
+        );
+        when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
+        when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id=1", ErrorResponse.class);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
+        assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
+            .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ValidRegionIdPassed_ShouldReturn200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> actualResponse =
+            (List<LrdBuildingLocationResponse>) lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id=8910",
+                    LrdBuildingLocationResponse[].class);
+
+        assertNotNull(actualResponse);
+        responseVerification(actualResponse, ONE_STR);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_MultipleRegionIdPassed_ShouldReturn400() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id=1,2",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_NonNumericRegionIdPassed_ShouldReturn400() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id=Invalid",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_RegionIdWithNoLocationsPassed_ShouldReturn404() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id=25",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_NonExistingCRegionId_ShouldReturn404() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id=25000000000",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_RegionId_LdFlagSetToOff_ShouldReturn403()
+        throws Exception {
+        Map<String, String> launchDarklyMap = new HashMap<>();
+        launchDarklyMap.put(
+            "LrdApiController.retrieveBuildingLocationDetails",
+            "lrd_location_api"
+        );
+        when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
+        when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id=1", ErrorResponse.class);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
+        assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
+            .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
+    }
+
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void shouldReturn400WhenMoreThanOneQueryParamsPassed() throws
         JsonProcessingException {
 

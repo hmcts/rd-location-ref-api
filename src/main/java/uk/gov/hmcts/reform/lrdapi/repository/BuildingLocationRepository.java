@@ -27,4 +27,16 @@ public interface BuildingLocationRepository extends JpaRepository<BuildingLocati
         + " LEFT JOIN FETCH court_venue cv on loc.epimmsId = cv.epimmsId"
         + " where upper(loc.buildingLocationStatus) = 'OPEN'")
     List<BuildingLocation> findByBuildingLocationStatusOpen();
+
+    @Query(value = "select distinct loc from building_location loc "
+        + "LEFT JOIN FETCH court_venue cv "
+        + "on loc.epimmsId = cv.epimmsId "
+        + "where loc.cluster.clusterId = :clusterId")
+    List<BuildingLocation> findByClusterId(@Param("clusterId") String clusterId);
+
+    @Query(value = "select distinct loc from building_location loc "
+        + "LEFT JOIN FETCH court_venue cv "
+        + "on loc.epimmsId = cv.epimmsId "
+        + "where loc.region.regionId = :regionId")
+    List<BuildingLocation> findByRegionId(@Param("regionId") String regionId);
 }
