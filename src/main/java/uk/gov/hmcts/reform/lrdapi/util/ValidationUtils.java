@@ -12,12 +12,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.logging.log4j.util.Strings.isBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_REGION_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -146,17 +143,6 @@ public class ValidationUtils {
      */
     public static boolean isListContainsTextIgnoreCase(List<String> idList, String searchText) {
         return idList.stream().anyMatch(searchText::equalsIgnoreCase);
-    }
-
-    public static void checkRegionDescriptionIsValid(String region) {
-
-        if (isBlank(region)) {
-            throw new InvalidRequestException("No Region Description provided");
-        }
-
-        if (!Pattern.compile(REGION_NAME_REGEX).matcher(region).matches()) {
-            throw new InvalidRequestException(EXCEPTION_MSG_REGION_SPCL_CHAR);
-        }
     }
 
 }
