@@ -81,20 +81,20 @@ public class CourtVenueResponse implements Serializable {
         if (!ObjectUtils.isEmpty(court)) {
             this.courtVenueId = court.getCourtVenueId().toString();
             this.closedDate =
-                (court.getClosedDate().isPresent()) ? court.getClosedDate().toString() : null;
+                (court.getClosedDate().isPresent()) ? court.getClosedDate().get().toString() : null;
             this.courtAddress = court.getCourtAddress();
             this.courtLocationCode = court.getCourtLocationCode();
             this.courtName = court.getCourtName();
             this.courtStatus = court.getCourtStatus();
             this.courtOpenDate =
-                (court.getCourtOpenDate().isPresent()) ? court.getCourtOpenDate().toString() : null;
+                (court.getCourtOpenDate().isPresent()) ? court.getCourtOpenDate().get().toString() : null;
             court.getCluster().ifPresent(cluster -> {
                 clusterId = cluster.getClusterId();
                 clusterName = cluster.getClusterName();
             });
             this.courtType = court.getCourtTypeId();
             this.dxAddress = court.getDxAddress();
-            this.epimsId = court.getBuildingLocation().getEpimmsId();
+            this.epimsId = court.getEpimmsId();
             this.openForPublic = (court.getOpenForPublic()) ? "YES" : "NO";
             this.phoneNumber = court.getPhoneNumber();
             this.welshCourtAddress = court.getWelshCourtAddress();
