@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -86,4 +87,11 @@ public class BuildingLocation implements Serializable {
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
     private List<CourtVenue> courtVenues;
 
+    public Optional<Cluster> getCluster() {
+        return Optional.ofNullable(cluster);
+    }
+
+    public Optional<Region> getRegion() {
+        return Optional.ofNullable(region);
+    }
 }
