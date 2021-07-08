@@ -138,7 +138,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
         final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
                 .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
-                                                                  "?region_id=1",
+                                                                  "?region_id=3",
                                                                   LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
     }

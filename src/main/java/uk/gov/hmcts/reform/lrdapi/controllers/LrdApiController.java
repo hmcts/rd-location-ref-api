@@ -194,8 +194,4 @@ public class LrdApiController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    private static void validate() {
-
-    }
-
 }
