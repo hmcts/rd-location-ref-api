@@ -90,7 +90,7 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return response.getBody().as(LrdRegionResponse[].class);
+            return Arrays.asList(response.getBody().as(LrdRegionResponse[].class));
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
@@ -105,7 +105,7 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            return response.getBody().as(LrdRegionResponse.class);
+            return Arrays.asList(response.getBody().as(LrdRegionResponse[].class));
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
