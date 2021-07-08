@@ -6,10 +6,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.util.ObjectUtils;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 
 import java.io.Serializable;
+
+import static org.springframework.util.ObjectUtils.isEmpty;
 
 @Getter
 @Builder
@@ -78,16 +79,14 @@ public class CourtVenueResponse implements Serializable {
 
     public CourtVenueResponse(CourtVenue court) {
 
-        if (!ObjectUtils.isEmpty(court)) {
+        if (!isEmpty(court)) {
             this.courtVenueId = court.getCourtVenueId().toString();
-            this.closedDate =
-                (court.getClosedDate().isPresent()) ? court.getClosedDate().get().toString() : null;
+            court.getClosedDate().ifPresent(date -> closedDate = date.toString());
             this.courtAddress = court.getCourtAddress();
             this.courtLocationCode = court.getCourtLocationCode();
             this.courtName = court.getCourtName();
             this.courtStatus = court.getCourtStatus();
-            this.courtOpenDate =
-                (court.getCourtOpenDate().isPresent()) ? court.getCourtOpenDate().get().toString() : null;
+            court.getCourtOpenDate().ifPresent(date -> courtOpenDate = date.toString());
             court.getCluster().ifPresent(cluster -> {
                 clusterId = cluster.getClusterId();
                 clusterName = cluster.getClusterName();
