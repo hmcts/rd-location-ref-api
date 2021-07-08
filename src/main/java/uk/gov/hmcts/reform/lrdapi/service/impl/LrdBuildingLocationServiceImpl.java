@@ -64,6 +64,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             return retrieveBuildingLocationsByEpimmsId(epimmsIds);
         }
         if (isNotBlank(buildingLocationName)) {
+            checkIfSingleValuePresent(buildingLocationName.split(COMMA));
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
         if (isNotBlank(regionId)) {
@@ -81,7 +82,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByClusterId(String clusterId) {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByClusterId(clusterId);
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByClusterId(clusterId.strip());
         handleIfBuildingLocationsEmpty(buildingLocations,
                                        "No building locations found for cluster id: - %s",
                                        clusterId);
@@ -90,7 +91,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByRegionId(String regionId) {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByRegionId(regionId);
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByRegionId(regionId.strip());
         handleIfBuildingLocationsEmpty(buildingLocations,
                                        "No building locations found for region id: - %s",
                                        regionId);
@@ -177,7 +178,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
     private void validateNumericFilter(String id, String invalidExceptionMsg) {
         checkIfSingleValuePresent(id.split(COMMA));
-        if (!isRegexSatisfied(id, NUMERIC_REGEX)) {
+        if (!isRegexSatisfied(id.strip(), NUMERIC_REGEX)) {
             invalidExceptionMsg = String.format(invalidExceptionMsg, id);
             log.error(invalidExceptionMsg);
             throw new InvalidRequestException(invalidExceptionMsg);

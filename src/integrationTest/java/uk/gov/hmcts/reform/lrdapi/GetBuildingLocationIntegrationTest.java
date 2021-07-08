@@ -224,6 +224,20 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
+    public void shouldNotRetrieveBuildLocations_MultipleBuildingLocationNamePassed_ShouldReturn400() throws
+        JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?building_location_name=Building Location A, B",
+                    ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_BuildingLocationName_LdFlagSetToOff_ShouldReturn403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
@@ -251,6 +265,21 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             (List<LrdBuildingLocationResponse>) lrdApiClient
                 .findBuildingLocationByGivenQueryParam(
                     "?cluster_id=01234",
+                    LrdBuildingLocationResponse[].class);
+
+        assertNotNull(actualResponse);
+        responseVerification(actualResponse, LocationRefConstants.ALL);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ValidClusterIdWithLeadingAndTrailingSpacePassed_ShouldReturn200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> actualResponse =
+            (List<LrdBuildingLocationResponse>) lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?cluster_id= 01234 ",
                     LrdBuildingLocationResponse[].class);
 
         assertNotNull(actualResponse);
@@ -342,6 +371,21 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             (List<LrdBuildingLocationResponse>) lrdApiClient
                 .findBuildingLocationByGivenQueryParam(
                     "?region_id=8910",
+                    LrdBuildingLocationResponse[].class);
+
+        assertNotNull(actualResponse);
+        responseVerification(actualResponse, ONE_STR);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ValidRegionIdWithLeadingAndTrialingSpacePassed_ShouldReturn200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> actualResponse =
+            (List<LrdBuildingLocationResponse>) lrdApiClient
+                .findBuildingLocationByGivenQueryParam(
+                    "?region_id= 8910 ",
                     LrdBuildingLocationResponse[].class);
 
         assertNotNull(actualResponse);

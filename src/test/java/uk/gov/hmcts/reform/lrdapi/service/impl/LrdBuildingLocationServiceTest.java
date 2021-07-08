@@ -238,6 +238,20 @@ public class LrdBuildingLocationServiceTest {
             .retrieveBuildingLocationDetails("", "test", "", ""));
     }
 
+    @Test
+    public void shouldThrowInvalidRequestExceptionForMultipleBuildingLocationNames() {
+
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "test, test 2", "", ""));
+
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase("test, test 2");
+        verify(buildingLocationRepository, times(0)).findByEpimmsId(anyList());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+    }
+
     private void verifyMultiResponse(List<LrdBuildingLocationResponse> buildingLocations) {
         assertThat(buildingLocations).hasSize(2);
 

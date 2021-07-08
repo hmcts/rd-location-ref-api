@@ -33,7 +33,7 @@ public class CourtVenueResponse implements Serializable {
     @JsonProperty("open_for_public")
     private String openForPublic;
 
-    @JsonProperty("court_type")
+    @JsonProperty("court_type_id")
     private String courtType;
 
     @JsonProperty("region_id")
