@@ -91,7 +91,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
         LrdBuildingLocationResponse.LrdBuildingLocationResponseBuilder lrdBuildingLocationResponseBuilder =
             LrdBuildingLocationResponse.builder()
-                .buildingLocationId(location.getBuildingLocationId())
+                .buildingLocationId(location.getBuildingLocationId().toString())
                 .buildingLocationName(location.getBuildingLocationName())
                 .buildingLocationStatus(location.getBuildingLocationStatus())
                 .address(location.getAddress())
