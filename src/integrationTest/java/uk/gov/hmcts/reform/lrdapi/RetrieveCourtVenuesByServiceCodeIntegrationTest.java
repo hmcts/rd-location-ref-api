@@ -71,7 +71,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     }
 
     @Test
-    public void returnsCourtVenuesByServiceCode_LDFlagOff_WithStatusCode_403()
+    public void returnsCourtVenuesByServiceCode_LdFlagOff_WithStatusCode_403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(

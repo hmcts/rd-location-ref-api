@@ -143,7 +143,7 @@ public class LrdApiProviderTest {
         BuildingLocation buildingLocation = BuildingLocation.builder()
             .buildingLocationStatus("OPEN")
             .area("Area 1")
-            .buildingLocationId("123")
+            .buildingLocationId(123L)
             .buildingLocationName("Taylor House Tribunal Hearing Centre")
             .courtFinderUrl("https://testUrl.com")
             .created(LocalDateTime.now())

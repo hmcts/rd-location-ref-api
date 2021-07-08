@@ -11,7 +11,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCo
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner.getFeatureFlagName;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
@@ -19,7 +18,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 @RunWith(CustomSerenityRunner.class)
 @WithTags({@WithTag("testType:Functional")})
 @ActiveProfiles("functional")
-public class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFunctionalTest{
+public class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFunctionalTest {
 
     public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesByServiceCode";
 
