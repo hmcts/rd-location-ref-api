@@ -21,7 +21,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 @ActiveProfiles("functional")
 public class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFunctionalTest{
 
-    public static final String mapKey = "LrdApiController.retrieveCourtVenuesByServiceCode";
+    public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesByServiceCode";
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)

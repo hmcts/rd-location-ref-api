@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtTypeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 
@@ -34,7 +33,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     public void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException {
 
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode("BFA1", LrdCourtVenuesByServiceCodeResponse.class);
+            lrdApiClient.findCourtVenuesByServiceCode("AAA3", LrdCourtVenuesByServiceCodeResponse.class);
 
         assertThat(response).isNotNull();
         responseVerification(response);
@@ -44,7 +43,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     public void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException {
 
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode("bfa1", LrdCourtVenuesByServiceCodeResponse.class);
+            lrdApiClient.findCourtVenuesByServiceCode("aaa3", LrdCourtVenuesByServiceCodeResponse.class);
 
         assertThat(response).isNotNull();
         responseVerification(response);
@@ -54,9 +53,9 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     public void returnsCourtVenuesByUnknownServiceCodeWithStatusCode_404() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findCourtVenuesByServiceCode("Invalid Service Code", ErrorResponse.class);
+            lrdApiClient.findCourtVenuesByServiceCode("ABCD1", ErrorResponse.class);
 
-
+        assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
     }
 
@@ -76,25 +75,50 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetails",
+            "LrdCourtVenueController.retrieveCourtVenuesByServiceCode",
             "lrd_location_api"
         );
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findCourtVenuesByServiceCode("BFA 1", ErrorResponse.class);
+            lrdApiClient.findCourtVenuesByServiceCode("AAA3", ErrorResponse.class);
         assertThat(errorResponseMap).containsEntry("http_status", HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
     private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
-        LrdCourtTypeResponse expectedCourtTypeResponse = new LrdCourtTypeResponse();
-        List<LrdCourtVenueResponse> expectedCourtVenueResponses = new ArrayList<>();
+        List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
-        assertThat(response.getServiceCode()).isEqualTo("BFA1");
-        assertThat(response.getCourtTypeResponse()).isEqualTo(expectedCourtTypeResponse);
-        assertThat(response.getCourtVenueResponses()).isEqualTo(expectedCourtVenueResponses);
+        assertThat(response.getServiceCode()).isEqualTo("AAA3");
+        assertThat(response.getCourtTypeId()).isEqualTo("10");
+        assertThat(response.getCourtType()).isEqualTo("County Court");
+        assertThat(response.getWelshCourtType()).isNull();
+        assertThat(response.getCourtVenues()).isEqualTo(expectedCourtVenueResponses);
+    }
+
+    private List<LrdCourtVenueResponse> buildCourtVenueResponses() {
+        List<LrdCourtVenueResponse> expectedCourtVenueResponses = new ArrayList<>();
+        LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
+            .courtVenueId("11")
+            .siteName("Aberdeen Tribunal Hearing Centre 11")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 11")
+            .epimsId("123456")
+            .openForPublic("YES")
+            .courtTypeId("10")
+            .courtType("County Court")
+            .regionId("1")
+            .region("National")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtStatus("Open")
+            .postcode("AB11 5QA")
+            .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .build();
+
+        expectedCourtVenueResponses.add(response1);
+
+        return expectedCourtVenueResponses;
     }
 
 }
