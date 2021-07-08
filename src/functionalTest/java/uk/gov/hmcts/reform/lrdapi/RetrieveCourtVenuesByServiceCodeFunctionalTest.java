@@ -7,14 +7,10 @@ import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtTypeResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner.getFeatureFlagName;
@@ -52,12 +48,11 @@ public class RetrieveCourtVenuesByServiceCodeFunctionalTest extends Authorizatio
 
 
     private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
-        LrdCourtTypeResponse expectedCourtTypeResponse = new LrdCourtTypeResponse();
-        List<LrdCourtVenueResponse> expectedCourtVenueResponses = new ArrayList<>();
-
         assertThat(response.getServiceCode()).isEqualTo("BFA1");
-        assertThat(response.getCourtTypeResponse()).isEqualTo(expectedCourtTypeResponse);
-        assertThat(response.getCourtVenueResponses()).isEqualTo(expectedCourtVenueResponses);
+        assertThat(response.getCourtTypeId()).isEqualTo("23");
+        assertThat(response.getCourtType()).isEqualTo("Immigration and Asylum Tribunal");
+        assertThat(response.getWelshCourtType()).isNull();
+        assertThat(response.getCourtVenues()).isNotNull();
     }
 
 }
