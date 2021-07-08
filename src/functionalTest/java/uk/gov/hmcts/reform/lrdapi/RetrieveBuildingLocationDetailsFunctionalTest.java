@@ -66,7 +66,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void shouldNotRetrieveBuildingLocations_WithStatusCode_404() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
-                                                                          "?epimms_id=aaazzzzzzzzzzzzz",
+                                                                          "?epimms_id=no_epimms_id",
                                                                           LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
     }
@@ -135,22 +135,21 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocationsForValidRegionId_WithStatusCode_200() {
-        //Currently we get 404 as the Api to insert data into database is yet to be implemented
-        ErrorResponse response = (ErrorResponse)
+        final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
                                                                   "?region_id=1",
-                                                                  LrdBuildingLocationResponse.class);
+                                                                  LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    public void shouldNotRetrieveBuildingLocationsForInValidRegionId_WithStatusCode_404() {
+    public void shouldNotRetrieveBuildingLocationsForNonExistentRegionId_WithStatusCode_404() {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
-                                                                          "?region_id=Invalid",
-                                                                          LrdBuildingLocationResponse.class);
+                                                                          "?region_id=100000000",
+                                                                          LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
     }
 
@@ -168,21 +167,20 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocationsForValidClusterId_WithStatusCode_200() {
-        //Currently we get 404 as the Api to insert data into database is yet to be implemented
-        ErrorResponse response = (ErrorResponse)
+        final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
                                                                   "?cluster_id=1",
-                                                                  LrdBuildingLocationResponse.class);
+                                                                  LrdBuildingLocationResponse[].class);
         assertThat(response).isNotNull();
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    public void shouldNotRetrieveBuildingLocationsForInvalidClusterId_WithStatusCode_404() {
+    public void shouldNotRetrieveBuildingLocationsForNonExistentClusterId_WithStatusCode_404() {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
-                                                                          "?cluster_id=Invalid",
+                                                                          "?cluster_id=10000000",
                                                                           LrdBuildingLocationResponse.class);
         assertThat(response).isNotNull();
     }
