@@ -66,12 +66,12 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         if (isNotBlank(buildingLocationName)) {
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
-        if(isNotBlank(regionId)) {
+        if (isNotBlank(regionId)) {
             invalidExceptionMsg = String.format("Invalid region id passed - %s", regionId);
             validateNumericFilter(regionId, invalidExceptionMsg);
             return retrieveBuildingLocationsByRegionId(regionId);
         }
-        if(isNotBlank(clusterId)) {
+        if (isNotBlank(clusterId)) {
             invalidExceptionMsg = String.format("Invalid cluster id passed - %s", clusterId);
             validateNumericFilter(clusterId, invalidExceptionMsg);
             return retrieveBuildingLocationsByClusterId(clusterId);
@@ -177,7 +177,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
     private void validateNumericFilter(String id, String invalidExceptionMsg) {
         checkIfSingleValuePresent(id.split(COMMA));
-        if(!isRegexSatisfied(id, NUMERIC_REGEX)) {
+        if (!isRegexSatisfied(id, NUMERIC_REGEX)) {
             invalidExceptionMsg = String.format(invalidExceptionMsg, id);
             log.error(invalidExceptionMsg);
             throw new InvalidRequestException(invalidExceptionMsg);
@@ -195,7 +195,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     private void handleIfBuildingLocationsEmpty(List<BuildingLocation> buildingLocations,
                                                 String noLocationsMsg,
                                                 String id) {
-        if(isEmpty(buildingLocations)) {
+        if (isEmpty(buildingLocations)) {
             noLocationsMsg =
                 String.format(noLocationsMsg, id);
             log.error(noLocationsMsg);

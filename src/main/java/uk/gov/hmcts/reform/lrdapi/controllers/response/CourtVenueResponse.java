@@ -78,33 +78,33 @@ public class CourtVenueResponse implements Serializable {
 
     public CourtVenueResponse(CourtVenue court) {
 
-        if(!ObjectUtils.isEmpty(court)) {
-                this.courtVenueId = court.getCourtVenueId().toString();
-                this.closedDate =
-                    (court.getClosedDate().isPresent()) ? court.getClosedDate().toString() : null;
-                this.courtAddress = court.getCourtAddress();
-                this.courtLocationCode = court.getCourtLocationCode();
-                this.courtName = court.getCourtName();
-                this.courtStatus = court.getCourtStatus();
-                this.courtOpenDate =
-                    (court.getCourtOpenDate().isPresent()) ? court.getCourtOpenDate().toString() : null;
-                court.getCluster().ifPresent(cluster -> {
-                    clusterId = cluster.getClusterId();
-                    clusterName = cluster.getClusterName();
-                });
-                this.courtType = court.getCourtTypeId();
-                this.dxAddress = court.getDxAddress();
-                this.epimsId = court.getBuildingLocation().getEpimmsId();
-                this.openForPublic = (court.getOpenForPublic()) ? "YES" : "NO";
-                this.phoneNumber = court.getPhoneNumber();
-                this.welshCourtAddress = court.getWelshCourtAddress();
-                this.siteName = court.getSiteName();
-                this.postcode = court.getPostcode();
-                this.welshSiteName = court.getWelshSiteName();
-                court.getRegion().ifPresent(reg -> {
-                    region = reg.getDescription();
-                    regionId = reg.getRegionId();
-                });
+        if (!ObjectUtils.isEmpty(court)) {
+            this.courtVenueId = court.getCourtVenueId().toString();
+            this.closedDate =
+                (court.getClosedDate().isPresent()) ? court.getClosedDate().toString() : null;
+            this.courtAddress = court.getCourtAddress();
+            this.courtLocationCode = court.getCourtLocationCode();
+            this.courtName = court.getCourtName();
+            this.courtStatus = court.getCourtStatus();
+            this.courtOpenDate =
+                (court.getCourtOpenDate().isPresent()) ? court.getCourtOpenDate().toString() : null;
+            court.getCluster().ifPresent(cluster -> {
+                clusterId = cluster.getClusterId();
+                clusterName = cluster.getClusterName();
+            });
+            this.courtType = court.getCourtTypeId();
+            this.dxAddress = court.getDxAddress();
+            this.epimsId = court.getBuildingLocation().getEpimmsId();
+            this.openForPublic = (court.getOpenForPublic()) ? "YES" : "NO";
+            this.phoneNumber = court.getPhoneNumber();
+            this.welshCourtAddress = court.getWelshCourtAddress();
+            this.siteName = court.getSiteName();
+            this.postcode = court.getPostcode();
+            this.welshSiteName = court.getWelshSiteName();
+            court.getRegion().ifPresent(reg -> {
+                region = reg.getDescription();
+                regionId = reg.getRegionId();
+            });
         }
 
     }

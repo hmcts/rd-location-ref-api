@@ -69,7 +69,7 @@ public class LrdBuildingLocationServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testGetAllBuildingLocations_EpimmsIdALL() {
+    public void testGetAllBuildingLocations_EpimmsIdAll() {
         when(buildingLocationRepository.findAll())
             .thenReturn(prepareMultiBuildLocationResponse());
         List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
@@ -89,8 +89,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_RetrieveBuildingLocationsByEpimmsId_NoBuildLocationFound() {
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,
-                     () -> lrdBuildingLocationService.retrieveBuildingLocationDetails("123", "", "", ""));
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("123", "", "", ""));
 
         verify(buildingLocationRepository, times(1)).findByEpimmsId(anyList());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
@@ -103,8 +103,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_RetrieveBuildingLocationsByClusterId_NoBuildLocationFound() {
         when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,
-                     () -> lrdBuildingLocationService.retrieveBuildingLocationDetails("", "", "", "1"));
+        assertThrows(ResourceNotFoundException.class,() -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "", "1"));
 
         verify(buildingLocationRepository, times(1)).findByClusterId("1");
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
@@ -118,8 +118,7 @@ public class LrdBuildingLocationServiceTest {
     public void test_RetrieveBuildingLocationsByClusterId_NonNumericClusterId() {
         when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
         assertThrows(
-            InvalidRequestException.class,
-            () -> lrdBuildingLocationService
+            InvalidRequestException.class,() -> lrdBuildingLocationService
                 .retrieveBuildingLocationDetails("", "", "", "1abc"));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
@@ -132,9 +131,7 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_RetrieveBuildingLocationsByClusterId_MultipleClusterIdPassed() {
         when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
-        assertThrows(
-            InvalidRequestException.class,
-            () -> lrdBuildingLocationService
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
                 .retrieveBuildingLocationDetails("", "", "", "1,2,3"));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
@@ -147,9 +144,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_RetrieveBuildingLocationsByRegionId_NoBuildLocationFound() {
         when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,
-                            () -> lrdBuildingLocationService
-                                .retrieveBuildingLocationDetails("", "", "1", ""));
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1", ""));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(1)).findByRegionId(anyString());
         verify(buildingLocationRepository, times(0))
@@ -161,10 +157,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_RetrieveBuildingLocationsByRegionId_NonNumericRegionId() {
         when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
-        assertThrows(
-            InvalidRequestException.class,
-            () -> lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "", "1abc", ""));
+        assertThrows(InvalidRequestException.class,() -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1abc", ""));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
         verify(buildingLocationRepository, times(0))
@@ -176,10 +170,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_RetrieveBuildingLocationsByRegionId_MultipleRegionIdPassed() {
         when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
-        assertThrows(
-            InvalidRequestException.class,
-            () -> lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "", "1,2,3", ""));
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1,2,3", ""));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
         verify(buildingLocationRepository, times(0))
@@ -191,8 +183,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_GetAllBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,
-                     () -> lrdBuildingLocationService.retrieveBuildingLocationDetails("", "", "", ""));
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "", ""));
 
         verify(buildingLocationRepository, times(1)).findByBuildingLocationStatusOpen();
         verify(buildingLocationRepository, times(0))
@@ -206,8 +198,8 @@ public class LrdBuildingLocationServiceTest {
     @Test
     public void test_GetAllOpenBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findAll()).thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,
-                     () -> lrdBuildingLocationService.retrieveBuildingLocationDetails("ALL", "", "", ""));
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("ALL", "", "", ""));
 
         verify(buildingLocationRepository, times(1)).findAll();
         verify(buildingLocationRepository, times(0))
@@ -242,9 +234,8 @@ public class LrdBuildingLocationServiceTest {
     public void shouldThrowResourceNotFoundExceptionForInvalidBuildingLocationName() {
         when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase("test"))
             .thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,
-                     () -> lrdBuildingLocationService.retrieveBuildingLocationDetails("", "test", "", ""));
-
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "test", "", ""));
     }
 
     private void verifyMultiResponse(List<LrdBuildingLocationResponse> buildingLocations) {
