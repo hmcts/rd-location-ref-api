@@ -271,6 +271,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             assertIterableEquals(response, getSingleLocationResponse());
         } else if (TWO_STR.equalsIgnoreCase(responseType)) {
             assertThat(response).hasSize(2).hasSameElementsAs(getTwoLocationResponse());
+        } else if (LocationRefConstants.ALL.equalsIgnoreCase(responseType)) {
+            assertThat(response).hasSize(4).hasSameElementsAs(getAllLocationResponse());
         } else {
             assertThat(response).hasSize(3).hasSameElementsAs(getAllLocationResponse());
         }
@@ -294,7 +296,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
                 .region("Description A")
                 .clusterId("0123")
                 .clusterName("Cluster A")
-                .buildingLocationStatus("Status A")
+                .buildingLocationStatus("Open")
                 .epimmsId("123456789")
                 .buildingLocationName("Building Location A")
                 .area("Area A")
@@ -314,7 +316,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .region("Description B")
             .clusterId("01234")
             .clusterName("Cluster B")
-            .buildingLocationStatus("Status B")
+            .buildingLocationStatus("Open")
             .epimmsId("123456")
             .buildingLocationName("Building Location B")
             .area("Area B")
@@ -338,7 +340,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .region("Description B")
             .clusterId("01234")
             .clusterName("Cluster B")
-            .buildingLocationStatus("Status B")
+            .buildingLocationStatus("Open")
             .epimmsId("epimmsId1234")
             .buildingLocationName("Building Location C")
             .area("Area C")
@@ -347,7 +349,23 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtFinderUrl("Court Finder URL 3")
             .build();
 
+        LrdBuildingLocationResponse responses4 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041998")
+            .regionId("891011")
+            .region("Description B")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Closed")
+            .epimmsId("123EpimmsId456")
+            .buildingLocationName("Building Location 4")
+            .area("Area D")
+            .postcode("EC2A 3AQ")
+            .address("4 Street, London")
+            .courtFinderUrl("Court Finder URL 4")
+            .build();
+
         locationResponses.add(response3);
+        locationResponses.add(responses4);
 
         return locationResponses;
     }
