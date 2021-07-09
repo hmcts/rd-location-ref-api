@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
@@ -11,17 +12,21 @@ import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.replaceIgnoreCase;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.util.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHABET_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkStringContainsMoreThanOneConsecutiveComma;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 
 @Service
@@ -47,6 +52,8 @@ public class RegionServiceImpl implements RegionService {
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionId(String regionId) {
+        isRegionIdParamValid(regionId);
+
         //Check if Param value provided is 'ALL' - if so, retrieve all Regions except National
         if (regionId.strip().equalsIgnoreCase(ALL)) {
             return retrieveAllRegions(false);
@@ -77,21 +84,11 @@ public class RegionServiceImpl implements RegionService {
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionDescription(String description) {
-        //Check if Param value provided is 'ALL' - if so, retrieve all Regions except National
-        if (description.strip().equalsIgnoreCase(ALL)) {
-            return retrieveAllRegions(false);
-        }
+        checkStringContainsMoreThanOneConsecutiveComma(description);
 
-        //otherwise generate list of Descriptions from description String
+        //generate list of Descriptions from description String
         List<String> regionDescriptionsList =
             checkIfValidCsvIdentifiersAndReturnList(description, EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED);
-
-        //then check if List contains 'ALL' and the Description for National
-        if (isListContainsTextIgnoreCase(regionDescriptionsList, ALL) && regionDescriptionsList.contains("National")) {
-            return retrieveAllRegions(true);
-        } else if (isListContainsTextIgnoreCase(regionDescriptionsList, ALL)) {
-            return retrieveAllRegions(false);
-        }
 
         //remove invalid Regions from the list
         checkForInvalidIdentifiersAndRemoveFromIdList(
@@ -121,4 +118,17 @@ public class RegionServiceImpl implements RegionService {
         return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
     }
 
+    public void isRegionIdParamValid(String param) {
+        checkStringContainsMoreThanOneConsecutiveComma(param);
+
+        if (param.toUpperCase().contains(ALL) && doesStringContainAlphabetOtherThanAll(param)) {
+            throw new InvalidRequestException("The only non-numeric value allowed is 'ALL' (case insensitive)");
+        }
+    }
+
+    public boolean doesStringContainAlphabetOtherThanAll(String param) {
+        String paramWithoutAll = replaceIgnoreCase(param.toUpperCase(), ALL, "");
+
+        return Pattern.compile(ALPHABET_REGEX).matcher(paramWithoutAll).find();
+    }
 }
