@@ -10,7 +10,8 @@ import static org.mockito.Mockito.when;
 
 public class CourtTypeServiceAssocRepositoryTest {
 
-    public CourtTypeServiceAssocRepository courtTypeServiceAssocRepository = mock(CourtTypeServiceAssocRepository.class);
+    public CourtTypeServiceAssocRepository courtTypeServiceAssocRepository =
+        mock(CourtTypeServiceAssocRepository.class);
 
     @Test
     public void findCourtVenuesByServiceCodeTest() {
