@@ -6,12 +6,12 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
@@ -33,10 +33,7 @@ public class ValidationUtils {
         checkIfSingleValuePresent(serviceCode, ccdCaseType, ccdServiceNames);
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
-            if (StringUtils.startsWith(ccdServiceNames, COMMA)
-                || StringUtils.endsWith(ccdServiceNames, COMMA)) {
-                throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
-            }
+            checkIfStringStartsAndEndsWithComma(ccdServiceNames, EXCEPTION_MSG_SPCL_CHAR);
             for (String str : ccdServiceNames.trim().split(REG_EXP_COMMA_DILIMETER)) {
                 if (StringUtils.isEmpty(str.trim())) {
                     throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
@@ -82,14 +79,16 @@ public class ValidationUtils {
      * @return The list of identifiers that are created from the passed comma separated identifiers.
      */
     public static List<String> checkIfValidCsvIdentifiersAndReturnList(String csvIds, String exceptionMessage) {
+        checkIfStringStartsAndEndsWithComma(csvIds, exceptionMessage);
         var idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
         idList.replaceAll(String::trim);
-        idList.removeAll(Collections.singleton(StringUtils.EMPTY));
-        if (idList.isEmpty()) {
+        if (isEmpty(idList) || isListContainsTextIgnoreCase(idList, StringUtils.EMPTY)) {
             throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
         }
         return idList;
     }
+
+
 
     /**
      * Method to check for invalid identifiers in the passed idList using the passed regex.
@@ -159,8 +158,21 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * A util method to check if the passed string satisfies the passed regex pattern.
+     *
+     * @param stringToEvaluate The string to be evaluated
+     * @param regex The regex to be applied on the passed string
+     * @return True if the passed string satisfies the passed regex pattern, else False
+     */
     public static boolean isRegexSatisfied(String stringToEvaluate, String regex) {
         return Pattern.compile(regex).matcher(stringToEvaluate).matches();
+    }
+
+    private static void checkIfStringStartsAndEndsWithComma(String csvIds, String exceptionMessage) {
+        if (StringUtils.startsWith(csvIds, COMMA) || StringUtils.endsWith(csvIds, COMMA)) {
+            throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
+        }
     }
 
 }

@@ -164,15 +164,14 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_TwoCommaWithValidEpimsIdGiven_ReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_TwoCommaWithValidEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789,,",
-                                                               LrdBuildingLocationResponse[].class);
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789,,", ErrorResponse.class);
 
-        assertNotNull(response);
-        responseVerification(response, ONE_STR);
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
     }
 
     @Test

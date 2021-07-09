@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -202,10 +203,10 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .collect(Collectors.toList());
     }
 
-    private void handleIfBuildingLocationsEmpty(Supplier<Boolean> buildingLocationResponseVerifier,
+    private void handleIfBuildingLocationsEmpty(BooleanSupplier buildingLocationResponseVerifier,
                                                 String noLocationsMsg,
                                                 String id) {
-        if (buildingLocationResponseVerifier.get()) {
+        if (buildingLocationResponseVerifier.getAsBoolean()) {
             noLocationsMsg = (isNotBlank(id)) ? String.format(noLocationsMsg, id) : noLocationsMsg;
             log.error("{} : {}",loggingComponentName, noLocationsMsg);
             throw new ResourceNotFoundException(noLocationsMsg);

@@ -94,7 +94,7 @@ public class CourtVenueResponse implements Serializable {
             this.courtType = court.getCourtTypeId();
             this.dxAddress = court.getDxAddress();
             this.epimsId = court.getEpimmsId();
-            this.openForPublic = (court.getOpenForPublic()) ? "YES" : "NO";
+            this.openForPublic = (Boolean.TRUE.equals(court.getOpenForPublic())) ? "YES" : "NO";
             this.phoneNumber = court.getPhoneNumber();
             this.welshCourtAddress = court.getWelshCourtAddress();
             this.siteName = court.getSiteName();
