@@ -39,7 +39,7 @@ public class RegionServiceImpl implements RegionService {
     @Value("${loggingComponentName}")
     private String loggingComponentName;
 
-    public Object retrieveRegionDetails(String regionId, String description) {
+    public List<LrdRegionResponse> retrieveRegionDetails(String regionId, String description) {
         if (isNotBlank(regionId)) {
             return retrieveRegionByRegionId(regionId);
         }
