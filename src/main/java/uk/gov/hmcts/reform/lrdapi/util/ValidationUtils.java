@@ -145,4 +145,10 @@ public class ValidationUtils {
         return idList.stream().anyMatch(searchText::equalsIgnoreCase);
     }
 
+    public static void checkStringContainsMoreThanOneConsecutiveComma(String param) {
+        if (param.contains(",,")) {
+            throw new InvalidRequestException("Multiple commas are not allowed in request param");
+        }
+    }
+
 }
