@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ClusterRepository;
-import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
@@ -52,9 +51,6 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
     @Autowired
     private ClusterRepository clusterRepository;
-
-    @Autowired
-    private CourtVenueRepository courtVenueRepository;
 
     @Override
     public Object retrieveBuildingLocationDetails(String epimmsIds,
