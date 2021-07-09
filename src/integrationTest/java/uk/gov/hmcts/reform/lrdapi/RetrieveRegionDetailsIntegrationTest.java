@@ -43,29 +43,6 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     }
 
     @Test
-    public void returnsRegionDetailsByDescriptionAllWithStatusCode_200() throws JsonProcessingException {
-
-        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsByDescription("ALL", LrdRegionResponse[].class);
-
-        assertThat(response).isNotNull();
-        responseVerificationForAll(response);
-    }
-
-    @Test
-    public void returnsRegionDetailsByDescriptionNationalAndAllWithStatusCode_200() throws JsonProcessingException {
-
-        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.findRegionDetailsByDescription("National, ALL", LrdRegionResponse[].class);
-
-        assertThat(response).isNotNull();
-        assertThat(response.size()).isEqualTo(9);
-        assertThat(response.get(0).getRegionId()).isEqualTo("1");
-        assertThat(response.get(0).getDescription()).isEqualTo("National");
-        assertThat(response.get(0).getWelshDescription()).isNull();
-    }
-
-    @Test
     public void returnsRegionDetailsByDescriptionCaseInsensitiveWithStatusCode_200() throws JsonProcessingException {
 
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
