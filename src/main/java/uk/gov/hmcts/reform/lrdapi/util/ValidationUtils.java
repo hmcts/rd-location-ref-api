@@ -48,6 +48,13 @@ public class ValidationUtils {
         return true;
     }
 
+    /**
+     * Method to check if the passed {@link String} varargs contains a single value.
+     * If more than one value is present, this method throws an {@link InvalidRequestException}
+     *
+     * @param params A java varargs that would contain the list string values. Ideally, it is expected
+     *               to have single value.
+     */
     public static void checkIfSingleValuePresent(String... params) {
         long requestParamSize = Arrays.stream(params)
             .filter(StringUtils::isNotBlank)
@@ -69,6 +76,13 @@ public class ValidationUtils {
 
     /**
      * Method to check if the passed identifiers are a valid comma separated values.
+     * The identifiers are passed as a string and this string value is considered valid only when there are proper
+     * comma separated values.
+     * An example of a valid value is "123456, 789,1123, 1234 "
+     * Below are a few examples of invalid values:
+     * "12345,,678"
+     * ",12345"
+     * "12345,"
      * If identified as valid, the comma separated identifier values are converted to list of strings and are returned.
      * If identified as invalid, it throws an {@InvalidRequestException} to mark the request as BAD_REQUEST.
      *
