@@ -60,17 +60,6 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByDescriptionAllWithStatusCode_200() {
-        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "ALL");
-
-        assertThat(response).isNotNull();
-        responseVerificationForAll(response);
-    }
-
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    @SuppressWarnings("unchecked")
     public void getRegionDetailsByIdWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2");
