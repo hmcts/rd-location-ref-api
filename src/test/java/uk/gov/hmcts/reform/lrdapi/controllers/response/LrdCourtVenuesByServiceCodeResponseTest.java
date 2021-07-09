@@ -17,8 +17,6 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
     @Test
     public void testCourtVenuesByServiceCodeResponse() {
 
-        String serviceCode = "ABC1";
-
         Region region = new Region();
         region.setDescription("Region XYZ");
         region.setRegionId("123");
@@ -44,6 +42,7 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
             .build();
 
         courtType.setCourtVenues(Collections.singletonList(courtVenue));
+        String serviceCode = "ABC1";
 
         LrdCourtVenuesByServiceCodeResponse courtVenuesByServiceCodeResponse =
             new LrdCourtVenuesByServiceCodeResponse(courtType, serviceCode);

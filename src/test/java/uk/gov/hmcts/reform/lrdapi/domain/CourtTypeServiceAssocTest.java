@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
 import org.junit.Test;
+
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
