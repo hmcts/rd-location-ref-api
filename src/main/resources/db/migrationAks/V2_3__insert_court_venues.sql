@@ -2,7 +2,7 @@ insert into
   building_location(
     building_location_id,
     region_id,
-    building_location_status_id,
+    building_location_status,
     cluster_id,
     epimms_id,
     building_location_name,
@@ -14,7 +14,7 @@ insert into
 values(
   '22041996',
   '891011',
-  '45678',
+  'Open',
   '01234',
   '123456',
   'Building Location B',
