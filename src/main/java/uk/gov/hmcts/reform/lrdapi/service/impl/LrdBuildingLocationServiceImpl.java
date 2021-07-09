@@ -12,10 +12,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationRespon
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
-import uk.gov.hmcts.reform.lrdapi.repository.ClusterRepository;
-import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
-import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -30,10 +27,16 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_CLUSTER_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_REGION_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS_FOR_CLUSTER_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS_FOR_REGION_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATION_FOR_BUILDING_LOCATION_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
 
 @Slf4j
@@ -45,12 +48,6 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
-
-    @Autowired
-    private RegionRepository regionRepository;
-
-    @Autowired
-    private ClusterRepository clusterRepository;
 
     @Override
     public Object retrieveBuildingLocationDetails(String epimmsIds,
@@ -66,6 +63,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
         if (isNotBlank(regionId)) {
+            log.info("{} : Obtaining building locations for the region id: {}", loggingComponentName, regionId);
             id = regionId.strip();
             return getBuildingLocationsForNumericFilters(
                 id, INVALID_REGION_ID,
@@ -74,6 +72,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             );
         }
         if (isNotBlank(clusterId)) {
+            log.info("{} : Obtaining building locations for the cluster id: {}", loggingComponentName, clusterId);
             id = clusterId.strip();
             return getBuildingLocationsForNumericFilters(
                 id, INVALID_CLUSTER_ID,
@@ -94,7 +93,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         validateNumericFilter(id, invalidExceptionMsg);
         List<BuildingLocation> buildingLocations = buildingLocationSupplier.get();
         handleIfBuildingLocationsEmpty(
-            buildingLocations,
+            () -> isEmpty(buildingLocations),
             noBuildingLocationsMsg,
             id
         );
@@ -105,10 +104,11 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     private Object retrieveBuildingLocationsByName(String buildingLocationName) {
         BuildingLocation buildingLocation = buildingLocationRepository.findByBuildingLocationNameIgnoreCase(
             buildingLocationName);
-        if (isNull(buildingLocation)) {
-            throw new ResourceNotFoundException(String.format(
-                "No Building Location found for the given building location name: %s ", buildingLocationName));
-        }
+        handleIfBuildingLocationsEmpty(
+            () -> isNull(buildingLocation),
+            NO_BUILDING_LOCATION_FOR_BUILDING_LOCATION_NAME,
+            buildingLocationName
+        );
         return buildResponse(buildingLocation, buildingLocation.getCourtVenues());
 
     }
@@ -118,28 +118,32 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         if (epimmsId.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
             return getAllBuildingLocations(() -> buildingLocationRepository.findAll());
         }
-        List<String> epimsIdList = ValidationUtils
-            .checkIfValidCsvIdentifiersAndReturnList(epimmsId, EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
-        if (ValidationUtils.isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
+        List<String> epimsIdList = checkIfValidCsvIdentifiersAndReturnList(
+            epimmsId,
+            EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
+        if (isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
             return getAllBuildingLocations(() -> buildingLocationRepository.findAll());
         }
-        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(epimsIdList,
-                                                                      ALPHA_NUMERIC_REGEX, log,
-                                                                      loggingComponentName,
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        checkForInvalidIdentifiersAndRemoveFromIdList(
+            epimsIdList,
+            ALPHA_NUMERIC_REGEX, log,
+            loggingComponentName,
+            EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
         );
 
         List<BuildingLocation> buildingLocations = buildingLocationRepository.findByEpimmsId(epimsIdList);
 
-        if (isEmpty(buildingLocations)) {
-            throw new ResourceNotFoundException("No Building Locations found with the given epims ID: " + epimsIdList);
-        }
+        handleIfBuildingLocationsEmpty(
+            () -> isEmpty(buildingLocations),
+            NO_BUILDING_LOCATIONS_FOR_EPIMMS_ID,
+            epimsIdList.toString()
+        );
 
         return getBuildingLocationListResponse(buildingLocations);
     }
 
     private LrdBuildingLocationResponse buildResponse(BuildingLocation location, Set<CourtVenue> courtVenues) {
-        Set<CourtVenueResponse> courtVenueResponses = getCourtVenueResponses(courtVenues);
         LrdBuildingLocationResponse.LrdBuildingLocationResponseBuilder lrdBuildingLocationResponseBuilder =
             LrdBuildingLocationResponse.builder()
                 .buildingLocationId(location.getBuildingLocationId().toString())
@@ -156,10 +160,14 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             lrdBuildingLocationResponseBuilder.regionId(region.getRegionId());
             lrdBuildingLocationResponseBuilder.region(region.getDescription());
         });
+
+        if (!courtVenues.isEmpty()) {
+            lrdBuildingLocationResponseBuilder.courtVenues(getCourtVenueResponses(courtVenues));
+        }
+
         return lrdBuildingLocationResponseBuilder
             .courtFinderUrl(location.getCourtFinderUrl())
             .postcode(location.getPostcode())
-            .courtVenues(courtVenueResponses)
             .build();
     }
 
@@ -173,9 +181,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     private List<LrdBuildingLocationResponse> getAllBuildingLocations(
         Supplier<List<BuildingLocation>> buildingLocationSupplier) {
         List<BuildingLocation> buildingLocations = buildingLocationSupplier.get();
-        if (isEmpty(buildingLocations)) {
-            throw new ResourceNotFoundException("There are no building locations available at the moment.");
-        }
+        handleIfBuildingLocationsEmpty(() -> isEmpty(buildingLocations), NO_BUILDING_LOCATIONS, null);
         return getBuildingLocationListResponse(buildingLocations);
     }
 
@@ -196,13 +202,12 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .collect(Collectors.toList());
     }
 
-    private void handleIfBuildingLocationsEmpty(List<BuildingLocation> buildingLocations,
+    private void handleIfBuildingLocationsEmpty(Supplier<Boolean> buildingLocationResponseVerifier,
                                                 String noLocationsMsg,
                                                 String id) {
-        if (isEmpty(buildingLocations)) {
-            noLocationsMsg =
-                String.format(noLocationsMsg, id);
-            log.error(noLocationsMsg);
+        if (buildingLocationResponseVerifier.get()) {
+            noLocationsMsg = (isNotBlank(id)) ? String.format(noLocationsMsg, id) : noLocationsMsg;
+            log.error("{} : {}",loggingComponentName, noLocationsMsg);
             throw new ResourceNotFoundException(noLocationsMsg);
         }
     }

@@ -762,7 +762,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .postcode("EC2A 3AQ")
             .address("4 Street, London")
             .courtFinderUrl("Court Finder URL 4")
-            .courtVenues(new HashSet<>())
             .build();
 
         locationResponses.add(locationResponses4);

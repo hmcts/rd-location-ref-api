@@ -81,6 +81,10 @@ public class BuildingLocation implements Serializable {
     @Size(max = 512)
     private String address;
 
+    @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
+    @Builder.Default
+    private Set<CourtVenue> courtVenues = new HashSet<>();
+
     public Optional<Cluster> getCluster() {
         return Optional.ofNullable(cluster);
     }
@@ -88,9 +92,5 @@ public class BuildingLocation implements Serializable {
     public Optional<Region> getRegion() {
         return Optional.ofNullable(region);
     }
-
-    @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
-    @Builder.Default
-    private Set<CourtVenue> courtVenues = new HashSet<>();
 
 }

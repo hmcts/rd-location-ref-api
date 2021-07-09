@@ -26,5 +26,10 @@ public class LocationRefConstants {
     public static final String INVALID_CLUSTER_ID = "Invalid cluster id passed - %s";
     public static final String NO_BUILDING_LOCATIONS_FOR_CLUSTER_ID =
         "No building locations found for cluster id: - %s";
+    public static final String NO_BUILDING_LOCATIONS = "There are no building locations available at the moment.";
+    public static final String NO_BUILDING_LOCATIONS_FOR_EPIMMS_ID =
+        "No Building Locations found with the given epims ID: %s";
+    public static final String NO_BUILDING_LOCATION_FOR_BUILDING_LOCATION_NAME =
+        "No Building Location found for the given building location name: %s";
 
 }
