@@ -12,13 +12,13 @@ insert into
     address,
     updated_time)
 values(
-  '22041996',
-  '891011',
-  'Open',
-  '01234',
+  '3',
+  '2',
+  'OPEN',
+  '9',
   '123456',
   'Building Location B',
-  'Area B',
+  'NORTH',
   'Court Finder URL 2',
   'SW19 2YZ',
   '2 Street, London',
