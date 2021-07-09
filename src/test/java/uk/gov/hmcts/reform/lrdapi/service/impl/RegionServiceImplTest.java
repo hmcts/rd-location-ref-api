@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -98,6 +100,13 @@ public class RegionServiceImplTest {
     @Test(expected = ResourceNotFoundException.class)
     public void testRetrieveRegionByRegionDescriptionThrows404ForUnknownDescription() {
         regionService.retrieveRegionByRegionDescription("Unknown Description");
+    }
+
+    @Test
+    public void testIsRegionIdParamValid() {
+        regionService.isRegionIdParamValid("all,1,2,3,AlL,4,5");
+        regionService.isRegionIdParamValid("1,2,ALL,3,aLl,8");
+        assertThrows(InvalidRequestException.class, () -> regionService.isRegionIdParamValid("1,all,invalid"));
     }
 
 }

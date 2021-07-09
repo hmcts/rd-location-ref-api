@@ -11,6 +11,7 @@ public class LocationRefConstants {
     public static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
     public static final String REG_EXP_WHITE_SPACE = "\\s";
     public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
+    public static final String ALPHABET_REGEX = "[a-zA-Z]";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
     public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
         + "Invalid epims id(s): %s  passed.";
