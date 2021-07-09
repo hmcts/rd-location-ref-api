@@ -84,14 +84,12 @@ public class LrdCourtVenueResponse {
 
         if (nonNull(courtVenue)) {
             this.courtVenueId = courtVenue.getCourtVenueId().toString();
-            this.closedDate =
-                (courtVenue.getClosedDate().isPresent()) ? courtVenue.getClosedDate().get().toString() : null;
+            courtVenue.getClosedDate().ifPresent(date -> closedDate = date.toString());
             this.courtAddress = courtVenue.getCourtAddress();
             this.courtLocationCode = courtVenue.getCourtLocationCode();
             this.courtName = courtVenue.getCourtName();
             this.courtStatus = courtVenue.getCourtStatus();
-            this.courtOpenDate =
-                (courtVenue.getCourtOpenDate().isPresent()) ? courtVenue.getCourtOpenDate().get().toString() : null;
+            courtVenue.getCourtOpenDate().ifPresent(date -> courtOpenDate = date.toString());
             courtVenue.getCluster().ifPresent(cluster -> {
                 clusterId = cluster.getClusterId();
                 clusterName = cluster.getClusterName();
