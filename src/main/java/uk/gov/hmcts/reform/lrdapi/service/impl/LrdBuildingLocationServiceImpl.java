@@ -29,10 +29,13 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_CLUSTER_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_REGION_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS_FOR_CLUSTER_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS_FOR_REGION_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
-
 
 @Slf4j
 @Service
@@ -58,8 +61,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
                                                   String buildingLocationName,
                                                   String regionId,
                                                   String clusterId) {
-        String invalidExceptionMsg;
-
+        String id;
         if (isNotBlank(epimmsIds)) {
             return retrieveBuildingLocationsByEpimmsId(epimmsIds);
         }
@@ -68,33 +70,30 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
         if (isNotBlank(regionId)) {
-            invalidExceptionMsg = String.format("Invalid region id passed - %s", regionId);
-            validateNumericFilter(regionId, invalidExceptionMsg);
-            return retrieveBuildingLocationsByRegionId(regionId);
+            id = regionId.strip();
+            return fetchBuildingLocationsForNumericFilters(id, INVALID_REGION_ID,
+                                                            NO_BUILDING_LOCATIONS_FOR_REGION_ID,
+                                                            () -> buildingLocationRepository.findByRegionId(id));
         }
         if (isNotBlank(clusterId)) {
-            invalidExceptionMsg = String.format("Invalid cluster id passed - %s", clusterId);
-            validateNumericFilter(clusterId, invalidExceptionMsg);
-            return retrieveBuildingLocationsByClusterId(clusterId);
+            id = clusterId.strip();
+            return fetchBuildingLocationsForNumericFilters(id, INVALID_CLUSTER_ID,
+                                                           NO_BUILDING_LOCATIONS_FOR_CLUSTER_ID,
+                                                           () -> buildingLocationRepository.findByClusterId(id));
         }
 
         return getAllBuildingLocations(() -> buildingLocationRepository.findByBuildingLocationStatusOpen());
     }
 
-    private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByClusterId(String clusterId) {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByClusterId(clusterId.strip());
+    private List<LrdBuildingLocationResponse> fetchBuildingLocationsForNumericFilters(String id,
+                                                         String invalidExceptionMsg,
+                                                         String noBuildingLocationsMsg,
+                                                         Supplier<List<BuildingLocation>> buildingLocationSupplier) {
+        validateNumericFilter(id, invalidExceptionMsg);
+        List<BuildingLocation> buildingLocations = buildingLocationSupplier.get();
         handleIfBuildingLocationsEmpty(buildingLocations,
-                                       "No building locations found for cluster id: - %s",
-                                       clusterId);
-
-        return getBuildingLocationListResponse(buildingLocations);
-    }
-
-    private List<LrdBuildingLocationResponse> retrieveBuildingLocationsByRegionId(String regionId) {
-        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByRegionId(regionId.strip());
-        handleIfBuildingLocationsEmpty(buildingLocations,
-                                       "No building locations found for region id: - %s",
-                                       regionId);
+                                       noBuildingLocationsMsg,
+                                       id);
 
         return getBuildingLocationListResponse(buildingLocations);
     }
@@ -178,7 +177,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
 
     private void validateNumericFilter(String id, String invalidExceptionMsg) {
         checkIfSingleValuePresent(id.split(COMMA));
-        if (!isRegexSatisfied(id.strip(), NUMERIC_REGEX)) {
+        if (!isRegexSatisfied(id, NUMERIC_REGEX)) {
             invalidExceptionMsg = String.format(invalidExceptionMsg, id);
             log.error(invalidExceptionMsg);
             throw new InvalidRequestException(invalidExceptionMsg);

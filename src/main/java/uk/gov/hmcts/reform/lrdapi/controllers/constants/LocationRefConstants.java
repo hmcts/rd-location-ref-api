@@ -21,4 +21,9 @@ public class LocationRefConstants {
         + "Comma, apostrophe and whitespace allowed only";
     public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s values/params: %s";
 
+    public static final String INVALID_REGION_ID = "Invalid region id passed - %s";
+    public static final String NO_BUILDING_LOCATIONS_FOR_REGION_ID = "No building locations found for region id: - %s";
+    public static final String INVALID_CLUSTER_ID = "Invalid cluster id passed - %s";
+    public static final String NO_BUILDING_LOCATIONS_FOR_CLUSTER_ID = "No building locations found for cluster id: - %s";
+
 }
