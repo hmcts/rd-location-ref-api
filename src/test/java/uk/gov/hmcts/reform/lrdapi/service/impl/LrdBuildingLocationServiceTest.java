@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
@@ -43,66 +45,169 @@ public class LrdBuildingLocationServiceTest {
     @SuppressWarnings("unchecked")
     public void test_RetrieveBuildingLocationsByEpimsIDs_OneIdPassed() {
 
-        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareBuildingLocation());
+        when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareBuildingLocation());
 
         List<LrdBuildingLocationResponse> buildingLocations =
             (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("1", "");
+                .retrieveBuildingLocationDetails("1", "",  "", "");
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
-        assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
-        assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
-        assertThat(buildingLocation.getArea()).isEqualTo("area");
-        assertThat(buildingLocation.getRegionId()).isEqualTo("regionId");
-        assertThat(buildingLocation.getRegion()).isEqualTo("region");
-        assertThat(buildingLocation.getClusterId()).isEqualTo("clusterId");
-        assertThat(buildingLocation.getClusterName()).isEqualTo("cluster name");
-        assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
-        assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
-        assertThat(buildingLocation.getAddress()).isEqualTo("address");
+        verifySingleResponse(buildingLocation);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void test_RetrieveBuildingLocationsByEpimsIDs_MultipleIdsPassed() {
 
-        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareMultiBuildLocationResponse());
+        when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareMultiBuildLocationResponse());
         List<LrdBuildingLocationResponse> buildingLocations =
             (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("1,2", "");
+                .retrieveBuildingLocationDetails("1,2", "",  "", "");
+        verifyMultiResponse(buildingLocations);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testGetAllBuildingLocations_EpimmsIdAll() {
+        when(buildingLocationRepository.findAll())
+            .thenReturn(prepareMultiBuildLocationResponse());
+        List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
+            lrdBuildingLocationService.retrieveBuildingLocationDetails("ALL", "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testGetAllBuildingLocations() {
-        when(buildingLocationRepository.findAll()).thenReturn(prepareMultiBuildLocationResponse());
+        when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(prepareBuildingLocation());
         List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
-            lrdBuildingLocationService.retrieveBuildingLocationDetails("", "");
-        verifyMultiResponse(buildingLocations);
+            lrdBuildingLocationService.retrieveBuildingLocationDetails("", "",  "", "");
+        verifySingleResponse(buildingLocations.get(0));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
-    public void test_RetrieveBuildingLocations_NoBuildLocationFound() {
-        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
-        lrdBuildingLocationService.retrieveBuildingLocationDetails("123", "");
+    @Test
+    public void test_RetrieveBuildingLocationsByEpimmsId_NoBuildLocationFound() {
+        when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(null);
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("123", "", "", ""));
+
+        verify(buildingLocationRepository, times(1)).findByEpimmsId(anyList());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
         verify(buildingLocationRepository, times(0))
             .findByBuildingLocationNameIgnoreCase(anyString());
         verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
+    public void test_RetrieveBuildingLocationsByClusterId_NoBuildLocationFound() {
+        when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
+        assertThrows(ResourceNotFoundException.class,() -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "", "1"));
+
+        verify(buildingLocationRepository, times(1)).findByClusterId("1");
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
+    }
+
+    @Test
+    public void test_RetrieveBuildingLocationsByClusterId_NonNumericClusterId() {
+        when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
+        assertThrows(
+            InvalidRequestException.class,() -> lrdBuildingLocationService
+                .retrieveBuildingLocationDetails("", "", "", "1abc"));
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
+    }
+
+    @Test
+    public void test_RetrieveBuildingLocationsByClusterId_MultipleClusterIdPassed() {
+        when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+                .retrieveBuildingLocationDetails("", "", "", "1,2,3"));
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
+    }
+
+    @Test
+    public void test_RetrieveBuildingLocationsByRegionId_NoBuildLocationFound() {
+        when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1", ""));
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(1)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
+    }
+
+    @Test
+    public void test_RetrieveBuildingLocationsByRegionId_NonNumericRegionId() {
+        when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
+        assertThrows(InvalidRequestException.class,() -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1abc", ""));
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
+    }
+
+    @Test
+    public void test_RetrieveBuildingLocationsByRegionId_MultipleRegionIdPassed() {
+        when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1,2,3", ""));
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
+    }
+
+    @Test
     public void test_GetAllBuildingLocations_NoBuildLocationFound() {
+        when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(null);
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "", ""));
+
+        verify(buildingLocationRepository, times(1)).findByBuildingLocationStatusOpen();
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findByEpimmsId(anyList());
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+
+    }
+
+    @Test
+    public void test_GetAllOpenBuildingLocations_NoBuildLocationFound() {
         when(buildingLocationRepository.findAll()).thenReturn(null);
-        lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "");
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("ALL", "", "", ""));
+
         verify(buildingLocationRepository, times(1)).findAll();
         verify(buildingLocationRepository, times(0))
             .findByBuildingLocationNameIgnoreCase(anyString());
-        verify(buildingLocationRepository, times(0)).findByEpimmsIdIn(anyList());
+        verify(buildingLocationRepository, times(0)).findByEpimmsId(anyList());
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+
     }
 
     @Test
@@ -113,44 +218,49 @@ public class LrdBuildingLocationServiceTest {
 
         LrdBuildingLocationResponse buildingLocation =
             (LrdBuildingLocationResponse) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "test");
+                .retrieveBuildingLocationDetails("", "test",  "", "");
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
-        assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
-        assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
-        assertThat(buildingLocation.getArea()).isEqualTo("area");
-        assertThat(buildingLocation.getRegionId()).isEqualTo("regionId");
-        assertThat(buildingLocation.getRegion()).isEqualTo("region");
-        assertThat(buildingLocation.getClusterId()).isEqualTo("clusterId");
-        assertThat(buildingLocation.getClusterName()).isEqualTo("cluster name");
-        assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
-        assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
-        assertThat(buildingLocation.getAddress()).isEqualTo("address");
+        verifySingleResponse(buildingLocation);
         verify(buildingLocationRepository, times(1))
             .findByBuildingLocationNameIgnoreCase("test");
-        verify(buildingLocationRepository, times(0)).findByEpimmsIdIn(anyList());
+        verify(buildingLocationRepository, times(0)).findByEpimmsId(anyList());
         verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void shouldThrowResourceNotFoundExceptionForInvalidBuildingLocationName() {
         when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase("test"))
             .thenReturn(null);
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "test", "", ""));
+    }
 
-        lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "test");
+    @Test
+    public void shouldThrowInvalidRequestExceptionForMultipleBuildingLocationNames() {
+
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "test, test 2", "", ""));
+
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase("test, test 2");
+        verify(buildingLocationRepository, times(0)).findByEpimmsId(anyList());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
     }
 
     private void verifyMultiResponse(List<LrdBuildingLocationResponse> buildingLocations) {
-        assertThat(buildingLocations.size()).isEqualTo(2);
+        assertThat(buildingLocations).hasSize(2);
 
         buildingLocations.forEach(buildingLocation -> {
             if (buildingLocation.getEpimmsId().equalsIgnoreCase("epimmsId")) {
-                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("1");
                 assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
                 assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-                assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
+                assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("OPEN");
                 assertThat(buildingLocation.getArea()).isEqualTo("area");
                 assertThat(buildingLocation.getRegionId()).isEqualTo("regionId");
                 assertThat(buildingLocation.getRegion()).isEqualTo("region");
@@ -160,10 +270,10 @@ public class LrdBuildingLocationServiceTest {
                 assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
                 assertThat(buildingLocation.getAddress()).isEqualTo("address");
             } else {
-                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId_2");
+                assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("2");
                 assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId222");
                 assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName_2");
-                assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
+                assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("CLOSED");
                 assertThat(buildingLocation.getArea()).isEqualTo("area 2");
                 assertThat(buildingLocation.getRegionId()).isEqualTo("regionId");
                 assertThat(buildingLocation.getRegion()).isEqualTo("region");
@@ -176,15 +286,30 @@ public class LrdBuildingLocationServiceTest {
         });
     }
 
+    private void verifySingleResponse(LrdBuildingLocationResponse buildingLocation) {
+        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("1");
+        assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
+        assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
+        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("OPEN");
+        assertThat(buildingLocation.getArea()).isEqualTo("area");
+        assertThat(buildingLocation.getRegionId()).isEqualTo("regionId");
+        assertThat(buildingLocation.getRegion()).isEqualTo("region");
+        assertThat(buildingLocation.getClusterId()).isEqualTo("clusterId");
+        assertThat(buildingLocation.getClusterName()).isEqualTo("cluster name");
+        assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
+        assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
+        assertThat(buildingLocation.getAddress()).isEqualTo("address");
+    }
+
     private List<BuildingLocation> prepareBuildingLocation() {
 
         var locations = new ArrayList<BuildingLocation>();
 
         locations.add(BuildingLocation.builder()
                          .epimmsId("epimmsId")
-                         .buildingLocationId("buildingLocationId")
+                         .buildingLocationId(1L)
                          .buildingLocationName("buildingLocationName")
-                         .buildingLocationStatus("LIVE")
+                         .buildingLocationStatus("OPEN")
                          .region(getRegion())
                          .address("address")
                          .cluster(getCluster())
@@ -203,9 +328,9 @@ public class LrdBuildingLocationServiceTest {
         locations.addAll(prepareBuildingLocation());
         locations.add(BuildingLocation.builder()
                           .epimmsId("epimmsId222")
-                          .buildingLocationId("buildingLocationId_2")
+                          .buildingLocationId(2L)
                           .buildingLocationName("buildingLocationName_2")
-                          .buildingLocationStatus("LIVE")
+                          .buildingLocationStatus("CLOSED")
                           .region(getRegion())
                           .address("address 2")
                           .cluster(getCluster())
