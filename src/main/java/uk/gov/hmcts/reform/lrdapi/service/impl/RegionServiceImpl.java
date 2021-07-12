@@ -12,6 +12,8 @@ import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -23,10 +25,11 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NATIONAL;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NON_NUMERIC_VALUE_ERROR_MESSAGE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkStringContainsMoreThanOneConsecutiveComma;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 
 @Service
@@ -48,7 +51,7 @@ public class RegionServiceImpl implements RegionService {
             return retrieveRegionByRegionDescription(description);
         }
 
-        return retrieveAllRegions(false);
+        return retrieveAllRegions(() -> regionRepository.findByDescriptionNotIgnoreCase(NATIONAL));
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionId(String regionId) {
@@ -56,7 +59,7 @@ public class RegionServiceImpl implements RegionService {
 
         //Check if Param value provided is 'ALL' - if so, retrieve all Regions except National
         if (regionId.strip().equalsIgnoreCase(ALL)) {
-            return retrieveAllRegions(false);
+            return retrieveAllRegions(() -> regionRepository.findByDescriptionNotIgnoreCase(NATIONAL));
         }
 
         //otherwise generate list of IDs from regionId String
@@ -65,9 +68,9 @@ public class RegionServiceImpl implements RegionService {
 
         //then check if List contains 'ALL' and the ID for National
         if (isListContainsTextIgnoreCase(regionsIdList, ALL) && regionsIdList.contains("1")) {
-            return retrieveAllRegions(true);
+            return retrieveAllRegions(() -> regionRepository.findAll());
         } else if (isListContainsTextIgnoreCase(regionsIdList, ALL)) {
-            return retrieveAllRegions(false);
+            return retrieveAllRegions(() -> regionRepository.findByDescriptionNotIgnoreCase(NATIONAL));
         }
 
         //remove invalid IDs from the list
@@ -76,16 +79,16 @@ public class RegionServiceImpl implements RegionService {
 
         List<Region> regions = regionRepository.findByRegionIdIn(regionsIdList);
 
-        if (isEmpty(regions)) {
-            throw new ResourceNotFoundException("No Region(s) found with the given Region ID: " + regionsIdList);
-        }
+
+        handleIfRegionsEmpty(
+            () -> isEmpty(regions),
+            "No Region(s) found with the given Region ID: " + regionsIdList
+        );
 
         return generateResponseList(regions);
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionDescription(String description) {
-        checkStringContainsMoreThanOneConsecutiveComma(description);
-
         //generate list of Descriptions from description String
         List<String> regionDescriptionsList =
             checkIfValidCsvIdentifiersAndReturnList(description, EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED);
@@ -98,31 +101,23 @@ public class RegionServiceImpl implements RegionService {
 
         List<Region> regions = regionRepository.findByDescriptionInIgnoreCase(regionDescriptionsList);
 
-        if (isEmpty(regions)) {
-            throw new ResourceNotFoundException("No Region(s) found with the given Region Description(s): "
-                                                    + regionDescriptionsList);
-        }
+        handleIfRegionsEmpty(
+            () -> isEmpty(regions),
+            "No Region(s) found with the given Region Description(s): "
+                + regionDescriptionsList
+        );
 
         return generateResponseList(regions);
     }
 
-    public List<LrdRegionResponse> retrieveAllRegions(boolean isNationalRequired) {
-        List<Region> regions;
-
-        if (isNationalRequired) {
-            regions = regionRepository.findAll();
-        } else {
-            regions = regionRepository.findByDescriptionNotIgnoreCase("National");
-        }
-
-        return generateResponseList(regions);
+    public List<LrdRegionResponse> retrieveAllRegions(Supplier<List<Region>> regionSupplier) {
+        return generateResponseList(regionSupplier.get());
     }
 
     private void isRegionIdParamValid(String param) {
-        checkStringContainsMoreThanOneConsecutiveComma(param);
-
-        if (param.toUpperCase().contains(ALL) && doesStringContainAlphabetOtherThanAll(param)) {
-            throw new InvalidRequestException("The only non-numeric value allowed is 'ALL' (case insensitive)");
+        if (param.toUpperCase().contains(ALL) && doesStringContainAlphabetOtherThanAll(param)
+            || doesStringContainAlphabetOtherThanAll(param)) {
+            throw new InvalidRequestException(NON_NUMERIC_VALUE_ERROR_MESSAGE);
         }
     }
 
@@ -134,5 +129,11 @@ public class RegionServiceImpl implements RegionService {
 
     private List<LrdRegionResponse> generateResponseList(List<Region> regions) {
         return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
+    }
+
+    private void handleIfRegionsEmpty(BooleanSupplier regionResponseVerifier, String exceptionMessage) {
+        if (regionResponseVerifier.getAsBoolean()) {
+            throw new ResourceNotFoundException(exceptionMessage);
+        }
     }
 }
