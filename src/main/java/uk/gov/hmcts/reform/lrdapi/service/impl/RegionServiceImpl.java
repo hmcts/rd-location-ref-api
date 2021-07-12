@@ -80,7 +80,7 @@ public class RegionServiceImpl implements RegionService {
             throw new ResourceNotFoundException("No Region(s) found with the given Region ID: " + regionsIdList);
         }
 
-        return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
+        return generateResponseList(regions);
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionDescription(String description) {
@@ -103,7 +103,7 @@ public class RegionServiceImpl implements RegionService {
                                                     + regionDescriptionsList);
         }
 
-        return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
+        return generateResponseList(regions);
     }
 
     public List<LrdRegionResponse> retrieveAllRegions(boolean isNationalRequired) {
@@ -115,7 +115,7 @@ public class RegionServiceImpl implements RegionService {
             regions = regionRepository.findByDescriptionNotIgnoreCase("National");
         }
 
-        return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
+        return generateResponseList(regions);
     }
 
     public void isRegionIdParamValid(String param) {
@@ -130,5 +130,9 @@ public class RegionServiceImpl implements RegionService {
         String paramWithoutAll = replaceIgnoreCase(param.toUpperCase(), ALL, "");
 
         return Pattern.compile(ALPHABET_REGEX).matcher(paramWithoutAll).find();
+    }
+
+    private List<LrdRegionResponse> generateResponseList(List<Region> regions) {
+        return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
     }
 }
