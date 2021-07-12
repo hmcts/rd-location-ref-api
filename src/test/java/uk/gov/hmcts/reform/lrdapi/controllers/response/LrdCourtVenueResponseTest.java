@@ -1,16 +1,18 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
 import org.junit.Test;
+import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class CourtVenueResponseTest {
+public class LrdCourtVenueResponseTest {
 
     @Test
     public void testCourtVenueTransformationToResponse_ClusterAndDatesAbsent() {
@@ -22,11 +24,18 @@ public class CourtVenueResponseTest {
         region.setUpdatedTime(LocalDateTime.now());
         region.setWelshDescription("Region ABC");
 
+        CourtType courtType = new CourtType();
+        courtType.setCourtType("CourtTypeXYZ");
+        courtType.setCourtTypeId("17");
+
+        BuildingLocation buildingLocation = new BuildingLocation();
+        buildingLocation.setEpimmsId("123456789");
+
         CourtVenue courtVenue = CourtVenue.builder()
-            .courtTypeId("17")
+            .courtType(courtType)
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic(Boolean.TRUE)
-            .epimmsId("123456789")
+            .buildingLocation(buildingLocation)
             .region(region)
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
             .courtStatus("Open")
@@ -35,7 +44,7 @@ public class CourtVenueResponseTest {
             .courtVenueId(1L)
             .build();
 
-        CourtVenueResponse courtVenueResponse = new CourtVenueResponse(courtVenue);
+        LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
 
         assertEquals("YES", courtVenueResponse.getOpenForPublic());
         assertNull(courtVenueResponse.getClusterId());
@@ -56,13 +65,20 @@ public class CourtVenueResponseTest {
         cluster.setCreatedTime(LocalDateTime.now());
         cluster.setUpdatedTime(LocalDateTime.now());
 
+        CourtType courtType = new CourtType();
+        courtType.setCourtType("CourtTypeXYZ");
+        courtType.setCourtTypeId("17");
+
+        BuildingLocation buildingLocation = new BuildingLocation();
+        buildingLocation.setEpimmsId("123456789");
+
         LocalDateTime now = LocalDateTime.now();
 
         CourtVenue courtVenue = CourtVenue.builder()
-            .courtTypeId("17")
+            .courtType(courtType)
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic(Boolean.FALSE)
-            .epimmsId("123456789")
+            .buildingLocation(buildingLocation)
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
             .courtStatus("Open")
             .cluster(cluster)
@@ -73,15 +89,15 @@ public class CourtVenueResponseTest {
             .closedDate(now)
             .build();
 
-        CourtVenueResponse courtVenueResponse = new CourtVenueResponse(courtVenue);
+        LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
 
         assertEquals("NO", courtVenueResponse.getOpenForPublic());
         assertEquals(cluster.getClusterId(), courtVenueResponse.getClusterId());
         assertEquals(cluster.getClusterName(), courtVenueResponse.getClusterName());
         assertNull(courtVenueResponse.getRegion());
         assertNull(courtVenueResponse.getRegionId());
-        assertEquals(now.toString(), courtVenueResponse.getClosedDate().toString());
-        assertEquals(now.toString(), courtVenueResponse.getCourtOpenDate().toString());
+        assertEquals(now.toString(), courtVenueResponse.getClosedDate());
+        assertEquals(now.toString(), courtVenueResponse.getCourtOpenDate());
     }
 
 }

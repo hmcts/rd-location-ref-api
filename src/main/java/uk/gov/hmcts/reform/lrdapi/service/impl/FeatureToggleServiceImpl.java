@@ -45,6 +45,10 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
             "LrdApiController.retrieveRegionDetails",
             "lrd_location_api"
         );
+        launchDarklyMap.put(
+            "LrdCourtVenueController.retrieveCourtVenuesByServiceCode",
+            "lrd_location_api"
+        );
     }
 
     @Override

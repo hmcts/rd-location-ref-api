@@ -53,6 +53,6 @@ public class LrdBuildingLocationResponse {
     private String address;
 
     @JsonProperty("court_venues")
-    private Set<CourtVenueResponse> courtVenues;
+    private Set<LrdCourtVenueResponse> courtVenues;
 
 }

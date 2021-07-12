@@ -11,6 +11,7 @@ public class LocationRefConstants {
     public static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
     public static final String REG_EXP_WHITE_SPACE = "\\s";
     public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
+    public static final String ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE = "[0-9a-zA-Z]+";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
     public static final String NUMERIC_REGEX = "\\d+";
     public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
@@ -31,5 +32,7 @@ public class LocationRefConstants {
         "No Building Locations found with the given epims ID: %s";
     public static final String NO_BUILDING_LOCATION_FOR_BUILDING_LOCATION_NAME =
         "No Building Location found for the given building location name: %s";
+    public static final String EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR = "Invalid service code. "
+        + "Please provide service code without special characters";
 
 }
