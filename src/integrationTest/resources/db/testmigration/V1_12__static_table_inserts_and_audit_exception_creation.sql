@@ -187,14 +187,6 @@ insert into region(
     created_time
     )
 values(
-    '1',
-    'National',
-    now()),
-    (
-    '2',
-    'London',
-    now()),
-    (
     '3',
     'Midlands',
     now()),
