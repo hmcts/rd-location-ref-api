@@ -68,10 +68,12 @@ public class LrdCourtVenueController {
     public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
         @RequestParam(value = "service_code", required = true) @NotBlank String serviceCode) {
 
-        validateServiceCode(serviceCode);
+        String trimmedServiceCode = serviceCode.strip();
+
+        validateServiceCode(trimmedServiceCode);
 
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
-            .retrieveCourtVenuesByServiceCode(serviceCode.strip());
+            .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
