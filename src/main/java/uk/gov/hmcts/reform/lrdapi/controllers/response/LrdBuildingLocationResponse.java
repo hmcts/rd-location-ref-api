@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -49,5 +51,8 @@ public class LrdBuildingLocationResponse {
 
     @JsonProperty
     private String address;
+
+    @JsonProperty("court_venues")
+    private Set<CourtVenueResponse> courtVenues;
 
 }
