@@ -725,7 +725,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         List<LrdBuildingLocationResponse> locationResponses = getTwoLocationResponse();
 
-        LrdBuildingLocationResponse response3 = LrdBuildingLocationResponse.builder()
+        LrdBuildingLocationResponse locationResponses3 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041997")
             .regionId("891011")
             .region("Description B")
