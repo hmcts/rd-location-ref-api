@@ -7,6 +7,7 @@ public class LocationRefConstants {
 
     public static final String ALL = "ALL";
     public static final String COMMA = ",";
+    public static final String NATIONAL = "National";
     public static final String REG_EXP_COMMA_DILIMETER = ",(?!\\\\s)";
     public static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
     public static final String REG_EXP_WHITE_SPACE = "\\s";
@@ -22,5 +23,6 @@ public class LocationRefConstants {
     public static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
         + "',' comma and '_' underscore allowed only";
     public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s params: %s";
+    public static final String NON_NUMERIC_VALUE_ERROR_MESSAGE = "The only non-numeric value allowed is 'ALL' (case insensitive)";
 
 }
