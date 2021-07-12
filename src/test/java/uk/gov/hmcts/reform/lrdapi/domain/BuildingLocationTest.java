@@ -24,7 +24,7 @@ public class BuildingLocationTest {
         BuildingLocation buildingLocation =
             BuildingLocation.builder()
                 .epimmsId("epimmsId")
-                .buildingLocationId("buildingLocationId")
+                .buildingLocationId(Long.valueOf(1))
                 .buildingLocationName("buildingLocationName")
                 .buildingLocationStatus("LIVE")
                 .region(region)
@@ -38,7 +38,7 @@ public class BuildingLocationTest {
                 .build();
 
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo(Long.valueOf(1));
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
         assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
         assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
@@ -67,7 +67,7 @@ public class BuildingLocationTest {
 
         BuildingLocation buildingLocation = new BuildingLocation();
 
-        buildingLocation.setBuildingLocationId("buildingLocationId");
+        buildingLocation.setBuildingLocationId(1L);
         buildingLocation.setEpimmsId("epimmsId");
         buildingLocation.setBuildingLocationName("buildingLocationName");
         buildingLocation.setBuildingLocationStatus("LIVE");
@@ -82,7 +82,7 @@ public class BuildingLocationTest {
         buildingLocation.setCreated(now);
         buildingLocation.setLastUpdated(now);
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo("buildingLocationId");
+        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo(1L);
         assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
         assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
         assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
