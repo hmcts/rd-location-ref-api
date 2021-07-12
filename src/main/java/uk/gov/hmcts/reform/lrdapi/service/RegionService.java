@@ -7,21 +7,28 @@ import java.util.List;
 
 public interface RegionService {
 
-    Object retrieveRegionDetails(String regionId, String description);
+    /**
+     * Method to retrieve particular region(s) based on the given param (ID or Description)
+     *
+     * @param regionId    A String with the value of the Region ID(s).
+     * @param description A String with the value of the Region description(s).
+     * @return The the response object containing the details of the requested region(s).
+     */
+    List<LrdRegionResponse> retrieveRegionDetails(String regionId, String description);
 
     /**
-     * Method to retrieve a particular region based on the given region description.
+     * Method to retrieve particular region(s) based on the given region description(s).
      *
-     * @param description A String with the value of the Region description.
-     * @return The the response object containing the details of the requested region.
+     * @param description A String with the value of the Region description(s).
+     * @return The the response object containing the details of the requested region(s).
      */
     List<LrdRegionResponse> retrieveRegionByRegionDescription(String description);
 
     /**
-     * Method to retrieve a particular region based on the given region id.
+     * Method to retrieve particular region(s) based on the given region id(s).
      *
-     * @param regionId A String with the value of the Region ID.
-     * @return The the response object containing the details of the requested region.
+     * @param regionId A String with the value of the Region ID(s).
+     * @return The the response object containing the details of the requested region(s).
      */
     List<LrdRegionResponse> retrieveRegionByRegionId(String regionId);
 }
