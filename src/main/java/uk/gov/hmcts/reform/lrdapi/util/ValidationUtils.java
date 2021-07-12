@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
@@ -98,8 +99,6 @@ public class ValidationUtils {
         }
         return idList;
     }
-
-
 
     /**
      * Method to check for invalid identifiers in the passed idList using the passed regex.
