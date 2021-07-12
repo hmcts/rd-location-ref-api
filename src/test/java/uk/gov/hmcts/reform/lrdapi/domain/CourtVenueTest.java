@@ -50,8 +50,8 @@ public class CourtVenueTest {
         courtVenue.setCourtStatus("Open");
         courtVenue.setCourtOpenDate(now);
         courtVenue.setCourtName("courtName");
-        courtVenue.setCreated(now);
-        courtVenue.setLastUpdated(now);
+        courtVenue.setCreatedTime(now);
+        courtVenue.setUpdatedTime(now);
 
 
         assertEquals("1", courtVenue.getCourtVenueId().toString());
@@ -72,8 +72,8 @@ public class CourtVenueTest {
         assertEquals("courtName",courtVenue.getCourtName());
         assertEquals(now,courtVenue.getClosedDate().get());
         assertEquals(now,courtVenue.getCourtOpenDate().get());
-        assertEquals(now, courtVenue.getCreated());
-        assertEquals(now, courtVenue.getLastUpdated());
+        assertEquals(now, courtVenue.getCreatedTime());
+        assertEquals(now, courtVenue.getUpdatedTime());
 
     }
 

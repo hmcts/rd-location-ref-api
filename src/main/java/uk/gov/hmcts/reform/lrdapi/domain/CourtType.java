@@ -31,6 +31,7 @@ import javax.validation.constraints.Size;
 public class CourtType implements Serializable {
 
     @Id
+    @Column(name = "court_type_id")
     @Size(max = 16)
     private String courtTypeId;
 

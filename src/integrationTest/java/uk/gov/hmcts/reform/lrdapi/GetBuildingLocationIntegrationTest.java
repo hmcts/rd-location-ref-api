@@ -9,8 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.CourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -520,8 +520,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     private LrdBuildingLocationResponse getBuildingLocationSampleResponse() {
-        Set<CourtVenueResponse> courtVenueResponses = new HashSet<>();
-        CourtVenueResponse response1 = CourtVenueResponse.builder()
+        Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
+        LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic("YES")
@@ -534,7 +534,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId("1")
             .build();
-        CourtVenueResponse response2 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 2")
             .openForPublic("YES")
@@ -549,7 +549,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB2, 49 HUNTLY STREET, ABERDEEN")
             .courtVenueId("2")
             .build();
-        CourtVenueResponse response3 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 3")
             .openForPublic("YES")
@@ -587,8 +587,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     private List<LrdBuildingLocationResponse> getTwoLocationResponse() {
-        Set<CourtVenueResponse> courtVenueResponses = new HashSet<>();
-        CourtVenueResponse response1 = CourtVenueResponse.builder()
+        Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
+        LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 8")
             .openForPublic("YES")
@@ -603,7 +603,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB8, 55 HUNTLY STREET, ABERDEEN")
             .courtVenueId("8")
             .build();
-        CourtVenueResponse response2 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 9")
             .openForPublic("YES")
@@ -616,7 +616,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB9, 56 HUNTLY STREET, ABERDEEN")
             .courtVenueId("9")
             .build();
-        CourtVenueResponse response3 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 10")
             .openForPublic("YES")
@@ -660,8 +660,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     private List<LrdBuildingLocationResponse> getAllOpenLocationResponse() {
-        Set<CourtVenueResponse> courtVenueResponses = new HashSet<>();
-        CourtVenueResponse response1 = CourtVenueResponse.builder()
+        Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
+        LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 4")
             .openForPublic("YES")
@@ -674,7 +674,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB4, 51 HUNTLY STREET, ABERDEEN")
             .courtVenueId("4")
             .build();
-        CourtVenueResponse response2 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 5")
             .openForPublic("YES")
@@ -689,7 +689,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB5, 52 HUNTLY STREET, ABERDEEN")
             .courtVenueId("5")
             .build();
-        CourtVenueResponse response3 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 6")
             .openForPublic("YES")
@@ -702,7 +702,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB6, 53 HUNTLY STREET, ABERDEEN")
             .courtVenueId("6")
             .build();
-        CourtVenueResponse response4 = CourtVenueResponse.builder()
+        LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
             .courtType("17")
             .siteName("Aberdeen Tribunal Hearing Centre 7")
             .openForPublic("YES")

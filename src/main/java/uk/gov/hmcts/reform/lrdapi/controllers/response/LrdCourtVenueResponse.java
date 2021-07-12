@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 
+import java.io.Serializable;
+
 import static java.util.Objects.nonNull;
 
 @Getter
@@ -15,7 +17,7 @@ import static java.util.Objects.nonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class LrdCourtVenueResponse {
+public class LrdCourtVenueResponse implements Serializable {
 
     @JsonProperty("court_venue_id")
     private String courtVenueId;
