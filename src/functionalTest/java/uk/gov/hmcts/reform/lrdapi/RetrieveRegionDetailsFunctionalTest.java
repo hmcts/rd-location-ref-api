@@ -8,9 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
+import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,6 +26,17 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
 
     public static final String mapKey = "LrdApiController.retrieveRegionDetails";
+
+    List<LrdRegionResponse> eexpectedListAll = new ArrayList<>(Arrays.asList(
+        new LrdRegionResponse(new Region("2", "London", null)),
+        new LrdRegionResponse(new Region("3", "Midlands", null)),
+        new LrdRegionResponse(new Region("4", "North East", null)),
+        new LrdRegionResponse(new Region("5", "North West", null)),
+        new LrdRegionResponse(new Region("6", "South East", null)),
+        new LrdRegionResponse(new Region("7", "South West", null)),
+        new LrdRegionResponse(new Region("8", "Wales", null)),
+        new LrdRegionResponse(new Region("9", "Scotland", null))
+    ));
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
@@ -87,7 +101,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "ALL");
 
         assertThat(response).isNotNull();
-        responseVerificationForAll(response);
+        responseVerificationForAll(response, eexpectedListAll);
     }
 
     @Test
@@ -112,31 +126,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
         }
     }
 
-    private void responseVerificationForAll(List<LrdRegionResponse> response) {
-        assertThat(response.size()).isEqualTo(8);
-        assertThat(response.get(0).getRegionId()).isEqualTo("2");
-        assertThat(response.get(0).getDescription()).isEqualTo("London");
-        assertThat(response.get(0).getWelshDescription()).isNull();
-        assertThat(response.get(1).getRegionId()).isEqualTo("3");
-        assertThat(response.get(1).getDescription()).isEqualTo("Midlands");
-        assertThat(response.get(1).getWelshDescription()).isNull();
-        assertThat(response.get(2).getRegionId()).isEqualTo("4");
-        assertThat(response.get(2).getDescription()).isEqualTo("North East");
-        assertThat(response.get(2).getWelshDescription()).isNull();
-        assertThat(response.get(3).getRegionId()).isEqualTo("5");
-        assertThat(response.get(3).getDescription()).isEqualTo("North West");
-        assertThat(response.get(3).getWelshDescription()).isNull();
-        assertThat(response.get(4).getRegionId()).isEqualTo("6");
-        assertThat(response.get(4).getDescription()).isEqualTo("South East");
-        assertThat(response.get(4).getWelshDescription()).isNull();
-        assertThat(response.get(5).getRegionId()).isEqualTo("7");
-        assertThat(response.get(5).getDescription()).isEqualTo("South West");
-        assertThat(response.get(5).getWelshDescription()).isNull();
-        assertThat(response.get(6).getRegionId()).isEqualTo("8");
-        assertThat(response.get(6).getDescription()).isEqualTo("Wales");
-        assertThat(response.get(6).getWelshDescription()).isNull();
-        assertThat(response.get(7).getRegionId()).isEqualTo("9");
-        assertThat(response.get(7).getDescription()).isEqualTo("Scotland");
-        assertThat(response.get(7).getWelshDescription()).isNull();
+    private void responseVerificationForAll(List<LrdRegionResponse> actual, List<LrdRegionResponse> expected) {
+        assertThat(actual).hasSize(expected.size()).usingRecursiveComparison().isEqualTo(expected);
     }
 }
