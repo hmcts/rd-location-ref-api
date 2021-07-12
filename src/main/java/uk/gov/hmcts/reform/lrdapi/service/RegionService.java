@@ -8,7 +8,7 @@ import java.util.List;
 public interface RegionService {
 
     /**
-     * Method to retrieve particular region(s) based on the given param (ID or Description)
+     * Method to retrieve particular region(s) based on the given param (ID or Description).
      *
      * @param regionId    A String with the value of the Region ID(s).
      * @param description A String with the value of the Region description(s).
