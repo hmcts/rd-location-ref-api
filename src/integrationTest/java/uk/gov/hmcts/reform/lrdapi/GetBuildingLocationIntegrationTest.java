@@ -522,7 +522,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     private LrdBuildingLocationResponse getBuildingLocationSampleResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic("YES")
             .epimsId("123456789")
@@ -535,7 +536,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("1")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 2")
             .openForPublic("YES")
             .epimsId("123456789")
@@ -550,7 +552,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("2")
             .build();
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 3")
             .openForPublic("YES")
             .epimsId("123456789")
@@ -589,7 +592,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     private List<LrdBuildingLocationResponse> getTwoLocationResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 8")
             .openForPublic("YES")
             .epimsId("123456")
@@ -604,7 +608,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("8")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 9")
             .openForPublic("YES")
             .epimsId("123456")
@@ -617,7 +622,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("9")
             .build();
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 10")
             .openForPublic("YES")
             .epimsId("123456")
@@ -631,10 +637,27 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
             .courtVenueId("10")
             .build();
+        LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
+            .courtTypeId("10")
+            .courtType("County Court")
+            .siteName("Aberdeen Tribunal Hearing Centre 11")
+            .openForPublic("YES")
+            .epimsId("123456")
+            .regionId("1")
+            .region("National")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 11")
+            .courtStatus("Open")
+            .postcode("AB11 5QA")
+            .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("11")
+            .build();
 
         courtVenueResponses.add(response1);
         courtVenueResponses.add(response2);
         courtVenueResponses.add(response3);
+        courtVenueResponses.add(response4);
 
         List<LrdBuildingLocationResponse> locationResponses = getSingleLocationResponse();
 
@@ -662,7 +685,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     private List<LrdBuildingLocationResponse> getAllOpenLocationResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 4")
             .openForPublic("YES")
             .epimsId("epimmsId1234")
@@ -675,7 +699,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("4")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 5")
             .openForPublic("YES")
             .epimsId("epimmsId1234")
@@ -690,7 +715,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("5")
             .build();
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 6")
             .openForPublic("YES")
             .epimsId("epimmsId1234")
@@ -703,7 +729,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtVenueId("6")
             .build();
         LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
-            .courtType("17")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 7")
             .openForPublic("YES")
             .epimsId("epimmsId1234")
