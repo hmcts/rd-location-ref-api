@@ -14,6 +14,7 @@ public class LocationRefConstants {
     public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
     public static final String ALPHABET_REGEX = "[a-zA-Z]";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
+    public static final String NUMERIC_REGEX = "\\d+";
     public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
         + "Invalid epims id(s): %s  passed.";
     public static final String EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED = "Bad Request - "
@@ -22,7 +23,8 @@ public class LocationRefConstants {
         + "Invalid Region Description(s): %s  passed.";
     public static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
         + "',' comma and '_' underscore allowed only";
-    public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s params: %s";
-    public static final String NON_NUMERIC_VALUE_ERROR_MESSAGE = "The only non-numeric value allowed is 'ALL' (case insensitive)";
+    public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s values/params: %s";
+    public static final String NON_NUMERIC_VALUE_ERROR_MESSAGE = "The only non-numeric value allowed is"
+        + " 'ALL' (case insensitive)";
 
 }
