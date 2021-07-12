@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.LrdApiController;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.Jurisdiction;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgBusinessArea;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgSubBusinessArea;
@@ -37,7 +38,9 @@ import uk.gov.hmcts.reform.lrdapi.service.impl.RegionServiceImpl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -140,10 +143,26 @@ public class LrdApiProviderTest {
         region.setUpdatedTime(LocalDateTime.now());
         region.setWelshDescription("Region ABC");
 
+        CourtVenue courtVenue = CourtVenue.builder()
+            .courtTypeId("17")
+            .siteName("Aberdeen Tribunal Hearing Centre 1")
+            .openForPublic(Boolean.TRUE)
+            .epimmsId("123456789")
+            .region(region)
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
+            .courtStatus("Open")
+            .postcode("AB11 6LT")
+            .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
+            .courtVenueId(1L)
+            .build();
+
+        Set<CourtVenue> courtVenues = new HashSet<>();
+        courtVenues.add(courtVenue);
+
         BuildingLocation buildingLocation = BuildingLocation.builder()
             .buildingLocationStatus("OPEN")
             .area("Area 1")
-            .buildingLocationId("123")
+            .buildingLocationId(123L)
             .buildingLocationName("Taylor House Tribunal Hearing Centre")
             .courtFinderUrl("https://testUrl.com")
             .created(LocalDateTime.now())
@@ -153,11 +172,33 @@ public class LrdApiProviderTest {
             .region(region)
             .cluster(cluster)
             .address("Address 123")
+            .courtVenues(courtVenues)
+            .build();
+
+        BuildingLocation buildingLocation2 = BuildingLocation.builder()
+            .buildingLocationStatus("CLOSED")
+            .area("Area 2")
+            .buildingLocationId(1234L)
+            .buildingLocationName("Taylor House Tribunal Hearing Centre 2")
+            .courtFinderUrl("https://testUrl.com")
+            .created(LocalDateTime.now())
+            .epimmsId("45678")
+            .lastUpdated(LocalDateTime.now())
+            .postcode("XY21 YY3")
+            .region(region)
+            .cluster(cluster)
+            .address("Address 123456")
+            .courtVenues(courtVenues)
             .build();
 
         when(buildingLocationRepository.findByBuildingLocationNameIgnoreCase(anyString())).thenReturn(buildingLocation);
-        when(buildingLocationRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(buildingLocation));
-        when(buildingLocationRepository.findAll()).thenReturn(List.of(buildingLocation));
+        when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(List.of(buildingLocation));
+        when(buildingLocationRepository.findAll()).thenReturn(List.of(buildingLocation, buildingLocation2));
+        when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(List.of(buildingLocation));
+        when(buildingLocationRepository.findByClusterId(anyString()))
+            .thenReturn(List.of(buildingLocation, buildingLocation2));
+        when(buildingLocationRepository.findByRegionId(anyString()))
+            .thenReturn(List.of(buildingLocation, buildingLocation2));
     }
 
     @State({"Region Details exist"})
