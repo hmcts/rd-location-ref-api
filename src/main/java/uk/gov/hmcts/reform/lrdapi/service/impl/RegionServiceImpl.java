@@ -118,7 +118,7 @@ public class RegionServiceImpl implements RegionService {
         return generateResponseList(regions);
     }
 
-    public void isRegionIdParamValid(String param) {
+    private void isRegionIdParamValid(String param) {
         checkStringContainsMoreThanOneConsecutiveComma(param);
 
         if (param.toUpperCase().contains(ALL) && doesStringContainAlphabetOtherThanAll(param)) {
@@ -126,7 +126,7 @@ public class RegionServiceImpl implements RegionService {
         }
     }
 
-    public boolean doesStringContainAlphabetOtherThanAll(String param) {
+    private boolean doesStringContainAlphabetOtherThanAll(String param) {
         String paramWithoutAll = replaceIgnoreCase(param.toUpperCase(), ALL, "");
 
         return Pattern.compile(ALPHABET_REGEX).matcher(paramWithoutAll).find();

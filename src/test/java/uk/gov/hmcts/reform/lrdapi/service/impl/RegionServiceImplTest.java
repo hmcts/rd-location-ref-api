@@ -101,12 +101,4 @@ public class RegionServiceImplTest {
     public void testRetrieveRegionByRegionDescriptionThrows404ForUnknownDescription() {
         regionService.retrieveRegionByRegionDescription("Unknown Description");
     }
-
-    @Test
-    public void testIsRegionIdParamValid() {
-        regionService.isRegionIdParamValid("all,1,2,3,AlL,4,5");
-        regionService.isRegionIdParamValid("1,2,ALL,3,aLl,8");
-        assertThrows(InvalidRequestException.class, () -> regionService.isRegionIdParamValid("1,all,invalid"));
-    }
-
 }
