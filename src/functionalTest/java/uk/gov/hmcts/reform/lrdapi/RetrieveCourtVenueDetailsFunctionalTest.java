@@ -94,6 +94,52 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
                                                                     LrdCourtVenueResponse[].class);
         assertThat(response).isNotNull();
     }
+    ////
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldReturn404_WhenNoEpimmsIdFound() throws JsonProcessingException {
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueDetailsByGivenQueryParam(HttpStatus.NOT_FOUND, "?epimms_id=815833",
+                                                                    LrdCourtVenueResponse[].class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldReturn404_WhenNoRegionIdFound() throws JsonProcessingException {
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833",
+                                                                    LrdCourtVenueResponse[].class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldReturn404_WhenNoClusterIdFound() throws JsonProcessingException {
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833",
+                                                                    LrdCourtVenueResponse[].class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldReturn404_WhenNoCourtTypeIdFound() throws JsonProcessingException {
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833",
+                                                                    LrdCourtVenueResponse[].class);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void shouldRetrieveCourtVenues_For_Given_CourtType_Id_WithStatusCode_200() throws JsonProcessingException {
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833",
+                                                                    LrdCourtVenueResponse[].class);
+        assertThat(response).isNotNull();
+    }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = false)
