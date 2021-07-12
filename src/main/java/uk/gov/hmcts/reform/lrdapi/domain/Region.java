@@ -45,7 +45,7 @@ public class Region implements Serializable {
     private Set<BuildingLocation> buildingLocationSet;
 
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "region")
-    private Set<CourtVenue> courtVenuesSet;
+    private Set<CourtVenue> courtVenueSet;
 
     public Region(String regionId, String description, String welshDescription) {
         this.regionId = regionId;

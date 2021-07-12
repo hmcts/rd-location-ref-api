@@ -42,7 +42,7 @@ public class Cluster implements Serializable {
     private Set<BuildingLocation> buildingLocations = new HashSet<>();
 
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "cluster")
-    private Set<CourtVenue> courtVenuesSet;
+    private Set<CourtVenue> courtVenues = new HashSet<>();
 
     @LastModifiedDate
     @Column(name = "updated_time")

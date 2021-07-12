@@ -4,6 +4,18 @@ insert into cluster(
     welsh_cluster_name,
     updated_time)
 values(
+    '01234',
+    'Cluster B',
+    'Clwstwr B',
+    now())
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name,
+    welsh_cluster_name,
+    updated_time)
+values(
     '0123',
     'Cluster A',
     'Clwstwr A',
@@ -51,7 +63,7 @@ values(
   '22041995',
   '8910',
   '4567',
-  '0123',
+  '01234',
   '123456789',
   'Building Location A',
   'Area A',
