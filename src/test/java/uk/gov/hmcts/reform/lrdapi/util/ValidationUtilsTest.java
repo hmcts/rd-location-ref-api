@@ -165,14 +165,6 @@ public class ValidationUtilsTest {
                                                                           EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
     }
 
-    @Test
-    public void testCheckStringContainsMoreThanOneConsecutiveComma() {
-        ValidationUtils.checkStringContainsMoreThanOneConsecutiveComma("1,2,ALL");
-
-        assertThrows(InvalidRequestException.class, () ->
-            ValidationUtils.checkStringContainsMoreThanOneConsecutiveComma("1,,2,ALL"));
-    }
-
     private List<String> getSingleInvalidIdList() {
         var invalidIdList = new ArrayList<String>();
         invalidIdList.add("!@£$");
