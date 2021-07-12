@@ -8,33 +8,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
 
 @Entity(name = "building_location")
 @AllArgsConstructor
 @Getter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 @Setter
 @Builder
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "courtVenues")
 public class BuildingLocation implements Serializable {
 
     @Id
-    @Size(max = 16)
-    private String buildingLocationId;
+    private Long buildingLocationId;
 
     @Column(name = "epimms_id", nullable = false)
     @Size(max = 16)
@@ -82,6 +81,10 @@ public class BuildingLocation implements Serializable {
     @Size(max = 512)
     private String address;
 
+    @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
+    @Builder.Default
+    private Set<CourtVenue> courtVenues = new HashSet<>();
+
     public Optional<Cluster> getCluster() {
         return Optional.ofNullable(cluster);
     }
@@ -89,4 +92,5 @@ public class BuildingLocation implements Serializable {
     public Optional<Region> getRegion() {
         return Optional.ofNullable(region);
     }
+
 }

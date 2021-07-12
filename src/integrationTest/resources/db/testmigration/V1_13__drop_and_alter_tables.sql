@@ -30,6 +30,6 @@ alter table region add column api_enabled boolean;
 
 update region set api_enabled = 'N' where description = 'National';
 update region set api_enabled = 'Y' where description != 'National';
-update building_location set building_location_status = 'Status A' where building_location_id = '22041995';
-update building_location set building_location_status = 'Status B' where building_location_id = '22041996';
-update building_location set building_location_status = 'Status B' where building_location_id = '22041997';
+update building_location set building_location_status = 'Open' where building_location_id = '22041995';
+update building_location set building_location_status = 'Open' where building_location_id = '22041996';
+update building_location set building_location_status = 'Open' where building_location_id = '22041997';
