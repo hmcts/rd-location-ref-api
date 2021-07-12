@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -81,6 +82,7 @@ public class CourtVenueServiceImplTest {
         when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(null);
 
         courtVenueService.retrieveCourtVenuesByServiceCode("ABC1");
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 
     @Test(expected = ResourceNotFoundException.class)
@@ -92,6 +94,7 @@ public class CourtVenueServiceImplTest {
         when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
 
         courtVenueService.retrieveCourtVenuesByServiceCode("ABC1");
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 
 
