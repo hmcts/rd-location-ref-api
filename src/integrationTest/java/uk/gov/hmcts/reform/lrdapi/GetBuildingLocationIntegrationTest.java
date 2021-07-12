@@ -369,7 +369,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
                 .findBuildingLocationByGivenQueryParam(
-                    "?region_id=8910",
+                    "?region_id=1",
                     LrdBuildingLocationResponse[].class);
 
         assertNotNull(actualResponse);
@@ -384,7 +384,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
                 .findBuildingLocationByGivenQueryParam(
-                    "?region_id= 8910 ",
+                    "?region_id= 1 ",
                     LrdBuildingLocationResponse[].class);
 
         assertNotNull(actualResponse);
@@ -476,7 +476,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
                 .findBuildingLocationByGivenQueryParam("?building_location_name=test&epimms_id=123456789",
-                    ErrorResponse.class);
+                                                       ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
@@ -490,7 +490,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
                 .findBuildingLocationByGivenQueryParam("?building_location_name=&epimms_id=",
-                                                               LrdBuildingLocationResponse[].class);
+                                                       LrdBuildingLocationResponse[].class);
 
         assertNotNull(response);
         responseVerification(response, ALL_OPEN_STR);
@@ -570,20 +570,20 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         courtVenueResponses.add(response3);
 
         return LrdBuildingLocationResponse.builder()
-                .buildingLocationId("22041995")
-                .regionId("8910")
-                .region("Description A")
-                .clusterId("01234")
-                .clusterName("Cluster B")
-                .buildingLocationStatus("Open")
-                .epimmsId("123456789")
-                .buildingLocationName("Building Location A")
-                .area("Area A")
-                .postcode("WX67 2YZ")
-                .address("1 Street, London")
-                .courtFinderUrl("Court Finder URL")
-                .courtVenues(courtVenueResponses)
-                .build();
+            .buildingLocationId("22041995")
+            .regionId("1")
+            .region("National")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Open")
+            .epimmsId("123456789")
+            .buildingLocationName("Building Location A")
+            .area("Area A")
+            .postcode("WX67 2YZ")
+            .address("1 Street, London")
+            .courtFinderUrl("Court Finder URL")
+            .courtVenues(courtVenueResponses)
+            .build();
     }
 
     private List<LrdBuildingLocationResponse> getTwoLocationResponse() {
@@ -640,8 +640,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         LrdBuildingLocationResponse locationResponses2 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041996")
-            .regionId("891011")
-            .region("Description B")
+            .regionId("2")
+            .region("London")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Open")
@@ -727,8 +727,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         LrdBuildingLocationResponse locationResponses3 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041997")
-            .regionId("891011")
-            .region("Description B")
+            .regionId("2")
+            .region("London")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Open")
@@ -750,8 +750,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         List<LrdBuildingLocationResponse> locationResponses = getAllOpenLocationResponse();
         LrdBuildingLocationResponse locationResponses4 = LrdBuildingLocationResponse.builder()
             .buildingLocationId("22041998")
-            .regionId("891011")
-            .region("Description B")
+            .regionId("2")
+            .region("London")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Closed")

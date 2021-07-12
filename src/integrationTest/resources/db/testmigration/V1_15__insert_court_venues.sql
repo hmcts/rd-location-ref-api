@@ -1,27 +1,3 @@
-insert into region(
-    region_id,
-    description,
-    welsh_description,
-    updated_time)
-values(
-    '10',
-    'Region 1',
-    'Disgrifiad A',
-    now())
-;
-
-insert into region(
-    region_id,
-    description,
-    welsh_description,
-    updated_time)
-values(
-    '11',
-    'Region 2',
-    'Disgrifiad A',
-    now())
-;
-
 insert into cluster(
     cluster_id,
     cluster_name,
@@ -61,7 +37,7 @@ insert into
     updated_time)
 values(
   '22041998',
-  '891011',
+  '2',
   'Closed',
   '01234',
   '123EpimmsId456',
