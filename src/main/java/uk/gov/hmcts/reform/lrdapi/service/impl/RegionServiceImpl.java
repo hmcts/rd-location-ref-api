@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.replaceIgnoreCase;
@@ -31,6 +30,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isPatternPresent;
 
 @Service
 @Slf4j
@@ -124,7 +124,7 @@ public class RegionServiceImpl implements RegionService {
     private boolean doesStringContainAlphabetOtherThanAll(String param) {
         String paramWithoutAll = replaceIgnoreCase(param.toUpperCase(), ALL, "");
 
-        return Pattern.compile(ALPHABET_REGEX).matcher(paramWithoutAll).find();
+        return isPatternPresent(paramWithoutAll, ALPHABET_REGEX);
     }
 
     private List<LrdRegionResponse> generateResponseList(List<Region> regions) {

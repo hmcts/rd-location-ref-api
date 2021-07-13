@@ -167,6 +167,17 @@ public class ValidationUtils {
         return Pattern.compile(regex).matcher(stringToEvaluate).matches();
     }
 
+    /**
+     * A util method to check if any part of the passed string matches the passed regex pattern.
+     *
+     * @param stringToEvaluate The string to be evaluated
+     * @param regex The regex to be applied on the passed string
+     * @return True if any part of the passed string matches the passed regex pattern, else False
+     */
+    public static boolean isPatternPresent(String stringToEvaluate, String regex) {
+        return Pattern.compile(regex).matcher(stringToEvaluate).find();
+    }
+
     private static void checkIfStringStartsAndEndsWithComma(String csvIds, String exceptionMessage) {
         if (StringUtils.startsWith(csvIds, COMMA) || StringUtils.endsWith(csvIds, COMMA)) {
             throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
