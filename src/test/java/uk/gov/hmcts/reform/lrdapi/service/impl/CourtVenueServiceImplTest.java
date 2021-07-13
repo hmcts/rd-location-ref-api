@@ -77,15 +77,14 @@ public class CourtVenueServiceImplTest {
         verify(courtTypeServiceAssocRepository, times(1)).findByServiceCode("ABC1");
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void testRetrieveCourtVenuesByServiceCode_WithInvalidServiceCode() {
         when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(null);
 
-        courtVenueService.retrieveCourtVenuesByServiceCode("ABC1");
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 
-    @Test(expected = ResourceNotFoundException.class)
+    @Test
     public void testRetrieveCourtVenuesByServiceCode_WithNoCourtVenues() {
         CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
         CourtType courtType = new CourtType();
@@ -93,7 +92,6 @@ public class CourtVenueServiceImplTest {
 
         when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
 
-        courtVenueService.retrieveCourtVenuesByServiceCode("ABC1");
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 

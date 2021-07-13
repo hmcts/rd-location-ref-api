@@ -11,6 +11,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -37,21 +38,15 @@ public class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesByServiceCode("BFA1");
     }
 
-    @Test(expected = InvalidRequestException.class)
+    @Test
     public void testGetCourtVenues_ByBlankServiceCode_Returns400() {
-        ResponseEntity<Object> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenuesByServiceCode("");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesByServiceCode(""));
     }
 
-    @Test(expected = InvalidRequestException.class)
+    @Test
     public void testGetCourtVenues_ByInvalidServiceCode_Returns400() {
-        ResponseEntity<Object> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenuesByServiceCode("@AB_C");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesByServiceCode("@AB_C"));
     }
 }
