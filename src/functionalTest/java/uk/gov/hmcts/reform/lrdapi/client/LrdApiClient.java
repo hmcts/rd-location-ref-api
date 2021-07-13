@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
@@ -110,6 +111,21 @@ public class LrdApiClient {
             .andReturn();
 
         return response;
+    }
+
+    public Object retrieveCourtVenuesByServiceCode(HttpStatus expectedStatus, String serviceCode) {
+        Response response = getMultipleAuthHeaders()
+            .get(BASE_URL + "/court-venue/services?service_code=" + serviceCode)
+            .andReturn();
+
+        response.then()
+            .assertThat()
+            .statusCode(expectedStatus.value());
+        if (expectedStatus.is2xxSuccessful()) {
+            return response.getBody().as(LrdCourtVenuesByServiceCodeResponse.class);
+        } else {
+            return response.getBody().as(ErrorResponse.class);
+        }
     }
 
     public String getWelcomePage() {
