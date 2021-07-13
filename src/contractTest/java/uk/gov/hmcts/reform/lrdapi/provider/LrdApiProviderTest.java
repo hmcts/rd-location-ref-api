@@ -204,8 +204,11 @@ public class LrdApiProviderTest {
 
     @State({"Region Details exist"})
     public void toReturnRegionDetails() {
-        Region region = new Region("2", "London", "");
-        List<Region> regions = asList(region);
+        Region region = new Region("1", "National", "");
+        Region region1 = new Region("2", "London", "");
+        List<Region> regions = asList(region, region1);
         when(regionRepository.findByDescriptionInIgnoreCase(any())).thenReturn(regions);
+        when(regionRepository.findByRegionIdIn(any())).thenReturn(regions);
+        when(regionRepository.findByApiEnabled(any())).thenReturn(regions);
     }
 }
