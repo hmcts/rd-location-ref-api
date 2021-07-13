@@ -24,9 +24,9 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NATIONAL;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NON_NUMERIC_VALUE_ERROR_MESSAGE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.Y;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
@@ -51,7 +51,7 @@ public class RegionServiceImpl implements RegionService {
             return retrieveRegionByRegionDescription(description);
         }
 
-        return retrieveAllRegions(() -> regionRepository.findByDescriptionNotIgnoreCase(NATIONAL));
+        return retrieveAllRegions(() -> regionRepository.findByApiEnabled(Y));
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionId(String regionId) {
@@ -59,18 +59,16 @@ public class RegionServiceImpl implements RegionService {
 
         //Check if Param value provided is 'ALL' - if so, retrieve all Regions except National
         if (regionId.strip().equalsIgnoreCase(ALL)) {
-            return retrieveAllRegions(() -> regionRepository.findByDescriptionNotIgnoreCase(NATIONAL));
+            return retrieveAllRegions(() -> regionRepository.findAll());
         }
 
         //otherwise generate list of IDs from regionId String
         List<String> regionsIdList =
             checkIfValidCsvIdentifiersAndReturnList(regionId, EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED);
 
-        //then check if List contains 'ALL' and the ID for National
-        if (isListContainsTextIgnoreCase(regionsIdList, ALL) && regionsIdList.contains("1")) {
+        //then check if List contains 'ALL'
+        if (isListContainsTextIgnoreCase(regionsIdList, ALL)) {
             return retrieveAllRegions(() -> regionRepository.findAll());
-        } else if (isListContainsTextIgnoreCase(regionsIdList, ALL)) {
-            return retrieveAllRegions(() -> regionRepository.findByDescriptionNotIgnoreCase(NATIONAL));
         }
 
         //remove invalid IDs from the list
@@ -81,8 +79,7 @@ public class RegionServiceImpl implements RegionService {
 
 
         handleIfRegionsEmpty(
-            () -> isEmpty(regions),
-            "No Region(s) found with the given Region ID: " + regionsIdList
+            () -> isEmpty(regions), "No Region(s) found with the given Region ID: " + regionsIdList
         );
 
         return generateResponseList(regions);
@@ -103,8 +100,7 @@ public class RegionServiceImpl implements RegionService {
 
         handleIfRegionsEmpty(
             () -> isEmpty(regions),
-            "No Region(s) found with the given Region Description(s): "
-                + regionDescriptionsList
+            "No Region(s) found with the given Region Description(s): " + regionDescriptionsList
         );
 
         return generateResponseList(regions);

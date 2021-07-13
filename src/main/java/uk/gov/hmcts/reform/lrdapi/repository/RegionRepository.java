@@ -17,4 +17,6 @@ public interface RegionRepository extends JpaRepository<Region, String> {
 
     List<Region> findByDescriptionNotIgnoreCase(String description);
 
+    List<Region> findByApiEnabled(String apiEnabled);
+
 }

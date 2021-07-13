@@ -28,6 +28,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
     public static final String mapKey = "LrdApiController.retrieveRegionDetails";
 
     List<LrdRegionResponse> eexpectedListAll = new ArrayList<>(Arrays.asList(
+        new LrdRegionResponse(new Region("1", "National", null)),
         new LrdRegionResponse(new Region("2", "London", null)),
         new LrdRegionResponse(new Region("3", "Midlands", null)),
         new LrdRegionResponse(new Region("4", "North East", null)),

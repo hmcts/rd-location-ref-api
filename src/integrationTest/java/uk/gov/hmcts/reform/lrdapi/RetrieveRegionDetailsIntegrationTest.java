@@ -26,6 +26,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
     public static final String HTTP_STATUS = "http_status";
 
     List<LrdRegionResponse> expectedListAll = new ArrayList<>(Arrays.asList(
+        new LrdRegionResponse(new Region("1", "National", null)),
         new LrdRegionResponse(new Region("2", "London", null)),
         new LrdRegionResponse(new Region("3", "Midlands", null)),
         new LrdRegionResponse(new Region("4", "North East", null)),

@@ -41,6 +41,9 @@ public class Region implements Serializable {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
+    @Column(name = "api_enabled")
+    private boolean apiEnabled;
+
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "region")
     private Set<BuildingLocation> buildingLocationSet;
 
