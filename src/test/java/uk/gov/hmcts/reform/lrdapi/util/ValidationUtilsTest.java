@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentifiers;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 
@@ -253,16 +252,6 @@ public class ValidationUtilsTest {
                                                           getLogger(), "anyString",
                                                           EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
             ));
-    }
-
-    @Test(expected = InvalidRequestException.class)
-    public void testCheckRegionDescriptionIsValid_WhenRegionIsBlank_ThrowsException() {
-        checkRegionDescriptionIsValid("");
-    }
-
-    @Test(expected = InvalidRequestException.class)
-    public void testCheckRegionDescriptionIsValid_WhenRegionContainsInvalidCharacters_ThrowsException() {
-        checkRegionDescriptionIsValid("L*nd@n");
     }
 
     private List<String> getSingleInvalidIdList() {
