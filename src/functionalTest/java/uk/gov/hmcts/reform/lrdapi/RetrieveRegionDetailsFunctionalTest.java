@@ -12,8 +12,6 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +25,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
 
     public static final String mapKey = "LrdApiController.retrieveRegionDetails";
 
-    List<LrdRegionResponse> eexpectedListAll = new ArrayList<>(Arrays.asList(
+    List<LrdRegionResponse> expectedListAll = List.of(
         new LrdRegionResponse(new Region("1", "National", null)),
         new LrdRegionResponse(new Region("2", "London", null)),
         new LrdRegionResponse(new Region("3", "Midlands", null)),
@@ -37,7 +35,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
         new LrdRegionResponse(new Region("7", "South West", null)),
         new LrdRegionResponse(new Region("8", "Wales", null)),
         new LrdRegionResponse(new Region("9", "Scotland", null))
-    ));
+    );
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
@@ -102,7 +100,7 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "ALL");
 
         assertThat(response).isNotNull();
-        responseVerificationForAll(response, eexpectedListAll);
+        responseVerificationForAll(response, expectedListAll);
     }
 
     @Test

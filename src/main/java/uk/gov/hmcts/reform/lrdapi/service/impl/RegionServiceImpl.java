@@ -26,7 +26,6 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NON_NUMERIC_VALUE_ERROR_MESSAGE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.Y;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
@@ -51,7 +50,7 @@ public class RegionServiceImpl implements RegionService {
             return retrieveRegionByRegionDescription(description);
         }
 
-        return retrieveAllRegions(() -> regionRepository.findByApiEnabled(Y));
+        return retrieveAllRegions(() -> regionRepository.findByApiEnabled(true));
     }
 
     public List<LrdRegionResponse> retrieveRegionByRegionId(String regionId) {

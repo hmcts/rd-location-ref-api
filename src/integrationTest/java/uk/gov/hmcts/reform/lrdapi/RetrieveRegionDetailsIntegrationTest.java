@@ -11,8 +11,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +23,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
 
     public static final String HTTP_STATUS = "http_status";
 
-    List<LrdRegionResponse> expectedListAll = new ArrayList<>(Arrays.asList(
+    List<LrdRegionResponse> expectedListAll = List.of(
         new LrdRegionResponse(new Region("1", "National", null)),
         new LrdRegionResponse(new Region("2", "London", null)),
         new LrdRegionResponse(new Region("3", "Midlands", null)),
@@ -35,7 +33,7 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
         new LrdRegionResponse(new Region("7", "South West", null)),
         new LrdRegionResponse(new Region("8", "Wales", null)),
         new LrdRegionResponse(new Region("9", "Scotland", null))
-    ));
+    );
 
     @Test
     public void returnsRegionDetailsByDescriptionWithStatusCode_200() throws JsonProcessingException {
@@ -108,6 +106,16 @@ public class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnable
         assertThat(response.get(0).getRegionId()).isEqualTo("1");
         assertThat(response.get(0).getDescription()).isEqualTo("National");
         assertThat(response.get(0).getWelshDescription()).isNull();
+    }
+
+    @Test
+    public void returnsRegionDetailsNoParamWithStatusCode_200() throws JsonProcessingException {
+
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.findRegionDetailsById("", LrdRegionResponse[].class);
+
+        assertThat(response).isNotNull();
+        assertThat(response.size()).isEqualTo(8);
     }
 
     @Test

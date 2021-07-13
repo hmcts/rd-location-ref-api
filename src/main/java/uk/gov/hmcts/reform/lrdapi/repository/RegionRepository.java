@@ -9,14 +9,10 @@ import java.util.List;
 @Repository
 public interface RegionRepository extends JpaRepository<Region, String> {
 
-    Region findByDescriptionIgnoreCase(String description);
-
     List<Region> findByDescriptionInIgnoreCase(List<String> regionId);
 
     List<Region> findByRegionIdIn(List<String> regionId);
 
-    List<Region> findByDescriptionNotIgnoreCase(String description);
-
-    List<Region> findByApiEnabled(String apiEnabled);
+    List<Region> findByApiEnabled(boolean apiEnabled);
 
 }
