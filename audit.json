@@ -38,5 +38,20 @@
   "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
   "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore",
   "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&epimms_id=epimms_id_GET" : "ignore",
-  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore"
+  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/region?region=region_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://****-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&cluster_id=cluster_id&epimms_id=epimms_id&region_id=region_id_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://****-aat.service.core-compute-aat.internal/refdata/location/court-venue/services?service_code=service_code_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://****-aat.service.core-compute-aat.internal/refdata/location/regions?region=region&regionId=regionId_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://****-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&cluster_id=cluster_id&epimms_id=epimms_id&region_id=region_id_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://****-aat.service.core-compute-aat.internal/refdata/location/court-venue/services?service_code=service_code_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://****-aat.service.core-compute-aat.internal/refdata/location/regions?region=region&regionId=regionId_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://****-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&cluster_id=cluster_id&epimms_id=epimms_id&region_id=region_id_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://****-aat.service.core-compute-aat.internal/refdata/location/court-venue/services?service_code=service_code_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://****-aat.service.core-compute-aat.internal/refdata/location/regions?region=region&regionId=regionId_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://****-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&cluster_id=cluster_id&epimms_id=epimms_id&region_id=region_id_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://****-aat.service.core-compute-aat.internal/refdata/location/court-venue/services?service_code=service_code_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://****-aat.service.core-compute-aat.internal/refdata/location/regions?region=region&regionId=regionId_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://****-aat.service.core-compute-aat.internal/refdata/location/building-locations?building_location_name=building_location_name&cluster_id=cluster_id&epimms_id=epimms_id&region_id=region_id_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://****-aat.service.core-compute-aat.internal/refdata/location/court-venue/services?service_code=service_code_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://****-aat.service.core-compute-aat.internal/refdata/location/regions?region=region&regionId=regionId_GET" : "ignore"
 }
