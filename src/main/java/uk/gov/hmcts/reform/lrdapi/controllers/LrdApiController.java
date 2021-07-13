@@ -25,7 +25,6 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
 
 @RequestMapping(
     path = "/refdata/location"
@@ -167,8 +166,8 @@ public class LrdApiController {
     @ApiResponses({
         @ApiResponse(
             code = 200,
-            message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
-            response = LrdRegionResponse.class
+            message = "Successfully retrieved a list of Region Details",
+            response = LrdRegionResponse[].class
         ),
         @ApiResponse(
             code = 400,
@@ -180,7 +179,7 @@ public class LrdApiController {
         ),
         @ApiResponse(
             code = 404,
-            message = "No Service found with the given ID"
+            message = "No Region(s) found with the given Description(s) or ID(s)"
         ),
         @ApiResponse(
             code = 500,
@@ -188,15 +187,16 @@ public class LrdApiController {
         )
     })
     @GetMapping(
-        path = "/region",
+        path = "/regions",
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveRegionDetails(
-        @RequestParam(value = "region", required = false) String region) {
+        @RequestParam(value = "region", required = false) String region,
+        @RequestParam(value = "regionId", required = false) String regionId) {
 
-        checkRegionDescriptionIsValid(region);
+        checkIfSingleValuePresent(region, regionId);
 
-        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
+        Object response = regionService.retrieveRegionDetails(regionId, region);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
