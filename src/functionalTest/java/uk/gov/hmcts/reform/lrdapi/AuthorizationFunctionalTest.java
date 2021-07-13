@@ -85,6 +85,5 @@ public abstract class AuthorizationFunctionalTest {
         assertThat(errorResponse.getErrorDescription()).isEqualTo(expectedErrorDescription);
         assertThat(errorResponse.getErrorMessage()).isEqualTo(expectedErrorMessage);
     }
-
-
+    
 }
