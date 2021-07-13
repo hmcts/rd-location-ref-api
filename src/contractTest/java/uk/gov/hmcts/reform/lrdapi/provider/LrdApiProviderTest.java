@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -204,6 +205,7 @@ public class LrdApiProviderTest {
     @State({"Region Details exist"})
     public void toReturnRegionDetails() {
         Region region = new Region("2", "London", "");
-        when(regionRepository.findByDescriptionIgnoreCase(anyString())).thenReturn(region);
+        List<Region> regions = asList(region);
+        when(regionRepository.findByDescriptionInIgnoreCase(any())).thenReturn(regions);
     }
 }
