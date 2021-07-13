@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 
@@ -107,6 +108,13 @@ public class LrdApiClient {
         return mapRegionResponse(responseEntity,expectedClass);
     }
 
+    public Object findCourtVenuesByServiceCode(String serviceCode, Class expectedClass) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/court-venue/services?service_code={service_code}", expectedClass, serviceCode);
+        return mapCourtVenuesByServiceCodeResponse(responseEntity,expectedClass);
+    }
+
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
         JsonProcessingException {
 
@@ -158,6 +166,28 @@ public class LrdApiClient {
             errorResponseMap.put("http_status", status);
             return errorResponseMap;
         }
+    }
+
+    private Object mapCourtVenuesByServiceCodeResponse(ResponseEntity<Object> responseEntity, Class clazz) throws
+        JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+
+        if (status.is2xxSuccessful()) {
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdCourtVenuesByServiceCodeResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

@@ -17,8 +17,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.LrdApiController;
+import uk.gov.hmcts.reform.lrdapi.controllers.LrdCourtVenueController;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.Jurisdiction;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgBusinessArea;
@@ -28,9 +31,11 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.domain.Service;
 import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
+import uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdBuildingLocationServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.service.impl.LrdServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.service.impl.RegionServiceImpl;
@@ -43,6 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -54,8 +60,8 @@ import static org.mockito.Mockito.when;
     host = "${PACT_BROKER_URL:localhost}",
     port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
     @VersionSelector(tag = "master")})
-@ContextConfiguration(classes = {LrdApiController.class, LrdServiceImpl.class,
-    LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class})
+@ContextConfiguration(classes = {LrdApiController.class, LrdCourtVenueController.class, LrdServiceImpl.class,
+    LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class, CourtVenueServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
 @IgnoreNoPactsToVerify
 public class LrdApiProviderTest {
@@ -72,8 +78,14 @@ public class LrdApiProviderTest {
     @MockBean
     BuildingLocationRepository buildingLocationRepository;
 
+    @MockBean
+    CourtTypeServiceAssocRepository courtTypeServiceAssocRepository;
+
     @Autowired
     LrdApiController lrdApiController;
+
+    @Autowired
+    LrdCourtVenueController lrdCourtVenueController;
 
 
     @TestTemplate
@@ -88,8 +100,8 @@ public class LrdApiProviderTest {
     void before(PactVerificationContext context) {
         MockMvcTestTarget testTarget = new MockMvcTestTarget();
         testTarget.setControllers(
-            lrdApiController);
-        if (context != null) {
+            lrdApiController, lrdCourtVenueController);
+        if (nonNull(context)) {
             context.setTarget(testTarget);
         }
 
@@ -144,8 +156,13 @@ public class LrdApiProviderTest {
         region.setUpdatedTime(LocalDateTime.now());
         region.setWelshDescription("Region ABC");
 
+        CourtType courtType = new CourtType();
+        courtType.setCourtTypeId("17");
+        courtType.setCourtType("Immigration and Asylum");
+
         CourtVenue courtVenue = CourtVenue.builder()
             .courtTypeId("17")
+            .courtType(courtType)
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic(Boolean.TRUE)
             .epimmsId("123456789")
@@ -210,5 +227,49 @@ public class LrdApiProviderTest {
         when(regionRepository.findByDescriptionInIgnoreCase(any())).thenReturn(regions);
         when(regionRepository.findByRegionIdIn(any())).thenReturn(regions);
         when(regionRepository.findByApiEnabled(any())).thenReturn(regions);
+    }
+
+
+    @State({"Court Venues exist for the service code provided"})
+    public void toReturnCourtVenuesByServiceCode() {
+        Cluster cluster = new Cluster();
+        cluster.setClusterId("456");
+        cluster.setClusterName("ClusterXYZ");
+
+        Region region = new Region();
+        region.setDescription("Region XYZ");
+        region.setRegionId("123");
+
+        BuildingLocation buildingLocation = BuildingLocation.builder()
+            .epimmsId("4567")
+            .build();
+
+        CourtType courtType = new CourtType();
+        courtType.setCourtTypeId("17");
+        courtType.setCourtType("Immigration and Asylum");
+
+        CourtVenue courtVenue = CourtVenue.builder()
+            .courtVenueId(1L)
+            .epimmsId("12345")
+            .siteName("siteName")
+            .region(region)
+            .courtType(courtType)
+            .cluster(cluster)
+            .openForPublic(Boolean.TRUE)
+            .courtAddress("courtAddress")
+            .postcode("AB EYZ")
+            .phoneNumber("122324234")
+            .closedDate(LocalDateTime.now())
+            .courtLocationCode("courtLocationCode")
+            .dxAddress("dxAddress")
+            .courtStatus("Open")
+            .courtName("courtName")
+            .build();
+
+        courtType.setCourtVenues(Collections.singletonList(courtVenue));
+
+        CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
+        courtTypeServiceAssoc.setCourtType(courtType);
+        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
     }
 }
