@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -14,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
+
+import static org.hibernate.annotations.FetchMode.SUBSELECT;
 
 @Entity(name = "region")
 @NoArgsConstructor
@@ -42,6 +45,7 @@ public class Region implements Serializable {
     private LocalDateTime updatedTime;
 
     @Column(name = "api_enabled")
+    @Fetch(SUBSELECT)
     private boolean apiEnabled;
 
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "region")
