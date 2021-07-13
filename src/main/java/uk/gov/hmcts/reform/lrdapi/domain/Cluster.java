@@ -41,6 +41,9 @@ public class Cluster implements Serializable {
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "cluster")
     private Set<BuildingLocation> buildingLocations = new HashSet<>();
 
+    @OneToMany(targetEntity = CourtVenue.class, mappedBy = "cluster")
+    private Set<CourtVenue> courtVenues = new HashSet<>();
+
     @LastModifiedDate
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;

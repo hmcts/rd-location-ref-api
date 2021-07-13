@@ -10,6 +10,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentifiers;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 
 public class ValidationUtilsTest {
 
@@ -21,7 +25,7 @@ public class ValidationUtilsTest {
     public void testFindInvalidIdentifiers_SingleIdGiven_InvalidInputSpecialChars() {
         var identifiers = new ArrayList<String>();
         identifiers.add("!@£$");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex))
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex))
             .isEqualTo(identifiers);
     }
 
@@ -29,32 +33,32 @@ public class ValidationUtilsTest {
     public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputChars() {
         var identifiers = new ArrayList<String>();
         identifiers.add("QWERTY");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+            .isZero();
     }
 
     @Test
     public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputNumeric() {
         var identifiers = new ArrayList<String>();
         identifiers.add("1234");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+            .isZero();
     }
 
     @Test
     public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumeric() {
         var identifiers = new ArrayList<String>();
         identifiers.add("qwerty1234");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+            .isZero();
     }
 
     @Test
     public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumericUnderscore() {
         var identifiers = new ArrayList<String>();
         identifiers.add("qwerty_1234");
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isEqualTo(0);
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+            .isZero();
     }
 
     @Test
@@ -62,7 +66,7 @@ public class ValidationUtilsTest {
         var identifiers = new ArrayList<String>();
         identifiers.add("1234");
         identifiers.addAll(getSingleInvalidIdList());
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex))
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex))
             .isEqualTo(getSingleInvalidIdList());
     }
 
@@ -71,7 +75,7 @@ public class ValidationUtilsTest {
         var identifiers = new ArrayList<String>();
         identifiers.add("QWERTY");
         identifiers.addAll(getMultipleInvalidIdList());
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex))
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex))
             .isEqualTo(getMultipleInvalidIdList());
     }
 
@@ -79,13 +83,13 @@ public class ValidationUtilsTest {
     public void testFindInvalidIdentifiers_MultipleIdsGiven_AllInvalidIdsSpecialChars() {
         var identifiers = new ArrayList<String>();
         identifiers.addAll(getMultipleInvalidIdList());
-        assertThat(ValidationUtils.findInvalidIdentifiers(identifiers, AlphaNumericRegex))
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex))
             .isEqualTo(getMultipleInvalidIdList());
     }
 
     @Test
     public void testIsListContainsText_NoAllProvided_ShouldReturnFalse() {
-        assertThat(ValidationUtils.isListContainsTextIgnoreCase(getMultipleValidIdList(), "ALL")).isFalse();
+        assertThat(isListContainsTextIgnoreCase(getMultipleValidIdList(), "ALL")).isFalse();
     }
 
     @Test
@@ -93,7 +97,7 @@ public class ValidationUtilsTest {
         var idList = new ArrayList<String>();
         idList.addAll(getMultipleValidIdList());
         idList.add("ALL");
-        assertThat(ValidationUtils.isListContainsTextIgnoreCase(idList, "ALL")).isTrue();
+        assertThat(isListContainsTextIgnoreCase(idList, "ALL")).isTrue();
     }
 
     @Test
@@ -101,7 +105,7 @@ public class ValidationUtilsTest {
         var idList = new ArrayList<String>();
         idList.addAll(getMultipleValidIdList());
         idList.add("ALL");
-        assertThat(ValidationUtils.isListContainsTextIgnoreCase(idList, "all")).isTrue();
+        assertThat(isListContainsTextIgnoreCase(idList, "all")).isTrue();
     }
 
     @Test
@@ -109,41 +113,124 @@ public class ValidationUtilsTest {
         var idList = new ArrayList<String>();
         idList.addAll(getMultipleValidIdList());
         idList.add("ALL");
-        assertThat(ValidationUtils.isListContainsTextIgnoreCase(idList, "All")).isTrue();
+        assertThat(isListContainsTextIgnoreCase(idList, "All")).isTrue();
     }
 
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_ValidCsvIdsGiven_ShouldReturnList() {
-        assertThat(ValidationUtils
-                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343",
-                           "anyString")).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+        assertThat(checkIfValidCsvIdentifiersAndReturnList(
+            "qwerty,1234,qwerty_12343",
+            "anyString"
+        ))
+            .hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
     @Test
-    public void testCheckIfValidCsvIdentifiersAndReturnList_ComboCsvIdsGiven_ShouldReturnList() {
-        assertThat(ValidationUtils
-                       .checkIfValidCsvIdentifiersAndReturnList("qwerty,1234,qwerty_12343,, ,",
-                           "anyString")).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
+    public void testCheckIfValidCsvIdentifiersAndReturnList_ComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                "1234, , 4567",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_2ndComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                "1234,,, 4567",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_3rdComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                "1234,, , 4567",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_4thComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                "1234,,",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_5thComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                ",1234",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_6thComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                "1234,",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
+    }
+
+    @Test
+    public void testCheckIfValidCsvIdentifiersAndReturnList_7thComboCsvIdsGiven_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                ",1234,",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
     }
 
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_InvalidCsvIdsGiven_ShouldThrowException() {
-        assertThrows(InvalidRequestException.class, () -> ValidationUtils
-            .checkIfValidCsvIdentifiersAndReturnList(",,", EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                ",,",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
     }
 
     @Test
     public void testCheckIfValidCsvIdentifiersAndReturnList_InvalidCsvIdsGiven_ShouldThrowException_2() {
-        assertThrows(InvalidRequestException.class, () -> ValidationUtils
-            .checkIfValidCsvIdentifiersAndReturnList(",, ,   ", EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
+        assertThrows(
+            InvalidRequestException.class,
+            () -> checkIfValidCsvIdentifiersAndReturnList(
+                ",, ,   ",
+                EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            )
+        );
     }
 
     @Test
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_NoInvalidIdsGiven_ShouldNotRemoveAnyFromList() {
         List<String> idList = getMultipleValidIdList();
-        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, getLogger(),
-                                                                      "anyString",
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
+        checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, getLogger(),
+                                                      "anyString",
+                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
         assertThat(idList).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
@@ -151,28 +238,20 @@ public class ValidationUtilsTest {
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_ComboIdsGiven_ShouldRemoveInvalidIdsFromList() {
         List<String> idList = getMultipleValidIdList();
         idList.addAll(getMultipleInvalidIdList()); //Total of 5 ids in the list, 3 Valid and 2 invalid
-        ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, getLogger(),
-                                                                      "anyString",
-                                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED);
+        checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, getLogger(),
+                                                      "anyString",
+                                                      EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
         assertThat(idList).hasSize(3).hasSameElementsAs(getMultipleValidIdList());
     }
 
     @Test
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_AllInvalidIdsGiven_ShouldThrowException() {
         assertThrows(InvalidRequestException.class, () ->
-            ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList(getMultipleInvalidIdList(), AlphaNumericRegex,
-                                                                          getLogger(), "anyString",
-                                                                          EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED));
-    }
-
-    @Test(expected = InvalidRequestException.class)
-    public void testCheckRegionDescriptionIsValid_WhenRegionIsBlank_ThrowsException() {
-        ValidationUtils.checkRegionDescriptionIsValid("");
-    }
-
-    @Test(expected = InvalidRequestException.class)
-    public void testCheckRegionDescriptionIsValid_WhenRegionContainsInvalidCharacters_ThrowsException() {
-        ValidationUtils.checkRegionDescriptionIsValid("L*nd@n");
+            checkForInvalidIdentifiersAndRemoveFromIdList(getMultipleInvalidIdList(), AlphaNumericRegex,
+                                                          getLogger(), "anyString",
+                                                          EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+            ));
     }
 
     private List<String> getSingleInvalidIdList() {
@@ -197,7 +276,7 @@ public class ValidationUtilsTest {
     }
 
     private Logger getLogger() {
-        return  LoggerFactory.getLogger(ValidationUtilsTest.class);
+        return LoggerFactory.getLogger(ValidationUtilsTest.class);
     }
 
 

@@ -4,6 +4,18 @@ insert into cluster(
     welsh_cluster_name,
     updated_time)
 values(
+    '01234',
+    'Cluster B',
+    'Clwstwr B',
+    now())
+;
+
+insert into cluster(
+    cluster_id,
+    cluster_name,
+    welsh_cluster_name,
+    updated_time)
+values(
     '0123',
     'Cluster A',
     'Clwstwr A',
@@ -25,12 +37,10 @@ values(
 insert into region(
     region_id,
     description,
-    welsh_description,
     updated_time)
 values(
-    '8910',
-    'Description A',
-    'Disgrifiad A',
+    '1',
+    'National',
     now())
 ;
 
@@ -49,9 +59,9 @@ insert into
     updated_time)
 values(
   '22041995',
-  '8910',
+  '1',
   '4567',
-  '0123',
+  '01234',
   '123456789',
   'Building Location A',
   'Area A',

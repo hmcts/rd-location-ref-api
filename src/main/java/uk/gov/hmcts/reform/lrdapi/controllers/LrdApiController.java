@@ -24,7 +24,7 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkRegionDescriptionIsValid;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 
 @RequestMapping(
     path = "/refdata/location"
@@ -100,11 +100,18 @@ public class LrdApiController {
         },
         notes = "Any valid IDAM role is sufficient to access this API \n"
             + "For the request param 'epimms_id', "
-            + "the value can be a single id for which single LrdBuildingLocationResponse object would be returned or "
-            + "list of ids with comma separated values for which list of LrdBuildingLocationResponse objects would be "
-            + "returned \n"
-            + "For the request param 'building_location_name', the value can be a building location name for which "
-            + "single LrdBuildingLocationResponse object would be returned"
+            + "the value can be a single id for which single building location object would be returned or "
+            + "a list of ids passed as comma separated values for which the associated building location "
+            + "objects would be returned as a list.\nAdditionally, if 'ALL' is passed as the epimms_id value, all the "
+            + "available building locations are returned as a list."
+            + "For the request param 'building_location_name', the value needs to be a single building location name "
+            + "for which a single building location object would be returned.\n"
+            + "For the request param 'region_id', the value needs to be a single region_id "
+            + "for which all the associated building location objects would be returned as a list.\n"
+            + "For the request param 'cluster_id', the value needs to be a single cluster_id "
+            + "for which all the associated building location objects would be returned as a list.\n"
+            + "If no params are passed, then all the available building locations which have the "
+            + "building location status as 'OPEN' are returned as a list."
     )
     @ApiResponses({
         @ApiResponse(
@@ -136,10 +143,15 @@ public class LrdApiController {
     )
     public ResponseEntity<Object> retrieveBuildingLocationDetails(
         @RequestParam(value = "epimms_id", required = false) String epimsIds,
-        @RequestParam(value = "building_location_name", required = false) String buildingLocationName) {
+        @RequestParam(value = "building_location_name", required = false) String buildingLocationName,
+        @RequestParam(value = "region_id", required = false) String regionId,
+        @RequestParam(value = "cluster_id", required = false) String clusterId) {
 
-        ValidationUtils.validateInputParamSize(epimsIds, buildingLocationName);
-        Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds, buildingLocationName);
+        checkIfSingleValuePresent(epimsIds, buildingLocationName, regionId, clusterId);
+        Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds,
+                                                                                        buildingLocationName,
+                                                                                        regionId,
+                                                                                        clusterId);
         return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
     }
 
@@ -154,8 +166,8 @@ public class LrdApiController {
     @ApiResponses({
         @ApiResponse(
             code = 200,
-            message = "Successfully retrieved list of Service Code or Ccd Case Type Details",
-            response = LrdRegionResponse.class
+            message = "Successfully retrieved a list of Region Details",
+            response = LrdRegionResponse[].class
         ),
         @ApiResponse(
             code = 400,
@@ -167,7 +179,7 @@ public class LrdApiController {
         ),
         @ApiResponse(
             code = 404,
-            message = "No Service found with the given ID"
+            message = "No Region(s) found with the given Description(s) or ID(s)"
         ),
         @ApiResponse(
             code = 500,
@@ -175,15 +187,16 @@ public class LrdApiController {
         )
     })
     @GetMapping(
-        path = "/region",
+        path = "/regions",
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveRegionDetails(
-        @RequestParam(value = "region", required = false) String region) {
+        @RequestParam(value = "region", required = false) String region,
+        @RequestParam(value = "regionId", required = false) String regionId) {
 
-        checkRegionDescriptionIsValid(region);
+        checkIfSingleValuePresent(region, regionId);
 
-        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription(region.strip());
+        Object response = regionService.retrieveRegionDetails(regionId, region);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

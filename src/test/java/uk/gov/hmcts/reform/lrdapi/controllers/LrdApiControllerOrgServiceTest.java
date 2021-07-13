@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 import uk.gov.hmcts.reform.lrdapi.service.LrdService;
-import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
-public class LrdApiControllerTest {
+public class LrdApiControllerOrgServiceTest {
 
     @InjectMocks
     private LrdApiController lrdApiController;
@@ -37,9 +36,6 @@ public class LrdApiControllerTest {
 
     @Mock
     LrdService lrdServiceMock;
-
-    @Mock
-    RegionService regionServiceMock;
 
     List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse = new ArrayList<>();
     private JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverterMock;
@@ -195,115 +191,6 @@ public class LrdApiControllerTest {
         ccdServiceName = "abcd, cdef,";
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-    }
-
-    @Test
-    public void testGetBuildingLocations_ValidSingleEpimmsIdGiven_ShouldReturnStatusCode200() {
-        when(lrdBuildingLocationService.retrieveBuildingLocationDetails("111",""))
-            .thenReturn(new ArrayList<>());
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("111", "");
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("111", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void testGetBuildingLocations_AllEpimmsIdGiven_ShouldReturnStatusCode200() {
-        when(lrdBuildingLocationService.retrieveBuildingLocationDetails("ALL", ""))
-            .thenReturn(new ArrayList<>());
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("ALL", "");
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("ALL", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void testGetBuildingLocations_lowerAllEpimmsIdGiven_ShouldReturnStatusCode200() {
-        when(lrdBuildingLocationService.retrieveBuildingLocationDetails("all", ""))
-            .thenReturn(new ArrayList<>());
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("all", "");
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("all", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void testGetBuildingLocations_EpimmsIdWithASpaceGiven_ShouldReturnStatusCode200() {
-        when(lrdBuildingLocationService.retrieveBuildingLocationDetails(" 111 ", ""))
-            .thenReturn(new ArrayList<>());
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails(" 111 ", "");
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails(" 111 ", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void testGetBuildingLocations_ValidMultipleEpimmsIdGiven_ShouldReturnStatusCode200() {
-        when(lrdBuildingLocationService.retrieveBuildingLocationDetails("111,qwerty, qwerty_123",
-                                                                        ""))
-            .thenReturn(new ArrayList<>());
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("111,qwerty, qwerty_123",
-                                                             "");
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("111,qwerty, qwerty_123", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void testGetBuildingLocations_1Valid1InvalidEpimmsIdGiven_ShouldReturnStatusCode200() {
-        when(lrdBuildingLocationService.retrieveBuildingLocationDetails("!@£$%,qwerty",""))
-            .thenReturn(new ArrayList<>());
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("!@£$%,qwerty", "");
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("!@£$%,qwerty", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-    }
-
-    @Test
-    public void testGetBuildingLocations_StringEpimsIdGiven_ShouldReturnStatusCode200() {
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("QWERTY", "");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("QWERTY", "");
-    }
-
-    @Test
-    public void testGetBuildingLocations_AlphaNumericEpimsIdGiven_ShouldReturnStatusCode200() {
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveBuildingLocationDetails("1234QWERTY", "");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(lrdBuildingLocationService, times(1))
-            .retrieveBuildingLocationDetails("1234QWERTY", "");
-    }
-
-    @Test
-    public void testGetRegionDetails_ByDescription_Returns200() {
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveRegionDetails("London");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        verify(regionServiceMock, times(1)).retrieveRegionByRegionDescription("London");
-    }
-
-    @Test(expected = InvalidRequestException.class)
-    public void testGetRegionDetails_ByMissingDescription_Returns400() {
-        ResponseEntity<Object> responseEntity =
-            lrdApiController.retrieveRegionDetails("");
-
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
 }

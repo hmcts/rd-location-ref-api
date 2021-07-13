@@ -6,18 +6,15 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_REGION_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGION_NAME_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -30,13 +27,10 @@ public class ValidationUtils {
 
     public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
 
-        validateInputParamSize(serviceCode, ccdCaseType, ccdServiceNames);
+        checkIfSingleValuePresent(serviceCode, ccdCaseType, ccdServiceNames);
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
-            if (StringUtils.startsWith(ccdServiceNames, COMMA)
-                || StringUtils.endsWith(ccdServiceNames, COMMA)) {
-                throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
-            }
+            checkIfStringStartsAndEndsWithComma(ccdServiceNames, EXCEPTION_MSG_SPCL_CHAR);
             for (String str : ccdServiceNames.trim().split(REG_EXP_COMMA_DILIMETER)) {
                 if (StringUtils.isEmpty(str.trim())) {
                     throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
@@ -51,7 +45,14 @@ public class ValidationUtils {
         return true;
     }
 
-    public static void validateInputParamSize(String... params) {
+    /**
+     * Method to check if the passed {@link String} varargs contains a single value.
+     * If more than one value is present, this method throws an {@link InvalidRequestException}
+     *
+     * @param params A java varargs that would contain the list string values. Ideally, it is expected
+     *               to have single value.
+     */
+    public static void checkIfSingleValuePresent(String... params) {
         long requestParamSize = Arrays.stream(params)
             .filter(StringUtils::isNotBlank)
             .count();
@@ -72,6 +73,13 @@ public class ValidationUtils {
 
     /**
      * Method to check if the passed identifiers are a valid comma separated values.
+     * The identifiers are passed as a string and this string value is considered valid only when there are proper
+     * comma separated values.
+     * An example of a valid value is "123456, 789,1123, 1234 "
+     * Below are a few examples of invalid values:
+     * "12345,,678"
+     * ",12345"
+     * "12345,"
      * If identified as valid, the comma separated identifier values are converted to list of strings and are returned.
      * If identified as invalid, it throws an {@InvalidRequestException} to mark the request as BAD_REQUEST.
      *
@@ -82,10 +90,10 @@ public class ValidationUtils {
      * @return The list of identifiers that are created from the passed comma separated identifiers.
      */
     public static List<String> checkIfValidCsvIdentifiersAndReturnList(String csvIds, String exceptionMessage) {
+        checkIfStringStartsAndEndsWithComma(csvIds, exceptionMessage);
         var idList = new ArrayList<>(Arrays.asList(csvIds.split(REG_EXP_COMMA_DILIMETER)));
         idList.replaceAll(String::trim);
-        idList.removeAll(Collections.singleton(StringUtils.EMPTY));
-        if (idList.isEmpty()) {
+        if (isEmpty(idList) || isListContainsTextIgnoreCase(idList, StringUtils.EMPTY)) {
             throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
         }
         return idList;
@@ -148,14 +156,31 @@ public class ValidationUtils {
         return idList.stream().anyMatch(searchText::equalsIgnoreCase);
     }
 
-    public static void checkRegionDescriptionIsValid(String region) {
+    /**
+     * A util method to check if the passed string satisfies the passed regex pattern.
+     *
+     * @param stringToEvaluate The string to be evaluated
+     * @param regex The regex to be applied on the passed string
+     * @return True if the passed string satisfies the passed regex pattern, else False
+     */
+    public static boolean isRegexSatisfied(String stringToEvaluate, String regex) {
+        return Pattern.compile(regex).matcher(stringToEvaluate).matches();
+    }
 
-        if (isBlank(region)) {
-            throw new InvalidRequestException("No Region Description provided");
-        }
+    /**
+     * A util method to check if any part of the passed string matches the passed regex pattern.
+     *
+     * @param stringToEvaluate The string to be evaluated
+     * @param regex The regex to be applied on the passed string
+     * @return True if any part of the passed string matches the passed regex pattern, else False
+     */
+    public static boolean isPatternPresent(String stringToEvaluate, String regex) {
+        return Pattern.compile(regex).matcher(stringToEvaluate).find();
+    }
 
-        if (!Pattern.compile(REGION_NAME_REGEX).matcher(region).matches()) {
-            throw new InvalidRequestException(EXCEPTION_MSG_REGION_SPCL_CHAR);
+    private static void checkIfStringStartsAndEndsWithComma(String csvIds, String exceptionMessage) {
+        if (StringUtils.startsWith(csvIds, COMMA) || StringUtils.endsWith(csvIds, COMMA)) {
+            throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
         }
     }
 

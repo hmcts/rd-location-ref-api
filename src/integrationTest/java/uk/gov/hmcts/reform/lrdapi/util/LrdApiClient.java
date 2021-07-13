@@ -18,7 +18,9 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -95,8 +97,22 @@ public class LrdApiClient {
     public Object findRegionDetailsByDescription(String region, Class expectedClass) throws
         JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(
-            APP_BASE_PATH + "/region?region={region}", expectedClass, region);
+            APP_BASE_PATH + "/regions?region={region}", expectedClass, region);
         return mapRegionResponse(responseEntity,expectedClass);
+    }
+
+    public Object findRegionDetailsById(String regionId, Class expectedClass) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/regions?regionId={regionId}", expectedClass, regionId);
+        return mapRegionResponse(responseEntity,expectedClass);
+    }
+
+    public Object findCourtVenuesByServiceCode(String serviceCode, Class expectedClass) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/court-venue/services?service_code={service_code}", expectedClass, serviceCode);
+        return mapCourtVenuesByServiceCodeResponse(responseEntity,expectedClass);
     }
 
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
@@ -120,7 +136,8 @@ public class LrdApiClient {
 
         HttpStatus status = responseEntity.getStatusCode();
         if (status.is2xxSuccessful()) {
-            return objectMapper.convertValue(responseEntity.getBody(), expectedClass);
+            return Arrays.asList((LrdRegionResponse[]) objectMapper.convertValue(
+                responseEntity.getBody(), expectedClass));
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
@@ -149,6 +166,28 @@ public class LrdApiClient {
             errorResponseMap.put("http_status", status);
             return errorResponseMap;
         }
+    }
+
+    private Object mapCourtVenuesByServiceCodeResponse(ResponseEntity<Object> responseEntity, Class clazz) throws
+        JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+
+        if (status.is2xxSuccessful()) {
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdCourtVenuesByServiceCodeResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
