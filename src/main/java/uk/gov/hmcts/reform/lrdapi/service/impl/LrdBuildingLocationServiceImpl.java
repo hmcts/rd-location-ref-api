@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.CourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
@@ -172,10 +172,10 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .build();
     }
 
-    private Set<CourtVenueResponse> getCourtVenueResponses(Set<CourtVenue> courtVenues) {
+    private Set<LrdCourtVenueResponse> getCourtVenueResponses(Set<CourtVenue> courtVenues) {
         return courtVenues
             .stream()
-            .map(CourtVenueResponse::new)
+            .map(LrdCourtVenueResponse::new)
             .collect(Collectors.toUnmodifiableSet());
     }
 
