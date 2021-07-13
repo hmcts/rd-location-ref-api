@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -52,9 +54,11 @@ public class CourtType implements Serializable {
     private LocalDateTime lastUpdated;
 
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "courtType")
+    @Fetch(FetchMode.SUBSELECT)
     private List<CourtVenue> courtVenues;
 
     @OneToMany(targetEntity = CourtTypeServiceAssoc.class, mappedBy = "courtType")
+    @Fetch(FetchMode.SUBSELECT)
     private List<CourtTypeServiceAssoc> courtTypeServiceAssocs;
 
 }

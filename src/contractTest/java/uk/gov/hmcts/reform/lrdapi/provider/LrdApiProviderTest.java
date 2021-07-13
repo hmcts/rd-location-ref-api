@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.nonNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -100,7 +101,7 @@ public class LrdApiProviderTest {
         System.setProperty("pact.verifier.publishResults", "true");
         testTarget.setControllers(
             lrdApiController, lrdCourtVenueController);
-        if (context != null) {
+        if (nonNull(context)) {
             context.setTarget(testTarget);
         }
 
