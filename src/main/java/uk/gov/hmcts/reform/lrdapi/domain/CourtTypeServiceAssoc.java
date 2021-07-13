@@ -15,6 +15,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity(name = "court_type_service_assoc")
@@ -28,8 +29,13 @@ public class CourtTypeServiceAssoc implements Serializable {
     @Size(max = 16)
     private String courtTypeServiceAssocId;
 
+    @Column(name = "service_code")
+    @NotNull
+    private String serviceCode;
+
     @ManyToOne
-    @JoinColumn(name = "service_code",referencedColumnName = "service_code")
+    @JoinColumn(name = "service_code",referencedColumnName = "service_code", insertable = false,
+        updatable = false, nullable = false)
     private Service service;
 
     @ManyToOne

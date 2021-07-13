@@ -99,7 +99,7 @@ public class LrdCourtVenueResponse implements Serializable {
             this.courtTypeId = courtVenue.getCourtType().getCourtTypeId();
             this.courtType = courtVenue.getCourtType().getCourtType();
             this.dxAddress = courtVenue.getDxAddress();
-            this.epimsId = courtVenue.getBuildingLocation().getEpimmsId();
+            this.epimsId = courtVenue.getEpimmsId();
             this.openForPublic = (courtVenue.getOpenForPublic()) ? "YES" : "NO";
             this.phoneNumber = courtVenue.getPhoneNumber();
             this.welshCourtAddress = courtVenue.getWelshCourtAddress();
