@@ -20,6 +20,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -96,7 +97,14 @@ public class LrdApiClient {
     public Object findRegionDetailsByDescription(String region, Class expectedClass) throws
         JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(
-            APP_BASE_PATH + "/region?region={region}", expectedClass, region);
+            APP_BASE_PATH + "/regions?region={region}", expectedClass, region);
+        return mapRegionResponse(responseEntity,expectedClass);
+    }
+
+    public Object findRegionDetailsById(String regionId, Class expectedClass) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity = getRequest(
+            APP_BASE_PATH + "/regions?regionId={regionId}", expectedClass, regionId);
         return mapRegionResponse(responseEntity,expectedClass);
     }
 
@@ -128,7 +136,8 @@ public class LrdApiClient {
 
         HttpStatus status = responseEntity.getStatusCode();
         if (status.is2xxSuccessful()) {
-            return objectMapper.convertValue(responseEntity.getBody(), expectedClass);
+            return Arrays.asList((LrdRegionResponse[]) objectMapper.convertValue(
+                responseEntity.getBody(), expectedClass));
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
