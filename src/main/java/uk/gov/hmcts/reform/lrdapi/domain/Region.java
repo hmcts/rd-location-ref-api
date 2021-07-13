@@ -45,13 +45,14 @@ public class Region implements Serializable {
     private LocalDateTime updatedTime;
 
     @Column(name = "api_enabled")
-    @Fetch(SUBSELECT)
     private boolean apiEnabled;
 
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "region")
+    @Fetch(SUBSELECT)
     private Set<BuildingLocation> buildingLocationSet;
 
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "region")
+    @Fetch(SUBSELECT)
     private Set<CourtVenue> courtVenueSet;
 
     public Region(String regionId, String description, String welshDescription) {
