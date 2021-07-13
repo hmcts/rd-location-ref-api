@@ -56,7 +56,7 @@ public class RegionServiceImpl implements RegionService {
     public List<LrdRegionResponse> retrieveRegionByRegionId(String regionId) {
         isRegionIdParamValid(regionId);
 
-        //Check if Param value provided is 'ALL' - if so, retrieve all Regions except National
+        //Check if Param value provided is 'ALL'
         if (regionId.strip().equalsIgnoreCase(ALL)) {
             return retrieveAllRegions(() -> regionRepository.findAll());
         }
@@ -76,10 +76,8 @@ public class RegionServiceImpl implements RegionService {
 
         List<Region> regions = regionRepository.findByRegionIdIn(regionsIdList);
 
-
         handleIfRegionsEmpty(
-            () -> isEmpty(regions), "No Region(s) found with the given Region ID: " + regionsIdList
-        );
+            () -> isEmpty(regions), "No Region(s) found with the given Region ID: " + regionsIdList);
 
         return generateResponseList(regions);
     }
