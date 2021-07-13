@@ -78,4 +78,9 @@ public class Service implements Serializable {
     @ManyToOne
     @JoinColumn(name = "sub_business_area_id", nullable = false, insertable = false, updatable = false)
     private OrgSubBusinessArea orgSubBusinessArea;
+
+    @OneToMany(targetEntity = CourtTypeServiceAssoc.class, mappedBy = "service")
+    @Fetch(FetchMode.SUBSELECT)
+    private List<CourtTypeServiceAssoc> courtTypeServiceAssocs;
+
 }
