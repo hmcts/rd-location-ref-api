@@ -10,6 +10,9 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -37,36 +40,63 @@ public class RegionServiceImplTest {
     }
 
     @Test
-    public void testRetrieveRegionByRegionDescription() {
-        when(regionRepositoryMock.findByDescriptionIgnoreCase(any())).thenReturn(regionMock);
+    @SuppressWarnings("unchecked")
+    public void testRetrieveRegionDetailsById() {
+        when(regionRepositoryMock.findByRegionIdIn(any())).thenReturn(asList(regionMock));
 
-        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription("London");
+        List<LrdRegionResponse> response =
+            (List<LrdRegionResponse>) regionService.retrieveRegionDetails("2", "");
 
         assertThat(response).isNotNull();
-        assertThat(response.getRegionId()).isEqualTo("2");
-        assertThat(response.getDescription()).isEqualTo("London");
-        assertThat(response.getWelshDescription()).isEqualTo("Llundain");
+        assertThat(response.get(0).getRegionId()).isEqualTo("2");
+        assertThat(response.get(0).getDescription()).isEqualTo("London");
+        assertThat(response.get(0).getWelshDescription()).isEqualTo("Llundain");
 
-        verify(regionRepositoryMock, times(1)).findByDescriptionIgnoreCase("London");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testRetrieveRegionDetailsByDescription() {
+        when(regionRepositoryMock.findByRegionIdIn(any())).thenReturn(asList(regionMock));
+
+        List<LrdRegionResponse> response =
+            (List<LrdRegionResponse>) regionService.retrieveRegionDetails("2", "");
+
+        assertThat(response).isNotNull();
+        assertThat(response.get(0).getRegionId()).isEqualTo("2");
+        assertThat(response.get(0).getDescription()).isEqualTo("London");
+        assertThat(response.get(0).getWelshDescription()).isEqualTo("Llundain");
+
+        verify(regionRepositoryMock, times(1)).findByRegionIdIn(any());
+    }
+
+    @Test
+    public void testRetrieveRegionByRegionDescription() {
+        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any())).thenReturn(asList(regionMock));
+
+        List<LrdRegionResponse> response = regionService.retrieveRegionByRegionDescription("London");
+
+        assertThat(response).isNotNull();
+        assertThat(response.get(0).getRegionId()).isEqualTo("2");
+        assertThat(response.get(0).getDescription()).isEqualTo("London");
+        assertThat(response.get(0).getWelshDescription()).isEqualTo("Llundain");
+
+        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
     }
 
     @Test
     public void testRetrieveRegionByRegionDescriptionCaseInsensitive() {
-        when(regionRepositoryMock.findByDescriptionIgnoreCase(any())).thenReturn(regionMock);
+        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any())).thenReturn(asList(regionMock));
 
-        LrdRegionResponse response = regionService.retrieveRegionByRegionDescription("LoNdOn");
+        List<LrdRegionResponse> response = regionService.retrieveRegionByRegionDescription("LoNdOn");
 
         assertThat(response).isNotNull();
-        assertThat(response.getRegionId()).isEqualTo("2");
-        assertThat(response.getDescription()).isEqualTo("London");
-        assertThat(response.getWelshDescription()).isEqualTo("Llundain");
 
-        verify(regionRepositoryMock, times(1)).findByDescriptionIgnoreCase("LoNdOn");
+        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void testRetrieveRegionByRegionDescriptionThrows404ForUnknownDescription() {
         regionService.retrieveRegionByRegionDescription("Unknown Description");
     }
-
 }
