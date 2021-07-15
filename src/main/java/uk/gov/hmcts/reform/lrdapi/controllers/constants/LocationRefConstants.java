@@ -42,4 +42,11 @@ public class LocationRefConstants {
     public static final String EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR = "Invalid service code. "
         + "Please provide service code without special characters";
 
+    public static final String LD_FLAG = "lrd_location_api";
+    public static final String NO_COURT_VENUES_FOUND_FOR_GIVEN_INPUT =
+        "No court venues found for the value provided: %s";
+
+    public static final String NO_COURT_VENUES_FOUND =
+        "There are no court venues found";
+
 }

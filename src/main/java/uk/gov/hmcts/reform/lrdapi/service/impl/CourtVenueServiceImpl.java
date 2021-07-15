@@ -2,22 +2,42 @@ package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
+import java.util.List;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.logging.log4j.util.Strings.isBlank;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_GIVEN_INPUT;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 
 @Slf4j
 @Service
@@ -25,6 +45,12 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Autowired
     CourtTypeServiceAssocRepository courtTypeServiceAssocRepository;
+
+    @Autowired
+    CourtVenueRepository courtVenueRepository;
+
+    @Value("${loggingComponentName}")
+    private String loggingComponentName;
 
     @Override
     public LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode) {
@@ -46,6 +72,71 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         return new LrdCourtVenuesByServiceCodeResponse(courtType,serviceCodeIgnoreCase);
 
+    }
+
+    @Override
+    public Set<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds) {
+        String id;
+        if (isNotBlank(epimmsIds)) {
+            return retrieveCourtVenuesByEpimmsId(epimmsIds);
+        } else {
+            return getAllCourtVenues(() -> courtVenueRepository.findAll());
+        }
+    }
+
+    private Set<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
+        log.info("{} : Obtaining court venue for epimms id(s): {}", loggingComponentName, epimmsId);
+        if (epimmsId.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
+            return getAllCourtVenues(() -> courtVenueRepository.findAll());
+        }
+        List<String> epimsIdList = checkIfValidCsvIdentifiersAndReturnList(
+            epimmsId,
+            EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
+        if (isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
+            return getAllCourtVenues(() -> courtVenueRepository.findAll());
+        }
+        checkForInvalidIdentifiersAndRemoveFromIdList(
+            epimsIdList,
+            ALPHA_NUMERIC_REGEX, log,
+            loggingComponentName,
+            EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
+
+        List<CourtVenue> courtVenues = courtVenueRepository.findByEpimmsIdIn(epimsIdList);
+
+        handleIfCourtVenuesEmpty(
+            () -> isEmpty(courtVenues),
+            NO_COURT_VENUES_FOUND_FOR_GIVEN_INPUT,
+            epimsIdList.toString()
+        );
+
+        return getCourtVenueListResponse(courtVenues);
+    }
+
+    private Set<LrdCourtVenueResponse> getAllCourtVenues(
+        Supplier<List<CourtVenue>> buildingLocationSupplier) {
+        List<CourtVenue> buildingLocations = buildingLocationSupplier.get();
+        handleIfCourtVenuesEmpty(() -> isEmpty(buildingLocations), NO_COURT_VENUES_FOUND, null);
+        return getCourtVenueListResponse(buildingLocations);
+    }
+
+    private Set<LrdCourtVenueResponse> getCourtVenueListResponse(
+        List<CourtVenue> courtVenues) {
+        return courtVenues
+            .stream()
+            .map(LrdCourtVenueResponse::new)
+            .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private void handleIfCourtVenuesEmpty(BooleanSupplier buildingLocationResponseVerifier,
+                                          String noLocationsMsg,
+                                          String id) {
+        if (buildingLocationResponseVerifier.getAsBoolean()) {
+            noLocationsMsg = (isNotBlank(id)) ? String.format(noLocationsMsg, id) : noLocationsMsg;
+            log.error("{} : {}",loggingComponentName, noLocationsMsg);
+            throw new ResourceNotFoundException(noLocationsMsg);
+        }
     }
 
     public static void validateServiceCode(String serviceCode) {

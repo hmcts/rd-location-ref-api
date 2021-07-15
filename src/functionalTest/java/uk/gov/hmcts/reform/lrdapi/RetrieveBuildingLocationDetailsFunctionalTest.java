@@ -24,13 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctionalTest {
 
     private static final String mapKey = "LrdApiController.retrieveBuildingLocationDetails";
+    private static final String path = "/building-locations";
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_WithStatusCode_200() throws JsonProcessingException {
         final var response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833",
-                LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833",
+                LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -38,8 +39,8 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_NoEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
         final var response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, null,
-                                                                          LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
+                                                                          LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -47,8 +48,8 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_MultipleEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
         final var response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=815833"
-                + ",219164",LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833"
+                + ",219164",LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -56,8 +57,8 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_AllEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
         final var response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK, "?epimms_id=ALL",
-                                                                          LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=ALL",
+                                                                          LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -65,9 +66,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocations_WithStatusCode_404() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND,
                                                                           "?epimms_id=no_epimms_id",
-                                                                          LrdBuildingLocationResponse[].class);
+                                                                          LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -75,8 +76,8 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = false)
     public void shouldNotRetrieveBuildingLocations_WhenToggleOff_WithStatusCode_403() throws JsonProcessingException {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN, "1",
-                                                                          LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.FORBIDDEN, "1",
+                                                                          LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -84,7 +85,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_UnauthorizedDueToNoBearerToken_ShouldReturnStatusCode401() {
         Response response =
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam_NoBearerToken("1");
+            lrdApiClient.retrieveResponseForGivenRequest_NoBearerToken("1", path);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -94,7 +95,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_UnauthorizedDueToNoS2SToken_ShouldReturnStatusCode401() {
         Response response =
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam_NoS2SToken("1");
+            lrdApiClient.retrieveResponseForGivenRequest_NoS2SToken("1", path);
 
         assertThat(response).isNotNull();
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -105,9 +106,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void retrieveBuildingLocationsForValidBuildingName_WithStatusCode_200() {
         final var response = (LrdBuildingLocationResponse)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
+                .retrieveResponseForGivenRequest(HttpStatus.OK,
                                "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE",
-                                                                          LrdBuildingLocationResponse.class);
+                                                                          LrdBuildingLocationResponse.class, path);
         assertThat(response).isNotNull();
     }
 
@@ -115,9 +116,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocationsForInValidBuildingName_WithStatusCode_404() {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND,
                                                                           "?building_location_name=Invalid",
-                                                                          LrdBuildingLocationResponse.class);
+                                                                          LrdBuildingLocationResponse.class, path);
         assertThat(response).isNotNull();
     }
 
@@ -126,9 +127,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void shouldNotRetrieveBuildingLocationsForGivenBuildingName_WhenToggleOff_WithStatusCode_403() {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN,
+                .retrieveResponseForGivenRequest(HttpStatus.FORBIDDEN,
                              "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE",
-                                                                          LrdBuildingLocationResponse.class);
+                                                                          LrdBuildingLocationResponse.class, path);
         assertThat(response).isNotNull();
     }
 
@@ -137,9 +138,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void retrieveBuildingLocationsForValidRegionId_WithStatusCode_200() {
         final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
+                .retrieveResponseForGivenRequest(HttpStatus.OK,
                                                                   "?region_id=3",
-                                                                  LrdBuildingLocationResponse[].class);
+                                                                  LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -147,9 +148,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocationsForNonExistentRegionId_WithStatusCode_404() {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND,
                                                                           "?region_id=100000000",
-                                                                          LrdBuildingLocationResponse[].class);
+                                                                          LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -158,9 +159,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void shouldNotRetrieveBuildingLocationsForGivenRegionId_WhenToggleOff_WithStatusCode_403() {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN,
+                .retrieveResponseForGivenRequest(HttpStatus.FORBIDDEN,
                                                                   "?region_id=1",
-                                                                  LrdBuildingLocationResponse.class);
+                                                                  LrdBuildingLocationResponse.class, path);
         assertThat(response).isNotNull();
     }
 
@@ -169,9 +170,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void retrieveBuildingLocationsForValidClusterId_WithStatusCode_200() {
         final var response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.OK,
+                .retrieveResponseForGivenRequest(HttpStatus.OK,
                                                                   "?cluster_id=9",
-                                                                  LrdBuildingLocationResponse[].class);
+                                                                  LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
     }
 
@@ -179,9 +180,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldNotRetrieveBuildingLocationsForNonExistentClusterId_WithStatusCode_404() {
         ErrorResponse response = (ErrorResponse)
-            lrdApiClient.retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.NOT_FOUND,
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND,
                                                                           "?cluster_id=10000000",
-                                                                          LrdBuildingLocationResponse.class);
+                                                                          LrdBuildingLocationResponse.class, path);
         assertThat(response).isNotNull();
     }
 
@@ -190,9 +191,9 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     public void shouldNotRetrieveBuildingLocationsForGivenClusterId_WhenToggleOff_WithStatusCode_403() {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient
-                .retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus.FORBIDDEN,
+                .retrieveResponseForGivenRequest(HttpStatus.FORBIDDEN,
                                                                   "?cluster_id=1",
-                                                                  LrdBuildingLocationResponse.class);
+                                                                  LrdBuildingLocationResponse.class, path);
         assertThat(response).isNotNull();
     }
 

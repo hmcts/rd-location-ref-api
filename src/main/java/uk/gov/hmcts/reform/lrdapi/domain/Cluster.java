@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Size;
@@ -39,9 +42,11 @@ public class Cluster implements Serializable {
     private LocalDateTime createdTime;
 
     @OneToMany(targetEntity = BuildingLocation.class, mappedBy = "cluster")
+    @Fetch(FetchMode.SUBSELECT)
     private Set<BuildingLocation> buildingLocations = new HashSet<>();
 
     @OneToMany(targetEntity = CourtVenue.class, mappedBy = "cluster")
+    @Fetch(FetchMode.SUBSELECT)
     private Set<CourtVenue> courtVenues = new HashSet<>();
 
     @LastModifiedDate

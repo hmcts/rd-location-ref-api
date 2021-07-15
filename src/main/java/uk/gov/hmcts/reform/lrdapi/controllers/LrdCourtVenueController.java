@@ -12,16 +12,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 
 @RequestMapping(
-    path = "/refdata/location/court-venue"
+    path = "/refdata/location/court-venues"
 )
 @RestController
 @Slf4j
@@ -29,6 +32,47 @@ public class LrdCourtVenueController {
 
     @Autowired
     CourtVenueService courtVenueService;
+
+    @ApiOperation(
+        value = "This API will retrieve Court Venues for the request provided",
+        notes = "No roles required to access this API",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved list of Court Venues for the request provided",
+            response = LrdCourtVenueResponse[].class
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No Court Venues found with the given Service Code"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
+    })
+    @GetMapping(
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retrieveCourtVenues(
+        @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds) {
+        checkIfSingleValuePresent(epimmsIds);
+        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds);
+        return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
+    }
 
     @ApiOperation(
         value = "This API will retrieve Court Venues for given Service Code",

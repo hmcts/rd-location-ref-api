@@ -87,10 +87,10 @@ public class LrdApiClient {
         return mapApiResponse(responseEntity,expectedClass);
     }
 
-    public Object findBuildingLocationByGivenQueryParam(String queryParam, Class<?> clazz)
+    public Object retrieveResponseForGivenRequest(String queryParam, Class<?> clazz, String path)
         throws JsonProcessingException {
         ResponseEntity<Object> responseEntity =
-            getRequest(APP_BASE_PATH + "/building-locations" + queryParam, clazz, "");
+            getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
         return mapBuildingLocationResponse(responseEntity, clazz);
     }
 

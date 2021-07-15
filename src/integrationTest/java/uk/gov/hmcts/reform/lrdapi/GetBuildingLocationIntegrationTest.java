@@ -35,6 +35,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     private static final String TWO_STR = "TWO";
     private static final String ALL_OPEN_STR = "ALL_OPEN";
     public static final String HTTP_STATUS_STR = "http_status";
+    private static final String path = "/building_locations";
 
     @Test
     @SuppressWarnings("unchecked")
@@ -42,8 +43,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789",
-                                                               LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789",
+                                                         LrdBuildingLocationResponse[].class, path
+            );
 
         assertNotNull(response);
         responseVerification(response, ONE_STR);
@@ -55,8 +57,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789,123456",
-                                                               LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789,123456",
+                                                         LrdBuildingLocationResponse[].class, path
+            );
 
         assertNotNull(response);
         responseVerification(response, TWO_STR);
@@ -68,8 +71,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789,ALL",
-                                                               LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789,ALL",
+                                                         LrdBuildingLocationResponse[].class, path
+            );
 
         assertNotNull(response);
         responseVerification(response, LocationRefConstants.ALL);
@@ -81,8 +85,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=",
-                                                               LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=",
+                                                         LrdBuildingLocationResponse[].class, path
+            );
 
         assertNotNull(response);
         responseVerification(response, ALL_OPEN_STR);
@@ -94,8 +99,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         throws JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id= 123456789 ",
-                                                               LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id= 123456789 ",
+                                                         LrdBuildingLocationResponse[].class, path
+            );
 
         assertNotNull(response);
         responseVerification(response, ONE_STR);
@@ -107,7 +113,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=-1111", ErrorResponse.class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=-1111", ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -119,7 +125,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=!@£@$", ErrorResponse.class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=!@£@$", ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -131,7 +137,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=*", LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=*", LrdBuildingLocationResponse[].class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -143,8 +149,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789, *",
-                                                               LrdBuildingLocationResponse[].class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789, *",
+                                                         LrdBuildingLocationResponse[].class, path
+            );
 
         assertNotNull(response);
         responseVerification(response, ONE_STR);
@@ -156,7 +163,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=,,", ErrorResponse.class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=,,", ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
@@ -168,7 +175,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789,,", ErrorResponse.class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789,,", ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
@@ -186,7 +193,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(false);
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findBuildingLocationByGivenQueryParam("?epimms_id=123456789", ErrorResponse.class);
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789", ErrorResponse.class, path);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
@@ -199,9 +206,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         LrdBuildingLocationResponse actualResponse =
             (LrdBuildingLocationResponse) lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?building_location_name=Building Location A",
-                    LrdBuildingLocationResponse.class);
+                    LrdBuildingLocationResponse.class, path
+                );
 
         assertNotNull(actualResponse);
         assertEquals(actualResponse, expectedResponse);
@@ -213,9 +221,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?building_location_name=Invalid",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
@@ -227,9 +236,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?building_location_name=Building Location A, B",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -248,8 +258,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
-                    "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE", ErrorResponse.class);
+                .retrieveResponseForGivenRequest(
+                    "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE", ErrorResponse.class, path);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
@@ -262,9 +272,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?cluster_id=01234",
-                    LrdBuildingLocationResponse[].class);
+                    LrdBuildingLocationResponse[].class, path
+                );
 
         assertNotNull(actualResponse);
         responseVerification(actualResponse, LocationRefConstants.ALL);
@@ -277,9 +288,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?cluster_id= 01234 ",
-                    LrdBuildingLocationResponse[].class);
+                    LrdBuildingLocationResponse[].class, path
+                );
 
         assertNotNull(actualResponse);
         responseVerification(actualResponse, LocationRefConstants.ALL);
@@ -291,9 +303,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?cluster_id=1,2",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -305,9 +318,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?cluster_id=Invalid",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -319,9 +333,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?cluster_id=25",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
@@ -333,9 +348,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?cluster_id=25000000000",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
@@ -354,8 +370,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
-                    "?cluster_id=1", ErrorResponse.class);
+                .retrieveResponseForGivenRequest(
+                    "?cluster_id=1", ErrorResponse.class, path);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
@@ -368,9 +384,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?region_id=1",
-                    LrdBuildingLocationResponse[].class);
+                    LrdBuildingLocationResponse[].class, path
+                );
 
         assertNotNull(actualResponse);
         responseVerification(actualResponse, ONE_STR);
@@ -383,9 +400,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         List<LrdBuildingLocationResponse> actualResponse =
             (List<LrdBuildingLocationResponse>) lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?region_id= 1 ",
-                    LrdBuildingLocationResponse[].class);
+                    LrdBuildingLocationResponse[].class, path
+                );
 
         assertNotNull(actualResponse);
         responseVerification(actualResponse, ONE_STR);
@@ -397,9 +415,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?region_id=1,2",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -411,9 +430,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?region_id=Invalid",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
@@ -425,9 +445,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?region_id=25",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
@@ -439,9 +460,10 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
+                .retrieveResponseForGivenRequest(
                     "?region_id=25000000000",
-                    ErrorResponse.class);
+                    ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.NOT_FOUND);
@@ -460,8 +482,8 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam(
-                    "?region_id=1", ErrorResponse.class);
+                .retrieveResponseForGivenRequest(
+                    "?region_id=1", ErrorResponse.class, path);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
@@ -475,8 +497,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam("?building_location_name=test&epimms_id=123456789",
-                                                       ErrorResponse.class);
+                .retrieveResponseForGivenRequest("?building_location_name=test&epimms_id=123456789",
+                                                 ErrorResponse.class, path
+                );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
@@ -489,8 +512,9 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
             lrdApiClient
-                .findBuildingLocationByGivenQueryParam("?building_location_name=&epimms_id=",
-                                                       LrdBuildingLocationResponse[].class);
+                .retrieveResponseForGivenRequest("?building_location_name=&epimms_id=",
+                                                 LrdBuildingLocationResponse[].class, path
+                );
 
         assertNotNull(response);
         responseVerification(response, ALL_OPEN_STR);
