@@ -3,12 +3,12 @@ package uk.gov.hmcts.reform.lrdapi.service;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 
-import java.util.Set;
+import java.util.List;
 
 public interface CourtVenueService {
 
     LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode);
 
-    Set<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, Integer regionId,
-                                                         Integer clusterId);
+    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, Integer regionId,
+                                                          Integer clusterId);
 }

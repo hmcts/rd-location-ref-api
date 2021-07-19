@@ -124,8 +124,8 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789&court_type_id=1" +
-                                                             "&cluster_id=1",
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789&court_type_id=1"
+                                                             + "&cluster_id=1",
                                                          ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);

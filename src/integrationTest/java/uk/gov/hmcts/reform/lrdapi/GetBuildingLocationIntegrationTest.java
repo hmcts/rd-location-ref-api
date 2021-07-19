@@ -39,7 +39,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_ValidepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -53,7 +53,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_TwoValidEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_TwoValidepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -67,7 +67,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_OneValidEpimsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -81,7 +81,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NoEpimsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_NoepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -95,7 +95,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void getBuildLocations_ValidEpimsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
+    public void getBuildLocations_ValidepimmsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
         throws JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -109,7 +109,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_InvalidEpimsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_InvalidepimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -121,7 +121,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NonStandardCharsEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_NonStandardCharsepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -133,7 +133,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_AsteriskEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_AsteriskepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -145,7 +145,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_AsteriskAlongWithValidEpimsIdGiven_ReturnValidResponseAndStatusCode200() throws
+    public void retrieveBuildLocations_AsteriskAlongWithValidepimmsIdGiven_ReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -159,7 +159,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_OnlyTwoCommaGivenAsEpimsId_ReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_OnlyTwoCommaGivenAsepimmsId_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -171,7 +171,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_TwoCommaWithValidEpimsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    public void retrieveBuildLocations_TwoCommaWithValidepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -550,7 +550,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic("YES")
-            .epimsId("123456789")
+            .epimmsId("123456789")
             .regionId("1")
             .region("National")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
@@ -564,7 +564,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 2")
             .openForPublic("YES")
-            .epimsId("123456789")
+            .epimmsId("123456789")
             .regionId("1")
             .region("National")
             .clusterId("1")
@@ -580,7 +580,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 3")
             .openForPublic("YES")
-            .epimsId("123456789")
+            .epimmsId("123456789")
             .regionId("2")
             .region("London")
             .clusterId("1")
@@ -620,7 +620,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 8")
             .openForPublic("YES")
-            .epimsId("123456")
+            .epimmsId("123456")
             .regionId("2")
             .region("London")
             .clusterId("2")
@@ -636,7 +636,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 9")
             .openForPublic("YES")
-            .epimsId("123456")
+            .epimmsId("123456")
             .regionId("1")
             .region("National")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 9")
@@ -650,7 +650,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 10")
             .openForPublic("YES")
-            .epimsId("123456")
+            .epimmsId("123456")
             .regionId("1")
             .region("National")
             .clusterId("2")
@@ -666,7 +666,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("County Court")
             .siteName("Aberdeen Tribunal Hearing Centre 11")
             .openForPublic("YES")
-            .epimsId("123456")
+            .epimmsId("123456")
             .regionId("1")
             .region("National")
             .clusterId("2")
@@ -713,7 +713,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 4")
             .openForPublic("YES")
-            .epimsId("epimmsId1234")
+            .epimmsId("epimmsId1234")
             .regionId("1")
             .region("National")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 4")
@@ -727,7 +727,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 5")
             .openForPublic("YES")
-            .epimsId("epimmsId1234")
+            .epimmsId("epimmsId1234")
             .regionId("1")
             .region("National")
             .clusterId("1")
@@ -743,7 +743,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 6")
             .openForPublic("YES")
-            .epimsId("epimmsId1234")
+            .epimmsId("epimmsId1234")
             .regionId("2")
             .region("London")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 6")
@@ -757,7 +757,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 7")
             .openForPublic("YES")
-            .epimsId("epimmsId1234")
+            .epimmsId("epimmsId1234")
             .regionId("2")
             .region("London")
             .clusterId("2")

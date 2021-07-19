@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
-import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -58,7 +57,7 @@ public class LrdCourtVenueController {
         ),
         @ApiResponse(
             code = 404,
-            message = "No Court Venues found with the given Service Code"
+            message = "No Court Venues found for the request provided"
         ),
         @ApiResponse(
             code = 500,

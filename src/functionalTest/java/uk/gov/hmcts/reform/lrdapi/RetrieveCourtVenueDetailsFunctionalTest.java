@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +42,7 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
         assertThat(response).isNotEmpty();
         boolean expected = Arrays
             .stream(response)
-            .map(LrdCourtVenueResponse::getEpimsId)
+            .map(LrdCourtVenueResponse::getEpimmsId)
             .allMatch("815833"::equals);
         assertTrue(expected);
     }
@@ -55,7 +56,7 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
         assertThat(response).isNotEmpty();
         boolean expected = Arrays
             .stream(response)
-            .map(LrdCourtVenueResponse::getEpimsId)
+            .map(LrdCourtVenueResponse::getEpimmsId)
             .allMatch("815833,219164"::contains);
         assertTrue(expected);
     }
@@ -92,7 +93,7 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
 
         assertTrue(isEveryIdMatched);
     }
-//
+
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void shouldRetrieveCourtVenues_For_Given_CourtType_Id_WithStatusCode_200() throws JsonProcessingException {
@@ -126,8 +127,6 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-//    @ParameterizedTest
-//    @ValueSource(strings = {"epimms_id", "region_id"})
     public void shouldReturn404_WhenNoEpimmsIdFound() {
         final var response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?epimms_id=000000",
