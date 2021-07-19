@@ -54,7 +54,7 @@ public class ValidationUtils {
      */
     public static void checkIfSingleValuePresent(String... params) {
         long requestParamSize = Arrays.stream(params)
-            .filter(StringUtils::isNotBlank)
+            .filter( p -> StringUtils.isNotBlank(p) && !p.equals("null") )
             .count();
         if (requestParamSize > 1) {
             throw new InvalidRequestException(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, params.length,

@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,19 +59,6 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR,HttpStatus.BAD_REQUEST);
     }
 
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void retrieveBuildLocations_AsteriskAlongWithValidEpimsIdGiven_ReturnValidResponseAndStatusCode200() throws
-//        JsonProcessingException {
-//
-//        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
-//            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789, *",
-//                                                         LrdCourtVenueResponse[].class, path);
-//
-//        assertNotNull(response);
-//        responseVerification(response, ONE_STR);
-//    }
-
     @Test
     @SuppressWarnings("unchecked")
     public void shouldReturn400ForOnlyTwoCommaGivenAsEpimsId() throws
@@ -97,52 +83,52 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
     }
 
-//    @Test
-//    public void shouldReturn400WhenRegionIdIsString() throws
-//        JsonProcessingException {
-//
-//        List<LrdCourtVenuenResponse> response = (List<LrdCourtVenuenResponse>)
-//            lrdApiClient.findCourtVenuesByGivenQueryParam("?region_id=123456789",
-//                                                               LrdBuildingLocationResponse[].class);
-//
-//        assertNotNull(response);
-//        responseVerification(response, ONE_STR);
-//    }
-//
-//    @Test
-//    public void shouldReturn400WhenClusterIdIsString() throws
-//        JsonProcessingException {
-//
-//        List<LrdCourtVenuenResponse> response = (List<LrdCourtVenuenResponse>)
-//            lrdApiClient.findCourtVenuesByGivenQueryParam("?cluster_id=123456789",
-//                                                          LrdBuildingLocationResponse[].class);
-//
-//        assertNotNull(response);
-//        responseVerification(response, ONE_STR);
-//    }
-//
-//    @Test
-//    public void shouldReturn400WhenCourtTypeIdIsString() throws
-//        JsonProcessingException {
-//
-//        List<LrdCourtVenuenResponse> response = (List<LrdCourtVenuenResponse>)
-//            lrdApiClient.findCourtVenuesByGivenQueryParam("?cluster_id=123456789",
-//                                                          LrdBuildingLocationResponse[].class);
-//
-//        assertNotNull(response);
-//        responseVerification(response, ONE_STR);
-//    }
-//
-//
-//    @Test
-//    public void shouldReturn400WhenMultipleQueryParamsPassed() throws
-//        JsonProcessingException {
-//
-//        List<LrdCourtVenuenResponse> response = (List<LrdCourtVenuenResponse>)
-//            lrdApiClient.findCourtVenuesByGivenQueryParam("?cluster_id=123456789",
-//                                                          LrdBuildingLocationResponse[].class);
-//
-//        assertNotNull(response);
-//        responseVerification(response, ONE_STR);
-//    }
+    @Test
+    public void shouldReturn400WhenRegionIdIsString() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?region_id=test_region", ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void shouldReturn400WhenClusterIdIsString() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?cluster_id=test_cluster",
+                                                         ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    public void shouldReturn400WhenCourtTypeIdIsString() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?court_type_id=test_court_type",
+                                                         ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @Test
+    public void shouldReturn400WhenMultipleQueryParamsPassed() throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789&court_type_id=1" +
+                                                             "&cluster_id=1",
+                                                         ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
 }

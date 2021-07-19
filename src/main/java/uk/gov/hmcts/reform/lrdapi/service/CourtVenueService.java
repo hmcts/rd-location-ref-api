@@ -9,5 +9,6 @@ public interface CourtVenueService {
 
     LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode);
 
-    Set<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId);
+    Set<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, Integer regionId,
+                                                         Integer clusterId);
 }

@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -32,9 +33,11 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_GIVEN_INPUT;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
@@ -75,26 +78,38 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
-    public Set<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds) {
+    public Set<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId, Integer regionId,
+                                                                Integer clusterId) {
         String id;
         if (isNotBlank(epimmsIds)) {
             return retrieveCourtVenuesByEpimmsId(epimmsIds);
-        } else {
-            return getAllCourtVenues(() -> courtVenueRepository.findAll());
+        } else if (!Objects.isNull(courtTypeId)) {
+            return getAllCourtVenues(() -> courtVenueRepository.findByCourtTypeId(courtTypeId.toString()),
+                                     courtTypeId.toString(), NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID);
+        }
+        else if (!Objects.isNull(regionId)) {
+            return getAllCourtVenues(() -> courtVenueRepository.findByRegionId(regionId.toString()),
+                                     regionId.toString(), NO_COURT_VENUES_FOUND_FOR_REGION_ID);
+        }
+        else if (!Objects.isNull(clusterId)) {
+            return getAllCourtVenues(() -> courtVenueRepository.findByClusterId(clusterId.toString()),
+                                     clusterId.toString(), NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID);
+        }else {
+            return getAllCourtVenues(() -> courtVenueRepository.findAll(), null, NO_COURT_VENUES_FOUND);
         }
     }
 
     private Set<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
         log.info("{} : Obtaining court venue for epimms id(s): {}", loggingComponentName, epimmsId);
         if (epimmsId.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
-            return getAllCourtVenues(() -> courtVenueRepository.findAll());
+            return getAllCourtVenues(() -> courtVenueRepository.findAll(), null, NO_COURT_VENUES_FOUND);
         }
         List<String> epimsIdList = checkIfValidCsvIdentifiersAndReturnList(
             epimmsId,
             EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
         );
         if (isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
-            return getAllCourtVenues(() -> courtVenueRepository.findAll());
+            return getAllCourtVenues(() -> courtVenueRepository.findAll(), null, NO_COURT_VENUES_FOUND);
         }
         checkForInvalidIdentifiersAndRemoveFromIdList(
             epimsIdList,
@@ -106,18 +121,18 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         List<CourtVenue> courtVenues = courtVenueRepository.findByEpimmsIdIn(epimsIdList);
 
         handleIfCourtVenuesEmpty(
-            () -> isEmpty(courtVenues),
-            NO_COURT_VENUES_FOUND_FOR_GIVEN_INPUT,
-            epimsIdList.toString()
+            () -> isEmpty(courtVenues), NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, epimsIdList.toString()
         );
 
         return getCourtVenueListResponse(courtVenues);
     }
 
     private Set<LrdCourtVenueResponse> getAllCourtVenues(
-        Supplier<List<CourtVenue>> buildingLocationSupplier) {
+        Supplier<List<CourtVenue>> buildingLocationSupplier,
+        String id,
+        String noDataFoundMessage) {
         List<CourtVenue> buildingLocations = buildingLocationSupplier.get();
-        handleIfCourtVenuesEmpty(() -> isEmpty(buildingLocations), NO_COURT_VENUES_FOUND, null);
+        handleIfCourtVenuesEmpty(() -> isEmpty(buildingLocations), noDataFoundMessage, id);
         return getCourtVenueListResponse(buildingLocations);
     }
 
@@ -129,13 +144,13 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .collect(Collectors.toUnmodifiableSet());
     }
 
-    private void handleIfCourtVenuesEmpty(BooleanSupplier buildingLocationResponseVerifier,
-                                          String noLocationsMsg,
+    private void handleIfCourtVenuesEmpty(BooleanSupplier courtVenueResponseVerifier,
+                                          String noDataFoundMessage,
                                           String id) {
-        if (buildingLocationResponseVerifier.getAsBoolean()) {
-            noLocationsMsg = (isNotBlank(id)) ? String.format(noLocationsMsg, id) : noLocationsMsg;
-            log.error("{} : {}",loggingComponentName, noLocationsMsg);
-            throw new ResourceNotFoundException(noLocationsMsg);
+        if (courtVenueResponseVerifier.getAsBoolean()) {
+            noDataFoundMessage = (isNotBlank(id)) ? String.format(noDataFoundMessage, id) : noDataFoundMessage;
+            log.error("{} : {}",loggingComponentName, noDataFoundMessage);
+            throw new ResourceNotFoundException(noDataFoundMessage);
         }
     }
 

@@ -18,6 +18,7 @@ import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
@@ -68,9 +69,15 @@ public class LrdCourtVenueController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveCourtVenues(
-        @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds) {
-        checkIfSingleValuePresent(epimmsIds);
-        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds);
+        @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds,
+        @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
+        @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
+        @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId) {
+        //TODO
+        checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
+                                  String.valueOf(clusterId));
+        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
+                                                                                 courtTypeId, regionId, clusterId);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 

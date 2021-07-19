@@ -26,6 +26,7 @@ import javax.validation.constraints.Size;
 public class Cluster implements Serializable {
 
     @Id
+    @Column(name = "cluster_id")
     @Size(max = 16)
     private String clusterId;
 

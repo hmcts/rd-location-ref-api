@@ -12,4 +12,10 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
 //        + "on loc.epimmsId = cv.epimmsId "
 //        + "where loc.epimmsId in (:epimmsIdList)")
     List<CourtVenue> findByEpimmsIdIn(List<String> epimmsIdList);
+
+    List<CourtVenue> findByCourtTypeId(String courtTypeId);
+
+    List<CourtVenue> findByRegionId(String regionId);
+
+    List<CourtVenue> findByClusterId(String clusterId);
 }

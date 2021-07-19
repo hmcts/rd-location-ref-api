@@ -47,15 +47,23 @@ public class CourtVenue implements Serializable {
     @LastModifiedDate
     private LocalDateTime updatedTime;
 
+    @Column(name = "region_id")
+    private String regionId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id", referencedColumnName = "region_id",
+        insertable = false, updatable = false, nullable = false)
     private Region region;
 
     @Column(name = "court_type_id")
     private String courtTypeId;
 
+    @Column(name = "cluster_id")
+    private String clusterId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cluster_id")
+    @JoinColumn(name = "cluster_id", referencedColumnName = "cluster_id",
+        insertable = false, updatable = false, nullable = false)
     private Cluster cluster;
 
     private Boolean openForPublic;

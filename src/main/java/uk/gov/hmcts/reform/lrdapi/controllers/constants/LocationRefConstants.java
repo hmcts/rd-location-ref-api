@@ -43,8 +43,17 @@ public class LocationRefConstants {
         + "Please provide service code without special characters";
 
     public static final String LD_FLAG = "lrd_location_api";
-    public static final String NO_COURT_VENUES_FOUND_FOR_GIVEN_INPUT =
-        "No court venues found for the value provided: %s";
+    public static final String NO_COURT_VENUES_FOUND_FOR_REGION_ID =
+        "No court venues found for region id: %s";
+
+    public static final String NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID =
+        "No court venues found for cluster id: %s";
+
+    public static final String NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID =
+        "No court venues found for court type id: %s";
+
+    public static final String NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID =
+        "No court venues found for epimms id: %s";
 
     public static final String NO_COURT_VENUES_FOUND =
         "There are no court venues found";
