@@ -13,14 +13,11 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationRespon
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(CustomSerenityRunner.class)
 @WithTags({@WithTag("testType:Functional")})
 @ActiveProfiles("functional")
-@SuppressWarnings("unchecked")
 public class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctionalTest {
 
     private static final String mapKey = "LrdApiController.retrieveBuildingLocationDetails";
@@ -29,7 +26,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (List<LrdBuildingLocationResponse>)
+        final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833",
                 LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
@@ -38,7 +35,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_NoEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (List<LrdBuildingLocationResponse>)
+        final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
                                                                           LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
@@ -47,7 +44,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocations_MultipleEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (List<LrdBuildingLocationResponse>)
+        final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833"
                 + ",219164",LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
@@ -56,7 +53,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_AllEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (List<LrdBuildingLocationResponse>)
+        final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=ALL",
                                                                           LrdBuildingLocationResponse[].class, path);
         assertThat(response).isNotNull();
@@ -136,7 +133,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocationsForValidRegionId_WithStatusCode_200() {
-        final var response = (List<LrdBuildingLocationResponse>)
+        final var response = (LrdBuildingLocationResponse[])
             lrdApiClient
                 .retrieveResponseForGivenRequest(HttpStatus.OK,
                                                                   "?region_id=3",
@@ -168,7 +165,7 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveBuildingLocationsForValidClusterId_WithStatusCode_200() {
-        final var response = (List<LrdBuildingLocationResponse>)
+        final var response = (LrdBuildingLocationResponse[])
             lrdApiClient
                 .retrieveResponseForGivenRequest(HttpStatus.OK,
                                                                   "?cluster_id=9",

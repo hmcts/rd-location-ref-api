@@ -35,7 +35,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     private static final String TWO_STR = "TWO";
     private static final String ALL_OPEN_STR = "ALL_OPEN";
     public static final String HTTP_STATUS_STR = "http_status";
-    private static final String path = "/building_locations";
+    private static final String path = "/building-locations";
 
     @Test
     @SuppressWarnings("unchecked")

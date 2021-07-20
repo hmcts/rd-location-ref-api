@@ -111,7 +111,7 @@ public class LrdApiClient {
     public Object findCourtVenuesByServiceCode(String serviceCode, Class expectedClass) throws
         JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(
-            APP_BASE_PATH + "/court-venue/services?service_code={service_code}", expectedClass, serviceCode);
+            APP_BASE_PATH + "/court-venues/services?service_code={service_code}", expectedClass, serviceCode);
         return mapCourtVenuesByServiceCodeResponse(responseEntity,expectedClass);
     }
 

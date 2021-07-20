@@ -74,11 +74,7 @@ public class LrdApiClient {
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            if (clazz.isArray()) {
-                return response.getBody().as(clazz);
-            } else {
-                return response.getBody().as(clazz);
-            }
+            return response.getBody().as(clazz);
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
@@ -132,7 +128,7 @@ public class LrdApiClient {
 
     public Object retrieveCourtVenuesByServiceCode(HttpStatus expectedStatus, String serviceCode) {
         Response response = getMultipleAuthHeaders()
-            .get(BASE_URL + "/court-venue/services?service_code=" + serviceCode)
+            .get(BASE_URL + "/court-venues/services?service_code=" + serviceCode)
             .andReturn();
 
         response.then()
