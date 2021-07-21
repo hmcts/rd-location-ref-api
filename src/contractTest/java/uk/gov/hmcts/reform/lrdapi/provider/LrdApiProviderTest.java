@@ -32,6 +32,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.Service;
 import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
@@ -80,6 +81,9 @@ public class LrdApiProviderTest {
 
     @MockBean
     CourtTypeServiceAssocRepository courtTypeServiceAssocRepository;
+
+    @MockBean
+    CourtVenueRepository courtVenueRepository;
 
     @Autowired
     LrdApiController lrdApiController;
