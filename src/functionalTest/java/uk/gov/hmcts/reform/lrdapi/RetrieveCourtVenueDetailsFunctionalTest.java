@@ -40,11 +40,11 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
                                                          path
             );
         assertThat(response).isNotEmpty();
-        boolean expected = Arrays
+        boolean isEachIdMatched = Arrays
             .stream(response)
             .map(LrdCourtVenueResponse::getEpimmsId)
             .allMatch("815833"::equals);
-        assertTrue(expected);
+        assertTrue(isEachIdMatched);
     }
 
     @Test

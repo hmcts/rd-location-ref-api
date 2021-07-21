@@ -140,8 +140,8 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void testGetAllCourtVenuess() {
-        when(courtVenueRepository.findAll())
+    public void testGetAllCourtVenues() {
+        when(courtVenueRepository.findAllWithOpenCourtStatus())
             .thenReturn(prepareCourtVenue());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -152,7 +152,7 @@ public class CourtVenueServiceImplTest {
     @Test
     public void test_RetrieveCourtVenuesByRegionId() {
 
-        when(courtVenueRepository.findByRegionId(anyString())).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -166,7 +166,7 @@ public class CourtVenueServiceImplTest {
     @Test
     public void test_RetrieveCourtVenuesByClusterId() {
 
-        when(courtVenueRepository.findByClusterId(anyString())).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -180,7 +180,7 @@ public class CourtVenueServiceImplTest {
     @Test
     public void test_RetrieveCourtVenuesByCourtTypeId() {
 
-        when(courtVenueRepository.findByCourtTypeId(anyString())).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -198,53 +198,54 @@ public class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("123", null,  null, null));
 
         verify(courtVenueRepository, times(1)).findByEpimmsIdIn(anyList());
-        verify(courtVenueRepository, times(0)).findByRegionId(anyString());
+        verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
-            .findByClusterId(anyString());
+            .findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
-        verify(courtVenueRepository, times(0)).findByCourtTypeId(anyString());
+        verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
     }
 
     @Test
     public void test_RetrieveCourtVenuesByClusterId_NotFound() {
-        when(courtVenueRepository.findByClusterId(anyString())).thenReturn(null);
+        when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", null,  null, 1));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
-        verify(courtVenueRepository, times(0)).findByRegionId(anyString());
+        verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(1))
-            .findByClusterId(anyString());
+            .findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
-        verify(courtVenueRepository, times(0)).findByCourtTypeId(anyString());
+        verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
     }
 
     @Test
     public void test_RetrieveCourtVenuesByRegionId_NotFound() {
-        when(courtVenueRepository.findByRegionId(anyString())).thenReturn(null);
+        when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", null,  1, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
-        verify(courtVenueRepository, times(1)).findByRegionId(anyString());
+        verify(courtVenueRepository, times(1)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
-            .findByClusterId(anyString());
+            .findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
-        verify(courtVenueRepository, times(0)).findByCourtTypeId(anyString());
+        verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
     }
 
     @Test
     public void test_RetrieveCourtVenuesByCourtTypeId_NotFound() {
-        when(courtVenueRepository.findByCourtTypeId(anyString())).thenReturn(null);
+        when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", 1,  null, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
-        verify(courtVenueRepository, times(0)).findByRegionId(anyString());
+        verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
-            .findByClusterId(anyString());
+            .findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
-        verify(courtVenueRepository, times(1)).findByCourtTypeId(anyString());
+        verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
+        verify(courtVenueRepository, times(1)).findByCourtTypeIdWithOpenCourtStatus(anyString());
     }
 
 

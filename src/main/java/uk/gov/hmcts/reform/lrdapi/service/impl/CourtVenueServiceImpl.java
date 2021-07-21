@@ -82,16 +82,19 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         if (isNotBlank(epimmsIds)) {
             return retrieveCourtVenuesByEpimmsId(epimmsIds);
         } else if (!Objects.isNull(courtTypeId)) {
-            return getAllCourtVenues(() -> courtVenueRepository.findByCourtTypeId(courtTypeId.toString()),
+            return getAllCourtVenues(() -> courtVenueRepository
+                                         .findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
                                      courtTypeId.toString(), NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID);
         } else if (!Objects.isNull(regionId)) {
-            return getAllCourtVenues(() -> courtVenueRepository.findByRegionId(regionId.toString()),
+            return getAllCourtVenues(() -> courtVenueRepository.findByRegionIdWithOpenCourtStatus(regionId.toString()),
                                      regionId.toString(), NO_COURT_VENUES_FOUND_FOR_REGION_ID);
         } else if (!Objects.isNull(clusterId)) {
-            return getAllCourtVenues(() -> courtVenueRepository.findByClusterId(clusterId.toString()),
+            return getAllCourtVenues(() -> courtVenueRepository
+                                         .findByClusterIdWithOpenCourtStatus(clusterId.toString()),
                                      clusterId.toString(), NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID);
         } else {
-            return getAllCourtVenues(() -> courtVenueRepository.findAll(), null, NO_COURT_VENUES_FOUND);
+            return getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
+                                     NO_COURT_VENUES_FOUND);
         }
     }
 
