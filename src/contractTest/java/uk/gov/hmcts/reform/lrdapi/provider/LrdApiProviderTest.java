@@ -160,9 +160,7 @@ public class LrdApiProviderTest {
         region.setUpdatedTime(LocalDateTime.now());
         region.setWelshDescription("Region ABC");
 
-        CourtType courtType = new CourtType();
-        courtType.setCourtTypeId("17");
-        courtType.setCourtType("Immigration and Asylum");
+        CourtType courtType = getCourtType();
 
         CourtVenue courtVenue = CourtVenue.builder()
             .courtTypeId("17")
@@ -236,23 +234,67 @@ public class LrdApiProviderTest {
 
     @State({"Court Venues exist for the service code provided"})
     public void toReturnCourtVenuesByServiceCode() {
-        Cluster cluster = new Cluster();
-        cluster.setClusterId("456");
-        cluster.setClusterName("ClusterXYZ");
+        Cluster cluster = getCluster();
 
-        Region region = new Region();
-        region.setDescription("Region XYZ");
-        region.setRegionId("123");
+        Region region = getRegion();
 
         BuildingLocation buildingLocation = BuildingLocation.builder()
             .epimmsId("4567")
             .build();
 
-        CourtType courtType = new CourtType();
-        courtType.setCourtTypeId("17");
-        courtType.setCourtType("Immigration and Asylum");
+        CourtType courtType = getCourtType();
 
-        CourtVenue courtVenue = CourtVenue.builder()
+        CourtVenue courtVenue = getCourtVenue(cluster, region, courtType);
+
+        courtType.setCourtVenues(Collections.singletonList(courtVenue));
+
+        CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
+        courtTypeServiceAssoc.setCourtType(courtType);
+        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
+    }
+
+    @State({"Court Venues exist for the input request provided"})
+    public void toReturnCourtVenues() {
+        Cluster cluster = getCluster();
+
+        Region region = getRegion();
+
+        CourtType courtType = getCourtType();
+
+        var courtVenues = getMultipleCourtVenues(cluster, region, courtType);
+
+        courtType.setCourtVenues(courtVenues);
+
+        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(courtVenues);
+        when(courtVenueRepository.findAllWithOpenCourtStatus()).thenReturn(courtVenues);
+        when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findAll()).thenReturn(courtVenues);
+    }
+
+    private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {
+        return CourtVenue.builder()
+            .courtVenueId(1L)
+            .epimmsId("12345")
+            .siteName("siteName1")
+            .region(region)
+            .courtType(courtType)
+            .cluster(cluster)
+            .openForPublic(Boolean.TRUE)
+            .courtAddress("courtAddress1")
+            .postcode("AB EYP")
+            .phoneNumber("12232423")
+            .closedDate(LocalDateTime.now())
+            .courtLocationCode("courtLocationCode1")
+            .dxAddress("dxAddress1")
+            .courtStatus("Open")
+            .courtName("courtName1")
+            .build();
+    }
+
+    private List<CourtVenue> getMultipleCourtVenues(Cluster cluster, Region region, CourtType courtType) {
+        CourtVenue firstCourtVenue = CourtVenue.builder()
             .courtVenueId(1L)
             .epimmsId("12345")
             .siteName("siteName")
@@ -270,10 +312,48 @@ public class LrdApiProviderTest {
             .courtName("courtName")
             .build();
 
-        courtType.setCourtVenues(Collections.singletonList(courtVenue));
+        CourtVenue secondCourtVenue = CourtVenue.builder()
+            .courtVenueId(1L)
+            .epimmsId("123456")
+            .siteName("siteName")
+            .region(region)
+            .courtType(courtType)
+            .cluster(cluster)
+            .openForPublic(Boolean.TRUE)
+            .courtAddress("courtAddress")
+            .postcode("AB EYZ")
+            .phoneNumber("122324234")
+            .closedDate(LocalDateTime.now())
+            .courtLocationCode("courtLocationCode")
+            .dxAddress("dxAddress")
+            .courtStatus("Closed")
+            .courtName("courtName")
+            .build();
 
-        CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
-        courtTypeServiceAssoc.setCourtType(courtType);
-        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
+        return List.of(firstCourtVenue, secondCourtVenue);
     }
+
+
+    private CourtType getCourtType() {
+        CourtType courtType = new CourtType();
+        courtType.setCourtTypeId("17");
+        courtType.setCourtType("Immigration and Asylum");
+        return courtType;
+    }
+
+
+    private Region getRegion() {
+        Region region = new Region();
+        region.setDescription("Region XYZ");
+        region.setRegionId("123");
+        return region;
+    }
+
+    private Cluster getCluster() {
+        Cluster cluster = new Cluster();
+        cluster.setClusterId("456");
+        cluster.setClusterName("ClusterXYZ");
+        return cluster;
+    }
+
 }

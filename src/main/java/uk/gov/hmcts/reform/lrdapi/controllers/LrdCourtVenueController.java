@@ -72,7 +72,6 @@ public class LrdCourtVenueController {
         @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
         @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId) {
-        //TODO
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId));
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,

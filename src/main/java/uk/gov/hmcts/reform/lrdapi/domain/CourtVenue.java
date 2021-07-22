@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
 public class CourtVenue implements Serializable {
 
     @Id
+    @Column(name = "court_venue_id")
     private Long courtVenueId;
 
     @Column(name = "site_name")
@@ -91,7 +92,7 @@ public class CourtVenue implements Serializable {
     private LocalDateTime courtOpenDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "epimms_id", referencedColumnName = "epimms_id",
+    @JoinColumn(name = "epimms_id",
         insertable = false, updatable = false, nullable = false)
     private BuildingLocation buildingLocation;
 

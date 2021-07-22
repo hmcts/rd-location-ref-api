@@ -82,13 +82,16 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         if (isNotBlank(epimmsIds)) {
             return retrieveCourtVenuesByEpimmsId(epimmsIds);
         } else if (!Objects.isNull(courtTypeId)) {
+            log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
             return getAllCourtVenues(() -> courtVenueRepository
                                          .findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
                                      courtTypeId.toString(), NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID);
         } else if (!Objects.isNull(regionId)) {
+            log.info("{} : Obtaining court venues for region id: {}", loggingComponentName, regionId);
             return getAllCourtVenues(() -> courtVenueRepository.findByRegionIdWithOpenCourtStatus(regionId.toString()),
                                      regionId.toString(), NO_COURT_VENUES_FOUND_FOR_REGION_ID);
         } else if (!Objects.isNull(clusterId)) {
+            log.info("{} : Obtaining court venues for cluster id: {}", loggingComponentName, clusterId);
             return getAllCourtVenues(() -> courtVenueRepository
                                          .findByClusterIdWithOpenCourtStatus(clusterId.toString()),
                                      clusterId.toString(), NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID);
@@ -100,6 +103,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
         log.info("{} : Obtaining court venue for epimms id(s): {}", loggingComponentName, epimmsId);
+
         if (epimmsId.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
             return getAllCourtVenues(() -> courtVenueRepository.findAll(), null, NO_COURT_VENUES_FOUND);
         }
@@ -127,12 +131,12 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     private List<LrdCourtVenueResponse> getAllCourtVenues(
-        Supplier<List<CourtVenue>> buildingLocationSupplier,
+        Supplier<List<CourtVenue>> courtVenueSupplier,
         String id,
         String noDataFoundMessage) {
-        List<CourtVenue> buildingLocations = buildingLocationSupplier.get();
-        handleIfCourtVenuesEmpty(() -> isEmpty(buildingLocations), noDataFoundMessage, id);
-        return getCourtVenueListResponse(buildingLocations);
+        List<CourtVenue> courtVenues = courtVenueSupplier.get();
+        handleIfCourtVenuesEmpty(() -> isEmpty(courtVenues), noDataFoundMessage, id);
+        return getCourtVenueListResponse(courtVenues);
     }
 
     private List<LrdCourtVenueResponse> getCourtVenueListResponse(
