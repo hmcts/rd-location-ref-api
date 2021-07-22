@@ -76,6 +76,15 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     }
 
+
+    /**
+     * Method to retrieve the court venues for the request provided.
+     * @param epimmsIds list of epimm id of building location
+     * @param courtTypeId court type identifier
+     * @param regionId region identifier
+     * @param clusterId cluster identifier
+     * @return list of court venues
+     */
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
                                                                  Integer regionId, Integer clusterId) {

@@ -62,7 +62,7 @@ public class CourtVenueServiceImplTest {
         CourtVenue courtVenue = CourtVenue.builder()
             .courtVenueId(1L)
             .courtType(courtType)
-            .buildingLocation(buildingLocation)
+            //.buildingLocation(buildingLocation)
             .openForPublic(Boolean.TRUE)
             .build();
 
@@ -104,7 +104,6 @@ public class CourtVenueServiceImplTest {
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 
-    ////////
     @Test
     public void test_RetrieveCourtVenuesByEpimsIDs_OneIdPassed() {
 
@@ -248,9 +247,6 @@ public class CourtVenueServiceImplTest {
         verify(courtVenueRepository, times(1)).findByCourtTypeIdWithOpenCourtStatus(anyString());
     }
 
-
-
-
     private void verifyMultiResponse(List<LrdCourtVenueResponse> courtVenueResponses) {
         assertThat(courtVenueResponses).hasSize(2);
 
@@ -343,8 +339,4 @@ public class CourtVenueServiceImplTest {
         courtType.setCourtTypeId("courtTypeId");
         return courtType;
     }
-    ///////
-
-
-
 }

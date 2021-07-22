@@ -92,11 +92,6 @@ public class CourtVenue implements Serializable {
     private LocalDateTime courtOpenDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "epimms_id",
-        insertable = false, updatable = false, nullable = false)
-    private BuildingLocation buildingLocation;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",
         insertable = false, updatable = false, nullable = false)
     @Size(max = 16)

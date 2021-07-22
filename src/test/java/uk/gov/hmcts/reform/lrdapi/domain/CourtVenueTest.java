@@ -33,7 +33,7 @@ public class CourtVenueTest {
         CourtVenue courtVenue = new CourtVenue();
 
         courtVenue.setCourtVenueId(1L);
-        courtVenue.setBuildingLocation(buildingLocation);
+        //courtVenue.setBuildingLocation(buildingLocation);
         courtVenue.setSiteName("siteName");
         courtVenue.setRegion(region);
         courtVenue.setCourtType(courtType);
@@ -55,7 +55,6 @@ public class CourtVenueTest {
 
 
         assertEquals("1", courtVenue.getCourtVenueId().toString());
-        assertEquals(buildingLocation, courtVenue.getBuildingLocation());
         assertEquals("siteName", courtVenue.getSiteName());
         assertEquals(region, courtVenue.getRegion().get());
         assertEquals(courtType, courtVenue.getCourtType());
