@@ -1,7 +1,4 @@
 buildscript {
-    repositories {
-        jcenter()
-    }
     dependencies {
         classpath("net.serenity-bdd:serenity-gradle-plugin:2.3.6")
     }
@@ -275,12 +272,14 @@ project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 project.tasks['sonarqube'].group = "Verification"
 
 repositories {
-
-  maven {
-    url "https://dl.bintray.com/hmcts/hmcts-maven"
-  }
-
+  mavenLocal()
   jcenter()
+  mavenCentral()
+  
+  maven {
+    url "https://jitpack.io"
+  }
+  
 }
 
 dependencies {
