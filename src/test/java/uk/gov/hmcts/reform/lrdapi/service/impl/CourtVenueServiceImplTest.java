@@ -9,7 +9,6 @@ import org.mockito.MockitoAnnotations;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
-import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
