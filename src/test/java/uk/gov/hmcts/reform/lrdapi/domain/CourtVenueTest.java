@@ -33,7 +33,6 @@ public class CourtVenueTest {
         CourtVenue courtVenue = new CourtVenue();
 
         courtVenue.setCourtVenueId(1L);
-        //courtVenue.setBuildingLocation(buildingLocation);
         courtVenue.setSiteName("siteName");
         courtVenue.setRegion(region);
         courtVenue.setCourtType(courtType);

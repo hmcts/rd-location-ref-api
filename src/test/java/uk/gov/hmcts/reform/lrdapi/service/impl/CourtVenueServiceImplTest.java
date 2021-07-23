@@ -55,14 +55,9 @@ public class CourtVenueServiceImplTest {
             .courtTypeId("10")
             .build();
 
-        BuildingLocation buildingLocation = BuildingLocation.builder()
-            .epimmsId("12234")
-            .build();
-
         CourtVenue courtVenue = CourtVenue.builder()
             .courtVenueId(1L)
             .courtType(courtType)
-            //.buildingLocation(buildingLocation)
             .openForPublic(Boolean.TRUE)
             .build();
 
