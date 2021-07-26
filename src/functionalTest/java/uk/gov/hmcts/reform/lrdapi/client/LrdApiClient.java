@@ -58,25 +58,23 @@ public class LrdApiClient {
         }
     }
 
-    public Object retrieveBuildingLocationDetailsByGivenQueryParam(HttpStatus expectedStatus, String param,
-                                                                   Class<?> clazz) {
+    public Object retrieveResponseForGivenRequest(HttpStatus expectedStatus,
+                                                  String param,
+                                                  Class<?> clazz,
+                                                  String path) {
         String queryParam = "";
         if (!isEmpty(param)) {
             queryParam = param;
         }
         Response response = getMultipleAuthHeaders()
-            .get(BASE_URL + "/building-locations" + queryParam)
+            .get(BASE_URL + path + queryParam)
             .andReturn();
 
         response.then()
             .assertThat()
             .statusCode(expectedStatus.value());
         if (expectedStatus.is2xxSuccessful()) {
-            if (clazz.isArray()) {
-                return Arrays.asList(response.getBody().as(clazz));
-            } else {
-                return response.getBody().as(clazz);
-            }
+            return response.getBody().as(clazz);
         } else {
             return response.getBody().as(ErrorResponse.class);
         }
@@ -112,17 +110,17 @@ public class LrdApiClient {
         }
     }
 
-    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoBearerToken(String param) {
+    public Response retrieveResponseForGivenRequest_NoBearerToken(String param, String path) {
         Response response = withUnauthenticatedRequest_NoBearerToken()
-            .get(BASE_URL + "/building-locations" + param)
+            .get(BASE_URL + path + param)
             .andReturn();
 
         return response;
     }
 
-    public Response retrieveBuildingLocationDetailsByGivenQueryParam_NoS2SToken(String param) {
+    public Response retrieveResponseForGivenRequest_NoS2SToken(String param, String path) {
         Response response = withUnauthenticatedRequest_NoS2SToken()
-            .get(BASE_URL + "/building-locations" + param)
+            .get(BASE_URL + path + param)
             .andReturn();
 
         return response;
@@ -130,7 +128,7 @@ public class LrdApiClient {
 
     public Object retrieveCourtVenuesByServiceCode(HttpStatus expectedStatus, String serviceCode) {
         Response response = getMultipleAuthHeaders()
-            .get(BASE_URL + "/court-venue/services?service_code=" + serviceCode)
+            .get(BASE_URL + "/court-venues/services?service_code=" + serviceCode)
             .andReturn();
 
         response.then()
@@ -195,4 +193,5 @@ public class LrdApiClient {
     private JsonNode parseJson(String jsonString) throws IOException {
         return mapper.readTree(jsonString);
     }
+
 }
