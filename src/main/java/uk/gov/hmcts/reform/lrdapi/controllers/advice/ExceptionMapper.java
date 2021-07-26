@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants;
 import uk.gov.hmcts.reform.lrdapi.exception.ForbiddenException;
 
@@ -98,6 +99,11 @@ public class ExceptionMapper {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<Object> handleLaunchDarklyException(Exception ex) {
         return errorDetailsResponseEntity(ex, FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatchException(Exception ex) {
+        return errorDetailsResponseEntity(ex, BAD_REQUEST, ex.getMessage());
     }
 
     private String getTimeStamp() {
