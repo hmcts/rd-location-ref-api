@@ -164,7 +164,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             log.error("{} : {}",loggingComponentName, noDataFoundMessage);
             throw new ResourceNotFoundException(noDataFoundMessage);
         }
-
     }
 
     public static void validateServiceCode(String serviceCode) {
