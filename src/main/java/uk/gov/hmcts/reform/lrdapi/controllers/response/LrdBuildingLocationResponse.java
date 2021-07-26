@@ -22,7 +22,7 @@ public class LrdBuildingLocationResponse {
     @JsonProperty("building_location_name")
     private String buildingLocationName;
 
-    @JsonProperty("epims_id")
+    @JsonProperty("epimms_id")
     private String epimmsId;
 
     @JsonProperty("building_location_status")
