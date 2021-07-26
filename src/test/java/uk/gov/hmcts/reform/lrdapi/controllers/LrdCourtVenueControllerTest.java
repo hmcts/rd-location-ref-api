@@ -49,4 +49,15 @@ public class LrdCourtVenueControllerTest {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesByServiceCode("@AB_C"));
     }
+
+    @Test
+    public void testGetCourtVenues_returns200() {
+        ResponseEntity<Object> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenues("1234", null, null, null);
+
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails("1234",
+                                                                          null, null, null);
+    }
 }
