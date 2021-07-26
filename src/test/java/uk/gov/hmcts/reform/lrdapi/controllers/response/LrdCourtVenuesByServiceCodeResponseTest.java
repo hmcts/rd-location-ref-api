@@ -32,7 +32,6 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
             .courtType(courtType)
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic(Boolean.TRUE)
-            .buildingLocation(buildingLocation)
             .region(region)
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
             .courtStatus("Open")

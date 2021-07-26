@@ -103,7 +103,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
             .courtVenueId("11")
             .siteName("Aberdeen Tribunal Hearing Centre 11")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 11")
-            .epimsId("123456")
+            .epimmsId("123456")
             .openForPublic("YES")
             .courtTypeId("10")
             .courtType("County Court")
