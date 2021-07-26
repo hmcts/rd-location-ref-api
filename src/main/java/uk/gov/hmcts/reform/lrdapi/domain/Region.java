@@ -25,6 +25,7 @@ import static org.hibernate.annotations.FetchMode.SUBSELECT;
 public class Region implements Serializable {
 
     @Id
+    @Column(name = "region_id")
     @Size(max = 16)
     private String regionId;
 

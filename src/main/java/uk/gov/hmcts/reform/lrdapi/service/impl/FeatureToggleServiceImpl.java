@@ -5,6 +5,7 @@ import com.launchdarkly.sdk.server.LDClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.service.FeatureToggleService;
 
 import java.util.HashMap;
@@ -39,15 +40,19 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
         );
         launchDarklyMap.put(
             "LrdApiController.retrieveBuildingLocationDetails",
-            "lrd_location_api"
+            LocationRefConstants.LD_FLAG
         );
         launchDarklyMap.put(
             "LrdApiController.retrieveRegionDetails",
-            "lrd_location_api"
+            LocationRefConstants.LD_FLAG
         );
         launchDarklyMap.put(
             "LrdCourtVenueController.retrieveCourtVenuesByServiceCode",
-            "lrd_location_api"
+            LocationRefConstants.LD_FLAG
+        );
+        launchDarklyMap.put(
+            "LrdCourtVenueController.retrieveCourtVenues",
+            LocationRefConstants.LD_FLAG
         );
     }
 
