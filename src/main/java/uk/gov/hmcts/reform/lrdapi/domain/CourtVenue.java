@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
 public class CourtVenue implements Serializable {
 
     @Id
+    @Column(name = "court_venue_id")
     private Long courtVenueId;
 
     @Column(name = "site_name")
@@ -47,15 +48,23 @@ public class CourtVenue implements Serializable {
     @LastModifiedDate
     private LocalDateTime updatedTime;
 
+    @Column(name = "region_id")
+    private String regionId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id", referencedColumnName = "region_id",
+        insertable = false, updatable = false, nullable = false)
     private Region region;
 
     @Column(name = "court_type_id")
     private String courtTypeId;
 
+    @Column(name = "cluster_id")
+    private String clusterId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cluster_id")
+    @JoinColumn(name = "cluster_id", referencedColumnName = "cluster_id",
+        insertable = false, updatable = false, nullable = false)
     private Cluster cluster;
 
     private Boolean openForPublic;
@@ -81,11 +90,6 @@ public class CourtVenue implements Serializable {
     private String courtName;
 
     private LocalDateTime courtOpenDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "epimms_id", referencedColumnName = "epimms_id",
-        insertable = false, updatable = false, nullable = false)
-    private BuildingLocation buildingLocation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",

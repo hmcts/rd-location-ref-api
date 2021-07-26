@@ -27,6 +27,6 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
             .addPathPatterns("/refdata/location/orgServices/**")
             .addPathPatterns("/refdata/location/building-locations/**")
             .addPathPatterns("/refdata/location/region**")
-            .addPathPatterns("/refdata/location/court-venue/services/**");
+            .addPathPatterns("/refdata/location/court-venues/**");
     }
 }
