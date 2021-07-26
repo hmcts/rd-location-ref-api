@@ -81,7 +81,8 @@ public class BuildingLocation implements Serializable {
     @Size(max = 512)
     private String address;
 
-    @OneToMany(targetEntity = CourtVenue.class, mappedBy = "buildingLocation")
+    @OneToMany(targetEntity = CourtVenue.class)
+    @JoinColumn(name = "epimms_id", referencedColumnName = "epimms_id")
     @Builder.Default
     private Set<CourtVenue> courtVenues = new HashSet<>();
 
