@@ -122,7 +122,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         if (isNotEmpty(courtVenueName)) {
             log.info("{} : Obtaining court venues for court venue name: {}", loggingComponentName, courtVenueName);
             return getAllCourtVenues(
-                () -> courtVenueRepository.findByCourtVenueNameOrSiteName(courtVenueName),
+                () -> courtVenueRepository.findByCourtVenueNameOrSiteName(courtVenueName.strip()),
                 courtVenueName,
                 NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME
             );
