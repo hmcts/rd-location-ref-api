@@ -18,14 +18,14 @@ import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
@@ -35,11 +35,13 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
 
 @Slf4j
 @Service
@@ -53,6 +55,16 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
+
+    public static void validateServiceCode(String serviceCode) {
+
+        if (isBlank(serviceCode)) {
+            throw new InvalidRequestException("No service code provided");
+        }
+        if (isFalse(isRegexSatisfied(serviceCode, ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE))) {
+            throw new InvalidRequestException(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR);
+        }
+    }
 
     @Override
     public LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode) {
@@ -72,42 +84,52 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             throw new ResourceNotFoundException("No court venues found for the given service code " + serviceCode);
         }
 
-        return new LrdCourtVenuesByServiceCodeResponse(courtType,serviceCodeIgnoreCase);
+        return new LrdCourtVenuesByServiceCodeResponse(courtType, serviceCodeIgnoreCase);
 
     }
 
-
-    /**
-     * Method to retrieve the court venues for the request provided.
-     * @param epimmsIds list of epimm id of building location
-     * @param courtTypeId court type identifier
-     * @param regionId region identifier
-     * @param clusterId cluster identifier
-     * @return list of court venues
-     */
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
-                                                                 Integer regionId, Integer clusterId) {
+                                                                 Integer regionId, Integer clusterId,
+                                                                 String courtVenueName) {
         if (isNotBlank(epimmsIds)) {
             return retrieveCourtVenuesByEpimmsId(epimmsIds);
-        } else if (!Objects.isNull(courtTypeId)) {
-            log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
-            return getAllCourtVenues(() -> courtVenueRepository
-                                         .findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
-                                     courtTypeId.toString(), NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID);
-        } else if (!Objects.isNull(regionId)) {
-            log.info("{} : Obtaining court venues for region id: {}", loggingComponentName, regionId);
-            return getAllCourtVenues(() -> courtVenueRepository.findByRegionIdWithOpenCourtStatus(regionId.toString()),
-                                     regionId.toString(), NO_COURT_VENUES_FOUND_FOR_REGION_ID);
-        } else if (!Objects.isNull(clusterId)) {
-            log.info("{} : Obtaining court venues for cluster id: {}", loggingComponentName, clusterId);
-            return getAllCourtVenues(() -> courtVenueRepository
-                                         .findByClusterIdWithOpenCourtStatus(clusterId.toString()),
-                                     clusterId.toString(), NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID);
-        } else {
-            return getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
-                                     NO_COURT_VENUES_FOUND);
         }
+        if (isNotEmpty(courtTypeId)) {
+            log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
+            return getAllCourtVenues(
+                () -> courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
+                courtTypeId.toString(),
+                NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID
+            );
+        }
+        if (isNotEmpty(regionId)) {
+            log.info("{} : Obtaining court venues for region id: {}", loggingComponentName, regionId);
+            return getAllCourtVenues(
+                () -> courtVenueRepository.findByRegionIdWithOpenCourtStatus(regionId.toString()),
+                regionId.toString(),
+                NO_COURT_VENUES_FOUND_FOR_REGION_ID
+            );
+        }
+        if (isNotEmpty(clusterId)) {
+            log.info("{} : Obtaining court venues for cluster id: {}", loggingComponentName, clusterId);
+            return getAllCourtVenues(
+                () -> courtVenueRepository.findByClusterIdWithOpenCourtStatus(clusterId.toString()),
+                clusterId.toString(),
+                NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID
+            );
+        }
+        if (isNotEmpty(courtVenueName)) {
+            log.info("{} : Obtaining court venues for court venue name: {}", loggingComponentName, courtVenueName);
+            return getAllCourtVenues(
+                () -> courtVenueRepository.findByCourtVenueNameOrSiteName(courtVenueName),
+                courtVenueName,
+                NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME
+            );
+        }
+        return getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
+                                 NO_COURT_VENUES_FOUND
+        );
     }
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
@@ -161,20 +183,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                           String id) {
         if (courtVenueResponseVerifier.getAsBoolean()) {
             noDataFoundMessage = (isNotBlank(id)) ? String.format(noDataFoundMessage, id) : noDataFoundMessage;
-            log.error("{} : {}",loggingComponentName, noDataFoundMessage);
+            log.error("{} : {}", loggingComponentName, noDataFoundMessage);
             throw new ResourceNotFoundException(noDataFoundMessage);
-        }
-    }
-
-    public static void validateServiceCode(String serviceCode) {
-
-        if (isBlank(serviceCode)) {
-            throw new InvalidRequestException("No service code provided");
-        }
-
-
-        if (!Pattern.compile(ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE).matcher(serviceCode).matches()) {
-            throw new InvalidRequestException(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR);
         }
     }
 }
