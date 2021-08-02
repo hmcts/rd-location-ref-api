@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
 
@@ -131,7 +133,7 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
                                                          "?court_venue_name=Aberdeen Tribunal Hearing Centre",
                                                          LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotNull();
-        var courtVenueResponse = Arrays.asList(response);
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         var courtNameVerified = courtVenueResponse
             .stream()
             .filter(venue -> venue.getCourtName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre"))
@@ -194,7 +196,7 @@ public class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFuncti
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?court_venue_name=aaaabbbbcccc",
                                                          LrdCourtVenueResponse[].class, path);
         assertEquals(response.getErrorDescription(),
-                     String.format(NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID, "0"));
+                     String.format(NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME, "aaaabbbbcccc"));
     }
 
     @Test
