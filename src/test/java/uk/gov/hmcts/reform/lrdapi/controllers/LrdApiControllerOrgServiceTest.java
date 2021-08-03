@@ -177,5 +177,4 @@ public class LrdApiControllerOrgServiceTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
     }
-
 }
