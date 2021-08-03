@@ -8,7 +8,10 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -52,12 +55,12 @@ public class LrdCourtVenueControllerTest {
 
     @Test
     public void testGetCourtVenues_returns200() {
-        ResponseEntity<Object> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenues("1234", null, null, null);
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenues("1234", null, null, null, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails("1234",
-                                                                          null, null, null);
+                                                                          null, null, null, null);
     }
 }
