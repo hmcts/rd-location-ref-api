@@ -337,7 +337,7 @@ public class LrdApiProviderTest {
     private CourtType getCourtType() {
         CourtType courtType = new CourtType();
         courtType.setCourtTypeId("17");
-        courtType.setCourtType("Immigration and Asylum");
+        courtType.setTypeOfCourt("Immigration and Asylum");
         return courtType;
     }
 

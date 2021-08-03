@@ -37,10 +37,9 @@ public class CourtType implements Serializable {
     @Size(max = 16)
     private String courtTypeId;
 
-    @SuppressWarnings("java:S1700")
     @Column(name = "court_type", nullable = false)
     @Size(max = 128)
-    private String courtType;
+    private String typeOfCourt;
 
     @Column(name = "welsh_court_type", nullable = false)
     @Size(max = 128)
