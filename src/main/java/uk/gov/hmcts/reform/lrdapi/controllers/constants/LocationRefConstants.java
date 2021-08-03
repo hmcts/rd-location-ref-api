@@ -15,11 +15,12 @@ public class LocationRefConstants {
     public static final String ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE = "[0-9a-zA-Z]+";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
     public static final String NUMERIC_REGEX = "\\d+";
-    public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = "Bad Request - "
+    public static final String BAD_REQUEST_STR = "Bad Request - ";
+    public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = BAD_REQUEST_STR
         + "Invalid epims id(s): %s  passed.";
-    public static final String EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED = "Bad Request - "
+    public static final String EXCEPTION_MSG_NO_VALID_REGION_ID_PASSED = BAD_REQUEST_STR
         + "Invalid Region ID(s): %s  passed.";
-    public static final String EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED = "Bad Request - "
+    public static final String EXCEPTION_MSG_NO_VALID_REGION_DESCRIPTION_PASSED = BAD_REQUEST_STR
         + "Invalid Region Description(s): %s  passed.";
     public static final String EXCEPTION_MSG_SPCL_CHAR = "Param contains special characters. "
         + "',' comma and '_' underscore allowed only";
@@ -57,5 +58,8 @@ public class LocationRefConstants {
 
     public static final String NO_COURT_VENUES_FOUND =
         "There are no court venues found";
+
+    public static final String NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME =
+        "No court venues found for court venue name: %s";
 
 }
