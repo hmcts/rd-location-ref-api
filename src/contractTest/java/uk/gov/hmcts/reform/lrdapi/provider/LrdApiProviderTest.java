@@ -238,10 +238,6 @@ public class LrdApiProviderTest {
 
         Region region = getRegion();
 
-        BuildingLocation buildingLocation = BuildingLocation.builder()
-            .epimmsId("4567")
-            .build();
-
         CourtType courtType = getCourtType();
 
         CourtVenue courtVenue = getCourtVenue(cluster, region, courtType);
@@ -271,6 +267,7 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
+        when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
     }
 
     private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {

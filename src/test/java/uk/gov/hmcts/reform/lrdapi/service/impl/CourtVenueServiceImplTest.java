@@ -105,7 +105,7 @@ public class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123", null,  null, null);
+                .retrieveCourtVenueDetails("123", null,  null, null, null);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -118,7 +118,7 @@ public class CourtVenueServiceImplTest {
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123,1234", null,  null, null);
+                .retrieveCourtVenueDetails("123,1234", null,  null, null, null);
         verifyMultiResponse(courtVenueResponses);
     }
 
@@ -128,7 +128,7 @@ public class CourtVenueServiceImplTest {
             .thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("All", null,  null, null);
+                .retrieveCourtVenueDetails("All", null,  null, null, null);
         verifyMultiResponse(courtVenueResponses);
     }
 
@@ -138,7 +138,7 @@ public class CourtVenueServiceImplTest {
             .thenReturn(prepareCourtVenue());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null,  null, null);
+                .retrieveCourtVenueDetails("", null,  null, null, null);
         verifySingleResponse(courtVenueResponses.get(0));
     }
 
@@ -149,7 +149,7 @@ public class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null,  1, null);
+                .retrieveCourtVenueDetails("", null,  1, null, null);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -163,7 +163,7 @@ public class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null,  null, 1);
+                .retrieveCourtVenueDetails("", null,  null, 1, null);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -177,7 +177,21 @@ public class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", 1,  null, null);
+                .retrieveCourtVenueDetails("", 1,  null, null, null);
+
+        LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
+
+        verifySingleResponse(courtVenueResponse);
+    }
+
+    @Test
+    public void test_RetrieveCourtVenuesByCourtVenueName() {
+
+        when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(prepareCourtVenue());
+
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails("", null,  null, null, "Court ABC");
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -188,7 +202,7 @@ public class CourtVenueServiceImplTest {
     public void test_RetrieveCourtVenuesByEpimmsId_NotFound() {
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("123", null,  null, null));
+            .retrieveCourtVenueDetails("123", null,  null, null, null));
 
         verify(courtVenueRepository, times(1)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
@@ -202,7 +216,7 @@ public class CourtVenueServiceImplTest {
     public void test_RetrieveCourtVenuesByClusterId_NotFound() {
         when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", null,  null, 1));
+            .retrieveCourtVenueDetails("", null,  null, 1, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
@@ -216,7 +230,7 @@ public class CourtVenueServiceImplTest {
     public void test_RetrieveCourtVenuesByRegionId_NotFound() {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", null,  1, null));
+            .retrieveCourtVenueDetails("", null,  1, null, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(1)).findByRegionIdWithOpenCourtStatus(anyString());
@@ -230,7 +244,7 @@ public class CourtVenueServiceImplTest {
     public void test_RetrieveCourtVenuesByCourtTypeId_NotFound() {
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(null);
         Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", 1,  null, null));
+            .retrieveCourtVenueDetails("", 1,  null, null, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
@@ -239,6 +253,22 @@ public class CourtVenueServiceImplTest {
         verify(courtVenueRepository, times(0)).findAll();
         verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
         verify(courtVenueRepository, times(1)).findByCourtTypeIdWithOpenCourtStatus(anyString());
+    }
+
+    @Test
+    public void test_RetrieveCourtVenuesByCourtVenueName_NotFound() {
+        when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(null);
+        Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
+            .retrieveCourtVenueDetails("", null,  null, null, "test-name"));
+
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
+        verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0))
+            .findByClusterIdWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0)).findAll();
+        verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
+        verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(1)).findByCourtVenueNameOrSiteName(anyString());
     }
 
     private void verifyMultiResponse(List<LrdCourtVenueResponse> courtVenueResponses) {
@@ -273,6 +303,8 @@ public class CourtVenueServiceImplTest {
         assertThat(lrdCourtVenueResponse.getClusterId()).isEqualTo("1");
         assertThat(lrdCourtVenueResponse.getClusterName()).isEqualTo("cluster name");
         assertThat(lrdCourtVenueResponse.getPostcode()).isEqualTo("postcode");
+        assertThat(lrdCourtVenueResponse.getCourtName()).isEqualTo("Court ABC");
+        assertThat(lrdCourtVenueResponse.getSiteName()).isEqualTo("COURT ABC");
     }
 
     private List<CourtVenue> prepareCourtVenue() {
@@ -289,6 +321,8 @@ public class CourtVenueServiceImplTest {
                             .courtName("courtName")
                             .openForPublic(true)
                             .courtType(getCourtType())
+                            .courtName("Court ABC")
+                            .siteName("COURT ABC")
                             .build());
 
         return courtVenues;
