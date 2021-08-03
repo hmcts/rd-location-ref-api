@@ -34,6 +34,17 @@ public class RetrieveBuildingLocationDetailsFunctionalTest extends Authorization
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    public void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
+        JsonProcessingException {
+
+        final var response = (LrdBuildingLocationResponse[])
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,"?epimms_id=123456789,ALL",
+                 LrdBuildingLocationResponse[].class, path);
+        assertThat(response).isNotNull();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
     public void retrieveAllBuildingLocations_NoEpimmsIdPassed_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
