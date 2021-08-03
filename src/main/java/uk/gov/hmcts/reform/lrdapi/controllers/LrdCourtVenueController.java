@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
+import java.util.List;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -35,7 +36,21 @@ public class LrdCourtVenueController {
 
     @ApiOperation(
         value = "This API will retrieve Court Venues for the request provided",
-        notes = "No roles required to access this API",
+        notes = "No roles required to access this API.\n"
+            + "For the request param 'epimms_id', either a single epimms_id or a list of epimms_ids separated by comas"
+            + "can be passed. In any of these cases, a list of associated court venues would be returned.\n"
+            + "Additionally, if 'ALL' is passed as the epimms_id value, then all the available court venues"
+            + " associated with the available list of epimms_id are returned as a list.\n"
+            + "For the request param 'court_type_id', then all the court venues that have the status as 'Open' "
+            + "with the requested court_type_id are returned as a list.\n"
+            + "For the request param 'region_id', the value needs to be a single region_id "
+            + "for which all the associated court venues with the status as 'Open' would be returned as a list.\n"
+            + "For the request param 'cluster_id', the value needs to be a single cluster_id "
+            + "for which all the associated court venues with the status as 'Open' would be returned as a list.\n"
+            + "For the request param 'court_venue_name', all the associated court venues that have the same site name "
+            + "or court name irrespective of the case are returned as a list.\n"
+            + "If no params are passed, then all the available court venues which have the "
+            + "status as 'OPEN' are returned as a list.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -67,15 +82,17 @@ public class LrdCourtVenueController {
     @GetMapping(
         produces = APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<Object> retrieveCourtVenues(
+    public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenues(
         @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds,
         @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
-        @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId) {
+        @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
+        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName) {
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
-                                  String.valueOf(clusterId));
+                                  String.valueOf(clusterId), courtVenueName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
-                                                                                 courtTypeId, regionId, clusterId);
+                                                                                 courtTypeId, regionId, clusterId,
+                                                                                 courtVenueName);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 

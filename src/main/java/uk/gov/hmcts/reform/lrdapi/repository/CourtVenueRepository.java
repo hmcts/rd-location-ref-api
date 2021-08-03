@@ -29,6 +29,11 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + "where cv.clusterId = :clusterId and cv.courtStatus='Open'")
     List<CourtVenue> findByClusterIdWithOpenCourtStatus(String clusterId);
 
+    @Query(value = "select cv from court_venue cv "
+        + "where upper(cv.courtName) = upper(:courtVenueName) "
+        + "or upper(cv.siteName) = upper(:courtVenueName)")
+    List<CourtVenue> findByCourtVenueNameOrSiteName(String courtVenueName);
+
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.courtStatus='Open'")
