@@ -58,5 +58,10 @@
   "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&epimms_id=epimms_id&region_id=10_GET" : "ignore",
   "100000_A Client Error response code was returned by the server_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&epimms_id=epimms_id&region_id=10_GET" : "ignore",
   "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&epimms_id=epimms_id&region_id=10_GET" : "ignore",
-  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&epimms_id=epimms_id&region_id=10_GET" : "ignore"
+  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&epimms_id=epimms_id&region_id=10_GET" : "ignore",
+  "10010_Cookie No HttpOnly Flag_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&court_venue_name=court_venue_name&epimms_id=epimms_id&region_id=10_GET" : "ignore",
+  "10054_Cookie without SameSite Attribute_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&court_venue_name=court_venue_name&epimms_id=epimms_id&region_id=10_GET" : "ignore",
+  "100000_A Client Error response code was returned by the server_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&court_venue_name=court_venue_name&epimms_id=epimms_id&region_id=10_GET" : "ignore",
+  "90033_Loosely Scoped Cookie_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&court_venue_name=court_venue_name&epimms_id=epimms_id&region_id=10_GET" : "ignore",
+  "10096_Timestamp Disclosure - Unix_http://rd-location-ref-api-aat.service.core-compute-aat.internal/refdata/location/court-venues?cluster_id=10&court_type_id=10&court_venue_name=court_venue_name&epimms_id=epimms_id&region_id=10_GET" : "ignore"
 }
