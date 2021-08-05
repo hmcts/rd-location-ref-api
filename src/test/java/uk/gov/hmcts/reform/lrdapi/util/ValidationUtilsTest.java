@@ -35,29 +35,23 @@ public class ValidationUtilsTest {
         identifiers.add("QWERTY");
         assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
             .isZero();
-    }
 
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputNumeric() {
-        var identifiers = new ArrayList<String>();
-        identifiers.add("1234");
-        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+        // testFindInvalidIdentifiers_SingleIdGiven_ValidInputNumeric
+        var identifiers1 = new ArrayList<String>();
+        identifiers1.add("1234");
+        assertThat(findInvalidIdentifiers(identifiers1, AlphaNumericRegex).size())
             .isZero();
-    }
 
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumeric() {
-        var identifiers = new ArrayList<String>();
-        identifiers.add("qwerty1234");
-        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+        // testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumeric
+        var identifiers2 = new ArrayList<String>();
+        identifiers2.add("qwerty1234");
+        assertThat(findInvalidIdentifiers(identifiers2, AlphaNumericRegex).size())
             .isZero();
-    }
 
-    @Test
-    public void testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumericUnderscore() {
-        var identifiers = new ArrayList<String>();
-        identifiers.add("qwerty_1234");
-        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
+        // testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumericUnderscore
+        var identifiers3 = new ArrayList<String>();
+        identifiers3.add("qwerty_1234");
+        assertThat(findInvalidIdentifiers(identifiers3, AlphaNumericRegex).size())
             .isZero();
     }
 
@@ -98,22 +92,18 @@ public class ValidationUtilsTest {
         idList.addAll(getMultipleValidIdList());
         idList.add("ALL");
         assertThat(isListContainsTextIgnoreCase(idList, "ALL")).isTrue();
-    }
 
-    @Test
-    public void testIsListContainsText_AllProvidedInSmallCase_ShouldReturnTrue() {
-        var idList = new ArrayList<String>();
-        idList.addAll(getMultipleValidIdList());
-        idList.add("ALL");
-        assertThat(isListContainsTextIgnoreCase(idList, "all")).isTrue();
-    }
+        // testIsListContainsText_AllProvidedInSmallCase_ShouldReturnTrue
+        var idList1 = new ArrayList<String>();
+        idList1.addAll(getMultipleValidIdList());
+        idList1.add("ALL");
+        assertThat(isListContainsTextIgnoreCase(idList1, "all")).isTrue();
 
-    @Test
-    public void testIsListContainsText_AllProvidedInMixedCase_ShouldReturnTrue() {
-        var idList = new ArrayList<String>();
-        idList.addAll(getMultipleValidIdList());
-        idList.add("ALL");
-        assertThat(isListContainsTextIgnoreCase(idList, "All")).isTrue();
+        // testIsListContainsText_AllProvidedInMixedCase_ShouldReturnTrue
+        var idList2 = new ArrayList<String>();
+        idList2.addAll(getMultipleValidIdList());
+        idList2.add("ALL");
+        assertThat(isListContainsTextIgnoreCase(idList2, "All")).isTrue();
     }
 
     @Test
@@ -247,9 +237,10 @@ public class ValidationUtilsTest {
 
     @Test
     public void testCheckForInvalidIdentifiersAndRemoveFromIdList_AllInvalidIdsGiven_ShouldThrowException() {
+        List<String> idList = getMultipleInvalidIdList();
+        Logger logger = LoggerFactory.getLogger(ValidationUtilsTest.class);
         assertThrows(InvalidRequestException.class, () ->
-            checkForInvalidIdentifiersAndRemoveFromIdList(getMultipleInvalidIdList(), AlphaNumericRegex,
-                                                          getLogger(), "anyString",
+            checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, logger, "anyString",
                                                           EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
             ));
     }
