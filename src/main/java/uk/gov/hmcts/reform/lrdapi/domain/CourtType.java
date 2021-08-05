@@ -39,7 +39,7 @@ public class CourtType implements Serializable {
 
     @Column(name = "court_type", nullable = false)
     @Size(max = 128)
-    private String courtType;
+    private String typeOfCourt;
 
     @Column(name = "welsh_court_type", nullable = false)
     @Size(max = 128)
