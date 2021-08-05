@@ -25,7 +25,7 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
         buildingLocation.setEpimmsId("123456789");
 
         CourtType courtType = new CourtType();
-        courtType.setCourtType("CourtTypeXYZ");
+        courtType.setTypeOfCourt("CourtTypeXYZ");
         courtType.setCourtTypeId("17");
 
         CourtVenue courtVenue = CourtVenue.builder()
@@ -48,7 +48,7 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
 
         assertEquals(serviceCode, courtVenuesByServiceCodeResponse.getServiceCode());
         assertEquals(courtType.getCourtTypeId(), courtVenuesByServiceCodeResponse.getCourtTypeId());
-        assertEquals(courtType.getCourtType(), courtVenuesByServiceCodeResponse.getCourtType());
+        assertEquals(courtType.getTypeOfCourt(), courtVenuesByServiceCodeResponse.getCourtType());
         assertNull(courtVenuesByServiceCodeResponse.getWelshCourtType());
         assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues());
 

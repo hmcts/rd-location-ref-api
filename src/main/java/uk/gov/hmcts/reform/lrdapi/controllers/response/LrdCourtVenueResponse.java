@@ -97,7 +97,7 @@ public class LrdCourtVenueResponse implements Serializable {
                 clusterName = cluster.getClusterName();
             });
             this.courtTypeId = courtVenue.getCourtType().getCourtTypeId();
-            this.courtType = courtVenue.getCourtType().getCourtType();
+            this.courtType = courtVenue.getCourtType().getTypeOfCourt();
             this.dxAddress = courtVenue.getDxAddress();
             this.epimmsId = courtVenue.getEpimmsId();
             this.openForPublic = (courtVenue.getOpenForPublic()) ? "YES" : "NO";
