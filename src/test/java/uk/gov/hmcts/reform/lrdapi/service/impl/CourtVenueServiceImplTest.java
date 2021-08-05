@@ -50,7 +50,7 @@ public class CourtVenueServiceImplTest {
     @Test
     public void testRetrieveCourtVenuesByServiceCode() {
         CourtType courtType = CourtType.builder()
-            .courtType("courtType")
+            .typeOfCourt("courtType")
             .courtTypeId("10")
             .build();
 
@@ -73,7 +73,7 @@ public class CourtVenueServiceImplTest {
         assertThat(response).isNotNull();
         assertEquals("ABC1", response.getServiceCode());
         assertEquals(courtType.getCourtTypeId(), response.getCourtTypeId());
-        assertEquals(courtType.getCourtType(), response.getCourtType());
+        assertEquals(courtType.getTypeOfCourt(), response.getCourtType());
         assertNotNull(response.getCourtVenues());
         assertNull(response.getWelshCourtType());
 
@@ -363,7 +363,7 @@ public class CourtVenueServiceImplTest {
 
     private CourtType getCourtType() {
         CourtType courtType = new CourtType();
-        courtType.setCourtType("courtType");
+        courtType.setTypeOfCourt("courtType");
         courtType.setCourtTypeId("courtTypeId");
         return courtType;
     }
