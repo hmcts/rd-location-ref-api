@@ -22,7 +22,7 @@ public class CourtVenueTest {
 
         CourtType courtType = new CourtType();
         courtType.setCourtTypeId("17");
-        courtType.setCourtType("courtType");
+        courtType.setTypeOfCourt("courtType");
 
         Cluster cluster = new Cluster();
         cluster.setClusterId("456");

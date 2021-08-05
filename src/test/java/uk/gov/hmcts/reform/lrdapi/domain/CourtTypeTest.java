@@ -15,13 +15,13 @@ public class CourtTypeTest {
 
         CourtType courtType = new CourtType();
         courtType.setCourtTypeId("17");
-        courtType.setCourtType("courtType");
+        courtType.setTypeOfCourt("courtType");
         courtType.setWelshCourtType("welshCourtType");
         courtType.setCreated(now);
         courtType.setLastUpdated(now);
 
         assertEquals("17", courtType.getCourtTypeId());
-        assertEquals("courtType", courtType.getCourtType());
+        assertEquals("courtType", courtType.getTypeOfCourt());
         assertEquals("welshCourtType", courtType.getWelshCourtType());
         assertEquals(now, courtType.getCreated());
         assertEquals(now, courtType.getLastUpdated());
