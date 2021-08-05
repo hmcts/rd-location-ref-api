@@ -38,7 +38,7 @@ public class LrdCourtVenuesByServiceCodeResponse {
         if (nonNull(courtType)) {
             this.serviceCode = serviceCode;
             this.courtTypeId = courtType.getCourtTypeId();
-            this.courtType = courtType.getCourtType();
+            this.courtType = courtType.getTypeOfCourt();
             this.welshCourtType = courtType.getWelshCourtType();
             this.courtVenues = courtType.getCourtVenues()
                                         .stream()

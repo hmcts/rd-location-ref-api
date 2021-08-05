@@ -25,7 +25,7 @@ public class LrdCourtVenueResponseTest {
         region.setWelshDescription("Region ABC");
 
         CourtType courtType = new CourtType();
-        courtType.setCourtType("CourtTypeXYZ");
+        courtType.setTypeOfCourt("CourtTypeXYZ");
         courtType.setCourtTypeId("17");
 
         BuildingLocation buildingLocation = new BuildingLocation();
@@ -65,7 +65,7 @@ public class LrdCourtVenueResponseTest {
         cluster.setUpdatedTime(LocalDateTime.now());
 
         CourtType courtType = new CourtType();
-        courtType.setCourtType("CourtTypeXYZ");
+        courtType.setTypeOfCourt("CourtTypeXYZ");
         courtType.setCourtTypeId("17");
 
         BuildingLocation buildingLocation = new BuildingLocation();
