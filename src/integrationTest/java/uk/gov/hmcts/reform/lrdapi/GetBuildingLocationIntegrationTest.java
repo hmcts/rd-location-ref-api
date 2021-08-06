@@ -67,20 +67,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789,ALL",
-                                                         LrdBuildingLocationResponse[].class, path
-            );
-
-        assertNotNull(response);
-        responseVerification(response, LocationRefConstants.ALL);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_NoepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
