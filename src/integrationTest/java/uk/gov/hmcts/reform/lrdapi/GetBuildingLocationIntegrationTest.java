@@ -253,38 +253,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> actualResponse =
-            (List<LrdBuildingLocationResponse>) lrdApiClient
-                .retrieveResponseForGivenRequest(
-                    "?cluster_id=01234",
-                    LrdBuildingLocationResponse[].class, path
-                );
-
-        assertNotNull(actualResponse);
-        responseVerification(actualResponse, LocationRefConstants.ALL);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidClusterIdWithLeadingAndTrailingSpacePassed_ShouldReturn200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> actualResponse =
-            (List<LrdBuildingLocationResponse>) lrdApiClient
-                .retrieveResponseForGivenRequest(
-                    "?cluster_id= 01234 ",
-                    LrdBuildingLocationResponse[].class, path
-                );
-
-        assertNotNull(actualResponse);
-        responseVerification(actualResponse, LocationRefConstants.ALL);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void shouldNotRetrieveBuildLocations_MultipleClusterIdPassed_ShouldReturn400() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)

@@ -32,6 +32,38 @@ public class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEna
         responseVerification(response, LocationRefConstants.ALL);
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> actualResponse =
+            (List<LrdBuildingLocationResponse>) lrdApiClient
+                .retrieveResponseForGivenRequest(
+                    "?cluster_id=01234",
+                    LrdBuildingLocationResponse[].class, path
+                );
+
+        assertNotNull(actualResponse);
+        responseVerification(actualResponse, LocationRefConstants.ALL);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void retrieveBuildLocations_ValidClusterIdWithLeadingAndTrailingSpacePassed_ShouldReturn200() throws
+        JsonProcessingException {
+
+        List<LrdBuildingLocationResponse> actualResponse =
+            (List<LrdBuildingLocationResponse>) lrdApiClient
+                .retrieveResponseForGivenRequest(
+                    "?cluster_id= 01234 ",
+                    LrdBuildingLocationResponse[].class, path
+                );
+
+        assertNotNull(actualResponse);
+        responseVerification(actualResponse, LocationRefConstants.ALL);
+    }
+
     private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
         if (LocationRefConstants.ALL.equalsIgnoreCase(responseType)) {
             assertThat(response).hasSize(4).hasSameElementsAs(getAllLocationResponse());
