@@ -67,20 +67,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789,ALL",
-                                                         LrdBuildingLocationResponse[].class, path
-            );
-
-        assertNotNull(response);
-        responseVerification(response, LocationRefConstants.ALL);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
     public void retrieveBuildLocations_NoepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
@@ -263,38 +249,6 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.FORBIDDEN);
         assertThat(((ErrorResponse) errorResponseMap.get("response_body")).getErrorMessage())
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> actualResponse =
-            (List<LrdBuildingLocationResponse>) lrdApiClient
-                .retrieveResponseForGivenRequest(
-                    "?cluster_id=01234",
-                    LrdBuildingLocationResponse[].class, path
-                );
-
-        assertNotNull(actualResponse);
-        responseVerification(actualResponse, LocationRefConstants.ALL);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidClusterIdWithLeadingAndTrailingSpacePassed_ShouldReturn200() throws
-        JsonProcessingException {
-
-        List<LrdBuildingLocationResponse> actualResponse =
-            (List<LrdBuildingLocationResponse>) lrdApiClient
-                .retrieveResponseForGivenRequest(
-                    "?cluster_id= 01234 ",
-                    LrdBuildingLocationResponse[].class, path
-                );
-
-        assertNotNull(actualResponse);
-        responseVerification(actualResponse, LocationRefConstants.ALL);
     }
 
     @Test
