@@ -18,7 +18,7 @@ def component = "location-ref-api"
 
 def secrets = [
   's2s-${env}': [
-    secret('microservicekey-rd-location-ref-api', 'S2S_SECRET')
+    secret('microservicekey-rd-location-ref-api', 'LRD_API_S2S_SECRET')
   ],
   'rd-${env}': [
     secret('LOC-REF-OAUTH2-CLIENT-SECRET', 'LOC_REF_OAUTH2_CLIENT_SECRET'),
