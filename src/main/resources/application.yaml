@@ -37,7 +37,7 @@ spring:
         registration:
           oidc:
             client-id: microservicekey-rd-location-ref-api
-            client-secret: ${LRD_API_S2S_SECRET:}
+            client-secret: ${LOCATION_REF_API_S2S_SECRET:}
   jackson:
     date-format: yyyy-MM-dd
   flyway:
@@ -82,7 +82,7 @@ security:
 ### dependency configuration
 idam:
   s2s-auth:
-    totp_secret: ${LRD_API_S2S_SECRET:}
+    totp_secret: ${LOCATION_REF_API_S2S_SECRET:}
     microservice: rd_location_ref_api
     url: ${S2S_URL:http://rpe-service-auth-provider-aat.service.core-compute-aat.internal}
   s2s-authorised:
