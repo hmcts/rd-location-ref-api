@@ -23,8 +23,8 @@ While not essential, it is highly recommended to use the pre-push git hook inclu
 If running locally for development or testing you will need to set the following environment variables
 
 * export POSTGRES_USERNAME=dblocrefdata
-* export POSTGRES_PASSWORD=dblocrefdata
-* export S2S_SECRET=AAAAAAAAAAAAAAAC
+* export POSTGRES_PASSWORD=<please check with the dev team>
+* export S2S_SECRET=<please check with the dev team>
 
 ### Running the application
 
