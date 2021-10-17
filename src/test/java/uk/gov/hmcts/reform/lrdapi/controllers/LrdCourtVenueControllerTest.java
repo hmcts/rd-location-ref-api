@@ -94,4 +94,10 @@ public class LrdCourtVenueControllerTest {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*"));
     }
+
+    @Test
+    public void testGetCourtVenuesBySearchStringWithInvalidCourtTypeIdWithComma() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,"));
+    }
 }
