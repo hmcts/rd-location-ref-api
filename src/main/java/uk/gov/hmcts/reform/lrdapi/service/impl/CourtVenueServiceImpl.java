@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -30,6 +32,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
@@ -86,6 +89,20 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         return new LrdCourtVenuesByServiceCodeResponse(courtType, serviceCodeIgnoreCase);
 
+    }
+
+    @Override
+    public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId) {
+
+        List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
+            Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
+                Collectors.toList());
+        List<LrdCourtVenueResponse> lrdCourtVenueResponseList =
+            getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
+                searchString.toUpperCase(),
+                courtTypeIdList
+            ));
+        return lrdCourtVenueResponseList;
     }
 
     @Override

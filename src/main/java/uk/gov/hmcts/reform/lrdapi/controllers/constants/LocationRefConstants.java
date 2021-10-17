@@ -62,4 +62,13 @@ public class LocationRefConstants {
     public static final String NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME =
         "No court venues found for court venue name: %s";
 
+    public static final String ALPHA_NUMERIC_VALUE_ERROR_MESSAGE =
+        "The only alpha-numeric value is allowed";
+
+    public static final String SEARCH_STRING_LESS_THAN_THREE_CHAR =
+        "Search string is less than 3 characters";
+
+    public static final String COURT_TYPE_ID_START_END_WITH_COMMA =
+        "Invalid court type id";
+
 }

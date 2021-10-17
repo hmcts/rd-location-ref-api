@@ -268,6 +268,7 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId(anyString(),anyList())).thenReturn(courtVenues);
     }
 
     private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {
