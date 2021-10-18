@@ -23,6 +23,10 @@ spring:
           lob:
             non_contextual_creation: true
           time_zone: UTC
+  cache:
+    cache-names: token
+    caffeine:
+      spec: maximumSize=50,expireAfterWrite=1m
 
   main:
     allow-bean-definition-overriding: true
