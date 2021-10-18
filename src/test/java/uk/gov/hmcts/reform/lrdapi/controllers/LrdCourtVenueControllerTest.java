@@ -80,7 +80,7 @@ public class LrdCourtVenueControllerTest {
     @Test
     public void testGetCourtVenuesBySearchStringWithInvalidString() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("@AB_C", null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null));
     }
 
     @Test

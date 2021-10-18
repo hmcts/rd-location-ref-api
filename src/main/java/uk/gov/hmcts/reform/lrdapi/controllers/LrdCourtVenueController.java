@@ -148,7 +148,9 @@ public class LrdCourtVenueController {
     }
 
     @ApiOperation(
-        value = "This API will retrieve Court Venues for the request provided",
+        value = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
+            + "inputs any 3 characters, they will call this api to fetch "
+            + "the required result.",
         notes = "No roles required to access this API",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
