@@ -59,8 +59,8 @@ import static org.mockito.Mockito.when;
 @Provider("referenceData_location")
 @PactBroker(scheme = "${PACT_BROKER_SCHEME:http}",
     host = "${PACT_BROKER_URL:localhost}",
-    port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
-    @VersionSelector(tag = "master")})
+    port = "${PACT_BROKER_PORT:9292}", consumerVersionSelectors = {
+    @VersionSelector(tag = "Dev")})
 @ContextConfiguration(classes = {LrdApiController.class, LrdCourtVenueController.class, LrdServiceImpl.class,
     LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class, CourtVenueServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
@@ -103,6 +103,7 @@ public class LrdApiProviderTest {
     @BeforeEach
     void before(PactVerificationContext context) {
         MockMvcTestTarget testTarget = new MockMvcTestTarget();
+        System.setProperty("pact.verifier.publishResults","true");
         testTarget.setControllers(
             lrdApiController, lrdCourtVenueController);
         if (nonNull(context)) {
@@ -268,7 +269,21 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
-        when(courtVenueRepository.findBySearchStringAndCourtTypeId(anyString(),anyList())).thenReturn(courtVenues);
+    }
+
+    @State({"Court Venues exist for the search string provided"})
+    public void toReturnCourtVenuesBySearchString() {
+        Cluster cluster = getCluster();
+
+        Region region = getRegion();
+
+        CourtType courtType = getCourtType();
+
+        var courtVenues = getMultipleCourtVenues(cluster, region, courtType);
+
+        courtType.setCourtVenues(courtVenues);
+
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId(any(),any())).thenReturn(courtVenues);
     }
 
     private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {
