@@ -61,7 +61,7 @@ public class ValidationUtils {
         checkIfStringStartsAndEndsWithComma(courtTypeId, COURT_TYPE_ID_START_END_WITH_COMMA);
         Arrays.stream(courtTypeId.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
             if (!isRegexSatisfied(c.trim(), ALPHA_NUMERIC_REGEX)) {
-                throw new InvalidRequestException(ALPHA_NUMERIC_VALUE_ERROR_MESSAGE);
+                throw new InvalidRequestException(COURT_TYPE_ID_START_END_WITH_COMMA);
             }
         });
     }

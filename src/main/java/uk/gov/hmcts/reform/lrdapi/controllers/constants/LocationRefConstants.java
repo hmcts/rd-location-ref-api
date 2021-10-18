@@ -69,6 +69,6 @@ public class LocationRefConstants {
         "Search string is less than 3 characters";
 
     public static final String COURT_TYPE_ID_START_END_WITH_COMMA =
-        "Invalid court type id";
+        "Invalid court type ids";
 
 }
