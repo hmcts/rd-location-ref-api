@@ -10,9 +10,13 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -23,11 +27,57 @@ public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthori
     private static final String HTTP_STATUS_STR = "http_status";
 
     @Test
+    public void shouldRetrieveCourtVenues_For_SearchString_WithStatusCode_200()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+        assertThat(response).isNotEmpty();
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+        var courtNameVerified = courtVenueResponse
+            .stream()
+            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
+            .collect(Collectors.toList());
+        courtVenueResponse.removeAll(courtNameVerified);
+
+        assertTrue(courtVenueResponse.isEmpty());
+    }
+
+    @Test
+    public void shouldRetrieveCourtVenues_For_SearchString_And_CourtTypeId_WithStatusCode_200()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&court-type-id=17,10,23",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+        assertThat(response).isNotEmpty();
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+        var courtNameVerified = courtVenueResponse
+            .stream()
+            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
+            .collect(Collectors.toList());
+        courtVenueResponse.removeAll(courtNameVerified);
+
+        assertTrue(courtVenueResponse.isEmpty());
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void shouldReturn400_WhenSearchStringLessThan3Char() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString("?search-string=zz&court-type-id=1000",
-                                                         ErrorResponse.class, path
+                                                       ErrorResponse.class, path
             );
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
