@@ -58,14 +58,12 @@ public class ValidationUtils {
     }
 
     public static void validateCourtTypeId(String courtTypeId) {
-        if (StringUtils.isNotBlank(courtTypeId)) {
-            checkIfStringStartsAndEndsWithComma(courtTypeId, COURT_TYPE_ID_START_END_WITH_COMMA);
-            for (String id : courtTypeId.strip().split(REG_EXP_COMMA_DILIMETER)) {
-                if (!isRegexSatisfied(id.trim(), ALPHA_NUMERIC_REGEX)) {
-                    throw new InvalidRequestException(ALPHA_NUMERIC_VALUE_ERROR_MESSAGE);
-                }
+        checkIfStringStartsAndEndsWithComma(courtTypeId, COURT_TYPE_ID_START_END_WITH_COMMA);
+        Arrays.stream(courtTypeId.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
+            if (!isRegexSatisfied(c.trim(), ALPHA_NUMERIC_REGEX)) {
+                throw new InvalidRequestException(ALPHA_NUMERIC_VALUE_ERROR_MESSAGE);
             }
-        }
+        });
     }
 
     /**

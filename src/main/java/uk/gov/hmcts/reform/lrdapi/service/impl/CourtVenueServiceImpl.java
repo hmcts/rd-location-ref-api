@@ -93,7 +93,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId) {
-
+        log.info("{} : Obtaining court venue for search String: searchString: {} courtTypeId: {}"
+            , loggingComponentName, searchString, courtTypeId);
         List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
             Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
                 Collectors.toList());

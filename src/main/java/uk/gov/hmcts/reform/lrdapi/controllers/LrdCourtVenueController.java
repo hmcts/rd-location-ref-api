@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -182,7 +183,9 @@ public class LrdCourtVenueController {
         @RequestParam(value = "court-type-id", required = false) String courtTypeId) {
         String trimmedSearchString = searchString.strip();
         validateSearchString(trimmedSearchString);
-        validateCourtTypeId(courtTypeId);
+        if (StringUtils.isNotBlank(courtTypeId)) {
+            validateCourtTypeId(courtTypeId);
+        }
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
             trimmedSearchString,
             courtTypeId
