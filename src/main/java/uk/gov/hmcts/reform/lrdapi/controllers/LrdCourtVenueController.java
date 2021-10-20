@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
@@ -181,8 +182,16 @@ public class LrdCourtVenueController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenuesBySearchString(
-        @RequestParam(value = "search-string", required = true) String searchString,
-        @RequestParam(value = "court-type-id", required = false) String courtTypeId) {
+        @RequestParam(value = "search-string", required = true)
+        @ApiParam(name = "search-string",
+            value = "Alphabets, Numeric And Special characters(_@.,’&-() ) "
+                + "only allowed and String should contain minimum three chars.",
+            required = true)
+            String searchString,
+        @RequestParam(value = "court-type-id", required = false)
+        @ApiParam(name = "court-type-id",
+            value = "Alphabets and Numeric values only allowed in comma separated format")
+            String courtTypeId) {
         String trimmedSearchString = searchString.strip();
         validateSearchString(trimmedSearchString);
         if (StringUtils.isNotBlank(courtTypeId)) {
