@@ -174,6 +174,9 @@ public class LrdApiProviderTest {
             .postcode("AB11 6LT")
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
 
         Set<CourtVenue> courtVenues = new HashSet<>();
@@ -287,6 +290,9 @@ public class LrdApiProviderTest {
             .dxAddress("dxAddress1")
             .courtStatus("Open")
             .courtName("courtName1")
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
     }
 
@@ -307,6 +313,9 @@ public class LrdApiProviderTest {
             .dxAddress("dxAddress")
             .courtStatus("Open")
             .courtName("courtName")
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
 
         CourtVenue secondCourtVenue = CourtVenue.builder()
@@ -325,6 +334,9 @@ public class LrdApiProviderTest {
             .dxAddress("dxAddress")
             .courtStatus("Closed")
             .courtName("courtName")
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
 
         return List.of(firstCourtVenue, secondCourtVenue);
