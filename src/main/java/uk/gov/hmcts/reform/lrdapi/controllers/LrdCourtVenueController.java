@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ import javax.validation.constraints.NotNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
 
 @RequestMapping(
     path = "/refdata/location/court-venues"
@@ -142,5 +146,61 @@ public class LrdCourtVenueController {
             .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @ApiOperation(
+        value = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
+            + "inputs any 3 characters, they will call this api to fetch "
+            + "the required result.",
+        notes = "No roles required to access this API",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved list of Court Venues for the request provided",
+            response = LrdCourtVenueResponse[].class
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
+    })
+    @GetMapping(
+        path = "/venue-search",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenuesBySearchString(
+        @RequestParam(value = "search-string", required = true)
+        @ApiParam(name = "search-string",
+            value = "Alphabets, Numeric And Special characters(_@.,’&-() ) "
+                + "only allowed and String should contain minimum three chars.",
+            required = true)
+            String searchString,
+        @RequestParam(value = "court-type-id", required = false)
+        @ApiParam(name = "court-type-id",
+            value = "Alphabets and Numeric values only allowed in comma separated format")
+            String courtTypeId) {
+        String trimmedSearchString = searchString.strip();
+        validateSearchString(trimmedSearchString);
+        if (StringUtils.isNotBlank(courtTypeId)) {
+            validateCourtTypeId(courtTypeId);
+        }
+        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
+            trimmedSearchString,
+            courtTypeId
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 }

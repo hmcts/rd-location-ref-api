@@ -12,12 +12,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SEARCH_STRING_VALUE_ERROR_MESSAGE;
 
 public class ValidationUtils {
 
@@ -43,6 +47,21 @@ public class ValidationUtils {
             checkSpecialCharacters(inputValue);
         }
         return true;
+    }
+
+    public static void validateSearchString(String searchString) {
+        if (!isRegexSatisfied(searchString, ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX)) {
+            throw new InvalidRequestException(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, searchString));
+        }
+    }
+
+    public static void validateCourtTypeId(String courtTypeId) {
+        checkIfStringStartsAndEndsWithComma(courtTypeId, COURT_TYPE_ID_START_END_WITH_COMMA);
+        Arrays.stream(courtTypeId.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
+            if (!isRegexSatisfied(c.trim(), ALPHA_NUMERIC_REGEX)) {
+                throw new InvalidRequestException(String.format(COURT_TYPE_ID_START_END_WITH_COMMA, courtTypeId));
+            }
+        });
     }
 
     /**
