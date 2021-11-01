@@ -270,6 +270,21 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
     }
 
+    @State({"Court Venues exist for the search string provided"})
+    public void toReturnCourtVenuesBySearchString() {
+        Cluster cluster = getCluster();
+
+        Region region = getRegion();
+
+        CourtType courtType = getCourtType();
+
+        var courtVenues = getMultipleCourtVenues(cluster, region, courtType);
+
+        courtType.setCourtVenues(courtVenues);
+
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId(any(),any())).thenReturn(courtVenues);
+    }
+
     private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {
         return CourtVenue.builder()
             .courtVenueId(1L)
