@@ -115,6 +115,13 @@ public class LrdApiClient {
         return mapCourtVenuesByServiceCodeResponse(responseEntity,expectedClass);
     }
 
+    public Object findCourtVenuesBySearchString(String queryParam, Class<?> clazz, String path) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity =
+            getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
+        return mapCourtVenuesBySearchStringResponse(responseEntity, clazz);
+    }
+
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
         JsonProcessingException {
 
@@ -183,6 +190,23 @@ public class LrdApiClient {
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+
+    }
+
+    private Object mapCourtVenuesBySearchStringResponse(ResponseEntity<Object> responseEntity, Class clazz) throws
+        JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+
+        if (status.is2xxSuccessful()) {
+            return objectMapper.convertValue(responseEntity.getBody(), clazz);
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body", objectMapper.readValue(
                 responseEntity.getBody().toString(), ErrorResponse.class));
             errorResponseMap.put("http_status", status);
             return errorResponseMap;
