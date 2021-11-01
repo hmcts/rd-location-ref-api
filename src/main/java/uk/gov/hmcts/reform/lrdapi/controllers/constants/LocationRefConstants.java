@@ -11,6 +11,7 @@ public class LocationRefConstants {
     public static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©09+]*$";
     public static final String REG_EXP_WHITE_SPACE = "\\s";
     public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
+    public static final String ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX = "^[A-Za-z0-9_@.,'&-() ]{3,}$";
     public static final String ALPHABET_REGEX = "[a-zA-Z]";
     public static final String ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE = "[0-9a-zA-Z]+";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
@@ -61,5 +62,11 @@ public class LocationRefConstants {
 
     public static final String NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME =
         "No court venues found for court venue name: %s";
+
+    public static final String SEARCH_STRING_VALUE_ERROR_MESSAGE =
+        "Invalid search string: %s";
+
+    public static final String COURT_TYPE_ID_START_END_WITH_COMMA =
+        "Invalid court type ids: %s";
 
 }
