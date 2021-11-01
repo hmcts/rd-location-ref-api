@@ -38,4 +38,14 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.courtStatus='Open'")
     List<CourtVenue> findAllWithOpenCourtStatus();
+
+    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
+        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
+        + "where cv.courtStatus='Open' "
+        + "and ((:courtTypeId) is null or (cv.courtTypeId in (:courtTypeId))) "
+        + "and (upper(cv.siteName) like %:searchString% "
+        + "or upper(cv.courtName) like %:searchString% "
+        + "or upper(cv.postcode) like %:searchString% "
+        + "or upper(cv.courtAddress) like %:searchString%)")
+    List<CourtVenue> findBySearchStringAndCourtTypeId(String searchString, List<String> courtTypeId);
 }
