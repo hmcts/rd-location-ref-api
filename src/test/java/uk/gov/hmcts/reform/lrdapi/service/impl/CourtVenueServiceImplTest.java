@@ -271,6 +271,42 @@ public class CourtVenueServiceImplTest {
         verify(courtVenueRepository, times(1)).findByCourtVenueNameOrSiteName(anyString());
     }
 
+    @Test
+    public void test_RetrieveCourtVenuesBySearchString() {
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId(anyString(),
+                                                                   anyList())).thenReturn(prepareCourtVenue());
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenuesBySearchString("ABC", "1,2");
+
+        LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
+
+        verifySingleResponse(courtVenueResponse);
+    }
+
+    @Test
+    public void test_GetCourtVenuesBySearchStringWhenCourtTypeIdIsNull() {
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC", null)).thenReturn(prepareCourtVenue());
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenuesBySearchString("ABC", null);
+
+        LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
+
+        verifySingleResponse(courtVenueResponse);
+    }
+
+    @Test
+    public void test_GetCourtVenuesBySearchString_NotFound() {
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC", null)).thenReturn(new ArrayList<>());
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenuesBySearchString("ABC", null);
+        assertEquals(0,courtVenueResponses.size());
+        verify(courtVenueRepository, times(1)).findBySearchStringAndCourtTypeId("ABC",null);
+    }
+
+
     private void verifyMultiResponse(List<LrdCourtVenueResponse> courtVenueResponses) {
         assertThat(courtVenueResponses).hasSize(2);
 
