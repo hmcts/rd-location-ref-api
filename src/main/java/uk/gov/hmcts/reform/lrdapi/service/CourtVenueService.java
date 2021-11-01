@@ -19,4 +19,6 @@ public interface CourtVenueService {
      */
     List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, Integer regionId,
                                                           Integer clusterId, String courtVenueName);
+
+    List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId);
 }
