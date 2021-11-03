@@ -319,6 +319,9 @@ public class CourtVenueServiceImplTest {
                 assertThat(courtVenueResponse.getClusterId()).isEqualTo("1");
                 assertThat(courtVenueResponse.getClusterName()).isEqualTo("cluster name");
                 assertThat(courtVenueResponse.getPostcode()).isEqualTo("postcode");
+                assertThat(courtVenueResponse.getVenueName()).isEqualTo("venueName");
+                assertThat(courtVenueResponse.getIsCaseManagementLocation()).isEqualTo("Y");
+                assertThat(courtVenueResponse.getIsHearingLocation()).isEqualTo("Y");
             } else {
                 assertThat(courtVenueResponse.getEpimmsId()).isEqualTo("1234");
                 assertThat(courtVenueResponse.getClusterId()).isEqualTo("1");
@@ -327,6 +330,9 @@ public class CourtVenueServiceImplTest {
                 assertThat(courtVenueResponse.getClusterId()).isEqualTo("1");
                 assertThat(courtVenueResponse.getClusterName()).isEqualTo("cluster name");
                 assertThat(courtVenueResponse.getPostcode()).isEqualTo("postcode1");
+                assertThat(courtVenueResponse.getVenueName()).isEqualTo("venueName1");
+                assertThat(courtVenueResponse.getIsCaseManagementLocation()).isEqualTo("N");
+                assertThat(courtVenueResponse.getIsHearingLocation()).isEqualTo("N");
             }
         });
     }
@@ -341,6 +347,9 @@ public class CourtVenueServiceImplTest {
         assertThat(lrdCourtVenueResponse.getPostcode()).isEqualTo("postcode");
         assertThat(lrdCourtVenueResponse.getCourtName()).isEqualTo("Court ABC");
         assertThat(lrdCourtVenueResponse.getSiteName()).isEqualTo("COURT ABC");
+        assertThat(lrdCourtVenueResponse.getVenueName()).isEqualTo("venueName");
+        assertThat(lrdCourtVenueResponse.getIsCaseManagementLocation()).isEqualTo("Y");
+        assertThat(lrdCourtVenueResponse.getIsHearingLocation()).isEqualTo("Y");
     }
 
     private List<CourtVenue> prepareCourtVenue() {
@@ -359,6 +368,9 @@ public class CourtVenueServiceImplTest {
                             .courtType(getCourtType())
                             .courtName("Court ABC")
                             .siteName("COURT ABC")
+                            .venueName("venueName")
+                            .isCaseManagementLocation("Y")
+                            .isHearingLocation("Y")
                             .build());
 
         return courtVenues;
@@ -377,6 +389,9 @@ public class CourtVenueServiceImplTest {
                             .courtName("courtName1")
                             .courtType(getCourtType())
                             .openForPublic(true)
+                            .venueName("venueName1")
+                            .isCaseManagementLocation("N")
+                            .isHearingLocation("N")
                             .build());
 
         return courtVenues;
