@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
@@ -13,12 +13,14 @@ import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class LrdCourtVenueControllerTest {
+@ExtendWith(MockitoExtension.class)
+class LrdCourtVenueControllerTest {
 
     @InjectMocks
     LrdCourtVenueController lrdCourtVenueController;
@@ -26,40 +28,35 @@ public class LrdCourtVenueControllerTest {
     @Mock
     CourtVenueService courtVenueServiceMock;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    public void testGetCourtVenues_ByServiceCode_Returns200() {
+    void testGetCourtVenues_ByServiceCode_Returns200() {
         ResponseEntity<Object> responseEntity =
             lrdCourtVenueController.retrieveCourtVenuesByServiceCode("BFA1");
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesByServiceCode("BFA1");
     }
 
     @Test
-    public void testGetCourtVenues_ByBlankServiceCode_Returns400() {
+    void testGetCourtVenues_ByBlankServiceCode_Returns400() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesByServiceCode(""));
     }
 
     @Test
-    public void testGetCourtVenues_ByInvalidServiceCode_Returns400() {
+    void testGetCourtVenues_ByInvalidServiceCode_Returns400() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesByServiceCode("@AB_C"));
     }
 
     @Test
-    public void testGetCourtVenues_returns200() {
+    void testGetCourtVenues_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues("1234", null, null, null, null);
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails("1234",
                                                                           null, null, null, null
         );

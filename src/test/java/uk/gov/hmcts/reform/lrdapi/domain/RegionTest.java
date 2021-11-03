@@ -1,31 +1,31 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RegionTest {
+class RegionTest {
 
     @Test
-    public void testRegionConstructor() {
+    void testRegionConstructor() {
         Region region = new Region("ID", "Description", "Welsh Description");
 
-        assertThat(region.getRegionId()).isEqualTo("ID");
-        assertThat(region.getDescription()).isEqualTo("Description");
-        assertThat(region.getWelshDescription()).isEqualTo("Welsh Description");
+        assertEquals("ID", region.getRegionId());
+        assertEquals("Description", region.getDescription());
+        assertEquals("Welsh Description", region.getWelshDescription());
     }
 
     @Test
-    public void testRegionSetter() {
+    void testRegionSetter() {
         Region region = new Region();
 
         region.setRegionId("ID");
         region.setDescription("Description");
         region.setWelshDescription("Welsh Description");
 
-        assertThat(region.getRegionId()).isEqualTo("ID");
-        assertThat(region.getDescription()).isEqualTo("Description");
-        assertThat(region.getWelshDescription()).isEqualTo("Welsh Description");
+        assertEquals("ID", region.getRegionId());
+        assertEquals("Description", region.getDescription());
+        assertEquals("Welsh Description", region.getWelshDescription());
     }
 
 }
