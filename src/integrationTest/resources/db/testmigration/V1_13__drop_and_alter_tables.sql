@@ -18,6 +18,9 @@ alter table court_venue add column court_status varchar(32);
 alter table court_venue add column court_open_date timestamp;
 alter table court_venue add column court_name varchar(256);
 alter table court_venue alter column dx_address type varchar(64);
+alter table court_venue add column venue_name varchar(256);
+alter table court_venue add column is_case_management_location varchar(1);
+alter table court_venue add column is_hearing_location varchar(1);
 
 alter table court_type rename column court_location_category_id to court_type_id;
 alter table court_type rename column court_location_category to court_type;
