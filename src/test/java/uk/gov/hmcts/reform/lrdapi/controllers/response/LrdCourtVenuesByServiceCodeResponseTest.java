@@ -38,6 +38,9 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
             .postcode("AB11 6LT")
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
 
         courtType.setCourtVenues(Collections.singletonList(courtVenue));
@@ -51,6 +54,9 @@ public class LrdCourtVenuesByServiceCodeResponseTest {
         assertEquals(courtType.getTypeOfCourt(), courtVenuesByServiceCodeResponse.getCourtType());
         assertNull(courtVenuesByServiceCodeResponse.getWelshCourtType());
         assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues());
+        assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getVenueName());
+        assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getIsCaseManagementLocation());
+        assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getIsHearingLocation());
 
     }
 }
