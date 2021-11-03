@@ -91,6 +91,12 @@ public class CourtVenue implements Serializable {
 
     private LocalDateTime courtOpenDate;
 
+    private String venueName;
+
+    private String isCaseManagementLocation;
+
+    private String isHearingLocation;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",
         insertable = false, updatable = false, nullable = false)
