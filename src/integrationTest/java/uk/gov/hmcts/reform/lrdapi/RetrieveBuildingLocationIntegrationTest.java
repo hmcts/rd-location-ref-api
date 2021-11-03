@@ -289,8 +289,8 @@ public class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEna
     private LrdBuildingLocationResponse getBuildingLocationSampleResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
-            .courtType("Employment Tribunal")
+            .courtTypeId("23")
+            .courtType("Immigration and Asylum Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic("YES")
             .epimmsId("123456789")
@@ -301,6 +301,9 @@ public class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEna
             .postcode("AB11 6LT")
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId("1")
+            .venueName("venueName1")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")

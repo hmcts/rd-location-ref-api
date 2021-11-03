@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import java.time.LocalDateTime;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LrdCourtVenueResponseTest {
@@ -41,6 +42,9 @@ public class LrdCourtVenueResponseTest {
             .postcode("AB11 6LT")
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -52,6 +56,9 @@ public class LrdCourtVenueResponseTest {
         assertEquals(region.getDescription(), courtVenueResponse.getRegion());
         assertNull(courtVenueResponse.getClosedDate());
         assertNull(courtVenueResponse.getCourtOpenDate());
+        assertNotNull(courtVenueResponse.getVenueName());
+        assertNotNull(courtVenueResponse.getIsCaseManagementLocation());
+        assertNotNull(courtVenueResponse.getIsHearingLocation());
     }
 
     @Test
@@ -85,6 +92,9 @@ public class LrdCourtVenueResponseTest {
             .courtVenueId(1L)
             .courtOpenDate(now)
             .closedDate(now)
+            .venueName("venueName")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -94,6 +104,9 @@ public class LrdCourtVenueResponseTest {
         assertEquals(cluster.getClusterName(), courtVenueResponse.getClusterName());
         assertNull(courtVenueResponse.getRegion());
         assertNull(courtVenueResponse.getRegionId());
+        assertNotNull(courtVenueResponse.getVenueName());
+        assertNotNull(courtVenueResponse.getIsCaseManagementLocation());
+        assertNotNull(courtVenueResponse.getIsHearingLocation());
         assertEquals(now.toString(), courtVenueResponse.getClosedDate());
         assertEquals(now.toString(), courtVenueResponse.getCourtOpenDate());
     }
