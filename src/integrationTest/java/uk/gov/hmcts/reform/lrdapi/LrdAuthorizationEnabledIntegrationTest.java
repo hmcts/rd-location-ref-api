@@ -7,18 +7,18 @@ import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.extension.ResponseTransformer;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
 import net.minidev.json.JSONObject;
-import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.lrdapi.config.WireMockExtension;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.impl.FeatureToggleServiceImpl;
@@ -53,14 +53,14 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
     @Autowired
     protected ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
 
-    @ClassRule
-    public static WireMockRule s2sService = new WireMockRule(wireMockConfig().port(8990));
+    @RegisterExtension
+    public static WireMockExtension s2sService = new WireMockExtension(8990);
 
-    @ClassRule
-    public static WireMockRule idamService = new WireMockRule(5000);
+    @RegisterExtension
+    public static WireMockExtension idamService = new WireMockExtension(5000);
 
-    @ClassRule
-    public static WireMockRule mockHttpServerForOidc = new WireMockRule(wireMockConfig().port(7000));
+    @RegisterExtension
+    public static WireMockExtension mockHttpServerForOidc = new WireMockExtension(7000);
 
 
     protected LrdApiClient lrdApiClient;
@@ -74,13 +74,13 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
     @Value("${oidc.expiration}")
     private long expiration;
 
-    @Before
+    @BeforeEach
     public void setUpClient() {
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(true);
         lrdApiClient = new LrdApiClient(port, issuer, expiration);
     }
 
-    @Before
+    @BeforeEach
     public void setUpIdamStubs() throws Exception {
 
         s2sService.stubFor(get(urlEqualTo("/details"))
