@@ -2,41 +2,46 @@ package uk.gov.hmcts.reform.lrdapi;
 
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
-import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
+import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
+import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner.getFeatureFlagName;
-import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
-@RunWith(CustomSerenityRunner.class)
+@SerenityTest
+@SpringBootTest
 @WithTags({@WithTag("testType:Functional")})
 @ActiveProfiles("functional")
-public class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFunctionalTest {
+class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFunctionalTest {
 
     public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesByServiceCode";
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    public void getCourtVenuesByServiceCodeWithStatusCode_200() {
+    void getCourtVenuesByServiceCodeWithStatusCode_200() {
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "BFA1");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerification(response);
     }
 
 
     @Test
+    @ExtendWith(FeatureToggleConditionExtension.class)
     @ToggleEnable(mapKey = mapKey, withFeature = false)
-    public void should_retrieve_403_when_Api_toggled_off() {
-        String exceptionMessage = getFeatureFlagName().concat(" ").concat(FORBIDDEN_EXCEPTION_LD);
+    void should_retrieve_403_when_Api_toggled_off() {
+        String exceptionMessage = getToggledOffMessage();
         validateErrorResponse(
             (ErrorResponse) lrdApiClient.retrieveCourtVenuesByServiceCode(
                 HttpStatus.FORBIDDEN, ""),
@@ -47,11 +52,11 @@ public class RetrieveCourtVenuesByServiceCodeFunctionalTest extends Authorizatio
 
 
     private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
-        assertThat(response.getServiceCode()).isEqualTo("BFA1");
-        assertThat(response.getCourtTypeId()).isEqualTo("23");
-        assertThat(response.getCourtType()).isEqualTo("Immigration and Asylum Tribunal");
-        assertThat(response.getWelshCourtType()).isNull();
-        assertThat(response.getCourtVenues()).isNotNull();
+        assertEquals("BFA1", response.getServiceCode());
+        assertEquals("23", response.getCourtTypeId());
+        assertEquals("Immigration and Asylum Tribunal", response.getCourtType());
+        assertNull(response.getWelshCourtType());
+        assertNotNull(response.getCourtVenues());
     }
 
 }

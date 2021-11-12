@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.lrdapi;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.serenitybdd.junit5.SerenityTest;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SerenityTest
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings("unchecked")
 class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
