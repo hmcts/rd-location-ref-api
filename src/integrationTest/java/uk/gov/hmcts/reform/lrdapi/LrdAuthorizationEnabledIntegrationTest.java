@@ -18,12 +18,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import uk.gov.hmcts.reform.lrdapi.config.WireMockExtension;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.impl.FeatureToggleServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.util.KeyGenUtil;
 import uk.gov.hmcts.reform.lrdapi.util.LrdApiClient;
+import uk.gov.hmcts.reform.lrdapi.util.WireMockExtension;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

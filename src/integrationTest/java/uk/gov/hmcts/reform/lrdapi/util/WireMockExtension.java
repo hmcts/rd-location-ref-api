@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.lrdapi.config;
+package uk.gov.hmcts.reform.lrdapi.util;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.extension.AfterEachCallback;
