@@ -44,7 +44,7 @@ public class FeatureToggleConditionExtension implements ExecutionCondition {
 
                                    final boolean isFlagEnabled =
                                        featureToggleService
-                                           .isFlagEnabled("rd_user_profile_api", flagName);
+                                           .isFlagEnabled("rd_location_ref_api", flagName);
 
                                    ConditionEvaluationResult evaluationResult = null;
 
