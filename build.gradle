@@ -253,7 +253,7 @@ jacocoTestReport {
 pitest {
   junit5PluginVersion = '0.15'
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
-  testSourceSets = [sourceSets.integrationTest, sourceSets.test]
+  testSourceSets = [sourceSets.test]
   excludedClasses = [
     'uk.gov.hmcts.reform.lrdapi.config.*',
     'uk.gov.hmcts.reform.lrdapi.controllers.*',
