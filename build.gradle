@@ -26,7 +26,7 @@ apply plugin: 'idea'
 def versions = [
         lombok             : '1.18.20',
         gradlePitest       : '1.5.1',
-        pitest             : '1.5.1',
+        pitest             : '1.7.0',
         reformLogging      : '5.1.7',
         reformHealthStarter: '0.0.5',
         reformS2sClient    : '4.0.0',
@@ -252,7 +252,6 @@ jacocoTestReport {
 pitest {
   junit5PluginVersion = '0.15'
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
-  testSourceSets = [sourceSets.integrationTest, sourceSets.test]
   excludedClasses = [
     'uk.gov.hmcts.reform.lrdapi.config.*',
     'uk.gov.hmcts.reform.lrdapi.controllers.*',
@@ -264,7 +263,7 @@ pitest {
   historyOutputLocation = 'build/reports/pitest/fastermutationtestingoutput'
   outputFormats = ['XML', 'HTML']
   timestampedReports = true
-  mutationThreshold = 90
+  mutationThreshold = 80
   useClasspathFile = true
 }
 
