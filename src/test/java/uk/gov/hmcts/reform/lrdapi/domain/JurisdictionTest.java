@@ -1,25 +1,26 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JurisdictionTest {
+class JurisdictionTest {
 
     @Test
-    public void testCreateJurisdiction() {
+    void testCreateJurisdiction() {
 
         Jurisdiction jurisdiction = new Jurisdiction(1L, "jurisdiction");
 
-        assertThat(jurisdiction).isNotNull();
-        assertThat(jurisdiction.getDescription()).isEqualTo("jurisdiction");
-        assertThat(jurisdiction.getJurisdictionId()).isEqualTo(1L);
+        assertNotNull(jurisdiction);
+        assertEquals("jurisdiction", jurisdiction.getDescription());
+        assertEquals(1L, jurisdiction.getJurisdictionId());
 
         Jurisdiction jurisdictionOne = new Jurisdiction();
         jurisdictionOne.setDescription("jurisdiction");
         jurisdictionOne.setJurisdictionId(1L);
-        assertThat(jurisdictionOne).isNotNull();
-        assertThat(jurisdiction.getDescription()).isEqualTo("jurisdiction");
-        assertThat(jurisdiction.getJurisdictionId()).isEqualTo(1L);
+        assertNotNull(jurisdictionOne);
+        assertEquals("jurisdiction", jurisdictionOne.getDescription());
+        assertEquals(1L, jurisdictionOne.getJurisdictionId());
     }
 }

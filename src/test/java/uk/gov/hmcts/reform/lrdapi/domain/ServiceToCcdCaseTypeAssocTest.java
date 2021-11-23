@@ -1,17 +1,18 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServiceToCcdCaseTypeAssocTest {
+class ServiceToCcdCaseTypeAssocTest {
 
     public static final String CCDCASETYPE1 = "CCDCASETYPE1";
     public static final String CCDSERVICENAME = "CCDSERVICENAME";
@@ -39,7 +40,7 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testServiceToCcdCaseTypeAssoc() {
+    void testServiceToCcdCaseTypeAssoc() {
 
         Service service = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc = createAssoc(CCDSERVICENAME);
@@ -47,17 +48,17 @@ public class ServiceToCcdCaseTypeAssocTest {
         serviceToCcdCaseTypeAssoc.setService(service);
         List<Service> services = new ArrayList<>();
         services.add(service);
-        assertThat(serviceToCcdCaseTypeAssoc.getId()).isEqualTo(1L);
-        assertThat(serviceToCcdCaseTypeAssoc.getCcdCaseType()).isEqualTo(CCDCASETYPE1);
-        assertThat(serviceToCcdCaseTypeAssoc.getCcdServiceName()).isEqualTo(CCDSERVICENAME);
-        assertThat(serviceToCcdCaseTypeAssoc.getService()).isNotNull();
-        assertThat(service.getLastUpdate()).isNotNull();
-        assertThat(service.getServiceToCcdCaseTypeAssocs()).isNotNull();
-        assertThat(services.size()).isEqualTo(1);
+        assertEquals(1L, serviceToCcdCaseTypeAssoc.getId());
+        assertEquals(CCDCASETYPE1, serviceToCcdCaseTypeAssoc.getCcdCaseType());
+        assertEquals(CCDSERVICENAME, serviceToCcdCaseTypeAssoc.getCcdServiceName());
+        assertNotNull(serviceToCcdCaseTypeAssoc.getService());
+        assertNotNull(service.getLastUpdate());
+        assertNotNull(service.getServiceToCcdCaseTypeAssocs());
+        assertEquals(1, services.size());
     }
 
     @Test
-    public void testEqualsWithEqualObjects() {
+    void testEqualsWithEqualObjects() {
         Service service1 = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc1 = createAssoc(CCDSERVICENAME);
         serviceToCcdCaseTypeAssoc1.setService(service1);
@@ -69,7 +70,7 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testEqualsWithSameInstance() {
+    void testEqualsWithSameInstance() {
         Service service1 = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc1 = createAssoc(CCDSERVICENAME);
         serviceToCcdCaseTypeAssoc1.setService(service1);
@@ -78,7 +79,7 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testEqualsWithNonEqualObjects() {
+    void testEqualsWithNonEqualObjects() {
         Service service1 = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc1 = createAssoc(CCDSERVICENAME);
         serviceToCcdCaseTypeAssoc1.setService(service1);
@@ -90,7 +91,7 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testEqualsWithNonEqualServiceName() {
+    void testEqualsWithNonEqualServiceName() {
         Service service1 = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc1 = createAssoc(CCDSERVICENAME);
         serviceToCcdCaseTypeAssoc1.setService(service1);
@@ -102,7 +103,7 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testEqualsWithNullObjects() {
+    void testEqualsWithNullObjects() {
         Service service1 = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc1 = createAssoc(CCDSERVICENAME);
         serviceToCcdCaseTypeAssoc1.setService(service1);
@@ -111,7 +112,7 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testEqualsWithDifferentObjectType() {
+    void testEqualsWithDifferentObjectType() {
         Service service = createService(AAA1);
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc = createAssoc(CCDSERVICENAME);
         serviceToCcdCaseTypeAssoc.setService(service);
@@ -120,14 +121,14 @@ public class ServiceToCcdCaseTypeAssocTest {
     }
 
     @Test
-    public void testHashcodeWithServiceNameNonNull() {
+    void testHashcodeWithServiceNameNonNull() {
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc = createAssoc(CCDSERVICENAME);
-        assertThat(serviceToCcdCaseTypeAssoc.hashCode()).isEqualTo(CCDSERVICENAME.length());
+        assertEquals(CCDSERVICENAME.length(), serviceToCcdCaseTypeAssoc.hashCode());
     }
 
     @Test
-    public void testHashcodeWithServiceNameNull() {
+    void testHashcodeWithServiceNameNull() {
         ServiceToCcdCaseTypeAssoc serviceToCcdCaseTypeAssoc = createAssoc(null);
-        assertThat(serviceToCcdCaseTypeAssoc.hashCode()).isEqualTo(1);
+        assertEquals(1, serviceToCcdCaseTypeAssoc.hashCode());
     }
 }

@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
@@ -27,9 +25,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
-public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
+class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
     private static final String ONE_STR = "ONE";
     private static final String TWO_STR = "TWO";
@@ -39,7 +36,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    void retrieveBuildLocations_ValidepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -53,7 +50,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_TwoValidepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    void retrieveBuildLocations_TwoValidepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -67,7 +64,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NoepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    void retrieveBuildLocations_NoepimmsIdGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -81,7 +78,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void getBuildLocations_ValidepimmsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
+    void getBuildLocations_ValidepimmsIdGivenWithLeadingAndTrailingSpace_ReturnValidResponseAndStatusCode200()
         throws JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -95,7 +92,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_InvalidepimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
+    void retrieveBuildLocations_InvalidepimmsIdGiven_ShouldReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -107,7 +104,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_NonStandardCharsepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    void retrieveBuildLocations_NonStandardCharsepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -119,7 +116,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_AsteriskepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    void retrieveBuildLocations_AsteriskepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -131,7 +128,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_AsteriskAlongWithValidepimmsIdGiven_ReturnValidResponseAndStatusCode200() throws
+    void retrieveBuildLocations_AsteriskAlongWithValidepimmsIdGiven_ReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -145,7 +142,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_OnlyTwoCommaGivenAsepimmsId_ReturnErrorResponseAndStatusCode400() throws
+    void retrieveBuildLocations_OnlyTwoCommaGivenAsepimmsId_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -157,7 +154,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_TwoCommaWithValidepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
+    void retrieveBuildLocations_TwoCommaWithValidepimmsIdGiven_ReturnErrorResponseAndStatusCode400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -169,7 +166,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_LaunchDarklyFlagSetToOff_ShouldReturnErrorResponseWithStatusCode403()
+    void retrieveBuildLocations_LaunchDarklyFlagSetToOff_ShouldReturnErrorResponseWithStatusCode403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
@@ -186,7 +183,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
     }
 
     @Test
-    public void retrieveBuildLocations_ValidBuildingLocationName_ShouldReturn200() throws
+    void retrieveBuildLocations_ValidBuildingLocationName_ShouldReturn200() throws
         JsonProcessingException {
         LrdBuildingLocationResponse expectedResponse = getBuildingLocationSampleResponse();
 
@@ -203,7 +200,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_InValidBuildingLocationName_ShouldReturn404() throws
+    void shouldNotRetrieveBuildLocations_InValidBuildingLocationName_ShouldReturn404() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -218,7 +215,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_MultipleBuildingLocationNamePassed_ShouldReturn400() throws
+    void shouldNotRetrieveBuildLocations_MultipleBuildingLocationNamePassed_ShouldReturn400() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -233,7 +230,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_BuildingLocationName_LdFlagSetToOff_ShouldReturn403()
+    void retrieveBuildLocations_BuildingLocationName_LdFlagSetToOff_ShouldReturn403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
@@ -253,7 +250,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_MultipleClusterIdPassed_ShouldReturn400() throws
+    void shouldNotRetrieveBuildLocations_MultipleClusterIdPassed_ShouldReturn400() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -268,7 +265,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_NonNumericClusterIdPassed_ShouldReturn400() throws
+    void shouldNotRetrieveBuildLocations_NonNumericClusterIdPassed_ShouldReturn400() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -283,7 +280,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_ClusterIdWithNoLocationsPassed_ShouldReturn404() throws
+    void shouldNotRetrieveBuildLocations_ClusterIdWithNoLocationsPassed_ShouldReturn404() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -298,7 +295,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_NonExistingClusterId_ShouldReturn404() throws
+    void shouldNotRetrieveBuildLocations_NonExistingClusterId_ShouldReturn404() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -313,7 +310,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ClusterId_LdFlagSetToOff_ShouldReturn403()
+    void retrieveBuildLocations_ClusterId_LdFlagSetToOff_ShouldReturn403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
@@ -333,7 +330,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidRegionIdPassed_ShouldReturn200() throws
+    void retrieveBuildLocations_ValidRegionIdPassed_ShouldReturn200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> actualResponse =
@@ -349,7 +346,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidRegionIdWithLeadingAndTrialingSpacePassed_ShouldReturn200() throws
+    void retrieveBuildLocations_ValidRegionIdWithLeadingAndTrialingSpacePassed_ShouldReturn200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> actualResponse =
@@ -365,7 +362,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_MultipleRegionIdPassed_ShouldReturn400() throws
+    void shouldNotRetrieveBuildLocations_MultipleRegionIdPassed_ShouldReturn400() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -380,7 +377,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_NonNumericRegionIdPassed_ShouldReturn400() throws
+    void shouldNotRetrieveBuildLocations_NonNumericRegionIdPassed_ShouldReturn400() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -395,7 +392,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_RegionIdWithNoLocationsPassed_ShouldReturn404() throws
+    void shouldNotRetrieveBuildLocations_RegionIdWithNoLocationsPassed_ShouldReturn404() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -410,7 +407,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldNotRetrieveBuildLocations_NonExistingCRegionId_ShouldReturn404() throws
+    void shouldNotRetrieveBuildLocations_NonExistingCRegionId_ShouldReturn404() throws
         JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient
@@ -425,7 +422,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_RegionId_LdFlagSetToOff_ShouldReturn403()
+    void retrieveBuildLocations_RegionId_LdFlagSetToOff_ShouldReturn403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(
@@ -446,7 +443,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400WhenMoreThanOneQueryParamsPassed() throws
+    void shouldReturn400WhenMoreThanOneQueryParamsPassed() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -461,7 +458,7 @@ public class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledI
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturnAllBuildingLocationsWithStatus200WhenAllQueryParamsAreEmpty() throws
+    void shouldReturnAllBuildingLocationsWithStatus200WhenAllQueryParamsAreEmpty() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)

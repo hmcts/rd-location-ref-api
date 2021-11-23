@@ -1,15 +1,15 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CourtTypeTest {
+class CourtTypeTest {
 
     @Test
-    public void testCourtType() {
+    void testCourtType() {
 
         LocalDateTime now = LocalDateTime.now();
 
