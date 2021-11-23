@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -14,13 +14,13 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
+class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
     private static final String path = "/building-locations";
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> response = (List<LrdBuildingLocationResponse>)
@@ -34,7 +34,7 @@ public class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEna
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
+    void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> actualResponse =
@@ -50,7 +50,7 @@ public class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEna
 
     @Test
     @SuppressWarnings("unchecked")
-    public void retrieveBuildLocations_ValidClusterIdWithLeadingAndTrailingSpacePassed_ShouldReturn200() throws
+    void retrieveBuildLocations_ValidClusterIdWithLeadingAndTrailingSpacePassed_ShouldReturn200() throws
         JsonProcessingException {
 
         List<LrdBuildingLocationResponse> actualResponse =
