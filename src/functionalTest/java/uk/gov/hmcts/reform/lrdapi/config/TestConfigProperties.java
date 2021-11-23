@@ -23,4 +23,16 @@ public class TestConfigProperties {
     @Value("${idam.auth.clientId:rd-location-ref-api}")
     public String clientId;
 
+    @Value("${s2s-url}")
+    protected String s2sUrl;
+
+    @Value("${s2s-name}")
+    protected String s2sName;
+
+    @Value("${s2s-secret}")
+    protected String s2sSecret;
+
+    @Value("${targetInstance}")
+    protected String lrdApiUrl;
+
 }

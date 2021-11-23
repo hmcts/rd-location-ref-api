@@ -1,11 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
@@ -22,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,7 +31,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CourtVenueServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class CourtVenueServiceImplTest {
 
     @InjectMocks
     CourtVenueServiceImpl courtVenueService;
@@ -42,13 +42,8 @@ public class CourtVenueServiceImplTest {
     @Mock
     CourtVenueRepository courtVenueRepository;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    public void testRetrieveCourtVenuesByServiceCode() {
+    void testRetrieveCourtVenuesByServiceCode() {
         CourtType courtType = CourtType.builder()
             .typeOfCourt("courtType")
             .courtTypeId("10")
@@ -70,7 +65,7 @@ public class CourtVenueServiceImplTest {
         LrdCourtVenuesByServiceCodeResponse response
             = courtVenueService.retrieveCourtVenuesByServiceCode("ABC1");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         assertEquals("ABC1", response.getServiceCode());
         assertEquals(courtType.getCourtTypeId(), response.getCourtTypeId());
         assertEquals(courtType.getTypeOfCourt(), response.getCourtType());
@@ -81,14 +76,14 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void testRetrieveCourtVenuesByServiceCode_WithInvalidServiceCode() {
+    void testRetrieveCourtVenuesByServiceCode_WithInvalidServiceCode() {
         when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 
     @Test
-    public void testRetrieveCourtVenuesByServiceCode_WithNoCourtVenues() {
+    void testRetrieveCourtVenuesByServiceCode_WithNoCourtVenues() {
         CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
         CourtType courtType = new CourtType();
         courtTypeServiceAssoc.setCourtType(courtType);
@@ -99,7 +94,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByEpimsIDs_OneIdPassed() {
+    void test_RetrieveCourtVenuesByEpimsIDs_OneIdPassed() {
 
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareCourtVenue());
 
@@ -113,7 +108,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveBuildingLocationsByEpimsIDs_MultipleIdsPassed() {
+    void test_RetrieveBuildingLocationsByEpimsIDs_MultipleIdsPassed() {
 
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
@@ -123,7 +118,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void testGetAllCourtVenues_EpimmsIdAll() {
+    void testGetAllCourtVenues_EpimmsIdAll() {
         when(courtVenueRepository.findAll())
             .thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
@@ -133,7 +128,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void testGetAllCourtVenues() {
+    void testGetAllCourtVenues() {
         when(courtVenueRepository.findAllWithOpenCourtStatus())
             .thenReturn(prepareCourtVenue());
         List<LrdCourtVenueResponse> courtVenueResponses =
@@ -143,7 +138,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByRegionId() {
+    void test_RetrieveCourtVenuesByRegionId() {
 
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
@@ -157,7 +152,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByClusterId() {
+    void test_RetrieveCourtVenuesByClusterId() {
 
         when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
@@ -171,7 +166,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByCourtTypeId() {
+    void test_RetrieveCourtVenuesByCourtTypeId() {
 
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
@@ -185,7 +180,7 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByCourtVenueName() {
+    void test_RetrieveCourtVenuesByCourtVenueName() {
 
         when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(prepareCourtVenue());
 
@@ -199,9 +194,9 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByEpimmsId_NotFound() {
+    void test_RetrieveCourtVenuesByEpimmsId_NotFound() {
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
-        Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("123", null,  null, null, null));
 
         verify(courtVenueRepository, times(1)).findByEpimmsIdIn(anyList());
@@ -213,9 +208,9 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByClusterId_NotFound() {
+    void test_RetrieveCourtVenuesByClusterId_NotFound() {
         when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(null);
-        Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", null,  null, 1, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -227,9 +222,9 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByRegionId_NotFound() {
+    void test_RetrieveCourtVenuesByRegionId_NotFound() {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(null);
-        Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", null,  1, null, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -241,9 +236,9 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByCourtTypeId_NotFound() {
+    void test_RetrieveCourtVenuesByCourtTypeId_NotFound() {
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(null);
-        Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", 1,  null, null, null));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -256,9 +251,8 @@ public class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesByCourtVenueName_NotFound() {
-        when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(null);
-        Assert.assertThrows(ResourceNotFoundException.class, () -> courtVenueService
+    void test_RetrieveCourtVenuesByCourtVenueName_NotFound() {
+        assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", null,  null, null, "test-name"));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
