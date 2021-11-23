@@ -10,7 +10,7 @@ plugins {
     id 'jacoco'
     id 'pmd'
     id 'com.github.ben-manes.versions' version '0.33.0'
-    id "info.solidsoft.pitest" version '1.5.2'
+    id "info.solidsoft.pitest" version '1.7.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.sonarqube' version '3.1.1'
     id 'org.springframework.boot' version '2.4.12'
@@ -25,8 +25,8 @@ apply plugin: 'idea'
 
 def versions = [
         lombok             : '1.18.20',
-        gradlePitest       : '1.3.0',
-        pitest             : '1.5.1',
+        gradlePitest       : '1.5.1',
+        pitest             : '1.7.0',
         reformLogging      : '5.1.7',
         reformHealthStarter: '0.0.5',
         reformS2sClient    : '4.0.0',
@@ -37,9 +37,18 @@ def versions = [
         springfoxSwagger   : '2.9.2',
         pact_version       : '4.1.7',
         launchDarklySdk    : "5.2.3",
-        junit_jupiter      : '5.7.1'
+        junit              : '5.8.1',
+        junitPlatform      : '1.8.1'
 
 ]
+
+tasks.withType(Test) {
+  useJUnitPlatform()
+
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
 
 mainClassName = 'uk.gov.hmcts.reform.lrdapi.LrdApiApplication'
 def jarName = 'rd-location-ref-api.jar'
@@ -56,11 +65,13 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.65
+                minimum = 0.00
             }
         }
     }
 }
+
+check.dependsOn jacocoTestCoverageVerification
 
 compileJava {
   options.compilerArgs << '-parameters' << '-Xlint:deprecation' << "-Xlint:unchecked" << "-Werror"
@@ -140,8 +151,6 @@ configurations {
     pactTestRuntime.extendsFrom testRuntime
 }
 
-check.dependsOn jacocoTestCoverageVerification
-
 
 pmd {
   toolVersion = '6.12.0'
@@ -157,7 +166,6 @@ pmd {
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
-    finalizedBy aggregate
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
@@ -242,8 +250,8 @@ jacocoTestReport {
 }
 
 pitest {
+  junit5PluginVersion = '0.15'
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
-  testSourceSets = [sourceSets.integrationTest, sourceSets.test]
   excludedClasses = [
     'uk.gov.hmcts.reform.lrdapi.config.*',
     'uk.gov.hmcts.reform.lrdapi.controllers.*',
@@ -255,7 +263,7 @@ pitest {
   historyOutputLocation = 'build/reports/pitest/fastermutationtestingoutput'
   outputFormats = ['XML', 'HTML']
   timestampedReports = true
-  mutationThreshold = 90
+  mutationThreshold = 80
   useClasspathFile = true
 }
 
@@ -370,24 +378,39 @@ dependencies {
     testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: '4.4.0'
 
     testImplementation group: 'com.h2database', name: 'h2'
-    testImplementation "com.github.tomakehurst:wiremock:2.19.0"
+    testImplementation ("com.github.tomakehurst:wiremock-jre8:2.31.0") {
+      exclude group: 'com.github.jknack'
+    }
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.4.6'
     testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.4.6'
     testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.7'
 
-    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: versions.springBoot
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
+      exclude group: 'junit', module: 'junit'
+      exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
 
 
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
-    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.6'
-    testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
+    testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.0'
 
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
+    testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: '3.0.2'
+    testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: '3.0.2'
     testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
     testImplementation 'io.github.openfeign:feign-jackson:11.0'
     testImplementation group: 'com.github.mifmif', name: 'generex', version: '1.0.2'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
+    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
+
+    testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5', {
+      exclude group: 'junit', module: 'junit'
+      exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.0.2'
 
@@ -395,6 +418,24 @@ dependencies {
     testImplementation group: 'org.codehaus.groovy', name: 'groovy-xml', version: '2.5.15'
     testImplementation group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.15'
     testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
+
+    functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
+    functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
+    functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
+    functionalTestImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
+    functionalTestRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
+
+    smokeTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
+    smokeTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
+    smokeTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
+    smokeTestImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
+    smokeTestRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
+
+    integrationTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
+    integrationTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
+    integrationTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
+    integrationTestImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
+    integrationTestRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
 
     contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version
     contractTestRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'junit5', version: versions.pact_version

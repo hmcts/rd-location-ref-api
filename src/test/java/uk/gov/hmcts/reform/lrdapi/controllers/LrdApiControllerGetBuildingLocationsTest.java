@@ -1,8 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,13 +14,15 @@ import uk.gov.hmcts.reform.lrdapi.service.ILrdBuildingLocationService;
 
 import java.util.ArrayList;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LrdApiControllerGetBuildingLocationsTest {
+class LrdApiControllerGetBuildingLocationsTest {
 
     @Mock
     ILrdBuildingLocationService lrdBuildingLocationService;
@@ -29,20 +30,20 @@ public class LrdApiControllerGetBuildingLocationsTest {
     @InjectMocks
     LrdApiController lrdApiController;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testGetBuildingLocations_ValidEpimmsIdGiven_ShouldReturnStatusCode200() {
+    void testGetBuildingLocations_ValidEpimmsIdGiven_ShouldReturnStatusCode200() {
         when(lrdBuildingLocationService.retrieveBuildingLocationDetails("111", "", "", ""))
             .thenReturn(new ArrayList<>());
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetails("111", "", "", "");
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("111", "", "", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         // testGetBuildingLocations_AllEpimmsIdGiven_ShouldReturnStatusCode200
         when(lrdBuildingLocationService.retrieveBuildingLocationDetails("ALL", "", "", ""))
@@ -51,7 +52,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
             lrdApiController.retrieveBuildingLocationDetails("ALL", "", "", "");
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("ALL", "", "", "");
-        assertThat(responseEntity1.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity1.getStatusCode());
 
         // testGetBuildingLocations_lowerAllEpimmsIdGiven_ShouldReturnStatusCode200
         when(lrdBuildingLocationService.retrieveBuildingLocationDetails("all", "", "", ""))
@@ -60,7 +61,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
             lrdApiController.retrieveBuildingLocationDetails("all", "", "", "");
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("all", "", "", "");
-        assertThat(responseEntity2.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity2.getStatusCode());
 
         // testGetBuildingLocations_EpimmsIdWithASpaceGiven_ShouldReturnStatusCode200
         when(lrdBuildingLocationService.retrieveBuildingLocationDetails(" 111 ", "", "", ""))
@@ -69,7 +70,7 @@ public class LrdApiControllerGetBuildingLocationsTest {
             lrdApiController.retrieveBuildingLocationDetails(" 111 ", "", "", "");
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails(" 111 ", "", "", "");
-        assertThat(responseEntity3.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity3.getStatusCode());
 
         // testGetBuildingLocations_ValidMultipleEpimmsIdGiven_ShouldReturnStatusCode200
         when(lrdBuildingLocationService.retrieveBuildingLocationDetails("111,qwerty, qwerty_123",
@@ -82,45 +83,45 @@ public class LrdApiControllerGetBuildingLocationsTest {
             );
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("111,qwerty, qwerty_123", "", "", "");
-        assertThat(responseEntity4.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity4.getStatusCode());
     }
 
     @Test
-    public void testGetBuildingLocations_1Valid1InvalidEpimmsIdGiven_ShouldReturnStatusCode200() {
+    void testGetBuildingLocations_1Valid1InvalidEpimmsIdGiven_ShouldReturnStatusCode200() {
         when(lrdBuildingLocationService.retrieveBuildingLocationDetails("!@£$%,qwerty", "", "", ""))
             .thenReturn(new ArrayList<>());
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetails("!@£$%,qwerty", "", "", "");
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("!@£$%,qwerty", "", "", "");
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
-    public void testGetBuildingLocations_StringEpimsIdGiven_ShouldReturnStatusCode200() {
+    void testGetBuildingLocations_StringEpimsIdGiven_ShouldReturnStatusCode200() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetails("QWERTY", "", "", "");
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("QWERTY", "", "", "");
     }
 
     @Test
-    public void testGetBuildingLocations_AlphaNumericEpimsIdGiven_ShouldReturnStatusCode200() {
+    void testGetBuildingLocations_AlphaNumericEpimsIdGiven_ShouldReturnStatusCode200() {
         ResponseEntity<Object> responseEntity =
             lrdApiController.retrieveBuildingLocationDetails("1234QWERTY", "", "", "");
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(lrdBuildingLocationService, times(1))
             .retrieveBuildingLocationDetails("1234QWERTY", "", "", "");
     }
 
     @Test
-    public void testGetBuildingLocations_MultipleParamsGiven_ShouldReturnStatusCode400() {
-        Assert.assertThrows(InvalidRequestException.class, () -> {
+    void testGetBuildingLocations_MultipleParamsGiven_ShouldReturnStatusCode400() {
+        assertThrows(InvalidRequestException.class, () -> {
             lrdApiController.retrieveBuildingLocationDetails("1234QWERTY", "", "1", "");
         });
         verify(lrdBuildingLocationService, times(0))

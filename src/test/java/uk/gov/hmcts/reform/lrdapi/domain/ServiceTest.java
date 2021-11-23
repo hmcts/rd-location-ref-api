@@ -1,17 +1,18 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ServiceTest {
+class ServiceTest {
 
     @Test
-    public void testService() {
+    void testService() {
 
         OrgUnit orgUnit = new OrgUnit(1L,"orgUnit");
         Service service = new Service();
@@ -36,14 +37,14 @@ public class ServiceTest {
         serviceToCcdCaseTypeAssocs.add(serviceToCcdCaseTypeAssoc);
         service.setServiceToCcdCaseTypeAssocs(serviceToCcdCaseTypeAssocs);
 
-        assertThat(service).isNotNull();
-        assertThat(service.getServiceCode()).isEqualTo("AAA1");
-        assertThat(service.getJurisdiction()).isNotNull();
-        assertThat(service.getJurisdiction().getJurisdictionId()).isEqualTo(1L);
-        assertThat(service.getServiceDescription()).isEqualTo("Insolvency");
-        assertThat(service.getServiceShortDescription()).isEqualTo("Insolvency");
-        assertThat(service.getLastUpdate()).isNotNull();
-        assertThat(service.getServiceToCcdCaseTypeAssocs()).isNotNull();
-        assertThat(service.getServiceToCcdCaseTypeAssocs().size()).isEqualTo(1);
+        assertNotNull(service);
+        assertEquals("AAA1", service.getServiceCode());
+        assertNotNull(service.getJurisdiction());
+        assertEquals(1L, service.getJurisdiction().getJurisdictionId());
+        assertEquals("Insolvency", service.getServiceDescription());
+        assertEquals("Insolvency", service.getServiceShortDescription());
+        assertNotNull(service.getLastUpdate());
+        assertNotNull(service.getServiceToCcdCaseTypeAssocs());
+        assertEquals(1, service.getServiceToCcdCaseTypeAssocs().size());
     }
 }
