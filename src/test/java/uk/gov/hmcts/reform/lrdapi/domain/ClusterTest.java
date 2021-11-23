@@ -1,31 +1,31 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ClusterTest {
+class ClusterTest {
 
     @Test
-    public void testClusterConstructor() {
+    void testClusterConstructor() {
         Cluster cluster = new Cluster("ID", "Cluster Name", "Welsh Cluster Name");
 
-        assertThat(cluster.getClusterId()).isEqualTo("ID");
-        assertThat(cluster.getClusterName()).isEqualTo("Cluster Name");
-        assertThat(cluster.getWelshClusterName()).isEqualTo("Welsh Cluster Name");
+        assertEquals("ID", cluster.getClusterId());
+        assertEquals("Cluster Name", cluster.getClusterName());
+        assertEquals("Welsh Cluster Name", cluster.getWelshClusterName());
     }
 
     @Test
-    public void testClusterSetters() {
+    void testClusterSetters() {
         Cluster cluster = new Cluster();
 
         cluster.setClusterId("ID");
         cluster.setClusterName("Cluster Name");
         cluster.setWelshClusterName("Welsh Cluster Name");
 
-        assertThat(cluster.getClusterId()).isEqualTo("ID");
-        assertThat(cluster.getClusterName()).isEqualTo("Cluster Name");
-        assertThat(cluster.getWelshClusterName()).isEqualTo("Welsh Cluster Name");
+        assertEquals("ID", cluster.getClusterId());
+        assertEquals("Cluster Name", cluster.getClusterName());
+        assertEquals("Welsh Cluster Name", cluster.getWelshClusterName());
     }
 
 }

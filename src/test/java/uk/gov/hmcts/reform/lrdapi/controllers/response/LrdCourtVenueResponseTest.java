@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
@@ -9,14 +10,14 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class LrdCourtVenueResponseTest {
+class LrdCourtVenueResponseTest {
 
     @Test
-    public void testCourtVenueTransformationToResponse_ClusterAndDatesAbsent() {
+    void testCourtVenueTransformationToResponse_ClusterAndDatesAbsent() {
 
         Region region = new Region();
         region.setCreatedTime(LocalDateTime.now());
@@ -62,7 +63,7 @@ public class LrdCourtVenueResponseTest {
     }
 
     @Test
-    public void testCourtVenueTransformationToResponse_ClusterAndDatesPresent() {
+    void testCourtVenueTransformationToResponse_ClusterAndDatesPresent() {
 
         Cluster cluster = new Cluster();
         cluster.setClusterId("456");

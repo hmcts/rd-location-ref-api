@@ -1,24 +1,25 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class OrgUnitTest {
+class OrgUnitTest {
 
     @Test
-    public void testOrgUnit() {
+    void testOrgUnit() {
 
         OrgUnit orgUnit = new OrgUnit(1L,"OrgUnit");
-        assertThat(orgUnit).isNotNull();
-        assertThat(orgUnit.getOrgUnitId()).isEqualTo(1L);
-        assertThat(orgUnit.getDescription()).isEqualTo("OrgUnit");
+        assertNotNull(orgUnit);
+        assertEquals(1L, orgUnit.getOrgUnitId());
+        assertEquals("OrgUnit", orgUnit.getDescription());
 
         OrgUnit orgUnitOne = new OrgUnit();
         orgUnitOne.setOrgUnitId(1L);
         orgUnitOne.setDescription("OrgUnit");
-        assertThat(orgUnitOne).isNotNull();
-        assertThat(orgUnitOne.getOrgUnitId()).isEqualTo(1L);
-        assertThat(orgUnitOne.getDescription()).isEqualTo("OrgUnit");
+        assertNotNull(orgUnitOne);
+        assertEquals(1L, orgUnitOne.getOrgUnitId());
+        assertEquals("OrgUnit", orgUnitOne.getDescription());
     }
 }

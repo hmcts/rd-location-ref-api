@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.lrdapi.domain.Jurisdiction;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgBusinessArea;
 import uk.gov.hmcts.reform.lrdapi.domain.OrgSubBusinessArea;
@@ -12,12 +13,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class LrdOrgInfoServiceResponseTest {
+class LrdOrgInfoServiceResponseTest {
 
     @Test
-    public void testLrdOrgInfoServiceResponse() {
+    void testLrdOrgInfoServiceResponse() {
 
         OrgUnit orgUnit = new OrgUnit(1L, "orgUnit");
         Service service = new Service();
@@ -42,6 +43,6 @@ public class LrdOrgInfoServiceResponseTest {
         serviceToCcdCaseTypeAssocs.add(serviceToCcdCaseTypeAssoc);
         service.setServiceToCcdCaseTypeAssocs(serviceToCcdCaseTypeAssocs);
         LrdOrgInfoServiceResponse response = new LrdOrgInfoServiceResponse(service);
-        assertThat(response).isNotNull();
+        assertNotNull(response);
     }
 }

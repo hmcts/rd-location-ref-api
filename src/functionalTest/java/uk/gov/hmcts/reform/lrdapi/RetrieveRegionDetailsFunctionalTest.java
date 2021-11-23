@@ -2,26 +2,31 @@ package uk.gov.hmcts.reform.lrdapi;
 
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
-import uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner;
+import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
+import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static uk.gov.hmcts.reform.lrdapi.util.CustomSerenityRunner.getFeatureFlagName;
-import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
-@RunWith(CustomSerenityRunner.class)
+@SerenityTest
+@SpringBootTest
 @WithTags({@WithTag("testType:Functional")})
 @ActiveProfiles("functional")
-public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
+class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
 
     public static final String mapKey = "LrdApiController.retrieveRegionDetails";
 
@@ -40,73 +45,74 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByDescriptionWithStatusCode_200() {
+    void getRegionDetailsByDescriptionWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "London");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerification(response, 1);
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByDescriptionsWithStatusCode_200() {
+    void getRegionDetailsByDescriptionsWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "London, Midlands");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerification(response, 2);
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByDescriptionWithTrailingSpacesWithStatusCode_200() {
+    void getRegionDetailsByDescriptionWithTrailingSpacesWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, " London  ");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerification(response, 1);
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByIdWithStatusCode_200() {
+    void getRegionDetailsByIdWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerification(response, 1);
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByIdsWithStatusCode_200() {
+    void getRegionDetailsByIdsWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2,3");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerification(response, 2);
     }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    public void getRegionDetailsByIdAllWithStatusCode_200() {
+    void getRegionDetailsByIdAllWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "ALL");
 
-        assertThat(response).isNotNull();
+        assertNotNull(response);
         responseVerificationForAll(response, expectedListAll);
     }
 
     @Test
+    @ExtendWith(FeatureToggleConditionExtension.class)
     @ToggleEnable(mapKey = mapKey, withFeature = false)
-    public void should_retrieve_403_when_Api_toggled_off() {
-        String exceptionMessage = getFeatureFlagName().concat(" ").concat(FORBIDDEN_EXCEPTION_LD);
+    void should_retrieve_403_when_Api_toggled_off() {
+        String exceptionMessage = getToggledOffMessage();
         validateErrorResponse(
             (ErrorResponse) lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.FORBIDDEN, ""),
             exceptionMessage, exceptionMessage
@@ -114,14 +120,14 @@ public class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctional
     }
 
     private void responseVerification(List<LrdRegionResponse> response, int expectedRegions) {
-        assertThat(response.size()).isEqualTo(expectedRegions);
-        assertThat(response.get(0).getRegionId()).isEqualTo("2");
-        assertThat(response.get(0).getDescription()).isEqualTo("London");
-        assertThat(response.get(0).getWelshDescription()).isNull();
+        assertEquals(expectedRegions, response.size());
+        assertEquals("2", response.get(0).getRegionId());
+        assertEquals("London", response.get(0).getDescription());
+        assertNull(response.get(0).getWelshDescription());
         if (expectedRegions == 2) {
-            assertThat(response.get(1).getRegionId()).isEqualTo("3");
-            assertThat(response.get(1).getDescription()).isEqualTo("Midlands");
-            assertThat(response.get(1).getWelshDescription()).isNull();
+            assertEquals("3", response.get(1).getRegionId());
+            assertEquals("Midlands", response.get(1).getDescription());
+            assertNull(response.get(1).getWelshDescription());
         }
     }
 
