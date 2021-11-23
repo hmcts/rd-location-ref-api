@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
@@ -8,14 +8,14 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 
 import java.util.Collections;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class LrdCourtVenuesByServiceCodeResponseTest {
+class LrdCourtVenuesByServiceCodeResponseTest {
 
     @Test
-    public void testCourtVenuesByServiceCodeResponse() {
+    void testCourtVenuesByServiceCodeResponse() {
 
         Region region = new Region();
         region.setDescription("Region XYZ");

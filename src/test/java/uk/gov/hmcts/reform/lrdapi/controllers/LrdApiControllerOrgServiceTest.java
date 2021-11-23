@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
@@ -18,15 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
-public class LrdApiControllerOrgServiceTest {
+@ExtendWith(MockitoExtension.class)
+class LrdApiControllerOrgServiceTest {
 
     @InjectMocks
     private LrdApiController lrdApiController;
@@ -45,80 +47,75 @@ public class LrdApiControllerOrgServiceTest {
     String ccdCaseType;
     String ccdServiceName;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    public void testRetrieveOrgServiceDetailsByServiceCode() {
+    void testRetrieveOrgServiceDetailsByServiceCode() {
         final HttpStatus expectedHttpStatus = HttpStatus.OK;
         serviceCode = "AAA1";
         when(lrdServiceMock.retrieveOrgServiceDetails(any(), any(), any())).thenReturn(lrdOrgInfoServiceResponse);
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual);
+        assertEquals(expectedHttpStatus, actual.getStatusCode());
         verify(lrdServiceMock, times(1)).retrieveOrgServiceDetails(any(), any(), any());
     }
 
     @Test
-    public void testRetrieveOrgServiceDetailsByCcdCaseType() {
+    void testRetrieveOrgServiceDetailsByCcdCaseType() {
         final HttpStatus expectedHttpStatus = HttpStatus.OK;
         ccdCaseType = "ccdCaseType1";
         when(lrdServiceMock.retrieveOrgServiceDetails(any(), any(), any())).thenReturn(lrdOrgInfoServiceResponse);
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual);
+        assertEquals(expectedHttpStatus, actual.getStatusCode());
         verify(lrdServiceMock, times(1)).retrieveOrgServiceDetails(any(), any(), any());
     }
 
     @Test
-    public void testRetrieveOrgServiceDetailsByDefaultRequestParamsNull() {
+    void testRetrieveOrgServiceDetailsByDefaultRequestParamsNull() {
         final HttpStatus expectedHttpStatus = HttpStatus.OK;
         when(lrdServiceMock.retrieveOrgServiceDetails(any(), any(), any())).thenReturn(lrdOrgInfoServiceResponse);
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual);
+        assertEquals(expectedHttpStatus, actual.getStatusCode());
         verify(lrdServiceMock, times(1)).retrieveOrgServiceDetails(any(), any(), any());
     }
 
-    @Test(expected = InvalidRequestException.class)
-    public void testRetrieveOrgServiceDetailsShouldThrowExceptionWhenBothParamValuesPresent() {
-        final HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
+    @Test
+    void testRetrieveOrgServiceDetailsShouldThrowExceptionWhenBothParamValuesPresent() {
         serviceCode = "AAA1";
         ccdCaseType = "ccdCaseType1";
-        ResponseEntity<?> actual = lrdApiController
-            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        Exception ex = assertThrows(InvalidRequestException.class, () -> {
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        });
+        assertNotNull(ex);
+        assertEquals("Please provide only 1 of 3 values/params: [AAA1, ccdCaseType1, null]", ex.getMessage());
     }
 
     //1. Validate that only 1 out of 3 query params are being passed. Use null and empty values for testing
-    @Test(expected = InvalidRequestException.class)
-    public void testRetrieveOrgServiceDetailsShouldThrowExceptionWhenMultipleParamValuesPresent() {
-        final HttpStatus expectedHttpStatus = HttpStatus.BAD_REQUEST;
+    @Test
+    void testRetrieveOrgServiceDetailsShouldThrowExceptionWhenMultipleParamValuesPresent() {
         serviceCode = "AAA1";
         ccdCaseType = "ccdCaseType1";
         ccdServiceName = "fpla";
-        ResponseEntity<?> actual = lrdApiController
-            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        Exception ex = assertThrows(InvalidRequestException.class, () -> {
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        });
+        assertNotNull(ex);
+        assertEquals("Please provide only 1 of 3 values/params: [AAA1, ccdCaseType1, fpla]", ex.getMessage());
     }
 
     @Test
-    public void testRetrieveOrgServiceDetailsShouldPassForNullAndBlankValuesScenarios() {
+    void testRetrieveOrgServiceDetailsShouldPassForNullAndBlankValuesScenarios() {
         final HttpStatus expectedHttpStatus = HttpStatus.OK;
         serviceCode = "";
         ccdCaseType = null;
         ccdServiceName = "fpla";
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual);
+        assertEquals(expectedHttpStatus, actual.getStatusCode());
 
         // testRetrieveOrgServiceDetailsShouldPassForNullAndBlankValuesScenario2
         serviceCode = "";
@@ -126,8 +123,8 @@ public class LrdApiControllerOrgServiceTest {
         ccdServiceName = "";
         ResponseEntity<?> actual1 = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual1).isNotNull();
-        assertThat(actual1.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual1);
+        assertEquals(expectedHttpStatus, actual1.getStatusCode());
 
         // testRetrieveOrgServiceDetailsbyPassingUnderScoreInInput
         serviceCode = " abcd_jgh ";
@@ -135,46 +132,54 @@ public class LrdApiControllerOrgServiceTest {
         ccdServiceName = "";
         ResponseEntity<?> actual2 = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual2).isNotNull();
-        assertThat(actual2.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual2);
+        assertEquals(expectedHttpStatus, actual2.getStatusCode());
 
     }
 
-    @Test(expected = InvalidRequestException.class)
-    public void testRetrieveOrgServiceDetailsbyPassingSpecialCharInInput() {
+    @Test
+    void testRetrieveOrgServiceDetailsbyPassingSpecialCharInInput() {
         serviceCode = "abcd@£";
         ccdCaseType = "";
         ccdServiceName = "";
-        lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThrows(InvalidRequestException.class, () -> {
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
+        );
 
         // testRetrieveOrgServiceDetailsbyPassingWhiteSpaceInInput
         serviceCode = " Select from employee ";
         ccdCaseType = "";
         ccdServiceName = "";
-        lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThrows(InvalidRequestException.class, () -> {
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
+        );
 
         // testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput_fail
         serviceCode = "";
         ccdCaseType = "";
         ccdServiceName = "abcd,, cdef";
-        lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThrows(InvalidRequestException.class, () -> {
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
+        );
 
         //testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput_fail_1
         serviceCode = "";
         ccdCaseType = "";
         ccdServiceName = "abcd, cdef,";
-        lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertThrows(InvalidRequestException.class, () -> {
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
+        );
     }
 
     @Test
-    public void testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput() {
+    void testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput() {
         final HttpStatus expectedHttpStatus = HttpStatus.OK;
         serviceCode = "";
         ccdCaseType = "";
         ccdServiceName = "abcd, cdef";
         ResponseEntity<?> actual = lrdApiController
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        assertThat(actual).isNotNull();
-        assertThat(actual.getStatusCode()).isEqualTo(expectedHttpStatus);
+        assertNotNull(actual);
+        assertEquals(expectedHttpStatus, actual.getStatusCode());
     }
 }

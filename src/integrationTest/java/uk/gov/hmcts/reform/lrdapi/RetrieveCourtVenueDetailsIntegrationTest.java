@@ -2,11 +2,9 @@ package uk.gov.hmcts.reform.lrdapi;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -16,16 +14,15 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings("unchecked")
-public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
+class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
     private static final String HTTP_STATUS_STR = "http_status";
     private static final String path = "/court-venues";
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400ForInvalidEpimmsId() throws
+    void shouldReturn400ForInvalidEpimmsId() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -37,7 +34,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400ForNonStandardCharsEpimsId() throws
+    void shouldReturn400ForNonStandardCharsEpimsId() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -49,7 +46,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400ForAsteriskEpimsId() throws
+    void shouldReturn400ForAsteriskEpimsId() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -61,7 +58,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400ForOnlyTwoCommaGivenAsEpimsId() throws
+    void shouldReturn400ForOnlyTwoCommaGivenAsEpimsId() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -73,7 +70,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400ForTwoCommaWithValidEpimsId() throws
+    void shouldReturn400ForTwoCommaWithValidEpimsId() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -84,7 +81,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    public void shouldReturn400WhenRegionIdIsString() throws
+    void shouldReturn400WhenRegionIdIsString() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -95,7 +92,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    public void shouldReturn400WhenClusterIdIsString() throws
+    void shouldReturn400WhenClusterIdIsString() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -107,7 +104,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    public void shouldReturn400WhenCourtTypeIdIsString() throws
+    void shouldReturn400WhenCourtTypeIdIsString() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -120,7 +117,7 @@ public class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEn
 
 
     @Test
-    public void shouldReturn400WhenMultipleQueryParamsPassed() throws
+    void shouldReturn400WhenMultipleQueryParamsPassed() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
