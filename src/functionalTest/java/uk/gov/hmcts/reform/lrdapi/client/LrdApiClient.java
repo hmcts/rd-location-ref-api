@@ -30,8 +30,8 @@ public class LrdApiClient {
     private static final String BASE_URL = "/refdata/location";
 
     private final String lrdApiUrl;
-    private  String s2sToken;
-    private  IdamOpenIdClient idamOpenIdClient;
+    private final String s2sToken;
+    private IdamOpenIdClient idamOpenIdClient;
 
 
     public LrdApiClient(

@@ -1,19 +1,19 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.advice;
 
-import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
-public class ErrorResponseTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class ErrorResponseTest {
 
     @Test
-    public void test_ErrorResponse() {
+    void test_ErrorResponse() {
 
         int code = 1;
         String status = "status";
         String expectMsg = "msg";
-        String expectDesc = "desc";
-        String expectTs = "time";
 
         ErrorResponse errorDetails = ErrorResponse.builder()
                 .errorCode(code)
@@ -23,37 +23,41 @@ public class ErrorResponseTest {
                 .timeStamp("time")
                 .build();
 
-        assertThat(errorDetails).isNotNull();
-        assertThat(errorDetails.getErrorCode()).isEqualTo(code);
-        assertThat(errorDetails.getStatus()).isEqualTo(status);
-        assertThat(errorDetails.getErrorMessage()).isEqualTo(expectMsg);
-        assertThat(errorDetails.getTimeStamp()).isEqualTo(expectTs);
-        assertThat(errorDetails.getErrorDescription()).isEqualTo(expectDesc);
+        assertNotNull(errorDetails);
+        assertEquals(code, errorDetails.getErrorCode());
+        assertEquals(status, errorDetails.getStatus());
+        assertEquals(expectMsg, errorDetails.getErrorMessage());
+
+        String expectDesc = "desc";
+        String expectTs = "time";
+        assertEquals(expectTs, errorDetails.getTimeStamp());
+        assertEquals(expectDesc, errorDetails.getErrorDescription());
     }
 
     @Test
-    public void test_NoArgsConstructor() {
+    void test_NoArgsConstructor() {
         ErrorResponse errorResponse = new ErrorResponse();
-        assertThat(errorResponse).isNotNull();
+        assertNotNull(errorResponse);
     }
 
     @Test
-    public void test_ErrorResponseWithConstructor() {
+    void test_ErrorResponseWithConstructor() {
+        ErrorResponse errorResponse = new ErrorResponse(1,"status","msg",
+                                                       "desc","time");
 
         int code = 1;
         String status = "status";
+
+        assertNotNull(errorResponse);
+        assertEquals(code, errorResponse.getErrorCode());
+        assertEquals(status, errorResponse.getStatus());
+
         String expectMsg = "msg";
         String expectDesc = "desc";
         String expectTs = "time";
-
-        ErrorResponse errorResponse = new ErrorResponse(1,"status","msg",
-                                                       "desc","time");
-        assertThat(errorResponse).isNotNull();
-        assertThat(errorResponse.getErrorCode()).isEqualTo(code);
-        assertThat(errorResponse.getStatus()).isEqualTo(status);
-        assertThat(errorResponse.getErrorMessage()).isEqualTo(expectMsg);
-        assertThat(errorResponse.getTimeStamp()).isEqualTo(expectTs);
-        assertThat(errorResponse.getErrorDescription()).isEqualTo(expectDesc);
+        assertEquals(expectMsg, errorResponse.getErrorMessage());
+        assertEquals(expectTs, errorResponse.getTimeStamp());
+        assertEquals(expectDesc, errorResponse.getErrorDescription());
     }
 
 }

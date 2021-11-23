@@ -1,15 +1,15 @@
 package uk.gov.hmcts.reform.lrdapi.domain;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BuildingLocationTest {
+class BuildingLocationTest {
 
     @Test
-    public void testBuildingLocationBuilder() {
+    void testBuildingLocationBuilder() {
 
         Region region = new Region();
         region.setRegionId("regionId");
@@ -24,7 +24,7 @@ public class BuildingLocationTest {
         BuildingLocation buildingLocation =
             BuildingLocation.builder()
                 .epimmsId("epimmsId")
-                .buildingLocationId(Long.valueOf(1))
+                .buildingLocationId(1L)
                 .buildingLocationName("buildingLocationName")
                 .buildingLocationStatus("LIVE")
                 .region(region)
@@ -38,24 +38,24 @@ public class BuildingLocationTest {
                 .build();
 
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo(Long.valueOf(1));
-        assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
-        assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
-        assertThat(buildingLocation.getArea()).isEqualTo("area");
-        assertThat(buildingLocation.getRegion().get().getRegionId()).isEqualTo("regionId");
-        assertThat(buildingLocation.getRegion().get().getDescription()).isEqualTo("region");
-        assertThat(buildingLocation.getCluster().get().getClusterId()).isEqualTo("clusterId");
-        assertThat(buildingLocation.getCluster().get().getClusterName()).isEqualTo("cluster name");
-        assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
-        assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
-        assertThat(buildingLocation.getAddress()).isEqualTo("address");
-        assertThat(buildingLocation.getCreated()).isEqualTo(now);
-        assertThat(buildingLocation.getLastUpdated()).isEqualTo(now);
+        assertEquals(Long.valueOf(1), buildingLocation.getBuildingLocationId());
+        assertEquals("epimmsId", buildingLocation.getEpimmsId());
+        assertEquals("buildingLocationName", buildingLocation.getBuildingLocationName());
+        assertEquals("LIVE", buildingLocation.getBuildingLocationStatus());
+        assertEquals("area", buildingLocation.getArea());
+        assertEquals("regionId", buildingLocation.getRegion().get().getRegionId());
+        assertEquals("region", buildingLocation.getRegion().get().getDescription());
+        assertEquals("clusterId", buildingLocation.getCluster().get().getClusterId());
+        assertEquals("cluster name", buildingLocation.getCluster().get().getClusterName());
+        assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
+        assertEquals("postcode", buildingLocation.getPostcode());
+        assertEquals("address", buildingLocation.getAddress());
+        assertEquals(now, buildingLocation.getCreated());
+        assertEquals(now, buildingLocation.getLastUpdated());
     }
 
     @Test
-    public void testBuildingLocationSetters() {
+    void testBuildingLocationSetters() {
 
         Region region = new Region();
         region.setRegionId("regionId");
@@ -82,19 +82,19 @@ public class BuildingLocationTest {
         buildingLocation.setCreated(now);
         buildingLocation.setLastUpdated(now);
 
-        assertThat(buildingLocation.getBuildingLocationId()).isEqualTo(1L);
-        assertThat(buildingLocation.getEpimmsId()).isEqualTo("epimmsId");
-        assertThat(buildingLocation.getBuildingLocationName()).isEqualTo("buildingLocationName");
-        assertThat(buildingLocation.getBuildingLocationStatus()).isEqualTo("LIVE");
-        assertThat(buildingLocation.getArea()).isEqualTo("area");
-        assertThat(buildingLocation.getRegion().get().getRegionId()).isEqualTo("regionId");
-        assertThat(buildingLocation.getRegion().get().getDescription()).isEqualTo("region");
-        assertThat(buildingLocation.getCluster().get().getClusterId()).isEqualTo("clusterId");
-        assertThat(buildingLocation.getCluster().get().getClusterName()).isEqualTo("cluster name");
-        assertThat(buildingLocation.getCourtFinderUrl()).isEqualTo("courtFinderUrl");
-        assertThat(buildingLocation.getPostcode()).isEqualTo("postcode");
-        assertThat(buildingLocation.getAddress()).isEqualTo("address");
-        assertThat(buildingLocation.getCreated()).isEqualTo(now);
-        assertThat(buildingLocation.getLastUpdated()).isEqualTo(now);
+        assertEquals(1L, buildingLocation.getBuildingLocationId());
+        assertEquals("epimmsId", buildingLocation.getEpimmsId());
+        assertEquals("buildingLocationName", buildingLocation.getBuildingLocationName());
+        assertEquals("LIVE", buildingLocation.getBuildingLocationStatus());
+        assertEquals("area", buildingLocation.getArea());
+        assertEquals("regionId", buildingLocation.getRegion().get().getRegionId());
+        assertEquals("region", buildingLocation.getRegion().get().getDescription());
+        assertEquals("clusterId", buildingLocation.getCluster().get().getClusterId());
+        assertEquals("cluster name", buildingLocation.getCluster().get().getClusterName());
+        assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
+        assertEquals("postcode", buildingLocation.getPostcode());
+        assertEquals("address", buildingLocation.getAddress());
+        assertEquals(now, buildingLocation.getCreated());
+        assertEquals(now, buildingLocation.getLastUpdated());
     }
 }
