@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -22,15 +20,14 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings("unchecked")
-public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
+class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
     public static final String HTTP_STATUS = "http_status";
 
     @Test
-    public void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException {
+    void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException {
 
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("AAA3", LrdCourtVenuesByServiceCodeResponse.class);
@@ -40,7 +37,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     }
 
     @Test
-    public void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException {
+    void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException {
 
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("aaa3", LrdCourtVenuesByServiceCodeResponse.class);
@@ -50,7 +47,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     }
 
     @Test
-    public void returnsCourtVenuesByUnknownServiceCodeWithStatusCode_404() throws JsonProcessingException {
+    void returnsCourtVenuesByUnknownServiceCodeWithStatusCode_404() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesByServiceCode("ABCD1", ErrorResponse.class);
@@ -60,7 +57,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     }
 
     @Test
-    public void returnsCourtVenuesByInvalidServiceCodeWithStatusCode_400() throws
+    void returnsCourtVenuesByInvalidServiceCodeWithStatusCode_400() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -71,7 +68,7 @@ public class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthoriz
     }
 
     @Test
-    public void returnsCourtVenuesByServiceCode_LdFlagOff_WithStatusCode_403()
+    void returnsCourtVenuesByServiceCode_LdFlagOff_WithStatusCode_403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put(

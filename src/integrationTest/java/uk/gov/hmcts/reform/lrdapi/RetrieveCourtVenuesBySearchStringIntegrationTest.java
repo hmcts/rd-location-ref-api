@@ -1,11 +1,9 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -16,18 +14,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
-public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
+class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
     private static final String path = "/court-venues/venue-search";
     private static final String HTTP_STATUS_STR = "http_status";
 
     @Test
-    public void shouldRetrieveCourtVenues_For_SearchString_WithStatusCode_200()
+    void shouldRetrieveCourtVenues_For_SearchString_WithStatusCode_200()
         throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
@@ -50,7 +47,7 @@ public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthori
     }
 
     @Test
-    public void shouldRetrieveCourtVenues_For_SearchString_And_CourtTypeId_WithStatusCode_200()
+    void shouldRetrieveCourtVenues_For_SearchString_And_CourtTypeId_WithStatusCode_200()
         throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
@@ -74,7 +71,7 @@ public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthori
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400_WhenSearchStringLessThan3Char() throws JsonProcessingException {
+    void shouldReturn400_WhenSearchStringLessThan3Char() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString("?search-string=zz&court-type-id=1000",
                                                        ErrorResponse.class, path
@@ -85,7 +82,7 @@ public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthori
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400_WhenSearchStringContainSpecialChar() throws JsonProcessingException {
+    void shouldReturn400_WhenSearchStringContainSpecialChar() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
                 "?search-string=AB$&court-type-id=1000",
@@ -98,7 +95,7 @@ public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthori
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturn400_WhenCourtTypeIdContainContainSpecialChar() throws JsonProcessingException {
+    void shouldReturn400_WhenCourtTypeIdContainContainSpecialChar() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
                 "?search-string=AB$&court-type-id=1,2,$,4",
@@ -111,7 +108,7 @@ public class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthori
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldReturnEmptyList_WhenCourtTypeIdIsInvalid() throws JsonProcessingException {
+    void shouldReturnEmptyList_WhenCourtTypeIdIsInvalid() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
                 "?search-string=ABC&court-type-id=100000000",

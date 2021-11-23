@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -46,7 +46,7 @@ public class S2sClient {
                 .post("/lease")
                 .andReturn();
 
-        assertThat(response.getStatusCode()).isEqualTo(200);
+        assertEquals(200, response.getStatusCode());
 
         String jwtToken = response.getBody().asString();
         log.info("S2S Token:" + jwtToken);

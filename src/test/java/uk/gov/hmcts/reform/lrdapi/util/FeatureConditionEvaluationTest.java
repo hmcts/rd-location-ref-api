@@ -3,10 +3,11 @@ package uk.gov.hmcts.reform.lrdapi.util;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.TextCodec;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.method.HandlerMethod;
@@ -21,8 +22,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -32,7 +33,8 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.BEARER;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.SERVICE_AUTHORIZATION;
 
-public class FeatureConditionEvaluationTest {
+@ExtendWith(MockitoExtension.class)
+class FeatureConditionEvaluationTest {
 
     FeatureToggleServiceImpl featureToggleService = mock(FeatureToggleServiceImpl.class);
     @Spy
@@ -42,16 +44,15 @@ public class FeatureConditionEvaluationTest {
     HandlerMethod handlerMethod = mock(HandlerMethod.class);
     Method method = mock(Method.class);
 
-    @Before
+    @BeforeEach
     public void before() {
-        MockitoAnnotations.openMocks(this);
         when(method.getName()).thenReturn("test");
         doReturn(WelcomeController.class).when(method).getDeclaringClass();
         when(handlerMethod.getMethod()).thenReturn(method);
     }
 
     @Test
-    public void testPreHandleValidFlag() throws Exception {
+    void testPreHandleValidFlag() throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put("WelcomeController.test", "test-flag");
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(httpRequest));
@@ -65,7 +66,7 @@ public class FeatureConditionEvaluationTest {
     }
 
     @Test
-    public void testPreHandleInvalidFlag() throws Exception {
+    void testPreHandleInvalidFlag() throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put("WelcomeController.test", "test-flag");
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
@@ -81,7 +82,7 @@ public class FeatureConditionEvaluationTest {
     }
 
     @Test
-    public void testPreHandleInvalidServletRequestAttributes() throws Exception {
+    void testPreHandleInvalidServletRequestAttributes() throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put("WelcomeController.test", "test-flag");
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
@@ -95,14 +96,14 @@ public class FeatureConditionEvaluationTest {
     }
 
     @Test
-    public void testPreHandleNoFlag() throws Exception {
+    void testPreHandleNoFlag() throws Exception {
         assertTrue(featureConditionEvaluation.preHandle(httpRequest, httpServletResponse, handlerMethod));
         verify(featureConditionEvaluation, times(1))
             .preHandle(httpRequest, httpServletResponse, handlerMethod);
     }
 
     @Test
-    public void testPreHandleNonConfiguredValues() throws Exception {
+    void testPreHandleNonConfiguredValues() throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
         launchDarklyMap.put("DummyController.test", "test-flag");
         when(featureToggleService.getLaunchDarklyMap()).thenReturn(launchDarklyMap);
