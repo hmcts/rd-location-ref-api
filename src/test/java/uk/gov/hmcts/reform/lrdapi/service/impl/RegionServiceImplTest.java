@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
@@ -14,7 +15,6 @@ import uk.gov.hmcts.reform.lrdapi.repository.RegionRepository;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,8 +47,7 @@ class RegionServiceImplTest {
     void testRetrieveRegionDetailsById() {
         when(regionRepositoryMock.findByRegionIdIn(any())).thenReturn(Collections.singletonList(regionMock));
 
-        List<LrdRegionResponse> response =
-            (List<LrdRegionResponse>) regionService.retrieveRegionDetails("2", "");
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionDetails("2", "");
 
         assertNotNull(response);
         assertEquals("2", response.get(0).getRegionId());
@@ -60,42 +59,124 @@ class RegionServiceImplTest {
     @Test
     @SuppressWarnings("unchecked")
     void testRetrieveRegionDetailsByDescription() {
-        when(regionRepositoryMock.findByRegionIdIn(any())).thenReturn(Collections.singletonList(regionMock));
+        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any()))
+            .thenReturn(Collections.singletonList(regionMock));
 
-        List<LrdRegionResponse> response =
-            (List<LrdRegionResponse>) regionService.retrieveRegionDetails("2", "");
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionDetails("", "London");
 
         assertNotNull(response);
         assertEquals("2", response.get(0).getRegionId());
         assertEquals("London", response.get(0).getDescription());
         assertEquals("Llundain", response.get(0).getWelshDescription());
+
+        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testRetrieveRegionDetailsWithoutRegionAndDescription() {
+        when(regionRepositoryMock.findByApiEnabled(true)).thenReturn(Collections.singletonList(regionMock));
+
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionDetails("", "");
+
+        assertNotNull(response);
+        assertEquals("2", response.get(0).getRegionId());
+        assertEquals("London", response.get(0).getDescription());
+        assertEquals("Llundain", response.get(0).getWelshDescription());
+    }
+
+    @Test
+    void testRetrieveRegionByRegionDescription() {
+        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any()))
+            .thenReturn(Collections.singletonList(regionMock));
+
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionByRegionDescription("London");
+
+        assertNotNull(response);
+        assertEquals("2", response.get(0).getRegionId());
+        assertEquals("London", response.get(0).getDescription());
+        assertEquals("Llundain", response.get(0).getWelshDescription());
+
+        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
+    }
+
+    @Test
+    void testRetrieveRegionByRegionDescriptionInvalidIdList() {
+        assertThrows(InvalidRequestException.class, () -> {
+            regionService.retrieveRegionByRegionDescription("{London}, {National}");
+        });
+    }
+
+    @Test
+    void testRetrieveRegionByRegionDescriptionCaseInsensitive() {
+        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any()))
+            .thenReturn(Collections.singletonList(regionMock));
+
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionByRegionDescription("LoNdOn");
+
+        assertNotNull(response);
+
+        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
+    }
+
+    @Test
+    void testRetrieveRegionByRegionIdAll() {
+        when(regionRepositoryMock.findAll()).thenReturn(Collections.singletonList(regionMock));
+
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionByRegionId("ALL");
+
+        assertNotNull(response);
+        assertEquals("2", response.get(0).getRegionId());
+        assertEquals("London", response.get(0).getDescription());
+        assertEquals("Llundain", response.get(0).getWelshDescription());
+
+        verify(regionRepositoryMock, times(1)).findAll();
+    }
+
+    @Test
+    void testRetrieveRegionByRegionIdListAll() {
+        when(regionRepositoryMock.findAll()).thenReturn(Collections.singletonList(regionMock));
+
+        var response = (List<LrdRegionResponse>) regionService.retrieveRegionByRegionId("ALL,1");
+
+        assertNotNull(response);
+        assertEquals("2", response.get(0).getRegionId());
+        assertEquals("London", response.get(0).getDescription());
+        assertEquals("Llundain", response.get(0).getWelshDescription());
+
+        verify(regionRepositoryMock, times(1)).findAll();
+    }
+
+    @Test
+    void testRetrieveRegionByRegionIdEmptyRegionList() {
+        when(regionRepositoryMock.findByRegionIdIn(any())).thenReturn(Collections.emptyList());
+
+        assertThrows(ResourceNotFoundException.class, () -> {
+            regionService.retrieveRegionByRegionId("123, 456");
+        });
 
         verify(regionRepositoryMock, times(1)).findByRegionIdIn(any());
     }
 
     @Test
-    void testRetrieveRegionByRegionDescription() {
-        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any())).thenReturn(asList(regionMock));
-
-        List<LrdRegionResponse> response = regionService.retrieveRegionByRegionDescription("London");
-
-        assertNotNull(response);
-        assertEquals("2", response.get(0).getRegionId());
-        assertEquals("London", response.get(0).getDescription());
-        assertEquals("Llundain", response.get(0).getWelshDescription());
-
-        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
+    void testRetrieveRegionByRegionIdInvalidIdList() {
+        assertThrows(InvalidRequestException.class, () -> {
+            regionService.retrieveRegionByRegionId("{121},{2332},{1233432}");
+        });
     }
 
     @Test
-    void testRetrieveRegionByRegionDescriptionCaseInsensitive() {
-        when(regionRepositoryMock.findByDescriptionInIgnoreCase(any())).thenReturn(asList(regionMock));
+    void testRetrieveRegionByRegionIdThrowsInvalidRequest() {
+        assertThrows(InvalidRequestException.class, () -> {
+            regionService.retrieveRegionByRegionId("ALL,London");
+        });
+    }
 
-        List<LrdRegionResponse> response = regionService.retrieveRegionByRegionDescription("LoNdOn");
-
-        assertNotNull(response);
-
-        verify(regionRepositoryMock, times(1)).findByDescriptionInIgnoreCase(any());
+    @Test
+    void testRetrieveRegionByRegionIdWithoutAllThrowsInvalidRequest() {
+        assertThrows(InvalidRequestException.class, () -> {
+            regionService.retrieveRegionByRegionId("London,National");
+        });
     }
 
     @Test
