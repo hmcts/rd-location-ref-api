@@ -10,15 +10,19 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.BuildingLocationRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -41,8 +45,7 @@ class LrdBuildingLocationServiceTest {
 
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareBuildingLocation());
 
-        List<LrdBuildingLocationResponse> buildingLocations =
-            (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
                 .retrieveBuildingLocationDetails("1", "",  "", "");
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
@@ -55,8 +58,7 @@ class LrdBuildingLocationServiceTest {
     void test_RetrieveBuildingLocationsByEpimsIDs_MultipleIdsPassed() {
 
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareMultiBuildLocationResponse());
-        List<LrdBuildingLocationResponse> buildingLocations =
-            (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
                 .retrieveBuildingLocationDetails("1,2", "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
@@ -66,8 +68,18 @@ class LrdBuildingLocationServiceTest {
     void testGetAllBuildingLocations_EpimmsIdAll() {
         when(buildingLocationRepository.findAll())
             .thenReturn(prepareMultiBuildLocationResponse());
-        List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
-            lrdBuildingLocationService.retrieveBuildingLocationDetails("ALL", "",  "", "");
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("ALL", "",  "", "");
+        verifyMultiResponse(buildingLocations);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testGetAllBuildingLocations_EpimmsIdAllMultipleIds() {
+        when(buildingLocationRepository.findAll())
+            .thenReturn(prepareMultiBuildLocationResponse());
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("ALL,1,2", "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
 
@@ -75,9 +87,40 @@ class LrdBuildingLocationServiceTest {
     @SuppressWarnings("unchecked")
     void testGetAllBuildingLocations() {
         when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(prepareBuildingLocation());
-        List<LrdBuildingLocationResponse> buildingLocations = (List<LrdBuildingLocationResponse>)
-            lrdBuildingLocationService.retrieveBuildingLocationDetails("", "",  "", "");
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "",  "", "");
         verifySingleResponse(buildingLocations.get(0));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testGetBuildingLocationsByRegionId() {
+        when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(prepareBuildingLocation());
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "1", "");
+        verifySingleResponse(buildingLocations.get(0));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testGetBuildingLocationsByClusterId() {
+        when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(prepareBuildingLocation());
+        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "", "1");
+        verifySingleResponse(buildingLocations.get(0));
+    }
+
+    @Test
+    void test_RetrieveBuildingLocationsByEpimmsId_InvalidEpimmsId() {
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("{123}", "", "", ""));
+
+        verify(buildingLocationRepository, times(0)).findByEpimmsId(anyList());
+        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
+        verify(buildingLocationRepository, times(0))
+            .findByBuildingLocationNameIgnoreCase(anyString());
+        verify(buildingLocationRepository, times(0)).findAll();
+        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
     }
 
     @Test
@@ -289,11 +332,23 @@ class LrdBuildingLocationServiceTest {
         assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
         assertEquals("postcode", buildingLocation.getPostcode());
         assertEquals("address", buildingLocation.getAddress());
+        assertFalse(buildingLocation.getCourtVenues().isEmpty());
     }
 
     private List<BuildingLocation> prepareBuildingLocation() {
 
         var locations = new ArrayList<BuildingLocation>();
+
+        CourtType courtType = CourtType.builder()
+            .typeOfCourt("courtType")
+            .courtTypeId("10")
+            .build();
+
+        CourtVenue courtVenue = CourtVenue.builder()
+            .courtVenueId(1L)
+            .courtType(courtType)
+            .openForPublic(Boolean.TRUE)
+            .build();
 
         locations.add(BuildingLocation.builder()
                          .epimmsId("epimmsId")
@@ -308,6 +363,7 @@ class LrdBuildingLocationServiceTest {
                          .postcode("postcode")
                          .created(getCurrentTime())
                          .lastUpdated(getCurrentTime())
+                         .courtVenues(Set.of(courtVenue))
                          .build());
 
         return locations;
