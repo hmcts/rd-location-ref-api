@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
@@ -128,6 +129,16 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
+    void testGetAllCourtVenues_EpimmsIdAllWithMultipleIds() {
+        when(courtVenueRepository.findAll())
+            .thenReturn(prepareMultiCourtVenueResponse());
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails("All,123", null,  null, null, null);
+        verifyMultiResponse(courtVenueResponses);
+    }
+
+    @Test
     void testGetAllCourtVenues() {
         when(courtVenueRepository.findAllWithOpenCourtStatus())
             .thenReturn(prepareCourtVenue());
@@ -200,6 +211,19 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("123", null,  null, null, null));
 
         verify(courtVenueRepository, times(1)).findByEpimmsIdIn(anyList());
+        verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0))
+            .findByClusterIdWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0)).findAll();
+        verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesByEpimmsId_InvalidList() {
+        assertThrows(InvalidRequestException.class, () -> courtVenueService
+            .retrieveCourtVenueDetails("{123}", null,  null, null, null));
+
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
             .findByClusterIdWithOpenCourtStatus(anyString());
