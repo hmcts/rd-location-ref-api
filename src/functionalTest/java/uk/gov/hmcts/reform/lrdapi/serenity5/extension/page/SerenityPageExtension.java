@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.lrdapi.serenity5.extension;
+package uk.gov.hmcts.reform.lrdapi.serenity5.extension.page;
 
 import net.serenitybdd.core.environment.WebDriverConfiguredEnvironment;
 import net.thucydides.core.annotations.ClearCookiesPolicy;
@@ -10,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import uk.gov.hmcts.reform.lrdapi.serenity5.page.PatchedManagedWebDriverAnnotatedField;
-import uk.gov.hmcts.reform.lrdapi.serenity5.page.TestMethodAnnotations;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
