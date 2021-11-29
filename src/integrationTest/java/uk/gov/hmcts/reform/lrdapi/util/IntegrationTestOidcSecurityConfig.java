@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.nimbusds.jose.JOSEException;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -15,14 +15,14 @@ import org.springframework.web.context.ContextCleanupListener;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 
 @Configuration
 @TestPropertySource(properties = {"OPEN_ID_API_BASE_URI:http://0.0.0.0:6000/o"})
 public class IntegrationTestOidcSecurityConfig extends ContextCleanupListener {
 
-    public static WireMockServer mockHttpServerForOidc = new WireMockServer(wireMockConfig().port(6000));
+    @RegisterExtension
+    public static WireMockExtension mockHttpServerForOidc = new WireMockExtension(6000);
 
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() throws JsonProcessingException, JOSEException {
