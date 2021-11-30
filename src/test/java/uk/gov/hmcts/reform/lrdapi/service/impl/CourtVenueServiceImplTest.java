@@ -290,7 +290,7 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_RetrieveCourtVenuesBySearchString() {
+    void test_RetrieveCourtVenuesBySearchString() {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId(anyString(),
                                                                    anyList())).thenReturn(prepareCourtVenue());
         List<LrdCourtVenueResponse> courtVenueResponses =
@@ -303,7 +303,7 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_GetCourtVenuesBySearchStringWhenCourtTypeIdIsNull() {
+    void test_GetCourtVenuesBySearchStringWhenCourtTypeIdIsNull() {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC", null)).thenReturn(prepareCourtVenue());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -315,7 +315,7 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
-    public void test_GetCourtVenuesBySearchString_NotFound() {
+    void test_GetCourtVenuesBySearchString_NotFound() {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC", null)).thenReturn(new ArrayList<>());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
