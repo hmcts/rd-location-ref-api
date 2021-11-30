@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.lrdapi.serenity5.page;
+package uk.gov.hmcts.reform.lrdapi.serenity5.extension.page;
 
 import com.google.common.base.Preconditions;
 import net.thucydides.core.annotations.DriverOptions;

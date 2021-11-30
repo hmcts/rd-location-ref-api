@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.lrdapi.serenity5.extension;
+package uk.gov.hmcts.reform.lrdapi.serenity5.extension.page;
 
 import net.serenitybdd.core.environment.WebDriverConfiguredEnvironment;
 import net.thucydides.core.annotations.ClearCookiesPolicy;
@@ -10,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import uk.gov.hmcts.reform.lrdapi.serenity5.page.PatchedManagedWebDriverAnnotatedField;
-import uk.gov.hmcts.reform.lrdapi.serenity5.page.TestMethodAnnotations;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -20,7 +18,6 @@ import java.util.function.Consumer;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-import static net.thucydides.core.webdriver.ThucydidesWebDriverSupport.getPages;
 import static net.thucydides.core.webdriver.ThucydidesWebDriverSupport.initializeFieldsIn;
 
 public class SerenityPageExtension implements BeforeEachCallback {
@@ -103,7 +100,7 @@ public class SerenityPageExtension implements BeforeEachCallback {
     }
 
     private void injectPageObjectIntoTest(final Object testClass) {
-        new PageObjectDependencyInjector(getPages()).injectDependenciesInto(testClass);
+        new PageObjectDependencyInjector().injectDependenciesInto(testClass);
     }
 
     public static class ExplicitWebDriverConfiguration {
