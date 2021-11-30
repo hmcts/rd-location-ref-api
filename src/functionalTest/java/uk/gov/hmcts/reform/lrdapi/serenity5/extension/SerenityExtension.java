@@ -6,12 +6,12 @@ import net.thucydides.core.steps.BaseStepListener;
 import net.thucydides.core.steps.Listeners;
 import net.thucydides.core.steps.StepEventBus;
 import net.thucydides.core.steps.StepListener;
-import net.thucydides.junit.guice.JUnitInjectors;
-import net.thucydides.junit.listeners.TestCounter;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import uk.gov.hmcts.reform.lrdapi.serenity5.counter.TestCounter;
+import uk.gov.hmcts.reform.lrdapi.serenity5.guice.JUnitInjectors;
 
 import static net.serenitybdd.core.environment.ConfiguredEnvironment.getConfiguration;
 import static net.thucydides.core.steps.StepEventBus.getEventBus;
