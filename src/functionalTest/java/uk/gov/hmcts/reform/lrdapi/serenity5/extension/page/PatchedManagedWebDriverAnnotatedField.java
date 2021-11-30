@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.lrdapi.serenity5.page;
+package uk.gov.hmcts.reform.lrdapi.serenity5.extension.page;
 
 import net.thucydides.core.annotations.ClearCookiesPolicy;
 import net.thucydides.core.annotations.Fields;
