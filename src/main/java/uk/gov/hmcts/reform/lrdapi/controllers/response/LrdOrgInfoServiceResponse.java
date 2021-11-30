@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.lrdapi.domain.Service;
+import uk.gov.hmcts.reform.lrdapi.domain.ServiceToCcdCaseTypeAssoc;
 
 import java.util.List;
 
@@ -66,9 +67,8 @@ public class LrdOrgInfoServiceResponse {
             if (!service.getServiceToCcdCaseTypeAssocs().isEmpty()) {
                 this.ccdServiceName = service.getServiceToCcdCaseTypeAssocs().get(0).getCcdServiceName();
             }
-            this.ccdCaseTypes = service.getServiceToCcdCaseTypeAssocs().stream().map(serviceToCcdCaseTypeAssoc ->
-
-                          serviceToCcdCaseTypeAssoc.getCcdCaseType())
+            this.ccdCaseTypes = service.getServiceToCcdCaseTypeAssocs().stream()
+                .map(ServiceToCcdCaseTypeAssoc::getCcdCaseType)
                 .collect(toList());
             this.lastUpdate = service.getLastUpdate().toString();
         }
