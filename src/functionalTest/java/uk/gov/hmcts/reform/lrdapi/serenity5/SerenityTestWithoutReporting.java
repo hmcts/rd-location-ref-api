@@ -4,8 +4,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import uk.gov.hmcts.reform.lrdapi.serenity5.extension.SerenityExtension;
 import uk.gov.hmcts.reform.lrdapi.serenity5.extension.SerenityJUnitLifecycleAdapterExtension;
 import uk.gov.hmcts.reform.lrdapi.serenity5.extension.SerenityManualExtension;
-import uk.gov.hmcts.reform.lrdapi.serenity5.extension.SerenityPageExtension;
 import uk.gov.hmcts.reform.lrdapi.serenity5.extension.SerenityStepExtension;
+import uk.gov.hmcts.reform.lrdapi.serenity5.extension.page.SerenityPageExtension;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
