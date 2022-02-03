@@ -91,6 +91,21 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("is_hearing_location")
     private String isHearingLocation;
 
+    @JsonProperty("welsh_venue_name")
+    String welshVenueName;
+
+    @JsonProperty("is_temporary_location")
+    String isTemporaryLocation;
+
+    @JsonProperty("is_nightingale_court")
+    String isNightingaleCourt;
+
+    @JsonProperty("location_type")
+    String locationType;
+
+    @JsonProperty("parent_location")
+    String parentLocation;
+
     public LrdCourtVenueResponse(CourtVenue courtVenue) {
 
         if (nonNull(courtVenue)) {
@@ -116,6 +131,11 @@ public class LrdCourtVenueResponse implements Serializable {
             this.postcode = courtVenue.getPostcode();
             this.welshSiteName = courtVenue.getWelshSiteName();
             this.venueName = courtVenue.getVenueName();
+            this.welshVenueName = courtVenue.getWelshVenueName();
+            this.isTemporaryLocation = courtVenue.getIsTemporaryLocation();
+            this.isNightingaleCourt = courtVenue.getIsNightingaleCourt();
+            this.locationType = courtVenue.getLocationType();
+            this.parentLocation = courtVenue.getParentLocation();
             this.isCaseManagementLocation = courtVenue.getIsCaseManagementLocation();
             this.isHearingLocation = courtVenue.getIsHearingLocation();
             courtVenue.getRegion().ifPresent(reg -> {
