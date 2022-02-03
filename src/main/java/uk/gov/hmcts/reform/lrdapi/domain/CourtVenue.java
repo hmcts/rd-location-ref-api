@@ -97,6 +97,22 @@ public class CourtVenue implements Serializable {
 
     private String isHearingLocation;
 
+    @Column(name = "welsh_venue_name")
+    String welshVenueName;
+
+    @Column(name = "is_temporary_location")
+    String isTemporaryLocation;
+
+    @Column(name = "is_nightingale_court")
+    String isNightingaleCourt;
+
+    @Column(name = "location_type")
+    String locationType;
+
+    @Column(name = "parent_location")
+    String parentLocation;
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",
         insertable = false, updatable = false, nullable = false)

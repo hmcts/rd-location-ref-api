@@ -54,7 +54,11 @@ class CourtVenueTest {
         courtVenue.setVenueName("venueName");
         courtVenue.setIsCaseManagementLocation("Y");
         courtVenue.setIsHearingLocation("Y");
-
+        courtVenue.setWelshVenueName("");
+        courtVenue.setIsTemporaryLocation("N");
+        courtVenue.setIsNightingaleCourt("N");
+        courtVenue.setLocationType("Court");
+        courtVenue.setParentLocation("");
 
         assertEquals("1", courtVenue.getCourtVenueId().toString());
         assertEquals("siteName", courtVenue.getSiteName());
@@ -74,6 +78,11 @@ class CourtVenueTest {
         assertEquals("venueName",courtVenue.getVenueName());
         assertEquals("Y",courtVenue.getIsCaseManagementLocation());
         assertEquals("Y",courtVenue.getIsHearingLocation());
+        assertEquals("",courtVenue.getWelshVenueName());
+        assertEquals("N",courtVenue.getIsTemporaryLocation());
+        assertEquals("N",courtVenue.getIsNightingaleCourt());
+        assertEquals("Court",courtVenue.getLocationType());
+        assertEquals("",courtVenue.getParentLocation());
         assertEquals(now,courtVenue.getClosedDate().get());
         assertEquals(now,courtVenue.getCourtOpenDate().get());
         assertEquals(now, courtVenue.getCreatedTime());
