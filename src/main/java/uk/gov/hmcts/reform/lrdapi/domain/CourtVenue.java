@@ -98,19 +98,19 @@ public class CourtVenue implements Serializable {
     private String isHearingLocation;
 
     @Column(name = "welsh_venue_name")
-    String welshVenueName;
+    private String welshVenueName;
 
     @Column(name = "is_temporary_location")
-    String isTemporaryLocation;
+    private String isTemporaryLocation;
 
     @Column(name = "is_nightingale_court")
-    String isNightingaleCourt;
+    private String isNightingaleCourt;
 
     @Column(name = "location_type")
-    String locationType;
+    private String locationType;
 
     @Column(name = "parent_location")
-    String parentLocation;
+    private String parentLocation;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
