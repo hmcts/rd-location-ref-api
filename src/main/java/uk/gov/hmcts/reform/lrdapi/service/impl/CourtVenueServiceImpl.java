@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCo
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
@@ -109,7 +110,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
                                                                  Integer regionId, Integer clusterId,
-                                                                 String courtVenueName) {
+                                                                 String courtVenueName,
+                                                                 CourtVenueRequestParam courtVenueRequestParam) {
         if (isNotBlank(epimmsIds)) {
             return retrieveCourtVenuesByEpimmsId(epimmsIds);
         }

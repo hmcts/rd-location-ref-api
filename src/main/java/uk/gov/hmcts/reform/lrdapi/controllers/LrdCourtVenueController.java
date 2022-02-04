@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
@@ -91,12 +92,27 @@ public class LrdCourtVenueController {
         @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
         @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
-        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName) {
+        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
+        @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
+        @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
+        @RequestParam(value = "location_type", required = false) @NotNull String locationType,
+        @RequestParam(value = "is_Temporary_Location", required = false) @NotNull String isTemporaryLocation) {
+
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);
+        CourtVenueRequestParam courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation(isHearingLocation);
+        courtVenueRequestParam.setIsCaseManagementLocation(isCaseManagementLocation);
+        courtVenueRequestParam.setLocationType(locationType);
+        courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
+
+
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
-                                                                                 courtVenueName);
+                                                                                 courtVenueName,
+                                                                                 courtVenueRequestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 
