@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -127,5 +128,35 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    void shouldReturn200WhenParameterEpmIdsValueAllPassed() throws
+        JsonProcessingException {
+
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                "?epimms_id=ALL",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(11);
+
+    }
+
+    @Test
+    void shouldReturn200WhenNoQueryParameterIsPassed() throws
+        JsonProcessingException {
+
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest(null, LrdCourtVenueResponse[].class, path);
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(11);
+
     }
 }

@@ -19,9 +19,11 @@ import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,12 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE__MANAGEMENT_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE__MANAGEMENT_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
@@ -113,7 +121,9 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                                                  String courtVenueName,
                                                                  CourtVenueRequestParam courtVenueRequestParam) {
         if (isNotBlank(epimmsIds)) {
-            return retrieveCourtVenuesByEpimmsId(epimmsIds);
+            return applyAdditionalFilters(retrieveCourtVenuesByEpimmsId(epimmsIds),
+                                          courtVenueRequestParam);
+
         }
         if (isNotEmpty(courtTypeId)) {
             log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
@@ -147,9 +157,11 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                 NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME
             );
         }
-        return getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
-                                 NO_COURT_VENUES_FOUND
+        List<LrdCourtVenueResponse> initialResult =
+            getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
+                                                                      NO_COURT_VENUES_FOUND
         );
+        return  applyAdditionalFilters(initialResult, courtVenueRequestParam);
     }
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
@@ -206,5 +218,80 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             log.error("{} : {}", loggingComponentName, noDataFoundMessage);
             throw new ResourceNotFoundException(noDataFoundMessage);
         }
+    }
+
+    private List<LrdCourtVenueResponse> applyAdditionalFilters(
+
+        List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
+        CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<Predicate<LrdCourtVenueResponse>> allPredicates = getPredicates(courtVenueRequestParam);
+
+
+        List<LrdCourtVenueResponse> result = inputLrdCourtVenueResponse.stream()
+            .filter(allPredicates.stream().reduce(x -> true, Predicate::and))
+            .collect(Collectors.toList());
+
+        return result;
+    }
+
+    private List<Predicate<LrdCourtVenueResponse>> getPredicates(
+
+        CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<Predicate<LrdCourtVenueResponse>> allPredicates =
+            new ArrayList<>();
+
+        String isHearingLocationValue = courtVenueRequestParam.getIsHearingLocation();
+
+        if (IS_HEARING_LOCATION_Y.equalsIgnoreCase(isHearingLocationValue)) {
+            allPredicates.add(
+                courtVenue -> IS_HEARING_LOCATION_Y.equalsIgnoreCase(courtVenue.getIsHearingLocation())
+            );
+
+        } else if (IS_HEARING_LOCATION_N.equalsIgnoreCase(isHearingLocationValue)) {
+            allPredicates.add(
+                courtVenue -> IS_HEARING_LOCATION_N.equalsIgnoreCase(courtVenue.getIsHearingLocation())
+            );
+
+        }
+
+        String isCaseMgntLocationValue = courtVenueRequestParam.getIsCaseManagementLocation();
+
+        if (IS_CASE__MANAGEMENT_LOCATION_Y.equalsIgnoreCase(isCaseMgntLocationValue)) {
+            allPredicates.add(
+                courtVenue -> IS_CASE__MANAGEMENT_LOCATION_Y.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
+            );
+
+        } else if (IS_CASE__MANAGEMENT_LOCATION_N.equalsIgnoreCase(isCaseMgntLocationValue)) {
+            allPredicates.add(
+                courtVenue -> IS_CASE__MANAGEMENT_LOCATION_N.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
+            );
+
+        }
+
+        String isTemporaryLocationValue = courtVenueRequestParam.getIsTemporaryLocation();
+
+        if (IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(isTemporaryLocationValue)) {
+            allPredicates.add(
+                courtVenue -> IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
+            );
+
+        } else if (IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(isTemporaryLocationValue)) {
+            allPredicates.add(
+                courtVenue -> IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
+            );
+
+        }
+
+        String isLocationTypeValue = courtVenueRequestParam.getIsTemporaryLocation();
+
+        if (StringUtils.isNotBlank(isLocationTypeValue)) {
+            allPredicates.add(
+                courtVenue -> isLocationTypeValue.equalsIgnoreCase(courtVenue.getLocationType())
+            );
+
+        }
+        return allPredicates;
     }
 }

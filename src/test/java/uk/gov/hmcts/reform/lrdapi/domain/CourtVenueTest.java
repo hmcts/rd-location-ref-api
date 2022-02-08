@@ -93,18 +93,18 @@ class CourtVenueTest {
     @Test
     void testCourtVenueRequestParam() {
         CourtVenueRequestParam courtVenueRequestParam =
-                new CourtVenueRequestParam();
+            new CourtVenueRequestParam();
 
         courtVenueRequestParam.setIsCaseManagementLocation("Y");
         courtVenueRequestParam.setIsHearingLocation("Y");
         courtVenueRequestParam.setIsTemporaryLocation("N");
         courtVenueRequestParam.setLocationType("CTSC");
 
-        assertEquals("Y",courtVenueRequestParam.getIsCaseManagementLocation());
-        assertEquals("Y",courtVenueRequestParam.getIsHearingLocation());
-        assertEquals("N",courtVenueRequestParam.getIsTemporaryLocation());
-        assertEquals("CTSC",courtVenueRequestParam.getLocationType());
+        assertEquals("Y", courtVenueRequestParam.getIsCaseManagementLocation());
+        assertEquals("Y", courtVenueRequestParam.getIsHearingLocation());
+        assertEquals("N", courtVenueRequestParam.getIsTemporaryLocation());
+        assertEquals("CTSC", courtVenueRequestParam.getLocationType());
 
     }
 
-    }
+}

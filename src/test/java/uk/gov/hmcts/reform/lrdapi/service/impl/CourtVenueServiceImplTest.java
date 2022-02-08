@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,10 +51,10 @@ class CourtVenueServiceImplTest {
     public void setup() {
         courtVenueRequestParam =
             new CourtVenueRequestParam();
-        courtVenueRequestParam.setIsCaseManagementLocation("Y");
-        courtVenueRequestParam.setIsHearingLocation("Y");
-        courtVenueRequestParam.setIsTemporaryLocation("N");
-        courtVenueRequestParam.setLocationType("CTSC");
+        //courtVenueRequestParam.setIsCaseManagementLocation("Y");
+        //courtVenueRequestParam.setIsHearingLocation("Y");
+        //courtVenueRequestParam.setIsTemporaryLocation("N");
+        //courtVenueRequestParam.setLocationType("CTSC");
 
     }
 
