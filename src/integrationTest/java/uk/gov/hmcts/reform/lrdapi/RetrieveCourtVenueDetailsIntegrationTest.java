@@ -137,9 +137,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
-                "?epimms_id=ALL" +
-                    "&is_hearing_location=Y&is_case_management_location=Y&location_type=CTSC" +
-                    "&is_temporary_Location=Y",
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=Y&is_case_management_location=Y&location_type=CTSC"
+                    + "&is_temporary_Location=Y",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -156,9 +156,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
-                "?epimms_id=ALL" +
-                    "&is_hearing_location=N&is_case_management_location=N&location_type=CTSC" +
-                    "&is_temporary_Location=N",
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=N&is_case_management_location=N&location_type=CTSC"
+                    + "&is_temporary_Location=N",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -175,9 +175,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
-                "?epimms_id=ALL" +
-                    "&is_hearing_location=N&is_case_management_location=N&location_type=NBC" +
-                    "&is_temporary_Location=N",
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=N&is_case_management_location=N&location_type=NBC"
+                    + "&is_temporary_Location=N",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -194,8 +194,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
-                "?epimms_id=ALL" +
-                    "&is_hearing_location=Y",
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=Y",
                 LrdCourtVenueResponse[].class,
                 path
             );

@@ -51,10 +51,6 @@ class CourtVenueServiceImplTest {
     public void setup() {
         courtVenueRequestParam =
             new CourtVenueRequestParam();
-        //courtVenueRequestParam.setIsCaseManagementLocation("Y");
-        //courtVenueRequestParam.setIsHearingLocation("Y");
-        //courtVenueRequestParam.setIsTemporaryLocation("N");
-        //courtVenueRequestParam.setLocationType("CTSC");
 
     }
 

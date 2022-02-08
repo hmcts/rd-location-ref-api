@@ -245,17 +245,17 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         String isHearingLocationValue = courtVenueRequestParam.getIsHearingLocation();
 
         if (IS_HEARING_LOCATION_Y.equalsIgnoreCase(isHearingLocationValue)
-        ||IS_HEARING_LOCATION_N.equalsIgnoreCase(isHearingLocationValue)) {
+            || IS_HEARING_LOCATION_N.equalsIgnoreCase(isHearingLocationValue)) {
             allPredicates.add(
-               courtVenue -> isHearingLocationValue.equalsIgnoreCase(courtVenue.getIsHearingLocation())
+                courtVenue -> isHearingLocationValue.equalsIgnoreCase(courtVenue.getIsHearingLocation())
             );
 
         }
 
         String isCaseMgntLocationValue = courtVenueRequestParam.getIsCaseManagementLocation();
 
-        if (IS_CASE_MANAGEMENT_LOCATION_Y.equalsIgnoreCase(isCaseMgntLocationValue)||
-            IS_CASE_MANAGEMENT_LOCATION_N.equalsIgnoreCase(isCaseMgntLocationValue)) {
+        if (IS_CASE_MANAGEMENT_LOCATION_Y.equalsIgnoreCase(isCaseMgntLocationValue)
+            || IS_CASE_MANAGEMENT_LOCATION_N.equalsIgnoreCase(isCaseMgntLocationValue)) {
             allPredicates.add(
                 courtVenue -> isCaseMgntLocationValue.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
             );
@@ -265,7 +265,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         String isTemporaryLocationValue = courtVenueRequestParam.getIsTemporaryLocation();
 
         if (IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(isTemporaryLocationValue)
-        ||IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(isTemporaryLocationValue)) {
+            || IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(isTemporaryLocationValue)) {
             allPredicates.add(
                 courtVenue -> isTemporaryLocationValue.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
             );
