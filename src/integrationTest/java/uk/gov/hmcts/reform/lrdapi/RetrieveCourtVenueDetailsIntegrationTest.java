@@ -131,21 +131,80 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     }
 
     @Test
-    void shouldReturn200WhenParameterEpmIdsValueAllPassed() throws
+    void shouldReturn200WhenParameterEpmIdsValueAllWithYPassed() throws
         JsonProcessingException {
 
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
-                "?epimms_id=ALL",
+                "?epimms_id=ALL" +
+                    "&is_hearing_location=Y&is_case_management_location=Y&location_type=CTSC" +
+                    "&is_temporary_Location=Y",
                 LrdCourtVenueResponse[].class,
                 path
             );
 
         assertNotNull(response);
-        assertThat(response.size()).isEqualTo(11);
+        assertThat(response.size()).isEqualTo(1);
 
     }
+
+    @Test
+    void shouldReturn200WhenParameterEpmIdsValueAllWithNAndWrongLocationTypePassed() throws
+        JsonProcessingException {
+
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                "?epimms_id=ALL" +
+                    "&is_hearing_location=N&is_case_management_location=N&location_type=CTSC" +
+                    "&is_temporary_Location=N",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(0);
+
+    }
+
+    @Test
+    void shouldReturn200WhenParameterEpmIdsValueAllWithNAndLocationTypeNbcPassed() throws
+        JsonProcessingException {
+
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                "?epimms_id=ALL" +
+                    "&is_hearing_location=N&is_case_management_location=N&location_type=NBC" +
+                    "&is_temporary_Location=N",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(1);
+
+    }
+
+    @Test
+    void shouldReturn200WhenParameterEpmIdsValueAllWithHearingLocationYPassed() throws
+        JsonProcessingException {
+
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                "?epimms_id=ALL" +
+                    "&is_hearing_location=Y",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(2);
+
+    }
+
 
     @Test
     void shouldReturn200WhenNoQueryParameterIsPassed() throws

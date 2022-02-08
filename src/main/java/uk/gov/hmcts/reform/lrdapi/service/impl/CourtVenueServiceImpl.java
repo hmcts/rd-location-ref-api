@@ -38,8 +38,8 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE__MANAGEMENT_LOCATION_N;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE__MANAGEMENT_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_N;
@@ -244,47 +244,35 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         String isHearingLocationValue = courtVenueRequestParam.getIsHearingLocation();
 
-        if (IS_HEARING_LOCATION_Y.equalsIgnoreCase(isHearingLocationValue)) {
+        if (IS_HEARING_LOCATION_Y.equalsIgnoreCase(isHearingLocationValue)
+        ||IS_HEARING_LOCATION_N.equalsIgnoreCase(isHearingLocationValue)) {
             allPredicates.add(
-                courtVenue -> IS_HEARING_LOCATION_Y.equalsIgnoreCase(courtVenue.getIsHearingLocation())
-            );
-
-        } else if (IS_HEARING_LOCATION_N.equalsIgnoreCase(isHearingLocationValue)) {
-            allPredicates.add(
-                courtVenue -> IS_HEARING_LOCATION_N.equalsIgnoreCase(courtVenue.getIsHearingLocation())
+               courtVenue -> isHearingLocationValue.equalsIgnoreCase(courtVenue.getIsHearingLocation())
             );
 
         }
 
         String isCaseMgntLocationValue = courtVenueRequestParam.getIsCaseManagementLocation();
 
-        if (IS_CASE__MANAGEMENT_LOCATION_Y.equalsIgnoreCase(isCaseMgntLocationValue)) {
+        if (IS_CASE_MANAGEMENT_LOCATION_Y.equalsIgnoreCase(isCaseMgntLocationValue)||
+            IS_CASE_MANAGEMENT_LOCATION_N.equalsIgnoreCase(isCaseMgntLocationValue)) {
             allPredicates.add(
-                courtVenue -> IS_CASE__MANAGEMENT_LOCATION_Y.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
-            );
-
-        } else if (IS_CASE__MANAGEMENT_LOCATION_N.equalsIgnoreCase(isCaseMgntLocationValue)) {
-            allPredicates.add(
-                courtVenue -> IS_CASE__MANAGEMENT_LOCATION_N.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
+                courtVenue -> isCaseMgntLocationValue.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
             );
 
         }
 
         String isTemporaryLocationValue = courtVenueRequestParam.getIsTemporaryLocation();
 
-        if (IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(isTemporaryLocationValue)) {
+        if (IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(isTemporaryLocationValue)
+        ||IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(isTemporaryLocationValue)) {
             allPredicates.add(
-                courtVenue -> IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
-            );
-
-        } else if (IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(isTemporaryLocationValue)) {
-            allPredicates.add(
-                courtVenue -> IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
+                courtVenue -> isTemporaryLocationValue.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
             );
 
         }
 
-        String isLocationTypeValue = courtVenueRequestParam.getIsTemporaryLocation();
+        String isLocationTypeValue = courtVenueRequestParam.getLocationType();
 
         if (StringUtils.isNotBlank(isLocationTypeValue)) {
             allPredicates.add(

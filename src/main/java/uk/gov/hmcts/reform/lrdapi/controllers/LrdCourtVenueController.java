@@ -96,7 +96,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
         @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
         @RequestParam(value = "location_type", required = false) @NotNull String locationType,
-        @RequestParam(value = "is_Temporary_Location", required = false) @NotNull String isTemporaryLocation) {
+        @RequestParam(value = "is_temporary_Location", required = false) @NotNull String isTemporaryLocation) {
 
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);

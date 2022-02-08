@@ -71,8 +71,8 @@ public class LocationRefConstants {
 
     public static final String IS_HEARING_LOCATION_Y = "Y";
     public static final String IS_HEARING_LOCATION_N = "N";
-    public static final String IS_CASE__MANAGEMENT_LOCATION_Y = "Y";
-    public static final String IS_CASE__MANAGEMENT_LOCATION_N = "N";
+    public static final String IS_CASE_MANAGEMENT_LOCATION_Y = "Y";
+    public static final String IS_CASE_MANAGEMENT_LOCATION_N = "N";
     public static final String IS_TEMPORARY_LOCATION_Y = "Y";
     public static final String IS_TEMPORARY_LOCATION_N = "N";
 
