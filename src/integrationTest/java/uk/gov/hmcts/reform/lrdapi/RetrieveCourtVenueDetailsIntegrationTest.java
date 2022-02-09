@@ -139,7 +139,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
                 "?epimms_id=ALL"
                     + "&is_hearing_location=Y&is_case_management_location=Y&location_type=CTSC"
-                    + "&is_temporary_Location=Y",
+                    + "&is_temporary_location=Y",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -160,7 +160,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
                 "?epimms_id=ALL"
                     + "&is_hearing_location=N&is_case_management_location=N&location_type=NBC"
-                    + "&is_temporary_Location=N",
+                    + "&is_temporary_location=N",
                 LrdCourtVenueResponse[].class,
                 path
             );
