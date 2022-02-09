@@ -76,4 +76,13 @@ public class LocationRefConstants {
     public static final String IS_TEMPORARY_LOCATION_Y = "Y";
     public static final String IS_TEMPORARY_LOCATION_N = "N";
 
+    public static final String INVALID_IS_HEARING_LOCATION =
+        "Invalid is_hearing_location. Allowed values are Y OR N";
+
+    public static final String INVALID_IS_CASE_MANAGEMENT_LOCATION =
+        "Invalid is_case_management_location. Allowed values are Y OR N";
+    public static final String INVALID_IS_TEMPORARY_LOCATION =
+        "Invalid is_temporary_location. Allowed values are Y OR N";
+
+
 }

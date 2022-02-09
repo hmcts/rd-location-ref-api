@@ -27,6 +27,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
 
 @RequestMapping(
@@ -56,8 +57,9 @@ public class LrdCourtVenueController {
             + "or court name irrespective of the case are returned as a list.\n"
             + "If no params are passed, then all the available court venues which have the "
             + "status as 'OPEN' are returned as a list."
-            + "Additional API filters are applied with request params 'is_hearing_location', 'is_case_management_location'\n" +
-            "'location_type' and 'is_temporary_location'",
+            + "Additional API filters are applied with request params 'is_hearing_location', "
+            + "'is_case_management_location'\n"
+            + "'location_type' and 'is_temporary_location'",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -110,6 +112,7 @@ public class LrdCourtVenueController {
         courtVenueRequestParam.setLocationType(locationType);
         courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
 
+        validateCourtVenueFilters(courtVenueRequestParam);
 
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,

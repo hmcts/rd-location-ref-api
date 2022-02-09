@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +12,14 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentifiers;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 
 class ValidationUtilsTest {
 
@@ -238,6 +241,115 @@ class ValidationUtilsTest {
             checkForInvalidIdentifiersAndRemoveFromIdList(idList, AlphaNumericRegex, logger, "anyString",
                                                           EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
             ));
+    }
+
+    @Test
+    void testValidateCourtVenueRequestParamForAllValidValues() {
+        CourtVenueRequestParam courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation("Y");
+        courtVenueRequestParam.setIsCaseManagementLocation("Y");
+        courtVenueRequestParam.setLocationType("CTSC");
+        courtVenueRequestParam.setIsTemporaryLocation("Y");
+
+
+        validateCourtVenueFilters(courtVenueRequestParam);
+
+        courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation("y");
+        courtVenueRequestParam.setIsCaseManagementLocation("y");
+        courtVenueRequestParam.setLocationType("CTSC");
+        courtVenueRequestParam.setIsTemporaryLocation("y");
+
+
+        validateCourtVenueFilters(courtVenueRequestParam);
+
+        courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation("N");
+        courtVenueRequestParam.setIsCaseManagementLocation("N");
+        courtVenueRequestParam.setLocationType("CTSC");
+        courtVenueRequestParam.setIsTemporaryLocation("N");
+
+
+        validateCourtVenueFilters(courtVenueRequestParam);
+
+        courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation("n");
+        courtVenueRequestParam.setIsCaseManagementLocation("n");
+        courtVenueRequestParam.setLocationType("CTSC");
+        courtVenueRequestParam.setIsTemporaryLocation("n");
+
+
+        validateCourtVenueFilters(courtVenueRequestParam);
+
+        assertTrue(true);
+    }
+
+    @Test
+    void testValidateCourtVenueRequestParamInvalidValidYValues() {
+        CourtVenueRequestParam courtVenueRequestParam1 =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam1.setIsHearingLocation("");
+        courtVenueRequestParam1.setIsCaseManagementLocation("y");
+        courtVenueRequestParam1.setLocationType("ctsc");
+        courtVenueRequestParam1.setIsTemporaryLocation("y");
+
+        Throwable exception1 = assertThrows(
+            InvalidRequestException.class,
+            () -> validateCourtVenueFilters(courtVenueRequestParam1)
+        );
+        assertNotNull(exception1);
+
+        CourtVenueRequestParam courtVenueRequestParam2 =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam2.setIsHearingLocation("y");
+        courtVenueRequestParam2.setIsCaseManagementLocation("");
+        courtVenueRequestParam2.setLocationType("ctsc");
+        courtVenueRequestParam2.setIsTemporaryLocation("y");
+
+        Throwable exception2 = assertThrows(
+            InvalidRequestException.class,
+            () -> validateCourtVenueFilters(courtVenueRequestParam2)
+        );
+        assertNotNull(exception2);
+
+        CourtVenueRequestParam courtVenueRequestParam3 =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam3.setIsHearingLocation("y");
+        courtVenueRequestParam3.setIsCaseManagementLocation("y");
+        courtVenueRequestParam3.setLocationType("ctsc@£");
+        courtVenueRequestParam3.setIsTemporaryLocation("y");
+
+        Throwable exception3 = assertThrows(
+            InvalidRequestException.class,
+            () -> validateCourtVenueFilters(courtVenueRequestParam3)
+        );
+        assertNotNull(exception3);
+
+        CourtVenueRequestParam courtVenueRequestParam4 =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam4.setIsHearingLocation("y");
+        courtVenueRequestParam4.setIsCaseManagementLocation("y");
+        courtVenueRequestParam4.setLocationType("ctsc");
+        courtVenueRequestParam4.setIsTemporaryLocation("");
+
+        Throwable exception4 = assertThrows(
+            InvalidRequestException.class,
+            () -> validateCourtVenueFilters(courtVenueRequestParam4)
+        );
+        assertNotNull(exception4);
+
     }
 
     private List<String> getSingleInvalidIdList() {

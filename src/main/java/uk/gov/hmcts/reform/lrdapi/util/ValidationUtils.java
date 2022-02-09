@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.lrdapi.util;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +19,15 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_IS_CASE_MANAGEMENT_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_IS_HEARING_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_IS_TEMPORARY_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -203,4 +213,45 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * A util method to check additional filter validation.
+     *
+     * @param courtVenueRequestParam Additional parameters to validate.
+     */
+    public static void validateCourtVenueFilters(CourtVenueRequestParam courtVenueRequestParam) {
+
+        if (courtVenueRequestParam.getIsHearingLocation() != null) {
+            String hearingLocation = StringUtils.trim(courtVenueRequestParam.getIsHearingLocation());
+            if (!StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_Y)
+                && !StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_N)) {
+                throw new InvalidRequestException(INVALID_IS_HEARING_LOCATION);
+            }
+        }
+
+
+        if (courtVenueRequestParam.getIsCaseManagementLocation() != null) {
+            String caseManagementLocation = StringUtils.trim(courtVenueRequestParam.getIsCaseManagementLocation());
+            if (!StringUtils.equalsIgnoreCase(
+                caseManagementLocation,
+                IS_CASE_MANAGEMENT_LOCATION_Y)
+                && !StringUtils.equalsIgnoreCase(
+                    caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_N)) {
+                throw new InvalidRequestException(INVALID_IS_CASE_MANAGEMENT_LOCATION);
+            }
+        }
+        if (courtVenueRequestParam.getLocationType() != null) {
+            checkSpecialCharacters(courtVenueRequestParam.getLocationType());
+        }
+        if (courtVenueRequestParam.getIsTemporaryLocation() != null) {
+            String temporaryLocation = StringUtils.trim(courtVenueRequestParam.getIsTemporaryLocation());
+            if (!StringUtils.equalsIgnoreCase(
+                temporaryLocation,
+                IS_TEMPORARY_LOCATION_Y)
+                && !StringUtils.equalsIgnoreCase(
+                    temporaryLocation, IS_TEMPORARY_LOCATION_N)) {
+                throw new InvalidRequestException(INVALID_IS_TEMPORARY_LOCATION);
+            }
+        }
+
+    }
 }
