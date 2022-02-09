@@ -149,6 +149,25 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     }
 
+    @Test
+    void shouldReturn200WhenParameterEpmIdsValueAllWithLowerCaseValuesPassed() throws
+        JsonProcessingException {
+
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=y&is_case_management_location=y&location_type=CTSC"
+                    + "&is_temporary_location=y",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertNotNull(response);
+        assertThat(response.size()).isEqualTo(1);
+
+    }
+
 
 
     @Test
