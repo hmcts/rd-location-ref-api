@@ -121,47 +121,56 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                                                  String courtVenueName,
                                                                  CourtVenueRequestParam courtVenueRequestParam) {
         if (isNotBlank(epimmsIds)) {
-            return applyAdditionalFilters(retrieveCourtVenuesByEpimmsId(epimmsIds),
-                                          courtVenueRequestParam);
+            return getLrdCourtVenueResponses(
+                retrieveCourtVenuesByEpimmsId(epimmsIds),
+                courtVenueRequestParam
+            );
 
         }
         if (isNotEmpty(courtTypeId)) {
             log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
-            return getAllCourtVenues(
-                () -> courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
-                courtTypeId.toString(),
-                NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID
-            );
+
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse =
+                getAllCourtVenues(
+                    () -> courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
+                    courtTypeId.toString(),
+                    NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID
+                );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
         if (isNotEmpty(regionId)) {
             log.info("{} : Obtaining court venues for region id: {}", loggingComponentName, regionId);
-            return getAllCourtVenues(
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse = getAllCourtVenues(
                 () -> courtVenueRepository.findByRegionIdWithOpenCourtStatus(regionId.toString()),
                 regionId.toString(),
                 NO_COURT_VENUES_FOUND_FOR_REGION_ID
             );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
+
         }
         if (isNotEmpty(clusterId)) {
             log.info("{} : Obtaining court venues for cluster id: {}", loggingComponentName, clusterId);
-            return getAllCourtVenues(
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse = getAllCourtVenues(
                 () -> courtVenueRepository.findByClusterIdWithOpenCourtStatus(clusterId.toString()),
                 clusterId.toString(),
                 NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID
             );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
         if (isNotEmpty(courtVenueName)) {
             log.info("{} : Obtaining court venues for court venue name: {}", loggingComponentName, courtVenueName);
-            return getAllCourtVenues(
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse = getAllCourtVenues(
                 () -> courtVenueRepository.findByCourtVenueNameOrSiteName(courtVenueName.strip()),
                 courtVenueName,
                 NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME
             );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
         List<LrdCourtVenueResponse> initialResult =
             getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
-                                                                      NO_COURT_VENUES_FOUND
-        );
-        return  applyAdditionalFilters(initialResult, courtVenueRequestParam);
+                              NO_COURT_VENUES_FOUND
+            );
+        return getLrdCourtVenueResponses(initialResult, courtVenueRequestParam);
     }
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
@@ -218,6 +227,21 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             log.error("{} : {}", loggingComponentName, noDataFoundMessage);
             throw new ResourceNotFoundException(noDataFoundMessage);
         }
+    }
+
+    private List<LrdCourtVenueResponse> getLrdCourtVenueResponses(
+
+        List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
+        CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<LrdCourtVenueResponse> result = applyAdditionalFilters(
+            inputLrdCourtVenueResponse,
+            courtVenueRequestParam
+        );
+        if (isEmpty(result)) {
+            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+        }
+        return result;
     }
 
     private List<LrdCourtVenueResponse> applyAdditionalFilters(
