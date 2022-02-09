@@ -59,7 +59,7 @@ public class LrdCourtVenueController {
             + "status as 'OPEN' are returned as a list."
             + "Additional API filters are applied with request params 'is_hearing_location', "
             + "'is_case_management_location'\n"
-            + "'location_type' and 'is_temporary_location'",
+            + "'location_type' and 'is_temporary_location'.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
