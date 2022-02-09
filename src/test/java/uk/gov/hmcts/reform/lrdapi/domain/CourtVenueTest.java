@@ -80,9 +80,6 @@ class CourtVenueTest {
         assertEquals("Y",courtVenue.getIsHearingLocation());
         assertEquals("",courtVenue.getWelshVenueName());
         assertEquals("N",courtVenue.getIsTemporaryLocation());
-        assertEquals("N",courtVenue.getIsNightingaleCourt());
-        assertEquals("Court",courtVenue.getLocationType());
-        assertEquals("",courtVenue.getParentLocation());
         assertEquals(now,courtVenue.getClosedDate().get());
         assertEquals(now,courtVenue.getCourtOpenDate().get());
         assertEquals(now, courtVenue.getCreatedTime());

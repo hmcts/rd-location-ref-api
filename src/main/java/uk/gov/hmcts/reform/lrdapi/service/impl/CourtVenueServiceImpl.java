@@ -252,11 +252,10 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         List<Predicate<LrdCourtVenueResponse>> allPredicates = getPredicates(courtVenueRequestParam);
 
 
-        List<LrdCourtVenueResponse> result = inputLrdCourtVenueResponse.stream()
+        return inputLrdCourtVenueResponse.stream()
             .filter(allPredicates.stream().reduce(x -> true, Predicate::and))
             .collect(Collectors.toList());
 
-        return result;
     }
 
     private List<Predicate<LrdCourtVenueResponse>> getPredicates(
