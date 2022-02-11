@@ -222,28 +222,27 @@ public class ValidationUtils {
     public static void validateCourtVenueFilters(CourtVenueRequestParam courtVenueRequestParam) {
         String hearingLocation = courtVenueRequestParam.getIsHearingLocation();
 
-        if (hearingLocation != null) {
 
-            if (!StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_Y)
-                && !StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_N)) {
+        if (hearingLocation != null
+            && !StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_Y)
+            && !StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_N)) {
 
-                throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, FILTER_IS_HEARING_LOCATION));
-            }
+            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, FILTER_IS_HEARING_LOCATION));
         }
 
         String caseManagementLocation = courtVenueRequestParam.getIsCaseManagementLocation();
 
-        if (caseManagementLocation != null) {
 
-            if (!StringUtils.equalsIgnoreCase(caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_Y)
-                && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_N)) {
+        if (caseManagementLocation != null
+            && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_Y)
+            && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_N)) {
 
-                throw new InvalidRequestException(String.format(
-                    INVALID_ADDITIONAL_FILTER,
-                    FILTER_IS_CASE_MANAGEMENT_LOCATION
-                ));
-            }
+            throw new InvalidRequestException(String.format(
+                INVALID_ADDITIONAL_FILTER,
+                FILTER_IS_CASE_MANAGEMENT_LOCATION
+            ));
         }
+
 
         String locationType = courtVenueRequestParam.getLocationType();
 
@@ -253,16 +252,17 @@ public class ValidationUtils {
         }
         String temporaryLocation = courtVenueRequestParam.getIsTemporaryLocation();
 
-        if (temporaryLocation != null) {
-            if (!StringUtils.equalsIgnoreCase(temporaryLocation, IS_TEMPORARY_LOCATION_Y)
-                && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_TEMPORARY_LOCATION_N)) {
 
-                throw new InvalidRequestException(String.format(
-                    INVALID_ADDITIONAL_FILTER,
-                    FILTER_IS_TEMPORARY_LOCATION
-                ));
-            }
+        if (temporaryLocation != null
+            && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_TEMPORARY_LOCATION_Y)
+            && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_TEMPORARY_LOCATION_N)) {
+
+            throw new InvalidRequestException(String.format(
+                INVALID_ADDITIONAL_FILTER,
+                FILTER_IS_TEMPORARY_LOCATION
+            ));
         }
+
 
     }
 
