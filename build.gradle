@@ -27,9 +27,8 @@ def versions = [
         lombok             : '1.18.20',
         gradlePitest       : '1.5.1',
         pitest             : '1.7.0',
-        reformLogging      : '5.1.7',
+        reformLogging      : '5.1.9',
         reformHealthStarter: '0.0.5',
-        reformS2sClient    : '4.0.0',
         serenity           : '2.0.76',
         sonarPitest        : '0.5',
         springBoot         : '2.4.12',
@@ -288,13 +287,10 @@ project.tasks['sonarqube'].group = "Verification"
 
 repositories {
   mavenLocal()
-  jcenter()
   mavenCentral()
-
   maven {
     url "https://jitpack.io"
   }
-
 }
 
 dependencies {
@@ -325,18 +321,18 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
-    implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-    implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
-    implementation (group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version: '0.1.0'){
+    implementation "com.github.hmcts.java-logging:logging:${versions.reformLogging}"
+    implementation "com.github.hmcts.java-logging:logging-appinsights:${versions.reformLogging}"
+    implementation ('com.github.hmcts:properties-volume-spring-boot-starter:0.1.0') {
       exclude group: 'org.glassfish', module: 'jakarta.el'
     }
-    implementation group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.reformS2sClient
+    implementation 'com.github.hmcts:service-auth-provider-java-client:4.0.3'
 
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.11.2'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version:'0.9.1'
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
     implementation group: 'javax.inject', name: 'javax.inject', version: '1'
-    implementation group: 'uk.gov.hmcts.reform', name: 'idam-client', version: '2.0.0'
+    implementation 'com.github.hmcts:idam-java-client:2.0.1'
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '8.20'
@@ -420,7 +416,7 @@ dependencies {
     testImplementation group: 'org.codehaus.groovy', name: 'groovy', version: '2.5.15'
     testImplementation group: 'org.codehaus.groovy', name: 'groovy-xml', version: '2.5.15'
     testImplementation group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.15'
-    testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
+    testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
@@ -511,3 +507,11 @@ bootJar {
 // this setting only applies when running via gradle bootRun -- see web.config for the
 // java flag that configures the deployed applications
 applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
+
+rootProject.tasks.named("processFunctionalTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processIntegrationTestResources") {
+  duplicatesStrategy = 'include'
+}
