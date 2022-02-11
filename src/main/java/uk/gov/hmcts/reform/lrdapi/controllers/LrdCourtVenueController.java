@@ -26,6 +26,7 @@ import javax.validation.constraints.NotNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
@@ -112,12 +113,14 @@ public class LrdCourtVenueController {
         courtVenueRequestParam.setLocationType(locationType);
         courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
 
-        validateCourtVenueFilters(courtVenueRequestParam);
+        CourtVenueRequestParam result =  trimCourtVenueRequestParam(courtVenueRequestParam);
+
+        validateCourtVenueFilters(result);
 
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
                                                                                  courtVenueName,
-                                                                                 courtVenueRequestParam);
+                                                                                 result);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 

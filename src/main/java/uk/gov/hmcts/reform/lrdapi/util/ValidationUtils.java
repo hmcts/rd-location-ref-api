@@ -220,41 +220,72 @@ public class ValidationUtils {
      * @param courtVenueRequestParam Additional parameters to validate.
      */
     public static void validateCourtVenueFilters(CourtVenueRequestParam courtVenueRequestParam) {
+        String hearingLocation = courtVenueRequestParam.getIsHearingLocation();
 
-        if (courtVenueRequestParam.getIsHearingLocation() != null) {
-            String hearingLocation = StringUtils.trim(courtVenueRequestParam.getIsHearingLocation());
+        if (hearingLocation != null) {
+
             if (!StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_Y)
                 && !StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_N)) {
+
                 throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, FILTER_IS_HEARING_LOCATION));
             }
         }
 
+        String caseManagementLocation = courtVenueRequestParam.getIsCaseManagementLocation();
+
+        if (caseManagementLocation != null) {
+
+            if (!StringUtils.equalsIgnoreCase(caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_Y)
+                && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_N)) {
+
+                throw new InvalidRequestException(String.format(
+                    INVALID_ADDITIONAL_FILTER,
+                    FILTER_IS_CASE_MANAGEMENT_LOCATION
+                ));
+            }
+        }
+
+        String locationType = courtVenueRequestParam.getLocationType();
+
+        if (locationType != null) {
+
+            checkSpecialCharacters(locationType);
+        }
+        String temporaryLocation = courtVenueRequestParam.getIsTemporaryLocation();
+
+        if (temporaryLocation != null) {
+            if (!StringUtils.equalsIgnoreCase(temporaryLocation, IS_TEMPORARY_LOCATION_Y)
+                && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_TEMPORARY_LOCATION_N)) {
+
+                throw new InvalidRequestException(String.format(
+                    INVALID_ADDITIONAL_FILTER,
+                    FILTER_IS_TEMPORARY_LOCATION
+                ));
+            }
+        }
+
+    }
+
+    public static CourtVenueRequestParam trimCourtVenueRequestParam(CourtVenueRequestParam courtVenueRequestParam) {
+
+        CourtVenueRequestParam result = new CourtVenueRequestParam();
+
+        if (courtVenueRequestParam.getIsHearingLocation() != null) {
+            result.setIsHearingLocation(StringUtils.trim(courtVenueRequestParam.getIsHearingLocation()));
+
+        }
+
 
         if (courtVenueRequestParam.getIsCaseManagementLocation() != null) {
-            String caseManagementLocation = StringUtils.trim(courtVenueRequestParam.getIsCaseManagementLocation());
-            if (!StringUtils.equalsIgnoreCase(
-                caseManagementLocation,
-                IS_CASE_MANAGEMENT_LOCATION_Y)
-                && !StringUtils.equalsIgnoreCase(
-                    caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_N)) {
-                throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                FILTER_IS_CASE_MANAGEMENT_LOCATION));
-            }
+            result.setIsCaseManagementLocation(StringUtils.trim(courtVenueRequestParam.getIsCaseManagementLocation()));
+
         }
         if (courtVenueRequestParam.getLocationType() != null) {
-            checkSpecialCharacters(courtVenueRequestParam.getLocationType());
+            result.setLocationType(StringUtils.trim(courtVenueRequestParam.getLocationType()));
         }
         if (courtVenueRequestParam.getIsTemporaryLocation() != null) {
-            String temporaryLocation = StringUtils.trim(courtVenueRequestParam.getIsTemporaryLocation());
-            if (!StringUtils.equalsIgnoreCase(
-                temporaryLocation,
-                IS_TEMPORARY_LOCATION_Y)
-                && !StringUtils.equalsIgnoreCase(
-                    temporaryLocation, IS_TEMPORARY_LOCATION_N)) {
-                throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                FILTER_IS_TEMPORARY_LOCATION));
-            }
+            result.setIsTemporaryLocation(StringUtils.trim(courtVenueRequestParam.getIsTemporaryLocation()));
         }
-
+        return result;
     }
 }

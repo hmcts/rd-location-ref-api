@@ -19,6 +19,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIde
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentifiers;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 
 class ValidationUtilsTest {
@@ -349,6 +350,27 @@ class ValidationUtilsTest {
             () -> validateCourtVenueFilters(courtVenueRequestParam4)
         );
         assertNotNull(exception4);
+
+    }
+
+    @Test
+    void testTrimCourtVenueRequestParamValues() {
+        CourtVenueRequestParam courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation("    Y");
+        courtVenueRequestParam.setIsCaseManagementLocation("    Y    ");
+        courtVenueRequestParam.setLocationType("     CTSC    ");
+        courtVenueRequestParam.setIsTemporaryLocation("Y    ");
+
+
+        CourtVenueRequestParam response1 = trimCourtVenueRequestParam(courtVenueRequestParam);
+
+        assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
+        assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
+        assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
+        assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
+
 
     }
 
