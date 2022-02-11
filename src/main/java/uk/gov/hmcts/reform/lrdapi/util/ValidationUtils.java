@@ -19,9 +19,10 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_IS_CASE_MANAGEMENT_LOCATION;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_IS_HEARING_LOCATION;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_IS_TEMPORARY_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_CASE_MANAGEMENT_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_N;
@@ -224,7 +225,7 @@ public class ValidationUtils {
             String hearingLocation = StringUtils.trim(courtVenueRequestParam.getIsHearingLocation());
             if (!StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_Y)
                 && !StringUtils.equalsIgnoreCase(hearingLocation, IS_HEARING_LOCATION_N)) {
-                throw new InvalidRequestException(INVALID_IS_HEARING_LOCATION);
+                throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, FILTER_IS_HEARING_LOCATION));
             }
         }
 
@@ -236,7 +237,8 @@ public class ValidationUtils {
                 IS_CASE_MANAGEMENT_LOCATION_Y)
                 && !StringUtils.equalsIgnoreCase(
                     caseManagementLocation, IS_CASE_MANAGEMENT_LOCATION_N)) {
-                throw new InvalidRequestException(INVALID_IS_CASE_MANAGEMENT_LOCATION);
+                throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
+                                                                FILTER_IS_CASE_MANAGEMENT_LOCATION));
             }
         }
         if (courtVenueRequestParam.getLocationType() != null) {
@@ -249,7 +251,8 @@ public class ValidationUtils {
                 IS_TEMPORARY_LOCATION_Y)
                 && !StringUtils.equalsIgnoreCase(
                     temporaryLocation, IS_TEMPORARY_LOCATION_N)) {
-                throw new InvalidRequestException(INVALID_IS_TEMPORARY_LOCATION);
+                throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
+                                                                FILTER_IS_TEMPORARY_LOCATION));
             }
         }
 

@@ -76,13 +76,15 @@ public class LocationRefConstants {
     public static final String IS_TEMPORARY_LOCATION_Y = "Y";
     public static final String IS_TEMPORARY_LOCATION_N = "N";
 
-    public static final String INVALID_IS_HEARING_LOCATION =
-        "Invalid is_hearing_location. Allowed values are Y OR N";
+    public static final String FILTER_IS_HEARING_LOCATION =
+        "is_hearing_location";
 
-    public static final String INVALID_IS_CASE_MANAGEMENT_LOCATION =
-        "Invalid is_case_management_location. Allowed values are Y OR N";
-    public static final String INVALID_IS_TEMPORARY_LOCATION =
-        "Invalid is_temporary_location. Allowed values are Y OR N";
+    public static final String FILTER_IS_CASE_MANAGEMENT_LOCATION =
+        "is_case_management_location";
+    public static final String FILTER_IS_TEMPORARY_LOCATION =
+        "is_temporary_location";
 
+    public static final String INVALID_ADDITIONAL_FILTER =
+        "Invalid %s. Allowed values are Y OR N";
 
 }
