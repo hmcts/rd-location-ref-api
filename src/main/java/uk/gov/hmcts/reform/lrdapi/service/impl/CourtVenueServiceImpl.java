@@ -98,12 +98,11 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
             Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
                 Collectors.toList());
-        List<LrdCourtVenueResponse> lrdCourtVenueResponseList =
-            getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
+
+        return   getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
                 searchString.toUpperCase(),
                 courtTypeIdList
             ));
-        return lrdCourtVenueResponseList;
     }
 
     @Override
