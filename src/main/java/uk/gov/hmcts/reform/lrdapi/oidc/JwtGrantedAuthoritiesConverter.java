@@ -30,8 +30,6 @@ public class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection
 
     private final IdamRepository idamRepository;
 
-    private UserInfo userInfo;
-
     @Autowired
     public JwtGrantedAuthoritiesConverter(IdamRepository idamRepository) {
         this.idamRepository = idamRepository;
@@ -42,8 +40,9 @@ public class JwtGrantedAuthoritiesConverter implements Converter<Jwt, Collection
      */
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
+        UserInfo userInfo;
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (jwt.containsClaim(TOKEN_NAME) && jwt.getClaim(TOKEN_NAME).equals(ACCESS_TOKEN)) {
+        if (Boolean.TRUE.equals(jwt.containsClaim(TOKEN_NAME)) && jwt.getClaim(TOKEN_NAME).equals(ACCESS_TOKEN)) {
             userInfo = idamRepository.getUserInfo(jwt.getTokenValue());
             if (!CollectionUtils.isEmpty(userInfo.getRoles())) {
                 authorities = extractAuthorityFromClaims(userInfo.getRoles());
