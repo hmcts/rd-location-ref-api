@@ -35,26 +35,22 @@ class ValidationUtilsTest {
     void testFindInvalidIdentifiers_SingleIdGiven_ValidInputChars() {
         var identifiers = new ArrayList<String>();
         identifiers.add("QWERTY");
-        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex).size())
-            .isZero();
+        assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex)).isEmpty();
 
         // testFindInvalidIdentifiers_SingleIdGiven_ValidInputNumeric
         var identifiers1 = new ArrayList<String>();
         identifiers1.add("1234");
-        assertThat(findInvalidIdentifiers(identifiers1, AlphaNumericRegex).size())
-            .isZero();
+        assertThat(findInvalidIdentifiers(identifiers1, AlphaNumericRegex)).isEmpty();
 
         // testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumeric
         var identifiers2 = new ArrayList<String>();
         identifiers2.add("qwerty1234");
-        assertThat(findInvalidIdentifiers(identifiers2, AlphaNumericRegex).size())
-            .isZero();
+        assertThat(findInvalidIdentifiers(identifiers2, AlphaNumericRegex)).isEmpty();
 
         // testFindInvalidIdentifiers_SingleIdGiven_ValidInputAlphaNumericUnderscore
         var identifiers3 = new ArrayList<String>();
         identifiers3.add("qwerty_1234");
-        assertThat(findInvalidIdentifiers(identifiers3, AlphaNumericRegex).size())
-            .isZero();
+        assertThat(findInvalidIdentifiers(identifiers3, AlphaNumericRegex)).isEmpty();
     }
 
     @Test
