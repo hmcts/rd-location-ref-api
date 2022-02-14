@@ -17,4 +17,8 @@
 <cve>CVE-2020-29245</cve>
 <cve>CVE-2020-23171</cve>
 </suppress>
+  <suppress until="2022-05-16">
+    <packageUrl regex="true">^pkg:maven/io\.netty.*$</packageUrl>
+    <cve>CVE-2021-43797</cve>
+  </suppress>
 </suppressions>
