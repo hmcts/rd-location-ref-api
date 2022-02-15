@@ -308,6 +308,11 @@ public class LrdApiProviderTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshVenueName("testVenue")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("366559")
             .build();
     }
 
@@ -331,6 +336,11 @@ public class LrdApiProviderTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshVenueName("testVenue1")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("366559")
             .build();
 
         CourtVenue secondCourtVenue = CourtVenue.builder()
@@ -352,6 +362,11 @@ public class LrdApiProviderTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshVenueName("testVenue2")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("372653")
             .build();
 
         return List.of(firstCourtVenue, secondCourtVenue);

@@ -97,6 +97,7 @@ public class CourtVenue implements Serializable {
 
     private String isHearingLocation;
 
+
     @Column(name = "welsh_venue_name")
     private String welshVenueName;
 
