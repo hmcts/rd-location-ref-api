@@ -97,8 +97,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
                                                                          CourtVenueRequestParam requestParam) {
-        log.info("{} : Obtaining court venue for search String: searchString: {} courtTypeId: {} "
-                     + "isHearingLocation: {} isCaseManagementLocation: {} locationType: {} "
+        log.info("{} : Obtaining court venue for search String: searchString: {}, courtTypeId: {}, "
+                     + "isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
                      + "isTemporaryLocation: {} ",
                  loggingComponentName, searchString, courtTypeId, requestParam.getIsHearingLocation(),
                  requestParam.getIsCaseManagementLocation(),
