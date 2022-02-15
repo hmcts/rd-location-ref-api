@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -101,6 +102,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
             lrdApiClient.retrieveResponseForGivenRequest_NoBearerToken("1", path);
 
         assertNotNull(response);
+        assertThat(response.getHeader("UnAuthorized-Token-Error").contains("Authentication Exception"));
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
     }
 
