@@ -217,49 +217,38 @@ public class ValidationUtils {
      * @param requestParam Additional parameters to validate.
      */
     public static void validateCourtVenueFilters(CourtVenueRequestParam requestParam) {
-        var hearingLocation = requestParam.getIsHearingLocation();
-        if (hearingLocation != null
-            && !StringUtils.equalsIgnoreCase(hearingLocation, IS_Y)
-            && !StringUtils.equalsIgnoreCase(hearingLocation, IS_N)) {
-            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, FILTER_IS_HEARING_LOCATION));
-        }
-
-        var caseManagementLocation = requestParam.getIsCaseManagementLocation();
-        if (caseManagementLocation != null
-            && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_Y)
-            && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_N)) {
-            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
-                                                            FILTER_IS_CASE_MANAGEMENT_LOCATION));
-        }
+        validateSingleFilters(requestParam.getIsHearingLocation(), FILTER_IS_HEARING_LOCATION);
+        validateSingleFilters(requestParam.getIsCaseManagementLocation(), FILTER_IS_CASE_MANAGEMENT_LOCATION);
 
         if (ObjectUtils.isNotEmpty(requestParam.getLocationType())) {
             checkSpecialCharacters(requestParam.getLocationType());
         }
+        validateSingleFilters(requestParam.getIsTemporaryLocation(), FILTER_IS_TEMPORARY_LOCATION);
+    }
 
-        var temporaryLocation = requestParam.getIsTemporaryLocation();
-        if (temporaryLocation != null
-            && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_Y)
-            && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_N)) {
-            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
-                                                            FILTER_IS_TEMPORARY_LOCATION));
+    private static void validateSingleFilters(String value, String filterString) {
+        if (value != null
+            && !StringUtils.equalsIgnoreCase(value, IS_Y)
+            && !StringUtils.equalsIgnoreCase(value, IS_N)) {
+            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, filterString));
         }
     }
 
     public static CourtVenueRequestParam trimCourtVenueRequestParam(CourtVenueRequestParam requestParam) {
         var result = new CourtVenueRequestParam();
 
-        if (ObjectUtils.isNotEmpty(requestParam.getIsHearingLocation())) {
-            result.setIsHearingLocation(StringUtils.strip(requestParam.getIsHearingLocation()));
-        }
-        if (ObjectUtils.isNotEmpty(requestParam.getIsCaseManagementLocation())) {
-            result.setIsCaseManagementLocation(StringUtils.strip(requestParam.getIsCaseManagementLocation()));
-        }
-        if (ObjectUtils.isNotEmpty(requestParam.getLocationType())) {
-            result.setLocationType(StringUtils.strip(requestParam.getLocationType()));
-        }
-        if (ObjectUtils.isNotEmpty(requestParam.getIsTemporaryLocation())) {
-            result.setIsTemporaryLocation(StringUtils.strip(requestParam.getIsTemporaryLocation()));
-        }
+        result.setIsHearingLocation(ObjectUtils.isNotEmpty(requestParam.getIsHearingLocation())
+                                         ? StringUtils.strip(requestParam.getIsHearingLocation())
+                                         : null);
+        result.setIsCaseManagementLocation(ObjectUtils.isNotEmpty(requestParam.getIsCaseManagementLocation())
+                                         ? StringUtils.strip(requestParam.getIsCaseManagementLocation())
+                                         : null);
+        result.setLocationType(ObjectUtils.isNotEmpty(requestParam.getLocationType())
+                                         ? StringUtils.strip(requestParam.getLocationType())
+                                         : null);
+        result.setIsTemporaryLocation(ObjectUtils.isNotEmpty(requestParam.getIsTemporaryLocation())
+                                         ? StringUtils.strip(requestParam.getIsTemporaryLocation())
+                                         : null);
         return result;
     }
 
