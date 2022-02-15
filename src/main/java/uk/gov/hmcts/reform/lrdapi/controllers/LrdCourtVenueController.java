@@ -57,7 +57,7 @@ public class LrdCourtVenueController {
             + "For the request param 'court_venue_name', all the associated court venues that have the same site name "
             + "or court name irrespective of the case are returned as a list.\n"
             + "If no params are passed, then all the available court venues which have the "
-            + "status as 'OPEN' are returned as a list."
+            + "status as 'OPEN' are returned as a list.\n"
             + "Additional API filters are applied with request params 'is_hearing_location', "
             + "'is_case_management_location'\n"
             + "'location_type' and 'is_temporary_location'.",
