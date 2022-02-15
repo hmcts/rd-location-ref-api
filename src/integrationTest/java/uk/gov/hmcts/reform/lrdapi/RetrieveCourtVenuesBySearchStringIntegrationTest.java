@@ -166,7 +166,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsTemporaryLocationContainOtherYN() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_Temporary_Location=Yes",
+                "?search-string=ABC&court-type-id=100000000&is_temporary_location=Yes",
                 ErrorResponse.class,
                 path
             );
@@ -223,7 +223,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsTemporaryLocationContainSpecialChar() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_Temporary_Location=$%$%",
+                "?search-string=ABC&court-type-id=100000000&is_temporary_location=$%$%",
                 ErrorResponse.class,
                 path
             );
@@ -264,10 +264,60 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
     @Test
     @SuppressWarnings("unchecked")
+    void shouldReturn200_WhenIsCaseManagementLocationContainY_lowerCase() throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&court-type-id=10,17,23&is_case_management_location=y",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty();
+        assertEquals(2,response.length);
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+        var courtNameVerified = courtVenueResponse
+            .stream()
+            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
+            .collect(Collectors.toList());
+        courtVenueResponse.removeAll(courtNameVerified);
+
+        assertTrue(courtVenueResponse.isEmpty());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     void shouldReturn200_WhenLocationTypeContainValue() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
                 "?search-string=Abe&court-type-id=10,17,23&location_type=NBC",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty();
+        assertEquals(1,response.length);
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+        var courtNameVerified = courtVenueResponse
+            .stream()
+            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
+                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
+            .collect(Collectors.toList());
+        courtVenueResponse.removeAll(courtNameVerified);
+
+        assertTrue(courtVenueResponse.isEmpty());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldReturn200_WhenLocationTypeContainValue_lowercase() throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&court-type-id=10,17,23&location_type=nbc",
                 LrdCourtVenueResponse[].class,
                 path
             );

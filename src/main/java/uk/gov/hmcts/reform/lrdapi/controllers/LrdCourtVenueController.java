@@ -206,8 +206,8 @@ public class LrdCourtVenueController {
         @ApiParam(name = "location_type",
             value = "allowed values are CTSC, NBC, Court,CCBC etc")
             String locationType,
-        @RequestParam(value = "is_Temporary_Location", required = false)
-        @ApiParam(name = "is_Temporary_Location",
+        @RequestParam(value = "is_temporary_location", required = false)
+        @ApiParam(name = "is_temporary_location",
             value = "Allowed values are \"Y\" or \"N\"")
             String isTemporaryLocation
     ) {
