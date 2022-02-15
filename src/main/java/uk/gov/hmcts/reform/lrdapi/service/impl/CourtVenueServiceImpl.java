@@ -14,6 +14,7 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCo
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
@@ -45,6 +46,8 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIde
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 
 @Slf4j
 @Service
@@ -92,17 +95,30 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
-    public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId) {
-        log.info("{} : Obtaining court venue for search String: searchString: {} courtTypeId: {}",
-                 loggingComponentName, searchString, courtTypeId);
+    public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
+                                                                         CourtVenueRequestParam requestParam) {
+        log.info("{} : Obtaining court venue for search String: searchString: {} courtTypeId: {} "
+                     + "isHearingLocation: {} isCaseManagementLocation: {} locationType: {} "
+                     + "isTemporaryLocation: {} ",
+                 loggingComponentName, searchString, courtTypeId, requestParam.getIsHearingLocation(),
+                 requestParam.getIsCaseManagementLocation(),
+                 requestParam.getLocationType(), requestParam.getIsTemporaryLocation());
+
+        var result =  trimCourtVenueRequestParam(requestParam);
+        validateCourtVenueFilters(result);
+
         List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
             Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
                 Collectors.toList());
 
         return   getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
-                searchString.toUpperCase(),
-                courtTypeIdList
-            ));
+            searchString.toUpperCase(),
+            courtTypeIdList,
+            result.getIsCaseManagementLocation(),
+            result.getIsHearingLocation(),
+            result.getLocationType(),
+            result.getIsTemporaryLocation()
+        ));
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
@@ -27,6 +28,7 @@ import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.vali
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
+
 
 @RequestMapping(
     path = "/refdata/location/court-venues"
@@ -191,16 +193,38 @@ public class LrdCourtVenueController {
         @RequestParam(value = "court-type-id", required = false)
         @ApiParam(name = "court-type-id",
             value = "Alphabets and Numeric values only allowed in comma separated format")
-            String courtTypeId) {
+            String courtTypeId,
+        @RequestParam(value = "is_hearing_location", required = false)
+        @ApiParam(name = "is_hearing_location",
+            value = "Allowed values are \"Y\" or \"N\"")
+            String isHearingLocation,
+        @RequestParam(value = "is_case_management_location", required = false)
+        @ApiParam(name = "is_case_management_location",
+            value = "Allowed values are \"Y\" or \"N\"")
+            String isCaseManagementLocation,
+        @RequestParam(value = "location_type", required = false)
+        @ApiParam(name = "location_type",
+            value = "allowed values are CTSC, NBC, Court,CCBC etc")
+            String locationType,
+        @RequestParam(value = "is_Temporary_Location", required = false)
+        @ApiParam(name = "is_Temporary_Location",
+            value = "Allowed values are \"Y\" or \"N\"")
+            String isTemporaryLocation
+    ) {
         String trimmedSearchString = searchString.strip();
         validateSearchString(trimmedSearchString);
         if (StringUtils.isNotBlank(courtTypeId)) {
             validateCourtTypeId(courtTypeId);
         }
+
+        var requestParam = new CourtVenueRequestParam();
+        requestParam.setIsHearingLocation(isHearingLocation);
+        requestParam.setIsCaseManagementLocation(isCaseManagementLocation);
+        requestParam.setLocationType(locationType);
+        requestParam.setIsTemporaryLocation(isTemporaryLocation);
+
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
-            trimmedSearchString,
-            courtTypeId
-        );
+            trimmedSearchString, courtTypeId, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 }

@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +20,12 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_CASE_MANAGEMENT_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -201,6 +209,58 @@ public class ValidationUtils {
         if (StringUtils.startsWith(csvIds, COMMA) || StringUtils.endsWith(csvIds, COMMA)) {
             throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
         }
+    }
+
+    /**
+     * A util method to check additional filter validation.
+     *
+     * @param requestParam Additional parameters to validate.
+     */
+    public static void validateCourtVenueFilters(CourtVenueRequestParam requestParam) {
+        var hearingLocation = requestParam.getIsHearingLocation();
+        if (hearingLocation != null
+            && !StringUtils.equalsIgnoreCase(hearingLocation, IS_Y)
+            && !StringUtils.equalsIgnoreCase(hearingLocation, IS_N)) {
+            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, FILTER_IS_HEARING_LOCATION));
+        }
+
+        var caseManagementLocation = requestParam.getIsCaseManagementLocation();
+        if (caseManagementLocation != null
+            && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_Y)
+            && !StringUtils.equalsIgnoreCase(caseManagementLocation, IS_N)) {
+            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
+                                                            FILTER_IS_CASE_MANAGEMENT_LOCATION));
+        }
+
+        if (ObjectUtils.isNotEmpty(requestParam.getLocationType())) {
+            checkSpecialCharacters(requestParam.getLocationType());
+        }
+
+        var temporaryLocation = requestParam.getIsTemporaryLocation();
+        if (temporaryLocation != null
+            && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_Y)
+            && !StringUtils.equalsIgnoreCase(temporaryLocation, IS_N)) {
+            throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER,
+                                                            FILTER_IS_TEMPORARY_LOCATION));
+        }
+    }
+
+    public static CourtVenueRequestParam trimCourtVenueRequestParam(CourtVenueRequestParam requestParam) {
+        var result = new CourtVenueRequestParam();
+
+        if (ObjectUtils.isNotEmpty(requestParam.getIsHearingLocation())) {
+            result.setIsHearingLocation(StringUtils.strip(requestParam.getIsHearingLocation()));
+        }
+        if (ObjectUtils.isNotEmpty(requestParam.getIsCaseManagementLocation())) {
+            result.setIsCaseManagementLocation(StringUtils.strip(requestParam.getIsCaseManagementLocation()));
+        }
+        if (ObjectUtils.isNotEmpty(requestParam.getLocationType())) {
+            result.setLocationType(StringUtils.strip(requestParam.getLocationType()));
+        }
+        if (ObjectUtils.isNotEmpty(requestParam.getIsTemporaryLocation())) {
+            result.setIsTemporaryLocation(StringUtils.strip(requestParam.getIsTemporaryLocation()));
+        }
+        return result;
     }
 
 }
