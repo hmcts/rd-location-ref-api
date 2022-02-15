@@ -2,6 +2,9 @@ package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -46,7 +49,7 @@ class LrdBuildingLocationServiceTest {
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareBuildingLocation());
 
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("1", "",  "", "");
+            .retrieveBuildingLocationDetails("1", "",  "", "");
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
@@ -59,7 +62,7 @@ class LrdBuildingLocationServiceTest {
 
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareMultiBuildLocationResponse());
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("1,2", "",  "", "");
+            .retrieveBuildingLocationDetails("1,2", "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
 
@@ -151,11 +154,12 @@ class LrdBuildingLocationServiceTest {
         verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
     }
 
-    @Test
-    void test_RetrieveBuildingLocationsByClusterId_NonNumericClusterId() {
+    @ParameterizedTest
+    @ValueSource(strings = {"1abc","1,2,3"})
+    void test_RetrieveBuildingLocationsByClusterId_InvalidRequest(String input) {
         assertThrows(
             InvalidRequestException.class,() -> lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "", "", "1abc"));
+                .retrieveBuildingLocationDetails("", "", "", input));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
         verify(buildingLocationRepository, times(0))
@@ -164,23 +168,12 @@ class LrdBuildingLocationServiceTest {
         verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
     }
 
-    @Test
-    void test_RetrieveBuildingLocationsByClusterId_MultipleClusterIdPassed() {
-        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "", "", "1,2,3"));
-        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
-        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
-        verify(buildingLocationRepository, times(0))
-            .findByBuildingLocationNameIgnoreCase(anyString());
-        verify(buildingLocationRepository, times(0)).findAll();
-        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
-    }
-
-    @Test
-    void test_RetrieveBuildingLocationsByRegionId_NoBuildLocationFound() {
+    @ParameterizedTest
+    @ValueSource(strings = {"1","123"})
+    void test_RetrieveBuildingLocationsByRegionId_NoBuildLocationFound(String input) {
         when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "", "1", ""));
+            .retrieveBuildingLocationDetails("", "", input, ""));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(1)).findByRegionId(anyString());
         verify(buildingLocationRepository, times(0))
@@ -189,8 +182,9 @@ class LrdBuildingLocationServiceTest {
         verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
     }
 
-    @Test
-    void test_RetrieveBuildingLocationsByRegionId_NonNumericRegionId() {
+    @ParameterizedTest
+    @ValueSource(strings = {"1abc","1,2,3"})
+    void test_RetrieveBuildingLocationsByRegionId_InvalidRequest() {
         assertThrows(InvalidRequestException.class,() -> lrdBuildingLocationService
             .retrieveBuildingLocationDetails("", "", "1abc", ""));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
@@ -201,23 +195,12 @@ class LrdBuildingLocationServiceTest {
         verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
     }
 
-    @Test
-    void test_RetrieveBuildingLocationsByRegionId_MultipleRegionIdPassed() {
-        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "", "1,2,3", ""));
-        verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
-        verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
-        verify(buildingLocationRepository, times(0))
-            .findByBuildingLocationNameIgnoreCase(anyString());
-        verify(buildingLocationRepository, times(0)).findAll();
-        verify(buildingLocationRepository, times(0)).findByBuildingLocationStatusOpen();
-    }
-
-    @Test
-    void test_GetAllBuildingLocations_NoBuildLocationFound() {
+    @ParameterizedTest
+    @EmptySource
+    void test_GetAllBuildingLocations_NoBuildLocationFound(String input) {
         when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "", "", ""));
+            .retrieveBuildingLocationDetails(input,input,input,input));
 
         verify(buildingLocationRepository, times(1)).findByBuildingLocationStatusOpen();
         verify(buildingLocationRepository, times(0))
@@ -351,20 +334,20 @@ class LrdBuildingLocationServiceTest {
             .build();
 
         locations.add(BuildingLocation.builder()
-                         .epimmsId("epimmsId")
-                         .buildingLocationId(1L)
-                         .buildingLocationName("buildingLocationName")
-                         .buildingLocationStatus("OPEN")
-                         .region(getRegion())
-                         .address("address")
-                         .cluster(getCluster())
-                         .courtFinderUrl("courtFinderUrl")
-                         .area("area")
-                         .postcode("postcode")
-                         .created(getCurrentTime())
-                         .lastUpdated(getCurrentTime())
-                         .courtVenues(Set.of(courtVenue))
-                         .build());
+                          .epimmsId("epimmsId")
+                          .buildingLocationId(1L)
+                          .buildingLocationName("buildingLocationName")
+                          .buildingLocationStatus("OPEN")
+                          .region(getRegion())
+                          .address("address")
+                          .cluster(getCluster())
+                          .courtFinderUrl("courtFinderUrl")
+                          .area("area")
+                          .postcode("postcode")
+                          .created(getCurrentTime())
+                          .lastUpdated(getCurrentTime())
+                          .courtVenues(Set.of(courtVenue))
+                          .build());
 
         return locations;
     }
@@ -407,3 +390,4 @@ class LrdBuildingLocationServiceTest {
         return region;
     }
 }
+
