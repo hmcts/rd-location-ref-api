@@ -27,19 +27,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     private static final String path = "/court-venues/venue-search";
 
     @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldReturnEmptyList_WhenNoDataFound() {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(
-                HttpStatus.OK,
-                "?search-string=zzz&court-type-id=1000",
-                LrdCourtVenueResponse[].class,
-                path
-            );
-        assertEquals(0, response.length);
-    }
-
-    @Test
     @ExtendWith(FeatureToggleConditionExtension.class)
     @ToggleEnable(mapKey = mapKey, withFeature = false)
     void shouldNotRetrieveCourtVenues_WhenToggleOff_WithStatusCode_403() {
