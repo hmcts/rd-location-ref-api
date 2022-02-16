@@ -13,7 +13,6 @@ import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SerenityTest
