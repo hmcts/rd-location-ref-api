@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SerenityTest
@@ -24,6 +25,19 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesBySearchString";
     private static final String path = "/court-venues/venue-search";
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldReturnEmptyList_WhenNoDataFound() {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.retrieveResponseForGivenRequest(
+                HttpStatus.OK,
+                "?search-string=abe&court-type-id=8",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+        assertEquals(0, response.length);
+    }
 
     @Test
     @ExtendWith(FeatureToggleConditionExtension.class)

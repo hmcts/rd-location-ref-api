@@ -111,13 +111,29 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
                 Collectors.toList());
 
+        String isCaseManagementLocation = (StringUtils.isNotEmpty(result.getIsCaseManagementLocation()))
+            ? result.getIsCaseManagementLocation().toUpperCase()
+            : result.getIsCaseManagementLocation();
+
+        String isHearingLocation = (StringUtils.isNotEmpty(result.getIsHearingLocation()))
+            ? result.getIsHearingLocation().toUpperCase()
+            : result.getIsHearingLocation();
+
+        String locationType = (StringUtils.isNotEmpty(result.getLocationType()))
+            ? result.getLocationType().toUpperCase()
+            : result.getLocationType();
+
+        String isTemporaryLocation = (StringUtils.isNotEmpty(result.getIsTemporaryLocation()))
+            ? result.getIsTemporaryLocation().toUpperCase()
+            : result.getIsTemporaryLocation();
+
         return   getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
             searchString.toUpperCase(),
             courtTypeIdList,
-            result.getIsCaseManagementLocation(),
-            result.getIsHearingLocation(),
-            result.getLocationType(),
-            result.getIsTemporaryLocation()
+            isCaseManagementLocation,
+            isHearingLocation,
+            locationType,
+            isTemporaryLocation
         ));
     }
 
