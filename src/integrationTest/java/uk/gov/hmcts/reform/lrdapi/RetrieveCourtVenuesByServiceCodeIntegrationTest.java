@@ -111,6 +111,10 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtStatus("Open")
             .postcode("AB11 5QA")
             .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
             .build();
 
         expectedCourtVenueResponses.add(response1);

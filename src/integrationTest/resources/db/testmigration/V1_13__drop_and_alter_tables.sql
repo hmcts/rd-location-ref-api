@@ -22,6 +22,13 @@ alter table court_venue add column venue_name varchar(256);
 alter table court_venue add column is_case_management_location varchar(1);
 alter table court_venue add column is_hearing_location varchar(1);
 
+ALTER TABLE court_venue ADD COLUMN welsh_venue_name varchar(256);
+ALTER TABLE court_venue ADD COLUMN is_temporary_location varchar(1);
+ALTER TABLE court_venue ADD COLUMN is_nightingale_court varchar(1);
+ALTER TABLE court_venue ADD COLUMN location_type varchar(16);
+ALTER TABLE court_venue ADD COLUMN parent_location varchar(16);
+
+
 alter table court_type rename column court_location_category_id to court_type_id;
 alter table court_type rename column court_location_category to court_type;
 alter table court_type rename column welsh_court_location_category to welsh_court_type;
