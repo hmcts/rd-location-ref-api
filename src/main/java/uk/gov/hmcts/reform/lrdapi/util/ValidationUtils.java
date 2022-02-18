@@ -24,17 +24,8 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
-
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_N;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_Y;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_N;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_Y;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_N;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_Y;
-
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
-
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
