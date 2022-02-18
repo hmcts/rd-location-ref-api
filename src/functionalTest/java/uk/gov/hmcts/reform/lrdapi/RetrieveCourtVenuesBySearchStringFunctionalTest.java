@@ -32,7 +32,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(
                 HttpStatus.OK,
-                "?search-string=zzz&court-type-id=1000",
+                "?search-string=abe&court-type-id=8",
                 LrdCourtVenueResponse[].class,
                 path
             );
