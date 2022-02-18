@@ -318,10 +318,20 @@ class CourtVenueServiceImplTest {
     @Test
     void test_RetrieveCourtVenuesBySearchString() {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId(anyString(),
-                                                                   anyList())).thenReturn(prepareCourtVenue());
+                                                                   anyList(),
+                                                                   anyString(),
+                                                                   anyString(),
+                                                                   anyString(),
+                                                                   anyString())).thenReturn(prepareCourtVenue());
+        var param = new CourtVenueRequestParam();
+        param.setIsHearingLocation("Y");
+        param.setLocationType("test");
+        param.setIsCaseManagementLocation("Y");
+        param.setIsTemporaryLocation("Y");
+
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenuesBySearchString("ABC", "1,2");
+                .retrieveCourtVenuesBySearchString("ABC", "1,2", param);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -330,10 +340,16 @@ class CourtVenueServiceImplTest {
 
     @Test
     void test_GetCourtVenuesBySearchStringWhenCourtTypeIdIsNull() {
-        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC", null)).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC",
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null)).thenReturn(prepareCourtVenue());
+        var param = new CourtVenueRequestParam();
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenuesBySearchString("ABC", null);
+                .retrieveCourtVenuesBySearchString("ABC", null, param);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -342,12 +358,23 @@ class CourtVenueServiceImplTest {
 
     @Test
     void test_GetCourtVenuesBySearchString_NotFound() {
-        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC", null)).thenReturn(new ArrayList<>());
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC",
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null)).thenReturn(new ArrayList<>());
+        var param = new CourtVenueRequestParam();
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenuesBySearchString("ABC", null);
+                .retrieveCourtVenuesBySearchString("ABC", null, param);
         assertEquals(0,courtVenueResponses.size());
-        verify(courtVenueRepository, times(1)).findBySearchStringAndCourtTypeId("ABC",null);
+        verify(courtVenueRepository, times(1)).findBySearchStringAndCourtTypeId("ABC",
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                null,
+                                                                                null);
     }
 
 

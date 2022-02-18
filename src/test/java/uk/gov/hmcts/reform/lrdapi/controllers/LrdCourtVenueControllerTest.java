@@ -18,6 +18,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -89,37 +92,44 @@ class LrdCourtVenueControllerTest {
 
     @Test
     void testGetCourtVenuesBySearchString() {
+        var param = new CourtVenueRequestParam();
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("MAN", null);
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("MAN", null,
+                                                                      param.getIsHearingLocation(),
+                                                                      param.getIsCaseManagementLocation(),
+                                                                      param.getLocationType(),
+                                                                      param.getIsTemporaryLocation());
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
-            "MAN",
-            null
+            anyString(),
+            isNull(),
+            any(CourtVenueRequestParam.class)
         );
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidString() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null, null, null, null, null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithStringLessThan3Char() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("AB", null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("AB", null, null, null, null, null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeId() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*"));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*", null, null, null, null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeIdWithComma() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,"));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
     }
 }

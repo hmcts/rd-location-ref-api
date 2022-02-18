@@ -93,6 +93,7 @@ public class LrdCourtVenueResponse implements Serializable {
 
     @JsonProperty("welsh_venue_name")
 
+
     String welshVenueName;
 
     @JsonProperty("is_temporary_location")
@@ -106,6 +107,9 @@ public class LrdCourtVenueResponse implements Serializable {
 
     @JsonProperty("parent_location")
     String parentLocation;
+
+
+
 
 
     public LrdCourtVenueResponse(CourtVenue courtVenue) {

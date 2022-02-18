@@ -54,6 +54,8 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIde
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 
 @Slf4j
 @Service
@@ -101,17 +103,46 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
-    public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId) {
-        log.info("{} : Obtaining court venue for search String: searchString: {} courtTypeId: {}",
-                 loggingComponentName, searchString, courtTypeId);
+    public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
+                                                                         CourtVenueRequestParam requestParam) {
+        log.info("{} : Obtaining court venue for search String: searchString: {}, courtTypeId: {}, "
+                     + "isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
+                     + "isTemporaryLocation: {} ",
+                 loggingComponentName, searchString, courtTypeId, requestParam.getIsHearingLocation(),
+                 requestParam.getIsCaseManagementLocation(),
+                 requestParam.getLocationType(), requestParam.getIsTemporaryLocation());
+
+        var result =  trimCourtVenueRequestParam(requestParam);
+        validateCourtVenueFilters(result);
+
         List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
             Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
                 Collectors.toList());
 
+        String isCaseManagementLocation = (StringUtils.isNotEmpty(result.getIsCaseManagementLocation()))
+            ? result.getIsCaseManagementLocation().toUpperCase()
+            : result.getIsCaseManagementLocation();
+
+        String isHearingLocation = (StringUtils.isNotEmpty(result.getIsHearingLocation()))
+            ? result.getIsHearingLocation().toUpperCase()
+            : result.getIsHearingLocation();
+
+        String locationType = (StringUtils.isNotEmpty(result.getLocationType()))
+            ? result.getLocationType().toUpperCase()
+            : result.getLocationType();
+
+        String isTemporaryLocation = (StringUtils.isNotEmpty(result.getIsTemporaryLocation()))
+            ? result.getIsTemporaryLocation().toUpperCase()
+            : result.getIsTemporaryLocation();
+
         return   getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
-                searchString.toUpperCase(),
-                courtTypeIdList
-            ));
+            searchString.toUpperCase(),
+            courtTypeIdList,
+            isCaseManagementLocation,
+            isHearingLocation,
+            locationType,
+            isTemporaryLocation
+        ));
     }
 
     @Override
