@@ -69,4 +69,11 @@ public class LocationRefConstants {
     public static final String COURT_TYPE_ID_START_END_WITH_COMMA =
         "Invalid court type ids: %s";
 
+    public static final String IS_Y = "Y";
+    public static final String IS_N = "N";
+    public static final String FILTER_IS_HEARING_LOCATION = "is_hearing_location";
+    public static final String FILTER_IS_CASE_MANAGEMENT_LOCATION = "is_case_management_location";
+    public static final String FILTER_IS_TEMPORARY_LOCATION = "is_temporary_location";
+    public static final String INVALID_ADDITIONAL_FILTER = "Invalid %s. Allowed values are Y OR N";
+
 }
