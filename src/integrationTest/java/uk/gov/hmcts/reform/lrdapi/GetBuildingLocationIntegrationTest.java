@@ -613,6 +613,10 @@ class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrat
             .courtStatus("Open")
             .postcode("AB11 5QA")
             .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
+            .locationType("CTSC")
+            .isTemporaryLocation("Y")
             .courtVenueId("10")
             .build();
         LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
@@ -629,6 +633,10 @@ class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrat
             .courtStatus("Open")
             .postcode("AB11 5QA")
             .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
             .courtVenueId("11")
             .build();
 
