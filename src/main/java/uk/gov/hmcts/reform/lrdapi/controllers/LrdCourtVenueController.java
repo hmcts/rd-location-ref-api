@@ -94,8 +94,10 @@ public class LrdCourtVenueController {
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
         @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
         @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName) {
+        log.info("Inside retrieveCourtVenues");
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);
+        log.info("Calling retrieveCourtVenues");
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
                                                                                  courtVenueName);
@@ -138,12 +140,14 @@ public class LrdCourtVenueController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
-        @RequestParam(value = "service_code", required = true) @NotBlank String serviceCode) {
+        @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
+        log.info("Inside retrieveCourtVenuesByServiceCode");
         String trimmedServiceCode = serviceCode.strip();
 
         validateServiceCode(trimmedServiceCode);
 
+        log.info("Calling retrieveCourtVenuesByServiceCode");
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
             .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 
@@ -184,7 +188,7 @@ public class LrdCourtVenueController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenuesBySearchString(
-        @RequestParam(value = "search-string", required = true)
+        @RequestParam(value = "search-string")
         @ApiParam(name = "search-string",
             value = "Alphabets, Numeric And Special characters(_@.,’&-() ) "
                 + "only allowed and String should contain minimum three chars.",
@@ -211,18 +215,22 @@ public class LrdCourtVenueController {
             value = "Allowed values are \"Y\" or \"N\"")
             String isTemporaryLocation
     ) {
+        log.info("Inside retrieveCourtVenuesBySearchString");
         String trimmedSearchString = searchString.strip();
         validateSearchString(trimmedSearchString);
         if (StringUtils.isNotBlank(courtTypeId)) {
             validateCourtTypeId(courtTypeId);
         }
 
-        var requestParam = new CourtVenueRequestParam();
-        requestParam.setIsHearingLocation(isHearingLocation);
-        requestParam.setIsCaseManagementLocation(isCaseManagementLocation);
-        requestParam.setLocationType(locationType);
-        requestParam.setIsTemporaryLocation(isTemporaryLocation);
+        CourtVenueRequestParam requestParam = CourtVenueRequestParam
+            .builder()
+            .isHearingLocation(isHearingLocation)
+            .isCaseManagementLocation(isCaseManagementLocation)
+            .locationType(locationType)
+            .isTemporaryLocation(isTemporaryLocation)
+            .build();
 
+        log.info("Calling retrieveCourtVenuesBySearchString");
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
             trimmedSearchString, courtTypeId, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
