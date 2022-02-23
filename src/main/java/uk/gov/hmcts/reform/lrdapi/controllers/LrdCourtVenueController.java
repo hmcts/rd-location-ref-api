@@ -8,6 +8,7 @@ import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +37,9 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStri
 @RestController
 @Slf4j
 public class LrdCourtVenueController {
+
+    @Value("${loggingComponentName}")
+    private String loggingComponentName;
 
     @Autowired
     CourtVenueService courtVenueService;
@@ -94,10 +98,10 @@ public class LrdCourtVenueController {
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
         @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
         @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName) {
-        log.info("Inside retrieveCourtVenues");
+        log.info("{} : Inside retrieveCourtVenues",loggingComponentName);
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);
-        log.info("Calling retrieveCourtVenues");
+        log.info("{} : Calling retrieveCourtVenues",loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
                                                                                  courtVenueName);
@@ -142,12 +146,12 @@ public class LrdCourtVenueController {
     public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
         @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
-        log.info("Inside retrieveCourtVenuesByServiceCode");
+        log.info("{} : Inside retrieveCourtVenuesByServiceCode",loggingComponentName);
         String trimmedServiceCode = serviceCode.strip();
 
         validateServiceCode(trimmedServiceCode);
 
-        log.info("Calling retrieveCourtVenuesByServiceCode");
+        log.info("{} : Calling retrieveCourtVenuesByServiceCode",loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
             .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 
@@ -215,7 +219,7 @@ public class LrdCourtVenueController {
             value = "Allowed values are \"Y\" or \"N\"")
             String isTemporaryLocation
     ) {
-        log.info("Inside retrieveCourtVenuesBySearchString");
+        log.info("{} : Inside retrieveCourtVenuesBySearchString",loggingComponentName);
         String trimmedSearchString = searchString.strip();
         validateSearchString(trimmedSearchString);
         if (StringUtils.isNotBlank(courtTypeId)) {
@@ -230,7 +234,7 @@ public class LrdCourtVenueController {
             .isTemporaryLocation(isTemporaryLocation)
             .build();
 
-        log.info("Calling retrieveCourtVenuesBySearchString");
+        log.info("{} : Calling retrieveCourtVenuesBySearchString",loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
             trimmedSearchString, courtTypeId, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
