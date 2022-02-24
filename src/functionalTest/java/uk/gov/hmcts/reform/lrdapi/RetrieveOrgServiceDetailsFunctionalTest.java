@@ -15,10 +15,12 @@ import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
 @SerenityTest
@@ -35,7 +37,8 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
     void returnsOrgServiceDetailsByServiceCodeWithStatusCode_200() throws JsonProcessingException {
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
-        assertThat(responses.size()).isPositive();
+        assertEquals(1, responses.size());
+        assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
     }
 
     @SuppressWarnings("unchecked")
@@ -49,6 +52,11 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
             );
 
         assertEquals(1, responses.size());
+        var ccdCaseTypes = responses
+            .stream()
+            .flatMap(service -> service.getCcdCaseTypes().stream())
+            .collect(Collectors.toList());
+        assertTrue(ccdCaseTypes.stream().anyMatch("MoneyClaimCase"::equalsIgnoreCase));
         responseVerification(responses);
     }
 
@@ -62,6 +70,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 "?ccdServiceNames=cMc"
             );
         assertEquals(1, responses.size());
+        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equals("cMc")));
     }
 
     @SuppressWarnings("unchecked")
@@ -72,7 +81,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "");
 
-        assertThat(responses.size()).isPositive();
+        assertThat(responses).isNotEmpty().hasSize(45);
     }
 
     @Test

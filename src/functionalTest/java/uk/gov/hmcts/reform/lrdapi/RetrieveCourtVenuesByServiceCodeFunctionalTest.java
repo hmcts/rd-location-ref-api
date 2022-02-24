@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
 @SerenityTest
@@ -34,6 +35,18 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
 
         assertNotNull(response);
         responseVerification(response);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void getCourtVenuesByServiceCodeWithStatusCode_404() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.NOT_FOUND, "BFA2");
+
+        assertNotNull(response);
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
+        assertEquals("No court types found for the given service code BFA2",
+                     response.getErrorDescription());
     }
 
 
@@ -56,7 +69,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
         assertEquals("23", response.getCourtTypeId());
         assertEquals("Immigration and Asylum Tribunal", response.getCourtType());
         assertNull(response.getWelshCourtType());
-        assertNotNull(response.getCourtVenues());
+        assertEquals(1, response.getCourtVenues().size());
     }
 
 }
