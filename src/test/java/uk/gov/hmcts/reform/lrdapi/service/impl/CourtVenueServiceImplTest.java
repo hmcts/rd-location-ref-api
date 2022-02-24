@@ -65,6 +65,11 @@ class CourtVenueServiceImplTest {
             .courtVenueId(1L)
             .courtType(courtType)
             .openForPublic(Boolean.TRUE)
+            .welshVenueName("testVenue")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("366559")
             .build();
 
         List<CourtVenue> courtVenues = Collections.singletonList(courtVenue);
@@ -83,6 +88,11 @@ class CourtVenueServiceImplTest {
         assertEquals(courtType.getTypeOfCourt(), response.getCourtType());
         assertNotNull(response.getCourtVenues());
         assertNull(response.getWelshCourtType());
+        assertEquals("testVenue",response.getCourtVenues().get(0).getWelshVenueName());
+        assertEquals("N",response.getCourtVenues().get(0).getIsTemporaryLocation());
+        assertEquals("N",response.getCourtVenues().get(0).getIsNightingaleCourt());
+        assertEquals("Court",response.getCourtVenues().get(0).getLocationType());
+        assertEquals("366559",response.getCourtVenues().get(0).getParentLocation());
 
         verify(courtTypeServiceAssocRepository, times(1)).findByServiceCode("ABC1");
     }
@@ -442,6 +452,11 @@ class CourtVenueServiceImplTest {
                             .venueName("venueName")
                             .isCaseManagementLocation("Y")
                             .isHearingLocation("Y")
+                            .welshVenueName("testVenue")
+                            .isTemporaryLocation("N")
+                            .isNightingaleCourt("N")
+                            .locationType("Court")
+                            .parentLocation("366559")
                             .build());
 
         return courtVenues;
@@ -463,6 +478,11 @@ class CourtVenueServiceImplTest {
                             .venueName("venueName1")
                             .isCaseManagementLocation("N")
                             .isHearingLocation("N")
+                            .welshVenueName("testVenue")
+                            .isTemporaryLocation("N")
+                            .isNightingaleCourt("N")
+                            .locationType("Court")
+                            .parentLocation("366559")
                             .build());
 
         return courtVenues;
