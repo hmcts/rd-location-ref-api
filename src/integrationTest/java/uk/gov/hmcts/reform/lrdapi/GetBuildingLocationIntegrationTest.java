@@ -512,6 +512,11 @@ class GetBuildingLocationIntegrationTest extends LrdAuthorizationEnabledIntegrat
             .venueName("venueName1")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshVenueName("testVenue")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("366559")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")
