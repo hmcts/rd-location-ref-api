@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +33,10 @@ class LrdCourtVenueControllerTest {
     @Mock
     CourtVenueService courtVenueServiceMock;
 
+
+
+
+
     @Test
     void testGetCourtVenues_ByServiceCode_Returns200() {
         ResponseEntity<Object> responseEntity =
@@ -57,13 +62,32 @@ class LrdCourtVenueControllerTest {
     @Test
     void testGetCourtVenues_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenues("1234", null, null, null, null);
+            lrdCourtVenueController.retrieveCourtVenues(
+                "1234", null, null, null, null, "Y",
+                "Y", "CTSC", "Y"
+            );
+
 
         assertNotNull(responseEntity);
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails("1234",
-                                                                          null, null, null, null
+
+        ArgumentCaptor<CourtVenueRequestParam> courtVenueRequestParamCaptr =
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            ArgumentCaptor.forClass(String.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(String.class).capture(),
+            courtVenueRequestParamCaptr.capture()
         );
+        assertNotNull(courtVenueRequestParamCaptr.getValue());
+        CourtVenueRequestParam result = courtVenueRequestParamCaptr.getValue();
+        assertEquals("Y", result.getIsHearingLocation());
+        assertEquals("Y", result.getIsCaseManagementLocation());
+        assertEquals("CTSC", result.getLocationType());
+        assertEquals("Y", result.getIsTemporaryLocation());
     }
 
     @Test
