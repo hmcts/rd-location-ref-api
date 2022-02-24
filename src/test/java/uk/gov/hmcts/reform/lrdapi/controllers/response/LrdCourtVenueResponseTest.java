@@ -46,6 +46,11 @@ class LrdCourtVenueResponseTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshVenueName("testVenue")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("366559")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -60,6 +65,11 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getVenueName());
         assertNotNull(courtVenueResponse.getIsCaseManagementLocation());
         assertNotNull(courtVenueResponse.getIsHearingLocation());
+        assertNotNull(courtVenueResponse.getWelshVenueName());
+        assertNotNull(courtVenueResponse.getIsTemporaryLocation());
+        assertNotNull(courtVenueResponse.getIsNightingaleCourt());
+        assertNotNull(courtVenueResponse.getLocationType());
+        assertNotNull(courtVenueResponse.getParentLocation());
     }
 
     @Test
@@ -96,6 +106,11 @@ class LrdCourtVenueResponseTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshVenueName("testVenue")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("366559")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -110,6 +125,11 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getIsHearingLocation());
         assertEquals(now.toString(), courtVenueResponse.getClosedDate());
         assertEquals(now.toString(), courtVenueResponse.getCourtOpenDate());
+        assertNotNull(courtVenueResponse.getWelshVenueName());
+        assertNotNull(courtVenueResponse.getIsTemporaryLocation());
+        assertNotNull(courtVenueResponse.getIsNightingaleCourt());
+        assertNotNull(courtVenueResponse.getLocationType());
+        assertNotNull(courtVenueResponse.getParentLocation());
     }
 
 }
