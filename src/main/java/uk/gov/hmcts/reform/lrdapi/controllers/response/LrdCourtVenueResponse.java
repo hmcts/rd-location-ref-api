@@ -92,19 +92,25 @@ public class LrdCourtVenueResponse implements Serializable {
     private String isHearingLocation;
 
     @JsonProperty("welsh_venue_name")
-    private String welshVenueName;
+
+
+    String welshVenueName;
 
     @JsonProperty("is_temporary_location")
-    private String isTemporaryLocation;
+    String isTemporaryLocation;
 
     @JsonProperty("is_nightingale_court")
-    private String isNightingaleCourt;
+    String isNightingaleCourt;
 
     @JsonProperty("location_type")
-    private String locationType;
+    String locationType;
 
     @JsonProperty("parent_location")
-    private String parentLocation;
+    String parentLocation;
+
+
+
+
 
     public LrdCourtVenueResponse(CourtVenue courtVenue) {
 
