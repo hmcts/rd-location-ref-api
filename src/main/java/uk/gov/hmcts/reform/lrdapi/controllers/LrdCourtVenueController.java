@@ -26,7 +26,9 @@ import javax.validation.constraints.NotNull;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
 
 
@@ -56,7 +58,10 @@ public class LrdCourtVenueController {
             + "For the request param 'court_venue_name', all the associated court venues that have the same site name "
             + "or court name irrespective of the case are returned as a list.\n"
             + "If no params are passed, then all the available court venues which have the "
-            + "status as 'OPEN' are returned as a list.",
+            + "status as 'OPEN' are returned as a list.\n"
+            + "Additional API filters are applied with request params 'is_hearing_location', "
+            + "'is_case_management_location'\n"
+            + "'location_type' and 'is_temporary_location'.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -93,12 +98,30 @@ public class LrdCourtVenueController {
         @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
         @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
-        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName) {
+        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
+        @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
+        @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
+        @RequestParam(value = "location_type", required = false) @NotNull String locationType,
+        @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
+
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);
+        CourtVenueRequestParam courtVenueRequestParam =
+            new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setIsHearingLocation(isHearingLocation);
+        courtVenueRequestParam.setIsCaseManagementLocation(isCaseManagementLocation);
+        courtVenueRequestParam.setLocationType(locationType);
+        courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
+
+        CourtVenueRequestParam result =  trimCourtVenueRequestParam(courtVenueRequestParam);
+
+        validateCourtVenueFilters(result);
+
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
-                                                                                 courtVenueName);
+                                                                                 courtVenueName,
+                                                                                 result);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 
