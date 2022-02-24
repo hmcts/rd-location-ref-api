@@ -19,9 +19,11 @@ import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -36,6 +38,12 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_N;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
@@ -140,45 +148,59 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
                                                                  Integer regionId, Integer clusterId,
-                                                                 String courtVenueName) {
+                                                                 String courtVenueName,
+                                                                 CourtVenueRequestParam courtVenueRequestParam) {
         if (isNotBlank(epimmsIds)) {
-            return retrieveCourtVenuesByEpimmsId(epimmsIds);
+            return getLrdCourtVenueResponses(
+                retrieveCourtVenuesByEpimmsId(epimmsIds),
+                courtVenueRequestParam
+            );
+
         }
         if (isNotEmpty(courtTypeId)) {
             log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
-            return getAllCourtVenues(
-                () -> courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
-                courtTypeId.toString(),
-                NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID
-            );
+
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse =
+                getAllCourtVenues(
+                    () -> courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
+                    courtTypeId.toString(),
+                    NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID
+                );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
         if (isNotEmpty(regionId)) {
             log.info("{} : Obtaining court venues for region id: {}", loggingComponentName, regionId);
-            return getAllCourtVenues(
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse = getAllCourtVenues(
                 () -> courtVenueRepository.findByRegionIdWithOpenCourtStatus(regionId.toString()),
                 regionId.toString(),
                 NO_COURT_VENUES_FOUND_FOR_REGION_ID
             );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
+
         }
         if (isNotEmpty(clusterId)) {
             log.info("{} : Obtaining court venues for cluster id: {}", loggingComponentName, clusterId);
-            return getAllCourtVenues(
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse = getAllCourtVenues(
                 () -> courtVenueRepository.findByClusterIdWithOpenCourtStatus(clusterId.toString()),
                 clusterId.toString(),
                 NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID
             );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
         if (isNotEmpty(courtVenueName)) {
             log.info("{} : Obtaining court venues for court venue name: {}", loggingComponentName, courtVenueName);
-            return getAllCourtVenues(
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse = getAllCourtVenues(
                 () -> courtVenueRepository.findByCourtVenueNameOrSiteName(courtVenueName.strip()),
                 courtVenueName,
                 NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME
             );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
-        return getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
-                                 NO_COURT_VENUES_FOUND
-        );
+        List<LrdCourtVenueResponse> initialResult =
+            getAllCourtVenues(() -> courtVenueRepository.findAllWithOpenCourtStatus(), null,
+                              NO_COURT_VENUES_FOUND
+            );
+        return getLrdCourtVenueResponses(initialResult, courtVenueRequestParam);
     }
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
@@ -235,5 +257,82 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             log.error("{} : {}", loggingComponentName, noDataFoundMessage);
             throw new ResourceNotFoundException(noDataFoundMessage);
         }
+    }
+
+    private List<LrdCourtVenueResponse> getLrdCourtVenueResponses(
+
+        List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
+        CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<LrdCourtVenueResponse> result = applyAdditionalFilters(
+            inputLrdCourtVenueResponse,
+            courtVenueRequestParam
+        );
+        if (isEmpty(result)) {
+            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+        }
+        return result;
+    }
+
+    private List<LrdCourtVenueResponse> applyAdditionalFilters(
+
+        List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
+        CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<Predicate<LrdCourtVenueResponse>> allPredicates = getPredicates(courtVenueRequestParam);
+
+
+        return inputLrdCourtVenueResponse.stream()
+            .filter(allPredicates.stream().reduce(x -> true, Predicate::and))
+            .collect(Collectors.toList());
+
+    }
+
+    private List<Predicate<LrdCourtVenueResponse>> getPredicates(
+
+        CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<Predicate<LrdCourtVenueResponse>> allPredicates =
+            new ArrayList<>();
+
+        String isHearingLocationValue = courtVenueRequestParam.getIsHearingLocation();
+
+        if (IS_HEARING_LOCATION_Y.equalsIgnoreCase(isHearingLocationValue)
+            || IS_HEARING_LOCATION_N.equalsIgnoreCase(isHearingLocationValue)) {
+            allPredicates.add(
+                courtVenue -> isHearingLocationValue.equalsIgnoreCase(courtVenue.getIsHearingLocation())
+            );
+
+        }
+
+        String isCaseMgntLocationValue = courtVenueRequestParam.getIsCaseManagementLocation();
+
+        if (IS_CASE_MANAGEMENT_LOCATION_Y.equalsIgnoreCase(isCaseMgntLocationValue)
+            || IS_CASE_MANAGEMENT_LOCATION_N.equalsIgnoreCase(isCaseMgntLocationValue)) {
+            allPredicates.add(
+                courtVenue -> isCaseMgntLocationValue.equalsIgnoreCase(courtVenue.getIsCaseManagementLocation())
+            );
+
+        }
+
+        String isTemporaryLocationValue = courtVenueRequestParam.getIsTemporaryLocation();
+
+        if (IS_TEMPORARY_LOCATION_Y.equalsIgnoreCase(isTemporaryLocationValue)
+            || IS_TEMPORARY_LOCATION_N.equalsIgnoreCase(isTemporaryLocationValue)) {
+            allPredicates.add(
+                courtVenue -> isTemporaryLocationValue.equalsIgnoreCase(courtVenue.getIsTemporaryLocation())
+            );
+
+        }
+
+        String isLocationTypeValue = courtVenueRequestParam.getLocationType();
+
+        if (StringUtils.isNotBlank(isLocationTypeValue)) {
+            allPredicates.add(
+                courtVenue -> isLocationTypeValue.equalsIgnoreCase(courtVenue.getLocationType())
+            );
+
+        }
+        return allPredicates;
     }
 }
