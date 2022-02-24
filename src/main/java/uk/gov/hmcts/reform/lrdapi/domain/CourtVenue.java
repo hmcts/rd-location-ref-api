@@ -99,7 +99,6 @@ public class CourtVenue implements Serializable {
     @Column(name = "is_hearing_location")
     private String isHearingLocation;
 
-
     @Column(name = "welsh_venue_name")
     private String welshVenueName;
 
