@@ -216,6 +216,8 @@ public class ValidationUtils {
      *
      * @param requestParam Additional parameters to validate.
      */
+
+
     public static void validateCourtVenueFilters(CourtVenueRequestParam requestParam) {
         validateSingleFilters(requestParam.getIsHearingLocation(), FILTER_IS_HEARING_LOCATION);
         validateSingleFilters(requestParam.getIsCaseManagementLocation(), FILTER_IS_CASE_MANAGEMENT_LOCATION);
@@ -251,5 +253,6 @@ public class ValidationUtils {
                                          : null);
         return result;
     }
+
 
 }
