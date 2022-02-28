@@ -18,6 +18,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
@@ -94,6 +95,13 @@ public class LrdApiClient {
         return mapBuildingLocationResponse(responseEntity, clazz);
     }
 
+    public Object retrieveCourtVenueResponseForGivenRequest(String queryParam, Class<?> clazz, String path)
+        throws JsonProcessingException {
+        ResponseEntity<Object> responseEntity =
+            getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
+        return mapCourtVenueResponse(responseEntity, clazz);
+    }
+
     public Object findRegionDetailsByDescription(String region, Class expectedClass) throws
         JsonProcessingException {
         ResponseEntity<Object> responseEntity = getRequest(
@@ -162,6 +170,27 @@ public class LrdApiClient {
         if (status.is2xxSuccessful()) {
             if (clazz.isArray()) {
                 return Arrays.asList((LrdBuildingLocationResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+    }
+
+    private Object mapCourtVenueResponse(ResponseEntity<Object> responseEntity, Class clazz)
+        throws JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+
+        if (status.is2xxSuccessful()) {
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdCourtVenueResponse[])
                                          objectMapper.convertValue(responseEntity.getBody(), clazz));
             } else {
                 return objectMapper.convertValue(responseEntity.getBody(), clazz);
