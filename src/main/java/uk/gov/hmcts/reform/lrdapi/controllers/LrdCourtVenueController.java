@@ -103,12 +103,11 @@ public class LrdCourtVenueController {
         @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
         @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
         @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
-        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
         @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
         @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
         @RequestParam(value = "location_type", required = false) @NotNull String locationType,
         @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
-      
+
         log.info("{} : Inside retrieveCourtVenues",loggingComponentName);
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);
@@ -123,7 +122,7 @@ public class LrdCourtVenueController {
         CourtVenueRequestParam result =  trimCourtVenueRequestParam(courtVenueRequestParam);
 
         validateCourtVenueFilters(result);
-      
+
         log.info("{} : Calling retrieveCourtVenues",loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
