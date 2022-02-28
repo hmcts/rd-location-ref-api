@@ -106,6 +106,13 @@ class LrdBuildingLocationServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    void testGetBuildingLocationsByInvalidRegionId() {
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
+            .retrieveBuildingLocationDetails("", "", "abc", ""));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     void testGetBuildingLocationsByClusterId() {
         when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(prepareBuildingLocation());
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService

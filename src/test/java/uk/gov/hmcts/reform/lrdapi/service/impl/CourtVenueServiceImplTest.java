@@ -332,6 +332,15 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
+    void test_GetCourtVenuesBySearchStringWhenInvalidHearingLocation() {
+        var param = new CourtVenueRequestParam();
+        param.setIsHearingLocation("YN");
+        assertThrows(InvalidRequestException.class, () ->
+            courtVenueService
+                .retrieveCourtVenuesBySearchString("ABC", null, param));
+    }
+
+    @Test
     void test_GetCourtVenuesBySearchString_NotFound() {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC",
                                                                    null,
