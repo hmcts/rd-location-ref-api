@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.Arrays;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +47,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
                                                          LrdCourtVenueResponse[].class,
                                                          path
             );
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty();
         boolean isEachIdMatched = Arrays
             .stream(response)
             .map(LrdCourtVenueResponse::getEpimmsId)
@@ -62,7 +61,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833,219164",
                                                                     LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(4);
+        assertThat(response).isNotEmpty();
         boolean expected = Arrays
             .stream(response)
             .map(LrdCourtVenueResponse::getEpimmsId)
@@ -76,11 +75,10 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
                                                                     LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(3);
+        assertThat(response).isNotEmpty();
         boolean isOpenCourts = Arrays
             .stream(response)
-            .allMatch(venue -> Set.of("815833", "219164", "123456").contains(venue.getEpimmsId())
-                && venue.getCourtStatus().equals("Open"));
+            .allMatch(venue -> venue.getCourtStatus().equals("Open"));
         assertTrue(isOpenCourts);
     }
 
@@ -90,12 +88,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All,123456",
                                                                     LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(8);
-        boolean isAllCourts = Arrays
-            .stream(response)
-            .map(LrdCourtVenueResponse::getEpimmsId)
-            .allMatch(Set.of("815833","219164","123456","219165")::contains);
-        assertTrue(isAllCourts);
+        assertThat(response).isNotEmpty();
     }
 
     @Test
@@ -104,12 +97,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All",
                                                          LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(8);
-        boolean isAllCourts = Arrays
-            .stream(response)
-            .map(LrdCourtVenueResponse::getEpimmsId)
-            .allMatch(Set.of("815833","219164","123456","219165")::contains);
-        assertTrue(isAllCourts);
+        assertThat(response).isNotEmpty();
     }
 
     @Test
@@ -118,7 +106,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?region_id=7",
                                                                     LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty();
         boolean isExpectedMatch = Arrays
             .stream(response)
             .allMatch(venue -> venue.getRegionId().equals("7") && venue.getCourtStatus().equals("Open"));
@@ -131,7 +119,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=1",
                                                                     LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty();
         boolean isEveryIdMatched = Arrays
             .stream(response)
             .allMatch(venue -> venue.getCourtTypeId().equals("1") && venue.getCourtStatus().equals("Open"));
@@ -144,7 +132,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?cluster_id=8",
                                                                     LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty();
         boolean isEveryIdMatched = Arrays
             .stream(response)
             .allMatch(venue -> venue.getClusterId().equals("8") && venue.getCourtStatus().equals("Open"));
@@ -157,7 +145,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
                                                          "?court_venue_name=Aberdeen Tribunal Hearing Centre",
                                                          LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(3);
+        assertThat(response).isNotEmpty();
         boolean isExpectedMatch = Arrays
             .stream(response)
             .allMatch(venue -> venue.getCourtName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre")
@@ -172,18 +160,18 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
 
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
                 "?epimms_id=ALL"
-                    + "&is_hearing_location=Y&is_case_management_location=Y&location_type=CTSC"
-                    + "&is_temporary_location=Y",
+                    + "&is_hearing_location=N&is_case_management_location=Y&location_type=CTSC"
+                    + "&is_temporary_location=N",
                 LrdCourtVenueResponse[].class,
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(1);
+        assertThat(response).isNotEmpty();
         assertTrue(Arrays.stream(response).allMatch(venueResponse ->
-             venueResponse.getIsHearingLocation().equalsIgnoreCase("Y")
+             venueResponse.getIsHearingLocation().equalsIgnoreCase("N")
              && venueResponse.getIsCaseManagementLocation().equalsIgnoreCase("Y")
              && venueResponse.getLocationType().equalsIgnoreCase("CTSC")
-             && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("Y")));
+             && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("N")));
     }
 
     @Test

@@ -93,7 +93,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
         assertEquals("23", response.getCourtTypeId());
         assertEquals("Immigration and Asylum Tribunal", response.getCourtType());
         assertNull(response.getWelshCourtType());
-        assertEquals(1, response.getCourtVenues().size());
+        assertThat(response.getCourtVenues().size()).isPositive();
     }
 
 }

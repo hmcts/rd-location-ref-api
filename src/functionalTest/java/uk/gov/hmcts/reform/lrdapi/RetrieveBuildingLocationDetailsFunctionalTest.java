@@ -47,7 +47,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833",
                 LrdBuildingLocationResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(1);
+        assertThat(response).isNotEmpty();
         boolean isEachIdMatched = Arrays
             .stream(response)
             .map(LrdBuildingLocationResponse::getEpimmsId)
@@ -64,11 +64,11 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,"?epimms_id=123456,ALL",
                  LrdBuildingLocationResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(4);
+        assertThat(response).isNotEmpty();
         boolean isIdMatched = Arrays
             .stream(response)
             .map(LrdBuildingLocationResponse::getEpimmsId)
-            .allMatch(Set.of("815833","219164","123456","219165")::contains);
+            .anyMatch(Set.of("123456")::contains);
         assertTrue(isIdMatched);
     }
 
@@ -78,12 +78,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
         final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
                                                                           LrdBuildingLocationResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(4);
-        boolean allIdMatched = Arrays
-            .stream(response)
-            .map(LrdBuildingLocationResponse::getEpimmsId)
-            .allMatch(Set.of("815833","219164","123456","219165")::contains);
-        assertTrue(allIdMatched);
+        assertThat(response).isNotEmpty();
     }
 
     @Test
@@ -106,12 +101,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
         final var response = (LrdBuildingLocationResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=ALL",
                                                                           LrdBuildingLocationResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(4);
-        boolean allIdMatched = Arrays
-            .stream(response)
-            .map(LrdBuildingLocationResponse::getEpimmsId)
-            .allMatch(Set.of("815833","219164","123456","219165")::contains);
-        assertTrue(allIdMatched);
+        assertThat(response).isNotEmpty();
     }
 
     @Test
@@ -177,7 +167,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
             lrdApiClient
                 .retrieveResponseForGivenRequest(HttpStatus.OK, "?region_id=3",
                                                                   LrdBuildingLocationResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty();
         boolean isIdMatched = Arrays
             .stream(response)
             .map(LrdBuildingLocationResponse::getRegionId)
@@ -203,7 +193,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
             lrdApiClient
                 .retrieveResponseForGivenRequest(HttpStatus.OK,"?cluster_id=9",
                                                                   LrdBuildingLocationResponse[].class, path);
-        assertThat(response).isNotEmpty().hasSize(4);
+        assertThat(response).isNotEmpty();
         boolean isIdMatched = Arrays
             .stream(response)
             .map(LrdBuildingLocationResponse::getClusterId)
