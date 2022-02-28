@@ -97,8 +97,12 @@ public class LrdApiClient {
 
     public Object retrieveCourtVenueResponseForGivenRequest(String queryParam, Class<?> clazz, String path)
         throws JsonProcessingException {
-        ResponseEntity<Object> responseEntity =
-            getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
+        ResponseEntity<Object> responseEntity = null;
+        if (StringUtils.isNotBlank(queryParam)) {
+            responseEntity = getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
+        } else {
+            responseEntity = getRequest(APP_BASE_PATH + path, clazz, "");
+        }
         return mapCourtVenueResponse(responseEntity, clazz);
     }
 
@@ -183,27 +187,6 @@ public class LrdApiClient {
         }
     }
 
-    private Object mapCourtVenueResponse(ResponseEntity<Object> responseEntity, Class clazz)
-        throws JsonProcessingException {
-
-        HttpStatus status = responseEntity.getStatusCode();
-
-        if (status.is2xxSuccessful()) {
-            if (clazz.isArray()) {
-                return Arrays.asList((LrdCourtVenueResponse[])
-                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
-            } else {
-                return objectMapper.convertValue(responseEntity.getBody(), clazz);
-            }
-        } else {
-            Map<String, Object> errorResponseMap = new HashMap<>();
-            errorResponseMap.put("response_body",  objectMapper.readValue(
-                responseEntity.getBody().toString(), ErrorResponse.class));
-            errorResponseMap.put("http_status", status);
-            return errorResponseMap;
-        }
-    }
-
     private Object mapCourtVenuesByServiceCodeResponse(ResponseEntity<Object> responseEntity, Class clazz) throws
         JsonProcessingException {
 
@@ -241,6 +224,27 @@ public class LrdApiClient {
             return errorResponseMap;
         }
 
+    }
+
+    private Object mapCourtVenueResponse(ResponseEntity<Object> responseEntity, Class clazz)
+        throws JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+
+        if (status.is2xxSuccessful()) {
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdCourtVenueResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
