@@ -65,11 +65,6 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
                  LrdBuildingLocationResponse[].class, path);
 
         assertThat(response).isNotEmpty();
-        boolean isIdMatched = Arrays
-            .stream(response)
-            .map(LrdBuildingLocationResponse::getEpimmsId)
-            .anyMatch(Set.of("123456")::contains);
-        assertTrue(isIdMatched);
     }
 
     @Test
