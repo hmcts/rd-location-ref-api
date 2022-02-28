@@ -103,7 +103,7 @@ class LrdCourtVenueControllerTest {
     @Test
     void testGetCourtVenues_WithMultipleParams_Returns400() {
         Exception exception = assertThrows(InvalidRequestException.class, () -> {
-            lrdCourtVenueController.retrieveCourtVenues("12345", 23, null, null, null);
+            lrdCourtVenueController.retrieveCourtVenues("12345", 23, null, null, null, null, null, null, null);
         });
 
         assertNotNull(exception);
