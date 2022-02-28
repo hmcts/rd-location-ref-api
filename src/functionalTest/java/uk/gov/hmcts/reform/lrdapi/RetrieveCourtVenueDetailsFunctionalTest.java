@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.restassured.response.Response;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
@@ -235,5 +236,26 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
             exceptionMessage,
             exceptionMessage
         );
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void retrieveCourtVenues_UnauthorizedDueToNoBearerToken_ShouldReturnStatusCode401() {
+        Response response =
+            lrdApiClient.retrieveResponseForGivenRequest_NoBearerToken("1", path);
+
+        assertNotNull(response);
+        assertThat(response.getHeader("UnAuthorized-Token-Error")).contains("Authentication Exception");
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void retrieveBuildingLocations_UnauthorizedDueToNoS2SToken_ShouldReturnStatusCode401() {
+        Response response =
+            lrdApiClient.retrieveResponseForGivenRequest_NoS2SToken("1", path);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
     }
 }

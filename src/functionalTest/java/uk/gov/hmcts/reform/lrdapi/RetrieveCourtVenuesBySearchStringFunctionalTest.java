@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi;
 
+import io.restassured.response.Response;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
@@ -136,5 +137,26 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
                                                  LrdCourtVenueResponse.class, path
                 );
         assertNotNull(response);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void retrieveBuildingLocations_UnauthorizedDueToNoBearerToken_ShouldReturnStatusCode401() {
+        Response response =
+            lrdApiClient.retrieveResponseForGivenRequest_NoBearerToken("1", path);
+
+        assertNotNull(response);
+        assertThat(response.getHeader("UnAuthorized-Token-Error")).contains("Authentication Exception");
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void retrieveBuildingLocations_UnauthorizedDueToNoS2SToken_ShouldReturnStatusCode401() {
+        Response response =
+            lrdApiClient.retrieveResponseForGivenRequest_NoS2SToken("1", path);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
     }
 }

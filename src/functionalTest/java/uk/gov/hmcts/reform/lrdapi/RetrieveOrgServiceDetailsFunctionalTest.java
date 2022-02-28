@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
 @SerenityTest
@@ -82,6 +83,16 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "");
 
         assertThat(responses).isNotEmpty().hasSize(45);
+    }
+
+    @Test
+    void returnOrgServiceDetailsByUnknownCcdCaseTypeCode_404() throws JsonProcessingException {
+
+        ErrorResponse errorResponse = (ErrorResponse)
+            lrdApiClient.retrieveOrgServiceInfo(HttpStatus.NOT_FOUND,"ccCaseType1");
+
+        assertNotNull(errorResponse);
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
     }
 
     @Test

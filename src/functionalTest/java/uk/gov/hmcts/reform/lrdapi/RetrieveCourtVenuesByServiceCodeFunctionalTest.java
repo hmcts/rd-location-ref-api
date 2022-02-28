@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi;
 
+import io.restassured.response.Response;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -26,6 +28,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.ge
 class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFunctionalTest {
 
     public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesByServiceCode";
+    private static final String path = "/court-venues/services";
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
@@ -61,6 +64,27 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
             exceptionMessage,
             exceptionMessage
         );
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void retrieveBuildingLocations_UnauthorizedDueToNoBearerToken_ShouldReturnStatusCode401() {
+        Response response =
+            lrdApiClient.retrieveResponseForGivenRequest_NoBearerToken("1", path);
+
+        assertNotNull(response);
+        assertThat(response.getHeader("UnAuthorized-Token-Error")).contains("Authentication Exception");
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void retrieveBuildingLocations_UnauthorizedDueToNoS2SToken_ShouldReturnStatusCode401() {
+        Response response =
+            lrdApiClient.retrieveResponseForGivenRequest_NoS2SToken("1", path);
+
+        assertNotNull(response);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
     }
 
 
