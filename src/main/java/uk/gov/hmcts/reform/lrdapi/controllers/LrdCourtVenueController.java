@@ -8,6 +8,7 @@ import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,9 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStri
 @RestController
 @Slf4j
 public class LrdCourtVenueController {
+
+    @Value("${loggingComponentName}")
+    private String loggingComponentName;
 
     @Autowired
     CourtVenueService courtVenueService;
@@ -104,6 +108,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "location_type", required = false) @NotNull String locationType,
         @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
 
+        log.info("{} : Inside retrieveCourtVenues",loggingComponentName);
         checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
                                   String.valueOf(clusterId), courtVenueName);
         CourtVenueRequestParam courtVenueRequestParam =
@@ -118,6 +123,7 @@ public class LrdCourtVenueController {
 
         validateCourtVenueFilters(result);
 
+        log.info("{} : Calling retrieveCourtVenues",loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
                                                                                  courtVenueName,
@@ -161,12 +167,14 @@ public class LrdCourtVenueController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
-        @RequestParam(value = "service_code", required = true) @NotBlank String serviceCode) {
+        @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
+        log.info("{} : Inside retrieveCourtVenuesByServiceCode",loggingComponentName);
         String trimmedServiceCode = serviceCode.strip();
 
         validateServiceCode(trimmedServiceCode);
 
+        log.info("{} : Calling retrieveCourtVenuesByServiceCode",loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
             .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 
@@ -207,7 +215,7 @@ public class LrdCourtVenueController {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenuesBySearchString(
-        @RequestParam(value = "search-string", required = true)
+        @RequestParam(value = "search-string")
         @ApiParam(name = "search-string",
             value = "Alphabets, Numeric And Special characters(_@.,’&-() ) "
                 + "only allowed and String should contain minimum three chars.",
@@ -234,18 +242,22 @@ public class LrdCourtVenueController {
             value = "Allowed values are \"Y\" or \"N\"")
             String isTemporaryLocation
     ) {
+        log.info("{} : Inside retrieveCourtVenuesBySearchString",loggingComponentName);
         String trimmedSearchString = searchString.strip();
         validateSearchString(trimmedSearchString);
         if (StringUtils.isNotBlank(courtTypeId)) {
             validateCourtTypeId(courtTypeId);
         }
 
-        var requestParam = new CourtVenueRequestParam();
-        requestParam.setIsHearingLocation(isHearingLocation);
-        requestParam.setIsCaseManagementLocation(isCaseManagementLocation);
-        requestParam.setLocationType(locationType);
-        requestParam.setIsTemporaryLocation(isTemporaryLocation);
+        CourtVenueRequestParam requestParam = CourtVenueRequestParam
+            .builder()
+            .isHearingLocation(isHearingLocation)
+            .isCaseManagementLocation(isCaseManagementLocation)
+            .locationType(locationType)
+            .isTemporaryLocation(isTemporaryLocation)
+            .build();
 
+        log.info("{} : Calling retrieveCourtVenuesBySearchString",loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
             trimmedSearchString, courtTypeId, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
