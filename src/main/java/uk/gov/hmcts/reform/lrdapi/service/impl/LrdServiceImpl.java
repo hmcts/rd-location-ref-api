@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.lrdapi.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
@@ -24,9 +23,6 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 @org.springframework.stereotype.Service
 @Slf4j
 public class LrdServiceImpl implements LrdService {
-
-    @Value("${loggingComponentName}")
-    private String loggingComponentName;
 
     @Autowired
     ServiceRepository serviceRepository;
