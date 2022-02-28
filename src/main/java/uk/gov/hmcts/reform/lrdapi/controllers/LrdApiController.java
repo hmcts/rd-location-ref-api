@@ -85,9 +85,10 @@ public class LrdApiController {
         @RequestParam(value = "serviceCode", required = false) String serviceCode,
         @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,
         @RequestParam(value = "ccdServiceNames", required = false) String ccdServiceNames) {
-        log.info("Inside retrieveOrgServiceDetails");
+        log.info("{} : Inside retrieveOrgServiceDetails",loggingComponentName);
         ValidationUtils.validateInputParameters(serviceCode, ccdCaseType, ccdServiceNames);
-        List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse = null;
+        List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse;
+        log.info("{} :Calling retrieveOrgServiceDetails",loggingComponentName);
         lrdOrgInfoServiceResponse = lrdService.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceNames);
         return ResponseEntity.status(200).body(lrdOrgInfoServiceResponse);
     }
@@ -147,7 +148,9 @@ public class LrdApiController {
         @RequestParam(value = "region_id", required = false) String regionId,
         @RequestParam(value = "cluster_id", required = false) String clusterId) {
 
+        log.info("{} : Inside retrieveBuildingLocationDetails",loggingComponentName);
         checkIfSingleValuePresent(epimsIds, buildingLocationName, regionId, clusterId);
+        log.info("{} : Calling retrieveBuildingLocationDetails",loggingComponentName);
         Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds,
                                                                                         buildingLocationName,
                                                                                         regionId,
@@ -193,9 +196,9 @@ public class LrdApiController {
     public ResponseEntity<Object> retrieveRegionDetails(
         @RequestParam(value = "region", required = false) String region,
         @RequestParam(value = "regionId", required = false) String regionId) {
-
+        log.info("{} : Inside retrieveRegionDetails",loggingComponentName);
         checkIfSingleValuePresent(region, regionId);
-
+        log.info("{} : Calling retrieveRegionDetails",loggingComponentName);
         Object response = regionService.retrieveRegionDetails(regionId, region);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
