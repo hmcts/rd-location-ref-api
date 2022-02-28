@@ -289,7 +289,8 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
         ErrorResponse errorResponse = ((ErrorResponse) errorResponseMap.get("response_body"));
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals(String.format(EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED, "[!@*]"), errorResponse.getErrorDescription());
+        assertEquals(String.format(EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED, "[!@*]"),
+                     errorResponse.getErrorDescription());
     }
 
     @Test
@@ -328,13 +329,15 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveResponseForGivenRequest("?building_location_name=x@,*", ErrorResponse.class, path);
+            lrdApiClient.retrieveResponseForGivenRequest("?building_location_name=x@,*",
+                                                         ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
         ErrorResponse errorResponse = ((ErrorResponse) errorResponseMap.get("response_body"));
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, 2, "[x@, *]"), errorResponse.getErrorDescription());
+        assertEquals(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, 2, "[x@, *]"),
+                     errorResponse.getErrorDescription());
     }
 
 
