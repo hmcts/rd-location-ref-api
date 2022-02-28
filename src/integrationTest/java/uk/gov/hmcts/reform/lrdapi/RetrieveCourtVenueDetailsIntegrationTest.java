@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
 
 @WithTags({@WithTag("testType:Integration")})
@@ -96,7 +97,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(9);
-        assertTrue(response.stream().allMatch(v -> v.getCourtTypeId().equals(id.trim())));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals(id.trim())));
     }
 
     @ParameterizedTest
@@ -110,7 +111,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(7);
-        assertTrue(response.stream().allMatch(v -> v.getRegionId().equals(id.trim())));
+        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())));
     }
 
     @ParameterizedTest
@@ -124,7 +125,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(4);
-        assertTrue(response.stream().allMatch(v -> v.getClusterId().equals(id.trim())));
+        assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
     }
 
     @Test
@@ -137,7 +138,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 "?court_venue_name=ABERDEEN TRIBUNAL HEARING CENTRE 1", LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(1);
-        assertTrue(response.stream().allMatch(v -> v.getCourtName().equals("ABERDEEN TRIBUNAL HEARING CENTRE 1")));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
+            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1")));
     }
 
     @ParameterizedTest
@@ -157,7 +159,6 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     void shouldReturn200WhenParameterEpmIdsValueAllWithYPassed() throws
         JsonProcessingException {
 
-
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
                 "?epimms_id=ALL"
@@ -167,15 +168,17 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.size()).isEqualTo(1);
-
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue ->
+            venue.getIsHearingLocation().equalsIgnoreCase("Y")
+            && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
+            && venue.getLocationType().equalsIgnoreCase("CTSC")
+            && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")));
     }
 
     @Test
     void shouldReturn200WhenParameterEpmIdsValueAllWithLowerCaseValuesPassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -186,17 +189,17 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.size()).isEqualTo(1);
-
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue ->
+            venue.getIsHearingLocation().equalsIgnoreCase("Y")
+            && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
+            && venue.getLocationType().equalsIgnoreCase("CTSC")
+            && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")));
     }
-
-
 
     @Test
     void shouldReturn200WhenParameterEpmIdsValueAllWithNAndLocationTypeNbcPassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -207,15 +210,17 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.size()).isEqualTo(1);
-
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue ->
+            venue.getIsHearingLocation().equalsIgnoreCase("N")
+            && venue.getIsCaseManagementLocation().equalsIgnoreCase("N")
+            && venue.getLocationType().equalsIgnoreCase("NBC")
+            && venue.getIsTemporaryLocation().equalsIgnoreCase("N")));
     }
 
     @Test
     void shouldReturn200WhenParameterEpmIdsValueAllWithHearingLocationYPassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -225,15 +230,14 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.size()).isEqualTo(2);
-
+        assertThat(response).isNotEmpty().hasSize(2);
+        assertTrue(response.stream().allMatch(venue ->
+             venue.getIsHearingLocation().equalsIgnoreCase("Y")));
     }
 
     @Test
     void shouldReturn200WhenParameterCourtTypeIdIsPassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -242,15 +246,13 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.get(0).getCourtTypeId()).isEqualTo("17");
-
+        assertThat(response).isNotEmpty().hasSize(9);
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
     }
 
     @Test
     void shouldReturn200WhenParameterRegionIdIsPassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -259,15 +261,13 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.get(0).getRegionId()).isEqualTo("1");
-
+        assertThat(response).isNotEmpty().hasSize(7);
+        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals("1")));
     }
 
     @Test
     void shouldReturn200WhenParameterClusterIdIsPassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -276,9 +276,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.get(0).getClusterId()).isEqualTo("2");
-
+        assertThat(response).isNotEmpty().hasSize(4);
+        assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")));
     }
 
     @Test
@@ -293,13 +292,13 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.get(0).getCourtName()).isEqualToIgnoringCase("ABERDEEN TRIBUNAL HEARING CENTRE 10");
-
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
+            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 10")));
     }
 
     @Test
-    void shouldReturn400WhenCourtVenueResponseIsEmpty() throws
+    void shouldReturn404WhenCourtVenueResponseIsEmpty() throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -311,29 +310,27 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
         assertNotNull(errorResponseMap);
-
-        assertThat(errorResponse.getErrorDescription()).contains("There are no court venues found");
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = ((ErrorResponse) errorResponseMap.get("response_body"));
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals("There are no court venues found", errorResponse.getErrorDescription());
     }
 
     @Test
     void shouldReturn200WhenNoQueryParameterIsPassed() throws
         JsonProcessingException {
 
-
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(null, LrdCourtVenueResponse[].class, path);
 
-        assertNotNull(response);
-        assertThat(response.size()).isEqualTo(11);
+        assertThat(response).isNotEmpty().hasSize(11);
 
     }
 
     @Test
     void shouldReturn200WhenParameterEpmIdsValueAllWithYAndSpacePassed() throws
         JsonProcessingException {
-
 
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
@@ -345,8 +342,6 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertNotNull(response);
-        assertThat(response.size()).isEqualTo(1);
-
+        assertThat(response).isNotEmpty().hasSize(1);
     }
 }

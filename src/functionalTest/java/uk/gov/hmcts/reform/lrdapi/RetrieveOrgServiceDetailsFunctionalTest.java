@@ -71,7 +71,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 "?ccdServiceNames=cMc"
             );
         assertEquals(1, responses.size());
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equals("cMc")));
+        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equalsIgnoreCase("cMc")));
     }
 
     @SuppressWarnings("unchecked")
@@ -89,7 +89,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
     void returnOrgServiceDetailsByUnknownCcdCaseTypeCode_404() throws JsonProcessingException {
 
         ErrorResponse errorResponse = (ErrorResponse)
-            lrdApiClient.retrieveOrgServiceInfo(HttpStatus.NOT_FOUND,"ccCaseType1");
+            lrdApiClient.retrieveOrgServiceInfo(HttpStatus.NOT_FOUND,"?ccdCaseType=ccCaseType1");
 
         assertNotNull(errorResponse);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());

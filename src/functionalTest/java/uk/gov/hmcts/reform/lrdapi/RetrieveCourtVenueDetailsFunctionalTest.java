@@ -167,6 +167,27 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_WhenParameterEpmIdsValueAllWithYPassed_WithStatusCode_200() throws
+        JsonProcessingException {
+
+        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=Y&is_case_management_location=Y&location_type=CTSC"
+                    + "&is_temporary_location=Y",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(Arrays.stream(response).allMatch(venueResponse ->
+             venueResponse.getIsHearingLocation().equalsIgnoreCase("Y")
+             && venueResponse.getIsCaseManagementLocation().equalsIgnoreCase("Y")
+             && venueResponse.getLocationType().equalsIgnoreCase("CTSC")
+             && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("Y")));
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldReturn404_WhenNoEpimmsIdFound() {
         final var response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?epimms_id=000000",
@@ -222,6 +243,20 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
         assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME, "aaaabbbbcccc"),
                      response.getErrorDescription());
+    }
+
+    @Test
+    void shouldReturn404_WhenCourtVenueWithParamsNotFound() throws
+        JsonProcessingException {
+        final var response = (ErrorResponse)
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND,
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=N&is_case_management_location=N&location_type=CCBC"
+                    + "&is_temporary_Location=N", LrdCourtVenueResponse[].class, path);
+
+        assertNotNull(response);
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
+        assertEquals("There are no court venues found", response.getErrorDescription());
     }
 
     @Test

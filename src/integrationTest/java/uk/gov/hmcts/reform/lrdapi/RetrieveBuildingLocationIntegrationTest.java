@@ -353,88 +353,116 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         }
     }
 
-    private List<LrdBuildingLocationResponse> getSingleLocationResponse() {
+    private List<LrdBuildingLocationResponse> getAllLocationResponse() {
+        List<LrdBuildingLocationResponse> locationResponses = getAllOpenLocationResponse();
+        LrdBuildingLocationResponse locationResponses4 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041998")
+            .regionId("2")
+            .region("London")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Closed")
+            .epimmsId("123EpimmsId456")
+            .buildingLocationName("Building Location 4")
+            .area("Area D")
+            .postcode("EC2A 3AQ")
+            .address("4 Street, London")
+            .courtFinderUrl("Court Finder URL 4")
+            .build();
 
-        var locationResponses = new ArrayList<LrdBuildingLocationResponse>();
-
-        LrdBuildingLocationResponse response = getBuildingLocationSampleResponse();
-
-        locationResponses.add(response);
-
+        locationResponses.add(locationResponses4);
         return locationResponses;
     }
 
-    private LrdBuildingLocationResponse getBuildingLocationSampleResponse() {
+    private List<LrdBuildingLocationResponse> getAllOpenLocationResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtTypeId("23")
-            .courtType("Immigration and Asylum Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 1")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .siteName("Aberdeen Tribunal Hearing Centre 4")
             .openForPublic("YES")
-            .epimmsId("123456789")
+            .epimmsId("epimmsId1234")
             .regionId("1")
             .region("National")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 4")
             .courtStatus("Open")
-            .postcode("AB11 6LT")
-            .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
-            .courtVenueId("1")
-            .venueName("venueName1")
-            .isCaseManagementLocation("Y")
-            .isHearingLocation("Y")
+            .postcode("AB11 4RT")
+            .courtAddress("AB4, 51 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("4")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")
             .courtType("Employment Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 2")
+            .siteName("Aberdeen Tribunal Hearing Centre 5")
             .openForPublic("YES")
-            .epimmsId("123456789")
+            .epimmsId("epimmsId1234")
             .regionId("1")
             .region("National")
             .clusterId("1")
             .clusterName("Avon, Somerset and Gloucestershire")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 2")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 5")
             .courtStatus("Open")
-            .postcode("AB11 7KT")
-            .courtAddress("AB2, 49 HUNTLY STREET, ABERDEEN")
-            .courtVenueId("2")
+            .postcode("AB11 4EQ")
+            .courtAddress("AB5, 52 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("5")
             .build();
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")
             .courtType("Employment Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 3")
+            .siteName("Aberdeen Tribunal Hearing Centre 6")
             .openForPublic("YES")
-            .epimmsId("123456789")
+            .epimmsId("epimmsId1234")
             .regionId("2")
             .region("London")
-            .clusterId("1")
-            .clusterName("Avon, Somerset and Gloucestershire")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 3")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 6")
             .courtStatus("Open")
-            .postcode("AB11 8IP")
-            .courtAddress("AB3, 50 HUNTLY STREET, ABERDEEN")
-            .courtVenueId("3")
+            .postcode("AB11 7GQ")
+            .courtAddress("AB6, 53 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("6")
+            .build();
+        LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .siteName("Aberdeen Tribunal Hearing Centre 7")
+            .openForPublic("YES")
+            .epimmsId("epimmsId1234")
+            .regionId("2")
+            .region("London")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 7")
+            .courtStatus("Open")
+            .postcode("AB11 1TY")
+            .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("7")
             .build();
 
         courtVenueResponses.add(response1);
         courtVenueResponses.add(response2);
         courtVenueResponses.add(response3);
+        courtVenueResponses.add(response4);
 
-        return LrdBuildingLocationResponse.builder()
-            .buildingLocationId("22041995")
-            .regionId("1")
-            .region("National")
+        List<LrdBuildingLocationResponse> locationResponses = getTwoLocationResponse();
+
+        LrdBuildingLocationResponse locationResponses3 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041997")
+            .regionId("2")
+            .region("London")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Open")
-            .epimmsId("123456789")
-            .buildingLocationName("Building Location A")
-            .area("Area A")
-            .postcode("WX67 2YZ")
-            .address("1 Street, London")
-            .courtFinderUrl("Court Finder URL")
+            .epimmsId("epimmsId1234")
+            .buildingLocationName("Building Location C")
+            .area("Area C")
+            .postcode("EC2A 2YZ")
+            .address("3 Street, London")
+            .courtFinderUrl("Court Finder URL 3")
             .courtVenues(courtVenueResponses)
             .build();
+
+        locationResponses.add(locationResponses3);
+
+        return locationResponses;
     }
 
     private List<LrdBuildingLocationResponse> getTwoLocationResponse() {
@@ -538,17 +566,28 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         return locationResponses;
     }
 
-    private List<LrdBuildingLocationResponse> getAllOpenLocationResponse() {
+    private List<LrdBuildingLocationResponse> getSingleLocationResponse() {
+
+        var locationResponses = new ArrayList<LrdBuildingLocationResponse>();
+
+        LrdBuildingLocationResponse response = getBuildingLocationSampleResponse();
+
+        locationResponses.add(response);
+
+        return locationResponses;
+    }
+
+    private LrdBuildingLocationResponse getBuildingLocationSampleResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
-            .courtType("Employment Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 4")
+            .courtTypeId("23")
+            .courtType("Immigration and Asylum Tribunal")
+            .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic("YES")
-            .epimmsId("epimmsId1234")
+            .epimmsId("123456789")
             .regionId("1")
             .region("National")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 4")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
             .courtStatus("Open")
             .postcode("AB11 6LT")
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
@@ -565,97 +604,55 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")
             .courtType("Employment Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 5")
+            .siteName("Aberdeen Tribunal Hearing Centre 2")
             .openForPublic("YES")
-            .epimmsId("epimmsId1234")
+            .epimmsId("123456789")
             .regionId("1")
             .region("National")
             .clusterId("1")
             .clusterName("Avon, Somerset and Gloucestershire")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 5")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 2")
             .courtStatus("Open")
-            .postcode("AB11 4EQ")
-            .courtAddress("AB5, 52 HUNTLY STREET, ABERDEEN")
-            .courtVenueId("5")
+            .postcode("AB11 7KT")
+            .courtAddress("AB2, 49 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("2")
             .build();
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")
             .courtType("Employment Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 6")
+            .siteName("Aberdeen Tribunal Hearing Centre 3")
             .openForPublic("YES")
-            .epimmsId("epimmsId1234")
+            .epimmsId("123456789")
             .regionId("2")
             .region("London")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 6")
+            .clusterId("1")
+            .clusterName("Avon, Somerset and Gloucestershire")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 3")
             .courtStatus("Open")
-            .postcode("AB11 7GQ")
-            .courtAddress("AB6, 53 HUNTLY STREET, ABERDEEN")
-            .courtVenueId("6")
-            .build();
-        LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
-            .courtType("Employment Tribunal")
-            .siteName("Aberdeen Tribunal Hearing Centre 7")
-            .openForPublic("YES")
-            .epimmsId("epimmsId1234")
-            .regionId("2")
-            .region("London")
-            .clusterId("2")
-            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 7")
-            .courtStatus("Open")
-            .postcode("AB11 1TY")
-            .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
-            .courtVenueId("7")
+            .postcode("AB11 8IP")
+            .courtAddress("AB3, 50 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("3")
             .build();
 
         courtVenueResponses.add(response1);
         courtVenueResponses.add(response2);
         courtVenueResponses.add(response3);
-        courtVenueResponses.add(response4);
 
-        List<LrdBuildingLocationResponse> locationResponses = getTwoLocationResponse();
-
-        LrdBuildingLocationResponse locationResponses3 = LrdBuildingLocationResponse.builder()
-            .buildingLocationId("22041997")
-            .regionId("2")
-            .region("London")
+        return LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041995")
+            .regionId("1")
+            .region("National")
             .clusterId("01234")
             .clusterName("Cluster B")
             .buildingLocationStatus("Open")
-            .epimmsId("epimmsId1234")
-            .buildingLocationName("Building Location C")
-            .area("Area C")
-            .postcode("EC2A 2YZ")
-            .address("3 Street, London")
-            .courtFinderUrl("Court Finder URL 3")
+            .epimmsId("123456789")
+            .buildingLocationName("Building Location A")
+            .area("Area A")
+            .postcode("WX67 2YZ")
+            .address("1 Street, London")
+            .courtFinderUrl("Court Finder URL")
             .courtVenues(courtVenueResponses)
             .build();
-
-        locationResponses.add(locationResponses3);
-
-        return locationResponses;
-    }
-
-    private List<LrdBuildingLocationResponse> getAllLocationResponse() {
-        List<LrdBuildingLocationResponse> locationResponses = getAllOpenLocationResponse();
-        LrdBuildingLocationResponse locationResponses4 = LrdBuildingLocationResponse.builder()
-            .buildingLocationId("22041998")
-            .regionId("2")
-            .region("London")
-            .clusterId("01234")
-            .clusterName("Cluster B")
-            .buildingLocationStatus("Closed")
-            .epimmsId("123EpimmsId456")
-            .buildingLocationName("Building Location 4")
-            .area("Area D")
-            .postcode("EC2A 3AQ")
-            .address("4 Street, London")
-            .courtFinderUrl("Court Finder URL 4")
-            .build();
-
-        locationResponses.add(locationResponses4);
-        return locationResponses;
     }
 
 }
