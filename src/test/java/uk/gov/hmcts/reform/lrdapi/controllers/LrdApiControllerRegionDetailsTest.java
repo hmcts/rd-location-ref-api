@@ -44,12 +44,22 @@ class LrdApiControllerRegionDetailsTest {
     }
 
     @Test
-    void testGetRegionDetails_ByMissingDescription_Returns400() {
+    void testGetRegionDetails_ByDescriptionAndId_Returns400() {
         Exception exception = assertThrows(InvalidRequestException.class, () -> {
             lrdApiController.retrieveRegionDetails("af", "213");
         });
 
         assertNotNull(exception);
         assertEquals("Please provide only 1 of 2 values/params: [af, 213]", exception.getMessage());
+    }
+
+    @Test
+    void testGetRegionDetails_ByEmptyDescriptionAndId_Returns400() {
+        ResponseEntity<Object> responseEntity =
+            lrdApiController.retrieveRegionDetails("", "");
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        verify(regionServiceMock, times(1)).retrieveRegionDetails("","");
     }
 }
