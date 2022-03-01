@@ -4,6 +4,8 @@ import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
@@ -42,59 +44,33 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
         new LrdRegionResponse(new Region("9", "Scotland", null))
     );
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({"London, 1",
+        "'London,Midlands', 2",
+        " London  , 1"
+    })
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    void getRegionDetailsByDescriptionWithStatusCode_200() {
+    void getRegionDetailsByDescriptionWithStatusCode_200(String regionDescription, int expectedRegions) {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "London");
+            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, regionDescription);
 
         assertNotNull(response);
-        responseVerification(response, 1);
+        responseVerification(response, expectedRegions);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({"2, 1",
+        "'2,3', 2"
+    })
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
-    void getRegionDetailsByDescriptionsWithStatusCode_200() {
+    void getRegionDetailsByIdWithStatusCode_200(String regionId, int expectedRegions) {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, "London, Midlands");
+            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, regionId);
 
         assertNotNull(response);
-        responseVerification(response, 2);
-    }
-
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    @SuppressWarnings("unchecked")
-    void getRegionDetailsByDescriptionWithTrailingSpacesWithStatusCode_200() {
-        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.retrieveRegionInfoByRegionDescription(HttpStatus.OK, " London  ");
-
-        assertNotNull(response);
-        responseVerification(response, 1);
-    }
-
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    @SuppressWarnings("unchecked")
-    void getRegionDetailsByIdWithStatusCode_200() {
-        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2");
-
-        assertNotNull(response);
-        responseVerification(response, 1);
-    }
-
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    @SuppressWarnings("unchecked")
-    void getRegionDetailsByIdsWithStatusCode_200() {
-        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
-            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "2,3");
-
-        assertNotNull(response);
-        responseVerification(response, 2);
+        responseVerification(response, expectedRegions);
     }
 
     @Test
@@ -103,6 +79,17 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
     void getRegionDetailsByIdAllWithStatusCode_200() {
         List<LrdRegionResponse> response = (List<LrdRegionResponse>)
             lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "ALL");
+
+        assertNotNull(response);
+        responseVerificationForAll(response, expectedListAll);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    @SuppressWarnings("unchecked")
+    void getRegionDetailsByIdsAndAllWithStatusCode_200() {
+        List<LrdRegionResponse> response = (List<LrdRegionResponse>)
+            lrdApiClient.retrieveRegionInfoByRegionId(HttpStatus.OK, "4,5,6,ALL");
 
         assertNotNull(response);
         responseVerificationForAll(response, expectedListAll);
