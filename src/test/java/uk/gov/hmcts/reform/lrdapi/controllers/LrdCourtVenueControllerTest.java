@@ -48,6 +48,16 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenues_ByServiceCodeWithSpace_Returns200() {
+        ResponseEntity<Object> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenuesByServiceCode(" BFA1 ");
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesByServiceCode("BFA1");
+    }
+
+    @Test
     void testGetCourtVenues_ByBlankServiceCode_Returns400() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesByServiceCode(""));
@@ -88,6 +98,17 @@ class LrdCourtVenueControllerTest {
         assertEquals("Y", result.getIsCaseManagementLocation());
         assertEquals("CTSC", result.getLocationType());
         assertEquals("Y", result.getIsTemporaryLocation());
+    }
+
+    @Test
+    void testGetCourtVenues_WithMultipleParams_Returns400() {
+        Exception exception = assertThrows(InvalidRequestException.class, () -> {
+            lrdCourtVenueController.retrieveCourtVenues("12345", 23, null, null, null, null, null, null, null);
+        });
+
+        assertNotNull(exception);
+        assertEquals("Please provide only 1 of 5 values/params: [12345, 23, null, null, null]",
+                     exception.getMessage());
     }
 
     @Test
