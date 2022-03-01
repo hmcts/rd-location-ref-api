@@ -232,17 +232,15 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return getCourtVenueListResponse(courtVenues);
     }
 
-    private List<LrdCourtVenueResponse> getAllCourtVenues(
-        Supplier<List<CourtVenue>> courtVenueSupplier,
-        String id,
+    private List<LrdCourtVenueResponse> getAllCourtVenues(Supplier<List<CourtVenue>> courtVenueSupplier, String id,
         String noDataFoundMessage) {
+
         List<CourtVenue> courtVenues = courtVenueSupplier.get();
         handleIfCourtVenuesEmpty(() -> isEmpty(courtVenues), noDataFoundMessage, id);
         return getCourtVenueListResponse(courtVenues);
     }
 
-    private List<LrdCourtVenueResponse> getCourtVenueListResponse(
-        List<CourtVenue> courtVenues) {
+    private List<LrdCourtVenueResponse> getCourtVenueListResponse(List<CourtVenue> courtVenues) {
         return courtVenues
             .stream()
             .map(LrdCourtVenueResponse::new)
@@ -260,7 +258,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     private List<LrdCourtVenueResponse> getLrdCourtVenueResponses(
-
         List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
         CourtVenueRequestParam courtVenueRequestParam) {
 
@@ -274,9 +271,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return result;
     }
 
-    private List<LrdCourtVenueResponse> applyAdditionalFilters(
-
-        List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
+    private List<LrdCourtVenueResponse> applyAdditionalFilters(List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
         CourtVenueRequestParam courtVenueRequestParam) {
 
         List<Predicate<LrdCourtVenueResponse>> allPredicates = getPredicates(courtVenueRequestParam);
@@ -288,12 +283,9 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     }
 
-    private List<Predicate<LrdCourtVenueResponse>> getPredicates(
+    private List<Predicate<LrdCourtVenueResponse>> getPredicates(CourtVenueRequestParam courtVenueRequestParam) {
 
-        CourtVenueRequestParam courtVenueRequestParam) {
-
-        List<Predicate<LrdCourtVenueResponse>> allPredicates =
-            new ArrayList<>();
+        List<Predicate<LrdCourtVenueResponse>> allPredicates = new ArrayList<>();
 
         String isHearingLocationValue = courtVenueRequestParam.getIsHearingLocation();
 

@@ -15,9 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
 @WithTags({@WithTag("testType:Integration")})
@@ -29,7 +33,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     @Test
     void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException {
 
-        LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
+        final var response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("AAA3", LrdCourtVenuesByServiceCodeResponse.class);
 
         assertThat(response).isNotNull();
@@ -39,7 +43,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     @Test
     void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException {
 
-        LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
+        final var response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("aaa3", LrdCourtVenuesByServiceCodeResponse.class);
 
         assertThat(response).isNotNull();
@@ -54,6 +58,10 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals("No court types found for the given service code ABCD1",
+                     errorResponse.getErrorDescription());
     }
 
     @Test
@@ -64,7 +72,10 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             lrdApiClient.findCourtVenuesByServiceCode("@$ABC", ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry("http_status", HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, errorResponse.getErrorDescription());
     }
 
     @Test
