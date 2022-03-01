@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -29,6 +31,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     private static final String RESPONSE_BODY = "response_body";
 
     @Test
+    @SuppressWarnings("unchecked")
     void shouldRetrieveCourtVenues_For_SearchString_WithStatusCode_200()
         throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
@@ -37,18 +40,9 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 LrdCourtVenueResponse[].class,
                 path
             );
-        assertThat(response).isNotEmpty();
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        var courtNameVerified = courtVenueResponse
-            .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
-            .collect(Collectors.toList());
-        courtVenueResponse.removeAll(courtNameVerified);
 
-        assertTrue(courtVenueResponse.isEmpty());
+        assertThat(response).isNotEmpty().hasSize(11);
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
     @Test
@@ -60,53 +54,19 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 LrdCourtVenueResponse[].class,
                 path
             );
-        assertThat(response).isNotEmpty();
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        var courtNameVerified = courtVenueResponse
-            .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
-            .collect(Collectors.toList());
-        courtVenueResponse.removeAll(courtNameVerified);
 
-        assertTrue(courtVenueResponse.isEmpty());
+        assertThat(response).isNotEmpty().hasSize(11);
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"?search-string=zz&court-type-id=1000", "?search-string=AB$&court-type-id=1000",
+        "?search-string=AB$&court-type-id=1,2,$,4"})
     @SuppressWarnings("unchecked")
-    void shouldReturn400_WhenSearchStringLessThan3Char() throws JsonProcessingException {
+    void shouldReturn400_WhenInvalidParamsPassed(String parameter) throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findCourtVenuesBySearchString("?search-string=zz&court-type-id=1000",
-                                                       ErrorResponse.class, path
-            );
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-    }
+            lrdApiClient.findCourtVenuesBySearchString(parameter, ErrorResponse.class, path);
 
-    @Test
-    @SuppressWarnings("unchecked")
-    void shouldReturn400_WhenSearchStringContainSpecialChar() throws JsonProcessingException {
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=AB$&court-type-id=1000",
-                ErrorResponse.class,
-                path
-            );
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void shouldReturn400_WhenCourtTypeIdContainContainSpecialChar() throws JsonProcessingException {
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=AB$&court-type-id=1,2,$,4",
-                ErrorResponse.class,
-                path
-            );
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
     }
@@ -134,12 +94,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
-        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                         FILTER_IS_HEARING_LOCATION));
+        errorResponseVerification(errorResponseMap, FILTER_IS_HEARING_LOCATION);
     }
 
     @Test
@@ -153,12 +108,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
-        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                         FILTER_IS_CASE_MANAGEMENT_LOCATION));
+        errorResponseVerification(errorResponseMap, FILTER_IS_CASE_MANAGEMENT_LOCATION);
     }
 
     @Test
@@ -172,12 +122,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
-        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                         FILTER_IS_TEMPORARY_LOCATION));
+        errorResponseVerification(errorResponseMap, FILTER_IS_TEMPORARY_LOCATION);
     }
 
     @Test
@@ -191,12 +136,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
-        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                         FILTER_IS_HEARING_LOCATION));
+        errorResponseVerification(errorResponseMap, FILTER_IS_HEARING_LOCATION);
     }
 
     @Test
@@ -210,12 +150,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
-        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                         FILTER_IS_CASE_MANAGEMENT_LOCATION));
+        errorResponseVerification(errorResponseMap, FILTER_IS_CASE_MANAGEMENT_LOCATION);
     }
 
     @Test
@@ -229,12 +164,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
-        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
-        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
-                                                                         FILTER_IS_TEMPORARY_LOCATION));
+        errorResponseVerification(errorResponseMap, FILTER_IS_TEMPORARY_LOCATION);
     }
 
     @Test
@@ -247,19 +177,8 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty();
-        assertEquals(2,response.length);
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        var courtNameVerified = courtVenueResponse
-            .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
-            .collect(Collectors.toList());
-        courtVenueResponse.removeAll(courtNameVerified);
-
-        assertTrue(courtVenueResponse.isEmpty());
+        assertThat(response).isNotEmpty().hasSize(2);
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
     @Test
@@ -272,19 +191,8 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty();
-        assertEquals(2,response.length);
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        var courtNameVerified = courtVenueResponse
-            .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
-            .collect(Collectors.toList());
-        courtVenueResponse.removeAll(courtNameVerified);
-
-        assertTrue(courtVenueResponse.isEmpty());
+        assertThat(response).isNotEmpty().hasSize(2);
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
     @Test
@@ -297,19 +205,8 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty();
-        assertEquals(1,response.length);
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        var courtNameVerified = courtVenueResponse
-            .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
-            .collect(Collectors.toList());
-        courtVenueResponse.removeAll(courtNameVerified);
-
-        assertTrue(courtVenueResponse.isEmpty());
+        assertThat(response).isNotEmpty().hasSize(1);
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
     @Test
@@ -321,10 +218,11 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 LrdCourtVenueResponse[].class,
                 path
             );
+        assertThat(response).isNotEmpty().hasSize(1);
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
+    }
 
-        assertThat(response).isNotEmpty();
-        assertEquals(1,response.length);
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+    void responseVerification(ArrayList<LrdCourtVenueResponse> courtVenueResponse) {
         var courtNameVerified = courtVenueResponse
             .stream()
             .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
@@ -332,9 +230,23 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
                 || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
             .collect(Collectors.toList());
+
+        assertTrue(courtNameVerified
+                       .stream()
+                       .allMatch(venue -> venue.getCourtStatus().equals("Open"))
+        );
         courtVenueResponse.removeAll(courtNameVerified);
 
         assertTrue(courtVenueResponse.isEmpty());
+    }
+
+    void errorResponseVerification(Map<String, Object> errorResponseMap, String expectedErrorDescription) {
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+        ErrorResponse reason = (ErrorResponse)errorResponseMap.get(RESPONSE_BODY);
+        assertThat(reason.getErrorCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
+                                                                         expectedErrorDescription));
     }
 
 }
