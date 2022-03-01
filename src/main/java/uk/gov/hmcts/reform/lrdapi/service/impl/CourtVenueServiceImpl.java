@@ -257,7 +257,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         }
     }
 
-    private List<LrdCourtVenueResponse> getLrdCourtVenueResponses(List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
+    private List<LrdCourtVenueResponse> getLrdCourtVenueResponses(
+        List<LrdCourtVenueResponse> inputLrdCourtVenueResponse,
         CourtVenueRequestParam courtVenueRequestParam) {
 
         List<LrdCourtVenueResponse> result = applyAdditionalFilters(
