@@ -14,8 +14,12 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
 @WithTags({@WithTag("testType:Integration")})
@@ -27,10 +31,10 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     @Test
     void returnsOrgServiceDetailsByServiceCodeWithStatusCode200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByServiceCode("AAA6", LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(1, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(1);
         responseVerification(responses);
     }
 
@@ -40,46 +44,49 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByServiceCode("A1A7", ErrorResponse.class);
 
+        assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
     }
 
     @Test
     void returnOrgServiceDetailsByCcdCaseTypeCode200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdCaseType("MONEYCLAIMCASE", LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(1, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(1);
         responseVerification(responses);
     }
 
     @Test
     void returnOrgServiceDetailsByCcdServiceName200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC", LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses.size()).isEqualTo(1);
+        assertThat(responses).isNotEmpty().hasSize(1);
         responseVerification(responses);
     }
 
     @Test
     void returnOrgServiceDetailsByMultipleCcdServiceNames200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC,CCDSERVICENAME2",
                                                                LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(2, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(2);
     }
 
     @Test
     void returnOrgServiceDetailsByCcdServiceNameAll200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("ALL", LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(3, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(3);
     }
 
     @Test
@@ -88,16 +95,19 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         Map<String, Object> errorResponseMap  = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("someRandomServiceName", ErrorResponse.class);
 
+        assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
     }
 
     @Test
     void returnOrgServiceDetailsByCcdCaseTypeIgnoreCaseCode200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdCaseType(" moneyCLAIMCASE ",LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(1, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(1);
         responseVerification(responses);
     }
 
@@ -107,16 +117,18 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdCaseType("ccCaseType1", ErrorResponse.class);
 
-        assertThat(errorResponseMap).containsEntry("http_status",HttpStatus.NOT_FOUND);
-
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
     }
 
     @Test
     void returnsOrgServiceDetailsWithoutInputParams_200() throws JsonProcessingException {
 
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+        final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByDefaultAll(LrdOrgInfoServiceResponse[].class);
-        assertEquals(3, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(3);
     }
 
     @Test
@@ -161,7 +173,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName(" aLL ", LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(3, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(3);;
     }
 
     @Test
@@ -171,7 +183,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("All, CMC",
                                                                LrdOrgInfoServiceResponse[].class);
 
-        assertEquals(3, responses.size());
+        assertThat(responses).isNotEmpty().hasSize(3);
     }
 
     @Test
@@ -180,7 +192,11 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         Map<String, Object> errorResponseMap  = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("CMC, ,Divorce", ErrorResponse.class);
 
+        assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(EXCEPTION_MSG_SPCL_CHAR, errorResponse.getErrorDescription());
     }
 
     @Test
@@ -189,6 +205,10 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         Map<String, Object> errorResponseMap  = (Map<String, Object>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName(", &", ErrorResponse.class);
 
+        assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS,HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(EXCEPTION_MSG_SPCL_CHAR, errorResponse.getErrorDescription());
     }
 }
