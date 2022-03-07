@@ -51,6 +51,13 @@ class LrdCourtVenueResponseTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -70,6 +77,13 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getIsNightingaleCourt());
         assertNotNull(courtVenueResponse.getLocationType());
         assertNotNull(courtVenueResponse.getParentLocation());
+        assertNotNull(courtVenueResponse.getWelshCourtName());
+        assertNotNull(courtVenueResponse.getUprn());
+        assertNotNull(courtVenueResponse.getVenueOuCode());
+        assertNotNull(courtVenueResponse.getMrdBuildingLocationId());
+        assertNotNull(courtVenueResponse.getMrdVenueId());
+        assertNotNull(courtVenueResponse.getServiceUrl());
+        assertNotNull(courtVenueResponse.getFactUrl());
     }
 
     @Test
@@ -111,6 +125,13 @@ class LrdCourtVenueResponseTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -130,6 +151,13 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getIsNightingaleCourt());
         assertNotNull(courtVenueResponse.getLocationType());
         assertNotNull(courtVenueResponse.getParentLocation());
+        assertNotNull(courtVenueResponse.getWelshCourtName());
+        assertNotNull(courtVenueResponse.getUprn());
+        assertNotNull(courtVenueResponse.getVenueOuCode());
+        assertNotNull(courtVenueResponse.getMrdBuildingLocationId());
+        assertNotNull(courtVenueResponse.getMrdVenueId());
+        assertNotNull(courtVenueResponse.getServiceUrl());
+        assertNotNull(courtVenueResponse.getFactUrl());
     }
 
     @Test
@@ -181,6 +209,13 @@ class LrdCourtVenueResponseTest {
         courtVenue.setIsNightingaleCourt("N");
         courtVenue.setLocationType("Court");
         courtVenue.setParentLocation("");
+        courtVenue.setWelshCourtName("welshCourtName1");
+        courtVenue.setUprn("1234");
+        courtVenue.setVenueOuCode("87675");
+        courtVenue.setMrdBuildingLocationId("8686");
+        courtVenue.setMrdVenueId("765");
+        courtVenue.setServiceUrl("https://serviceurl.com");
+        courtVenue.setFactUrl("https://facturl.com");
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
 
@@ -190,7 +225,13 @@ class LrdCourtVenueResponseTest {
         assertEquals("Court",courtVenueResponse.getLocationType());
         assertEquals("",courtVenueResponse.getParentLocation());
 
-
+        assertEquals("", courtVenueResponse.getWelshCourtName());
+        assertEquals("", courtVenueResponse.getUprn());
+        assertEquals("", courtVenueResponse.getVenueOuCode());
+        assertEquals("", courtVenueResponse.getMrdBuildingLocationId());
+        assertEquals("", courtVenueResponse.getMrdVenueId());
+        assertEquals("", courtVenueResponse.getServiceUrl());
+        assertEquals("", courtVenueResponse.getFactUrl());
     }
 
 }
