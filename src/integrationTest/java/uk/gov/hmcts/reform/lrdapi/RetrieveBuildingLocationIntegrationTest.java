@@ -336,7 +336,8 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
         ErrorResponse errorResponse = ((ErrorResponse) errorResponseMap.get("response_body"));
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, 2, "epimms_id, building_location_name, region_id, cluster_id"),
+        assertEquals(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, 2, "epimms_id,"
+                         + " building_location_name, region_id, cluster_id"),
                      errorResponse.getErrorDescription());
     }
 
