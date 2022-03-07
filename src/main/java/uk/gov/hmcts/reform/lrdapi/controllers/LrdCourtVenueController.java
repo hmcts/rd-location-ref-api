@@ -25,6 +25,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
@@ -50,7 +51,7 @@ public class LrdCourtVenueController {
         value = "This API will retrieve Court Venues for the request provided",
         notes = "No roles required to access this API.\n"
             + "For the request param 'epimms_id', either a single epimms_id or a list of epimms_ids separated by comas"
-            + "can be passed. In any of these cases, a list of associated court venues would be returned.\n"
+            + " can be passed. In any of these cases, a list of associated court venues would be returned.\n"
             + "Additionally, if 'ALL' is passed as the epimms_id value, then all the available court venues"
             + " associated with the available list of epimms_id are returned as a list.\n"
             + "For the request param 'court_type_id', then all the court venues that have the status as 'Open' "
@@ -65,7 +66,9 @@ public class LrdCourtVenueController {
             + "status as 'OPEN' are returned as a list.\n"
             + "Additional API filters are applied with request params 'is_hearing_location', "
             + "'is_case_management_location'\n"
-            + "'location_type' and 'is_temporary_location'.",
+            + "'location_type' and 'is_temporary_location'.\n"
+            + "Optional param's are 'is_hearing_location','is_case_management_location','location_type'"
+            + "and 'is_temporary_location'.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
@@ -109,8 +112,8 @@ public class LrdCourtVenueController {
         @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
 
         log.info("{} : Inside retrieveCourtVenues",loggingComponentName);
-        checkIfSingleValuePresent(epimmsIds, String.valueOf(courtTypeId), String.valueOf(regionId),
-                                  String.valueOf(clusterId), courtVenueName);
+        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE,epimmsIds, String.valueOf(courtTypeId),
+                                  String.valueOf(regionId),String.valueOf(clusterId), courtVenueName);
         CourtVenueRequestParam courtVenueRequestParam =
             new CourtVenueRequestParam();
 

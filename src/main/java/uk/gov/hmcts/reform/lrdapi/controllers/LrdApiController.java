@@ -24,6 +24,8 @@ import uk.gov.hmcts.reform.lrdapi.util.ValidationUtils;
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_REGION;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 
 @RequestMapping(
@@ -149,7 +151,8 @@ public class LrdApiController {
         @RequestParam(value = "cluster_id", required = false) String clusterId) {
 
         log.info("{} : Inside retrieveBuildingLocationDetails",loggingComponentName);
-        checkIfSingleValuePresent(epimsIds, buildingLocationName, regionId, clusterId);
+        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION,epimsIds, buildingLocationName,
+                regionId, clusterId);
         log.info("{} : Calling retrieveBuildingLocationDetails",loggingComponentName);
         Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds,
                                                                                         buildingLocationName,
@@ -197,7 +200,7 @@ public class LrdApiController {
         @RequestParam(value = "region", required = false) String region,
         @RequestParam(value = "regionId", required = false) String regionId) {
         log.info("{} : Inside retrieveRegionDetails",loggingComponentName);
-        checkIfSingleValuePresent(region, regionId);
+        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_REGION,region, regionId);
         log.info("{} : Calling retrieveRegionDetails",loggingComponentName);
         Object response = regionService.retrieveRegionDetails(regionId, region);
 

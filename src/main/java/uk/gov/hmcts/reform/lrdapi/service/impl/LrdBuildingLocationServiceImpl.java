@@ -56,11 +56,12 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
                                                   String regionId,
                                                   String clusterId) {
         String id;
+        String oneOfMandatoryParm = "epimms_id,buildingLocationName,region_id,cluster_id";
         if (isNotBlank(epimmsIds)) {
             return retrieveBuildingLocationsByEpimmsId(epimmsIds);
         }
         if (isNotBlank(buildingLocationName)) {
-            checkIfSingleValuePresent(buildingLocationName.split(COMMA));
+            checkIfSingleValuePresent(oneOfMandatoryParm,buildingLocationName.split(COMMA));
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
         if (isNotBlank(regionId)) {
@@ -187,7 +188,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
     }
 
     private void validateNumericFilter(String id, String invalidExceptionMsg) {
-        checkIfSingleValuePresent(id.split(COMMA));
+        checkIfSingleValuePresent(id,id.split(COMMA));
         if (!isRegexSatisfied(id, NUMERIC_REGEX)) {
             invalidExceptionMsg = String.format(invalidExceptionMsg, id);
             log.error(invalidExceptionMsg);
