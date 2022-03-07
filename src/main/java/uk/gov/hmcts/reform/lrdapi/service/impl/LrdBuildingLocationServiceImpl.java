@@ -34,6 +34,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATIONS_FOR_REGION_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_BUILDING_LOCATION_FOR_BUILDING_LOCATION_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
@@ -56,12 +57,11 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
                                                   String regionId,
                                                   String clusterId) {
         String id;
-        String oneOfMandatoryParm = "epimms_id,buildingLocationName,region_id,cluster_id";
         if (isNotBlank(epimmsIds)) {
             return retrieveBuildingLocationsByEpimmsId(epimmsIds);
         }
         if (isNotBlank(buildingLocationName)) {
-            checkIfSingleValuePresent(oneOfMandatoryParm,buildingLocationName.split(COMMA));
+            checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION,buildingLocationName.split(COMMA));
             return retrieveBuildingLocationsByName(buildingLocationName.strip());
         }
         if (isNotBlank(regionId)) {
