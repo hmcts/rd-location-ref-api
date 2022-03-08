@@ -136,13 +136,13 @@ public class CourtVenue implements Serializable {
     private String factUrl;
 
     @Column(name = "mrd_created_time")
-    private String mrdCreatedTime;
+    private LocalDateTime mrdCreatedTime;
 
     @Column(name = "mrd_updated_time")
-    private String mrdUpdatedTime;
+    private LocalDateTime mrdUpdatedTime;
 
     @Column(name = "mrd_deleted_time")
-    private String mrdDeletedTime;
+    private LocalDateTime mrdDeletedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",
