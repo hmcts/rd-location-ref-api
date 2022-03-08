@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -130,13 +131,13 @@ public class LrdCourtVenueResponse implements Serializable {
     private String factUrl;
 
     @JsonProperty("mrd_created_time")
-    private String mrdCreatedTime;
+    private LocalDateTime mrdCreatedTime;
 
     @JsonProperty("mrd_updated_time")
-    private String mrdUpdatedTime;
+    private LocalDateTime mrdUpdatedTime;
 
     @JsonProperty("mrd_deleted_time")
-    private String mrdDeletedTime;
+    private LocalDateTime mrdDeletedTime;
 
 
 
