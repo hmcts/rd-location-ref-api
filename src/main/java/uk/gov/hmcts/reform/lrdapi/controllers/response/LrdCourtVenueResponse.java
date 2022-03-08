@@ -131,13 +131,13 @@ public class LrdCourtVenueResponse implements Serializable {
     private String factUrl;
 
     @JsonProperty("mrd_created_time")
-    private LocalDateTime mrdCreatedTime;
+    private String mrdCreatedTime;
 
     @JsonProperty("mrd_updated_time")
-    private LocalDateTime mrdUpdatedTime;
+    private String mrdUpdatedTime;
 
     @JsonProperty("mrd_deleted_time")
-    private LocalDateTime mrdDeletedTime;
+    private String mrdDeletedTime;
 
 
 
@@ -182,9 +182,9 @@ public class LrdCourtVenueResponse implements Serializable {
             this.mrdVenueId = courtVenue.getMrdVenueId();
             this.serviceUrl = courtVenue.getServiceUrl();
             this.factUrl = courtVenue.getFactUrl();
-            this.mrdCreatedTime = courtVenue.getMrdCreatedTime();
-            this.mrdUpdatedTime = courtVenue.getMrdUpdatedTime();
-            this.mrdDeletedTime = courtVenue.getMrdDeletedTime();
+            courtVenue.getMrdCreatedTime().ifPresent(date -> mrdCreatedTime = date.toString());
+            courtVenue.getMrdUpdatedTime().ifPresent(date -> mrdUpdatedTime = date.toString());
+            courtVenue.getMrdDeletedTime().ifPresent(date -> mrdDeletedTime = date.toString());
             courtVenue.getRegion().ifPresent(reg -> {
                 region = reg.getDescription();
                 regionId = reg.getRegionId();

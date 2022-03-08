@@ -166,4 +166,16 @@ public class CourtVenue implements Serializable {
         return Optional.ofNullable(region);
     }
 
+    public Optional<LocalDateTime> getMrdCreatedTime() {
+        return Optional.ofNullable(mrdCreatedTime);
+    }
+
+    public Optional<LocalDateTime> getMrdUpdatedTime() {
+        return Optional.ofNullable(mrdUpdatedTime);
+    }
+
+    public Optional<LocalDateTime> getMrdDeletedTime() {
+        return Optional.ofNullable(mrdDeletedTime);
+    }
+
 }
