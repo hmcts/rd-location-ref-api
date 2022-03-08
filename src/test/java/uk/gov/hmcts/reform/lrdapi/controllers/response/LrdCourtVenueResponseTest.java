@@ -224,14 +224,13 @@ class LrdCourtVenueResponseTest {
         assertEquals("N",courtVenueResponse.getIsNightingaleCourt());
         assertEquals("Court",courtVenueResponse.getLocationType());
         assertEquals("",courtVenueResponse.getParentLocation());
-
-        assertEquals("", courtVenueResponse.getWelshCourtName());
-        assertEquals("", courtVenueResponse.getUprn());
-        assertEquals("", courtVenueResponse.getVenueOuCode());
-        assertEquals("", courtVenueResponse.getMrdBuildingLocationId());
-        assertEquals("", courtVenueResponse.getMrdVenueId());
-        assertEquals("", courtVenueResponse.getServiceUrl());
-        assertEquals("", courtVenueResponse.getFactUrl());
+        assertEquals("welshCourtName1", courtVenueResponse.getWelshCourtName());
+        assertEquals("1234", courtVenueResponse.getUprn());
+        assertEquals("87675", courtVenueResponse.getVenueOuCode());
+        assertEquals("8686", courtVenueResponse.getMrdBuildingLocationId());
+        assertEquals("765", courtVenueResponse.getMrdVenueId());
+        assertEquals("https://serviceurl.com", courtVenueResponse.getServiceUrl());
+        assertEquals("https://facturl.com", courtVenueResponse.getFactUrl());
     }
 
 }
