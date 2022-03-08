@@ -114,6 +114,35 @@ public class CourtVenue implements Serializable {
     @Column(name = "parent_location")
     private String parentLocation;
 
+    @Column(name = "welsh_court_name")
+    private String welshCourtName;
+
+    @Column(name = "uprn")
+    private String uprn;
+
+    @Column(name = "venue_ou_code")
+    private String venueOuCode;
+
+    @Column(name = "mrd_building_location_id")
+    private String mrdBuildingLocationId;
+
+    @Column(name = "mrd_venue_id")
+    private String mrdVenueId;
+
+    @Column(name = "service_url")
+    private String serviceUrl;
+
+    @Column(name = "fact_url")
+    private String factUrl;
+
+    @Column(name = "mrd_created_time")
+    private String mrdCreatedTime;
+
+    @Column(name = "mrd_updated_time")
+    private String mrdUpdatedTime;
+
+    @Column(name = "mrd_deleted_time")
+    private String mrdDeletedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",
