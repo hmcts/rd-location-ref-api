@@ -114,7 +114,8 @@ public class LrdApiController {
             + "For the request param 'cluster_id', the value needs to be a single cluster_id "
             + "for which all the associated building location objects would be returned as a list.\n"
             + "If no params are passed, then all the available building locations which have the "
-            + "building location status as 'OPEN' are returned as a list."
+            + "building location status as 'OPEN' are returned as a list.\n"
+            + "At a time only one param is allowed from 'epimms_id','building_location_name','region_id','cluster_id'."
     )
     @ApiResponses({
         @ApiResponse(

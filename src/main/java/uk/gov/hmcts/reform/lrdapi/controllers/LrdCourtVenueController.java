@@ -68,7 +68,9 @@ public class LrdCourtVenueController {
             + "'is_case_management_location'\n"
             + "'location_type' and 'is_temporary_location'.\n"
             + "Optional param's are 'is_hearing_location','is_case_management_location','location_type'"
-            + "and 'is_temporary_location'.",
+            + "and 'is_temporary_location'.\n"
+            + "At a time only one param is allowed from 'epimms_id','court_type_id','region_id','cluster_id'"
+            + "'court_venue_name'.",
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
