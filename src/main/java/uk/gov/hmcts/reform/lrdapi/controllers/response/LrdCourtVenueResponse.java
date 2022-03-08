@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 
