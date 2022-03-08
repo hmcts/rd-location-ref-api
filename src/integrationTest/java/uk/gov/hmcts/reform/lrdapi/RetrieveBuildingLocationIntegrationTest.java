@@ -10,14 +10,12 @@ import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
-import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -356,7 +354,7 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
 
         assertNotNull(response);
         LrdCourtVenueResponse courtVenueResponse = response.get(0).getCourtVenues().stream()
-                .filter(coutrtVenue->"11".equals(coutrtVenue.getCourtVenueId())).findFirst().get();
+            .filter(coutrtVenue -> "11".equals(coutrtVenue.getCourtVenueId())).findFirst().get();
 
         assertThat(courtVenueResponse.getWelshCourtName()).isBlank();
         assertThat(courtVenueResponse.getUprn()).isBlank();
