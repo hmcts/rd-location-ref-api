@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +71,16 @@ class CourtVenueServiceImplTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("testWelshCourtName")
+            .uprn("testUrn123")
+            .venueOuCode("testVenueOuCode")
+            .mrdBuildingLocationId("testMrdBuildingLocationId")
+            .mrdVenueId("testMrdVenueIdTest")
+            .serviceUrl("testServiceUrl")
+            .factUrl("testFactUrlTest")
+            .mrdCreatedTime(LocalDateTime.now())
+            .mrdUpdatedTime(LocalDateTime.now())
+            .mrdDeletedTime(LocalDateTime.now())
             .build();
 
         List<CourtVenue> courtVenues = Collections.singletonList(courtVenue);
@@ -93,6 +104,13 @@ class CourtVenueServiceImplTest {
         assertEquals("N",response.getCourtVenues().get(0).getIsNightingaleCourt());
         assertEquals("Court",response.getCourtVenues().get(0).getLocationType());
         assertEquals("366559",response.getCourtVenues().get(0).getParentLocation());
+        assertEquals("testWelshCourtName", response.getCourtVenues().get(0).getWelshCourtName());
+        assertEquals("testUrn123", response.getCourtVenues().get(0).getUprn());
+        assertEquals("testVenueOuCode", response.getCourtVenues().get(0).getVenueOuCode());
+        assertEquals("testMrdBuildingLocationId", response.getCourtVenues().get(0).getMrdBuildingLocationId());
+        assertEquals("testMrdVenueIdTest", response.getCourtVenues().get(0).getMrdVenueId());
+        assertEquals("testServiceUrl", response.getCourtVenues().get(0).getServiceUrl());
+        assertEquals("testFactUrlTest", response.getCourtVenues().get(0).getFactUrl());
 
         verify(courtTypeServiceAssocRepository, times(1)).findByServiceCode("ABC1");
     }
