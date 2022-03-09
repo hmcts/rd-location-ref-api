@@ -560,6 +560,13 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .locationType("NBC")
             .isTemporaryLocation("N")
             .courtVenueId("11")
+            .welshCourtName("")
+            .uprn("")
+            .venueOuCode("")
+            .mrdBuildingLocationId("")
+            .mrdVenueId("")
+            .serviceUrl("")
+            .factUrl("")
             .build();
 
         courtVenueResponses.add(response1);
