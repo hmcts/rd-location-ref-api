@@ -92,8 +92,6 @@ public class LrdCourtVenueResponse implements Serializable {
     private String isHearingLocation;
 
     @JsonProperty("welsh_venue_name")
-
-
     String welshVenueName;
 
     @JsonProperty("is_temporary_location")
@@ -108,9 +106,26 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("parent_location")
     String parentLocation;
 
+    @JsonProperty("welsh_court_name")
+    private String welshCourtName;
 
+    @JsonProperty("uprn")
+    private String uprn;
 
+    @JsonProperty("venue_ou_code")
+    private String venueOuCode;
 
+    @JsonProperty("mrd_building_location_id")
+    private String mrdBuildingLocationId;
+
+    @JsonProperty("mrd_venue_id")
+    private String mrdVenueId;
+
+    @JsonProperty("service_url")
+    private String serviceUrl;
+
+    @JsonProperty("fact_url")
+    private String factUrl;
 
     public LrdCourtVenueResponse(CourtVenue courtVenue) {
 
@@ -144,6 +159,13 @@ public class LrdCourtVenueResponse implements Serializable {
             this.isNightingaleCourt = courtVenue.getIsNightingaleCourt();
             this.locationType = courtVenue.getLocationType();
             this.parentLocation = courtVenue.getParentLocation();
+            this.welshCourtName = courtVenue.getWelshCourtName();
+            this.uprn = courtVenue.getUprn();
+            this.venueOuCode = courtVenue.getVenueOuCode();
+            this.mrdBuildingLocationId = courtVenue.getMrdBuildingLocationId();
+            this.mrdVenueId = courtVenue.getMrdVenueId();
+            this.serviceUrl = courtVenue.getServiceUrl();
+            this.factUrl = courtVenue.getFactUrl();
             courtVenue.getRegion().ifPresent(reg -> {
                 region = reg.getDescription();
                 regionId = reg.getRegionId();
