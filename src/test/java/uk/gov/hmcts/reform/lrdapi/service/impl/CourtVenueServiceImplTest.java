@@ -70,6 +70,13 @@ class CourtVenueServiceImplTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
 
         List<CourtVenue> courtVenues = Collections.singletonList(courtVenue);
@@ -93,6 +100,13 @@ class CourtVenueServiceImplTest {
         assertEquals("N",response.getCourtVenues().get(0).getIsNightingaleCourt());
         assertEquals("Court",response.getCourtVenues().get(0).getLocationType());
         assertEquals("366559",response.getCourtVenues().get(0).getParentLocation());
+        assertEquals("welshCourtName1",response.getCourtVenues().get(0).getWelshCourtName());
+        assertEquals("1234",response.getCourtVenues().get(0).getUprn());
+        assertEquals("87675",response.getCourtVenues().get(0).getVenueOuCode());
+        assertEquals("8686",response.getCourtVenues().get(0).getMrdBuildingLocationId());
+        assertEquals("765",response.getCourtVenues().get(0).getMrdVenueId());
+        assertEquals("https://serviceurl.com",response.getCourtVenues().get(0).getServiceUrl());
+        assertEquals("https://facturl.com",response.getCourtVenues().get(0).getFactUrl());
 
         verify(courtTypeServiceAssocRepository, times(1)).findByServiceCode("ABC1");
     }
@@ -466,6 +480,13 @@ class CourtVenueServiceImplTest {
                             .isNightingaleCourt("N")
                             .locationType("Court")
                             .parentLocation("366559")
+                            .welshCourtName("welshCourtName1")
+                            .uprn("1234")
+                            .venueOuCode("87675")
+                            .mrdBuildingLocationId("8686")
+                            .mrdVenueId("765")
+                            .serviceUrl("https://serviceurl.com")
+                            .factUrl("https://facturl.com")
                             .build());
 
         return courtVenues;
@@ -492,6 +513,13 @@ class CourtVenueServiceImplTest {
                             .isNightingaleCourt("N")
                             .locationType("Court")
                             .parentLocation("366559")
+                            .welshCourtName("welshCourtName1")
+                            .uprn("1234")
+                            .venueOuCode("87675")
+                            .mrdBuildingLocationId("8686")
+                            .mrdVenueId("765")
+                            .serviceUrl("https://serviceurl.com")
+                            .factUrl("https://facturl.com")
                             .build());
 
         return courtVenues;
