@@ -42,3 +42,7 @@ ALTER TABLE district_civil_jurisdiction ADD COLUMN mrd_deleted_time TIMESTAMP;
 ALTER TABLE district_family_jurisdiction ADD COLUMN mrd_created_time TIMESTAMP;
 ALTER TABLE district_family_jurisdiction ADD COLUMN mrd_updated_time TIMESTAMP;
 ALTER TABLE district_family_jurisdiction ADD COLUMN mrd_deleted_time TIMESTAMP;
+
+UPDATE court_venue SET welsh_court_name = 'welshCourtName1', uprn = '1234', venue_ou_code = '87675',
+mrd_building_location_id = '8686', mrd_venue_id = '765', service_url = 'https://serviceurl.com', fact_url = 'https://facturl.com'
+WHERE court_venue_id = 1 AND epimms_id = '123456789'
