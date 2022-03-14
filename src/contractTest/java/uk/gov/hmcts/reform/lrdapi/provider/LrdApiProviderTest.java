@@ -314,6 +314,13 @@ public class LrdApiProviderTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
     }
 
@@ -342,6 +349,13 @@ public class LrdApiProviderTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
 
         CourtVenue secondCourtVenue = CourtVenue.builder()
@@ -368,6 +382,13 @@ public class LrdApiProviderTest {
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("372653")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
 
         return List.of(firstCourtVenue, secondCourtVenue);
