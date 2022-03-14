@@ -601,6 +601,13 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtTypeId("17")
