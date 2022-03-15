@@ -131,11 +131,11 @@ class LrdApiControllerGetBuildingLocationsTest {
 
     @Test
     void testGetBuildingLocations_MultipleParamsGiven_ShouldReturnStatusCode400() {
-        Exception exception = assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveBuildingLocationDetails("1234QWERTY", "", "1", "");
-        });
+        Exception exception = assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveBuildingLocationDetails("1234QWERTY", "", "1", ""));
         assertNotNull(exception);
-        assertEquals("Please provide only 1 of 4 values/params: [1234QWERTY, , 1, ]",
+        assertEquals("Please provide only 1 of 4 values of params: epimms_id,"
+                     + " building_location_name, region_id, cluster_id",
                      exception.getMessage());
     }
 
