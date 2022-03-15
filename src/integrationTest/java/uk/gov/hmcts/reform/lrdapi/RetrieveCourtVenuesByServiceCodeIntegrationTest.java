@@ -126,6 +126,13 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("N")
             .locationType("NBC")
             .isTemporaryLocation("N")
+            .welshCourtName("")
+            .uprn("")
+            .venueOuCode("")
+            .mrdBuildingLocationId("")
+            .mrdVenueId("")
+            .serviceUrl("")
+            .factUrl("")
             .build();
 
         expectedCourtVenueResponses.add(response1);
