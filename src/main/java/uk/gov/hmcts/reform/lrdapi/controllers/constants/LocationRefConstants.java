@@ -29,7 +29,8 @@ public class LocationRefConstants {
         + " 'ALL' (case insensitive)";
     public static final String EXCEPTION_MSG_REGION_SPCL_CHAR = "Param contains special characters. "
         + "Comma, apostrophe and whitespace allowed only";
-    public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s values/params: %s";
+    public static final String EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM = "Please provide only 1 of %s "
+        + "values of params: %s";
 
     public static final String INVALID_REGION_ID = "Invalid region id passed - %s";
     public static final String NO_BUILDING_LOCATIONS_FOR_REGION_ID = "No building locations found for region id: - %s";
@@ -91,5 +92,10 @@ public class LocationRefConstants {
     public static final String IS_Y = "Y";
     public static final String IS_N = "N";
 
-
+    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "epimms_id, court_type_id,"
+        + " region_id, cluster_id, court_venue_name";
+    public static final String ONLY_ONE_PARAM_REQUIRED_REGION  = "region, regionId";
+    public static final String ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION =
+        "epimms_id, building_location_name, region_id, cluster_id";
+    public static final String ONLY_ONE_PARAM_ORG_SERVICES = "serviceCode, ccdCaseType, ccdServiceNames";
 }

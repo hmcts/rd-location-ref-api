@@ -26,6 +26,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_ORG_SERVICES;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -37,9 +38,9 @@ public class ValidationUtils {
 
     }
 
-    public static boolean validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
+    public static void validateInputParameters(String serviceCode, String ccdCaseType, String ccdServiceNames) {
 
-        checkIfSingleValuePresent(serviceCode, ccdCaseType, ccdServiceNames);
+        checkIfSingleValuePresent(ONLY_ONE_PARAM_ORG_SERVICES,serviceCode, ccdCaseType, ccdServiceNames);
         if (StringUtils.isNotBlank(ccdServiceNames)) {
             ccdServiceNames = ccdServiceNames.trim();
             checkIfStringStartsAndEndsWithComma(ccdServiceNames, EXCEPTION_MSG_SPCL_CHAR);
@@ -54,7 +55,6 @@ public class ValidationUtils {
                 .filter(StringUtils::isNotBlank).collect(Collectors.joining());
             checkSpecialCharacters(inputValue);
         }
-        return true;
     }
 
     public static void validateSearchString(String searchString) {
@@ -79,13 +79,13 @@ public class ValidationUtils {
      * @param params A java varargs that would contain the list string values. Ideally, it is expected
      *               to have single value.
      */
-    public static void checkIfSingleValuePresent(String... params) {
+    public static void checkIfSingleValuePresent(final String oneMandatory,String... params) {
         long requestParamSize = Arrays.stream(params)
             .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
             .count();
         if (requestParamSize > 1) {
             throw new InvalidRequestException(String.format(EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM, params.length,
-                                                            Arrays.toString(params)
+                                                            oneMandatory
             ));
         }
     }
