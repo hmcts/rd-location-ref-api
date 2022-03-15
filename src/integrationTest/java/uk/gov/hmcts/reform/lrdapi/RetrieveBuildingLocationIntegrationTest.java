@@ -341,6 +341,30 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
     }
 
 
+    @ParameterizedTest
+    @ValueSource(strings = {"123456"})
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveBuildLocations_WithEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200(String id) throws
+        JsonProcessingException {
+
+        final var response = (List<LrdBuildingLocationResponse>)
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=" + id,
+                                                         LrdBuildingLocationResponse[].class, path
+            );
+
+        assertNotNull(response);
+        LrdCourtVenueResponse courtVenueResponse = response.get(0).getCourtVenues().stream()
+            .filter(coutrtVenue -> "11".equals(coutrtVenue.getCourtVenueId())).findFirst().get();
+
+        assertThat(courtVenueResponse.getWelshCourtName()).isBlank();
+        assertThat(courtVenueResponse.getUprn()).isBlank();
+        assertThat(courtVenueResponse.getVenueOuCode()).isBlank();
+        assertThat(courtVenueResponse.getMrdBuildingLocationId()).isBlank();
+        assertThat(courtVenueResponse.getMrdVenueId()).isBlank();
+        assertThat(courtVenueResponse.getServiceUrl()).isBlank();
+        assertThat(courtVenueResponse.getFactUrl()).isBlank();
+    }
+
     private void responseVerification(List<LrdBuildingLocationResponse> response, String responseType) {
         if (ONE_STR.equalsIgnoreCase(responseType)) {
             assertIterableEquals(response, getSingleLocationResponse());
@@ -536,6 +560,13 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .locationType("NBC")
             .isTemporaryLocation("N")
             .courtVenueId("11")
+            .welshCourtName("")
+            .uprn("")
+            .venueOuCode("")
+            .mrdBuildingLocationId("")
+            .mrdVenueId("")
+            .serviceUrl("")
+            .factUrl("")
             .build();
 
         courtVenueResponses.add(response1);
