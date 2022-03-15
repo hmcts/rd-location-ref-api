@@ -102,12 +102,13 @@ class LrdCourtVenueControllerTest {
 
     @Test
     void testGetCourtVenues_WithMultipleParams_Returns400() {
-        Exception exception = assertThrows(InvalidRequestException.class, () -> {
-            lrdCourtVenueController.retrieveCourtVenues("12345", 23, null, null, null, null, null, null, null);
-        });
+        Exception exception = assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenues("12345", 23, null, null,
+            null, null, null, null, null));
 
         assertNotNull(exception);
-        assertEquals("Please provide only 1 of 5 values/params: [12345, 23, null, null, null]",
+        assertEquals("Please provide only 1 of 5 values of params: epimms_id, court_type_id,"
+                     + " region_id, cluster_id, court_venue_name",
                      exception.getMessage());
     }
 
