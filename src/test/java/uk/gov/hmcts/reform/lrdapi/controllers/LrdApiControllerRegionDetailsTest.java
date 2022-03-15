@@ -45,12 +45,11 @@ class LrdApiControllerRegionDetailsTest {
 
     @Test
     void testGetRegionDetails_ByDescriptionAndId_Returns400() {
-        Exception exception = assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveRegionDetails("af", "213");
-        });
+        Exception exception = assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveRegionDetails("af", "213"));
 
         assertNotNull(exception);
-        assertEquals("Please provide only 1 of 2 values/params: [af, 213]", exception.getMessage());
+        assertEquals("Please provide only 1 of 2 values of params: region, regionId", exception.getMessage());
     }
 
     @Test
