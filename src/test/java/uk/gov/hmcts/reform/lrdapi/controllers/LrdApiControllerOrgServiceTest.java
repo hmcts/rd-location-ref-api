@@ -79,11 +79,11 @@ class LrdApiControllerOrgServiceTest {
     void testRetrieveOrgServiceDetailsShouldThrowExceptionWhenBothParamValuesPresent() {
         serviceCode = "AAA1";
         ccdCaseType = "ccdCaseType1";
-        Exception ex = assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        });
+        Exception ex = assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName));
         assertNotNull(ex);
-        assertEquals("Please provide only 1 of 3 values/params: [AAA1, ccdCaseType1, null]", ex.getMessage());
+        assertEquals("Please provide only 1 of 3 values of params: serviceCode,"
+                     + " ccdCaseType, ccdServiceNames", ex.getMessage());
     }
 
     //1. Validate that only 1 out of 3 query params are being passed. Use null and empty values for testing
@@ -92,11 +92,11 @@ class LrdApiControllerOrgServiceTest {
         serviceCode = "AAA1";
         ccdCaseType = "ccdCaseType1";
         ccdServiceName = "fpla";
-        Exception ex = assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
-        });
+        Exception ex = assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName));
         assertNotNull(ex);
-        assertEquals("Please provide only 1 of 3 values/params: [AAA1, ccdCaseType1, fpla]", ex.getMessage());
+        assertEquals("Please provide only 1 of 3 values of params: serviceCode,"
+                     + " ccdCaseType, ccdServiceNames", ex.getMessage());
     }
 
     @Test
@@ -135,33 +135,29 @@ class LrdApiControllerOrgServiceTest {
         serviceCode = "abcd@£";
         ccdCaseType = "";
         ccdServiceName = "";
-        assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
-        );
+        assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName));
 
         // testRetrieveOrgServiceDetailsbyPassingWhiteSpaceInInput
         serviceCode = " Select from employee ";
         ccdCaseType = "";
         ccdServiceName = "";
-        assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
-        );
+        assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName));
 
         // testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput_fail
         serviceCode = "";
         ccdCaseType = "";
         ccdServiceName = "abcd,, cdef";
-        assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
-        );
+        assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName));
 
         //testRetrieveOrgServiceDetailsbyPassingcommaSeperatedServiceNameInInput_fail_1
         serviceCode = "";
         ccdCaseType = "";
         ccdServiceName = "abcd, cdef,";
-        assertThrows(InvalidRequestException.class, () -> {
-            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName); }
-        );
+        assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName));
     }
 
     @Test
