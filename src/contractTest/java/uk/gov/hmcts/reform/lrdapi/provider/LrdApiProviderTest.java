@@ -177,6 +177,13 @@ public class LrdApiProviderTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .welshCourtName("welshCourtName1")
+            .uprn("1234")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("8686")
+            .mrdVenueId("765")
+            .serviceUrl("https://serviceurl.com")
+            .factUrl("https://facturl.com")
             .build();
 
         Set<CourtVenue> courtVenues = new HashSet<>();
