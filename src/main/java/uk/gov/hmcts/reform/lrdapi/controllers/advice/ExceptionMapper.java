@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.advice;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
@@ -71,7 +72,16 @@ public class ExceptionMapper {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<Object> httpMessageNotReadableExceptionError(HttpMessageNotReadableException ex) {
-        return errorDetailsResponseEntity(ex, BAD_REQUEST, ErrorConstants.MALFORMED_JSON.getErrorMessage());
+        String field = "";
+        if (ex.getCause() != null) {
+            JsonMappingException jme = (JsonMappingException) ex.getCause();
+            field = jme.getPath().get(0).getFieldName();
+        }
+        var errorDetails = new ErrorResponse(BAD_REQUEST.value(), BAD_REQUEST.getReasonPhrase(),
+                                             field + " in invalid format",
+                                             ErrorConstants.MALFORMED_JSON.getErrorMessage(), getTimeStamp());
+
+        return new ResponseEntity<>(errorDetails, BAD_REQUEST);
 
     }
 

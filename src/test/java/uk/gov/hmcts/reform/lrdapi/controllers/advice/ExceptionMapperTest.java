@@ -1,8 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.advice;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -12,6 +14,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.client.HttpStatusCodeException;
 import uk.gov.hmcts.reform.lrdapi.exception.ForbiddenException;
+
+import java.util.Collections;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,6 +30,9 @@ class ExceptionMapperTest {
 
     @InjectMocks
     private ExceptionMapper exceptionMapper;
+
+    @Mock
+    LinkedList<JsonMappingException.Reference> path = new LinkedList<>();
 
     @Test
     void test_handle_empty_result_exception() {
@@ -65,12 +73,18 @@ class ExceptionMapperTest {
 
     @Test
     void test_handle_http_message_not_readable_exception() {
-        HttpMessageNotReadableException exception = mock(HttpMessageNotReadableException.class);
+        HttpMessageNotReadableException httpMessageNotReadableException = mock(HttpMessageNotReadableException.class);
 
-        ResponseEntity<Object> responseEntity = exceptionMapper.httpMessageNotReadableExceptionError(exception);
+        JsonMappingException jm = mock(JsonMappingException.class);
+        JsonMappingException.Reference rf = mock(JsonMappingException.Reference.class);
+        when(httpMessageNotReadableException.getCause()).thenReturn(jm);
+        when(jm.getPath()).thenReturn(Collections.unmodifiableList(path));
+        when(jm.getPath().get(0)).thenReturn(rf);
+        when(jm.getPath().get(0).getFieldName()).thenReturn("field");
+        ResponseEntity<Object> responseEntity = exceptionMapper
+            .httpMessageNotReadableExceptionError(httpMessageNotReadableException);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals(exception.getMessage(), ((ErrorResponse) responseEntity.getBody()).getErrorDescription());
 
     }
 
