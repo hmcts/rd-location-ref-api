@@ -20,5 +20,4 @@ public class WireMockExtension extends WireMockServer implements BeforeAllCallba
     public void afterAll(ExtensionContext context) throws InterruptedException {
         stop();
     }
-
 }
