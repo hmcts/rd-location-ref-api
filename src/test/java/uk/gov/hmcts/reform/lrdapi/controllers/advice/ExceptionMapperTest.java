@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.client.HttpStatusCodeException;
 import uk.gov.hmcts.reform.lrdapi.exception.ForbiddenException;
 
@@ -133,6 +134,19 @@ class ExceptionMapperTest {
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals(invalidRequestException.getMessage(), ((ErrorResponse) responseEntity.getBody())
+            .getErrorDescription());
+
+    }
+
+    @Test
+    void test_handle_missing_request_exception() {
+        MissingServletRequestParameterException
+            exception = new MissingServletRequestParameterException("Invalid Request","Missing Parameter");
+
+        ResponseEntity<Object> responseEntity = exceptionMapper.handleMissingRequestParameter(exception);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(exception.getMessage(), ((ErrorResponse) responseEntity.getBody())
             .getErrorDescription());
 
     }
