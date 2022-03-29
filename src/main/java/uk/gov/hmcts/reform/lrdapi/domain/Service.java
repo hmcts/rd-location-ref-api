@@ -35,7 +35,6 @@ import javax.validation.constraints.Size;
                 @NamedAttributeNode(value = "orgBusinessArea"),
                 @NamedAttributeNode(value = "orgUnit"),
                 @NamedAttributeNode(value = "orgSubBusinessArea"),
-                @NamedAttributeNode(value = "serviceToCcdCaseTypeAssocs")
         }
 )
 public class Service implements Serializable {
