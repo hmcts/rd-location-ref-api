@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
@@ -61,6 +62,7 @@ public class Service implements Serializable {
 
     @OneToMany(targetEntity = ServiceToCcdCaseTypeAssoc.class, mappedBy = "service")
     @Fetch(FetchMode.SUBSELECT)
+    @BatchSize(size=100)
     private List<ServiceToCcdCaseTypeAssoc> serviceToCcdCaseTypeAssocs = new ArrayList<>();
 
     @ManyToOne
