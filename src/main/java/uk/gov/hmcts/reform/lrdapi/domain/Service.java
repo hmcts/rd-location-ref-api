@@ -62,7 +62,7 @@ public class Service implements Serializable {
 
     @OneToMany(targetEntity = ServiceToCcdCaseTypeAssoc.class, mappedBy = "service")
     @Fetch(FetchMode.SUBSELECT)
-    @BatchSize(size=100)
+    @BatchSize(size = 100)
     private List<ServiceToCcdCaseTypeAssoc> serviceToCcdCaseTypeAssocs = new ArrayList<>();
 
     @ManyToOne
