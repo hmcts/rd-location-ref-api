@@ -61,7 +61,6 @@ public class Service implements Serializable {
     private LocalDateTime lastUpdate;
 
     @OneToMany(targetEntity = ServiceToCcdCaseTypeAssoc.class, mappedBy = "service")
-    @Fetch(FetchMode.SUBSELECT)
     private List<ServiceToCcdCaseTypeAssoc> serviceToCcdCaseTypeAssocs = new ArrayList<>();
 
     @ManyToOne
