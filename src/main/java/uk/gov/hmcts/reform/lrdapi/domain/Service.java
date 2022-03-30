@@ -36,6 +36,7 @@ import javax.validation.constraints.Size;
                 @NamedAttributeNode(value = "orgBusinessArea"),
                 @NamedAttributeNode(value = "orgUnit"),
                 @NamedAttributeNode(value = "orgSubBusinessArea"),
+                @NamedAttributeNode(value = "serviceToCcdCaseTypeAssocs")
         }
 )
 public class Service implements Serializable {
@@ -61,8 +62,6 @@ public class Service implements Serializable {
     private LocalDateTime lastUpdate;
 
     @OneToMany(targetEntity = ServiceToCcdCaseTypeAssoc.class, mappedBy = "service")
-    @Fetch(FetchMode.SUBSELECT)
-    @BatchSize(size = 100)
     private List<ServiceToCcdCaseTypeAssoc> serviceToCcdCaseTypeAssocs = new ArrayList<>();
 
     @ManyToOne
