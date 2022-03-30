@@ -85,6 +85,18 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
         assertThat(responses).isNotEmpty().hasSize(45);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void returnsOrgServiceDetailsByServiceNameStatusCode_200() throws JsonProcessingException {
+        //ServiceName is generated from the ServiceToCcdCaseTypeAssoc
+        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
+        assertEquals(1, responses.size());
+        assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
+        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equals("CMC")));
+    }
+
     @Test
     void returnOrgServiceDetailsByUnknownCcdCaseTypeCode_404() throws JsonProcessingException {
 
