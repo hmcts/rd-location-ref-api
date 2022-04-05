@@ -63,6 +63,10 @@ java {
   }
 }
 
+tasks.withType(JavaExec).configureEach {
+  javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
+}
+
 jacocoTestCoverageVerification {
     violationRules {
         rule {
