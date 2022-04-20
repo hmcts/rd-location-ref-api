@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
+import serenity.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
-import uk.gov.hmcts.reform.lrdapi.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
