@@ -430,15 +430,9 @@ dependencies {
       exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
-  testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.8'){
-    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
-  }
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.0'
 
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: '3.0.2'
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: '3.0.2'
-    testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
     testImplementation 'io.github.openfeign:feign-jackson:11.8'
     testImplementation group: 'com.github.mifmif', name: 'generex', version: '1.0.2'
 
