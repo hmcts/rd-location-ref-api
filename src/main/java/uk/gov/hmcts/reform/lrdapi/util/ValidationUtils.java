@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
