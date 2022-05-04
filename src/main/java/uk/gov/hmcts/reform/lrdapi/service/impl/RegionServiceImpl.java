@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.lrdapi.service.RegionService;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.replaceIgnoreCase;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -121,7 +120,7 @@ public class RegionServiceImpl implements RegionService {
     }
 
     private List<LrdRegionResponse> generateResponseList(List<Region> regions) {
-        return regions.stream().map(LrdRegionResponse::new).collect(Collectors.toList());
+        return regions.stream().map(LrdRegionResponse::new).toList();
     }
 
     private void handleIfRegionsEmpty(BooleanSupplier regionResponseVerifier, String exceptionMessage) {
