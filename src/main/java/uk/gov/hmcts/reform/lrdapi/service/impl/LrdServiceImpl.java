@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.util.CollectionUtils;

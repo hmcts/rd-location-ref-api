@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
