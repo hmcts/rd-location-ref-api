@@ -26,6 +26,21 @@ import java.util.List;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_REGION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_1;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_10;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_11;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_12;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_13;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_14;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_15;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_2;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_3;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_4;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_5;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_6;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_7;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_8;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_9;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 
 @RequestMapping(
@@ -101,21 +116,9 @@ public class LrdApiController {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
         },
-        notes = "Any valid IDAM role is sufficient to access this API \n"
-            + "For the request param 'epimms_id', "
-            + "the value can be a single id for which single building location object would be returned or "
-            + "a list of ids passed as comma separated values for which the associated building location "
-            + "objects would be returned as a list.\nAdditionally, if 'ALL' is passed as the epimms_id value, all the "
-            + "available building locations are returned as a list."
-            + "For the request param 'building_location_name', the value needs to be a single building location name "
-            + "for which a single building location object would be returned.\n"
-            + "For the request param 'region_id', the value needs to be a single region_id "
-            + "for which all the associated building location objects would be returned as a list.\n"
-            + "For the request param 'cluster_id', the value needs to be a single cluster_id "
-            + "for which all the associated building location objects would be returned as a list.\n"
-            + "If no params are passed, then all the available building locations which have the "
-            + "building location status as 'OPEN' are returned as a list.\n"
-            + "At a time only one param is allowed from 'epimms_id','building_location_name','region_id','cluster_id'."
+        notes = RET_LOC_NOTES_1 + RET_LOC_NOTES_2 + RET_LOC_NOTES_3 + RET_LOC_NOTES_4 + RET_LOC_NOTES_5
+            + RET_LOC_NOTES_6 + RET_LOC_NOTES_7 + RET_LOC_NOTES_8 + RET_LOC_NOTES_9 + RET_LOC_NOTES_10
+            + RET_LOC_NOTES_11 + RET_LOC_NOTES_12 + RET_LOC_NOTES_13 + RET_LOC_NOTES_14 + RET_LOC_NOTES_15
     )
     @ApiResponses({
         @ApiResponse(
