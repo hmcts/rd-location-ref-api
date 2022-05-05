@@ -169,7 +169,7 @@ public class ValidationUtils {
     public static List<String> findInvalidIdentifiers(List<String> idList, String regex) {
         return idList.stream()
             .filter(id -> !id.matches(regex))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**

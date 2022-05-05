@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 
@@ -59,14 +58,14 @@ public class LrdServiceImpl implements LrdService {
                 .findByCcdServiceNameInIgnoreCase(serviceNameList
                                                       .stream()
                                                       .map(String::trim)
-                                                      .collect(toList()));
+                                                      .toList());
 
             if (CollectionUtils.isEmpty(serviceToCcdCaseTypeAssocs)) {
                 throw new EmptyResultDataAccessException(1);
             }
 
             List<ServiceToCcdCaseTypeAssoc> distinctAssociations =
-                serviceToCcdCaseTypeAssocs.stream().distinct().collect(toList());
+                serviceToCcdCaseTypeAssocs.stream().distinct().toList();
 
             distinctAssociations.forEach(association ->
                                                    orgInfoServiceResponses.add(

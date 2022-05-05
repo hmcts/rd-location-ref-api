@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -43,7 +42,7 @@ public class LrdCourtVenuesByServiceCodeResponse {
             this.courtVenues = courtType.getCourtVenues()
                                         .stream()
                                         .map(LrdCourtVenueResponse::new)
-                                        .collect(Collectors.toList());
+                                        .toList();
         }
     }
 
