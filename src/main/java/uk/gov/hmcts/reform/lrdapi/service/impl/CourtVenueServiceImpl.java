@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
@@ -116,8 +115,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         validateCourtVenueFilters(result);
 
         List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
-            Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).collect(
-                Collectors.toList());
+            Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).toList();
 
         String isCaseManagementLocation = (StringUtils.isNotEmpty(result.getIsCaseManagementLocation()))
             ? result.getIsCaseManagementLocation().toUpperCase()
@@ -244,7 +242,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return courtVenues
             .stream()
             .map(LrdCourtVenueResponse::new)
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
     }
 
     private void handleIfCourtVenuesEmpty(BooleanSupplier courtVenueResponseVerifier,
@@ -279,7 +277,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         return inputLrdCourtVenueResponse.stream()
             .filter(allPredicates.stream().reduce(x -> true, Predicate::and))
-            .collect(Collectors.toList());
+            .toList();
 
     }
 

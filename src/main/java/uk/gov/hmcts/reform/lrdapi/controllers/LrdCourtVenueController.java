@@ -26,6 +26,28 @@ import javax.validation.constraints.NotNull;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_1;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_10;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_11;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_12;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_13;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_14;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_15;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_16;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_17;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_18;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_19;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_2;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_20;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_21;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_22;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_3;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_4;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_5;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_6;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_7;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_8;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_9;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
@@ -49,28 +71,12 @@ public class LrdCourtVenueController {
 
     @ApiOperation(
         value = "This API will retrieve Court Venues for the request provided",
-        notes = "No roles required to access this API.\n"
-            + "For the request param 'epimms_id', either a single epimms_id or a list of epimms_ids separated by comas"
-            + " can be passed. In any of these cases, a list of associated court venues would be returned.\n"
-            + "Additionally, if 'ALL' is passed as the epimms_id value, then all the available court venues"
-            + " associated with the available list of epimms_id are returned as a list.\n"
-            + "For the request param 'court_type_id', then all the court venues that have the status as 'Open' "
-            + "with the requested court_type_id are returned as a list.\n"
-            + "For the request param 'region_id', the value needs to be a single region_id "
-            + "for which all the associated court venues with the status as 'Open' would be returned as a list.\n"
-            + "For the request param 'cluster_id', the value needs to be a single cluster_id "
-            + "for which all the associated court venues with the status as 'Open' would be returned as a list.\n"
-            + "For the request param 'court_venue_name', all the associated court venues that have the same site name "
-            + "or court name irrespective of the case are returned as a list.\n"
-            + "If no params are passed, then all the available court venues which have the "
-            + "status as 'OPEN' are returned as a list.\n"
-            + "Additional API filters are applied with request params 'is_hearing_location', "
-            + "'is_case_management_location'\n"
-            + "'location_type' and 'is_temporary_location'.\n"
-            + "Optional param's are 'is_hearing_location','is_case_management_location','location_type'"
-            + "and 'is_temporary_location'.\n"
-            + "At a time only one param is allowed from 'epimms_id','court_type_id','region_id','cluster_id'"
-            + "'court_venue_name'.",
+        notes = RET_LOC_VEN_NOTES_1 + RET_LOC_VEN_NOTES_2 + RET_LOC_VEN_NOTES_3 + RET_LOC_VEN_NOTES_4
+            + RET_LOC_VEN_NOTES_5 + RET_LOC_VEN_NOTES_6 + RET_LOC_VEN_NOTES_7 + RET_LOC_VEN_NOTES_8
+            + RET_LOC_VEN_NOTES_9 + RET_LOC_VEN_NOTES_10 + RET_LOC_VEN_NOTES_11 + RET_LOC_VEN_NOTES_12
+            + RET_LOC_VEN_NOTES_13 + RET_LOC_VEN_NOTES_14 + RET_LOC_VEN_NOTES_15 + RET_LOC_VEN_NOTES_16
+            + RET_LOC_VEN_NOTES_17 + RET_LOC_VEN_NOTES_18 + RET_LOC_VEN_NOTES_19 + RET_LOC_VEN_NOTES_20
+            + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22,
         authorizations = {
             @Authorization(value = "ServiceAuthorization"),
             @Authorization(value = "Authorization")
