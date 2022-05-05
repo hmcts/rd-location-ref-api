@@ -47,8 +47,7 @@ public class ServiceToCcdCaseTypeAssoc implements Serializable {
     private Service service;
 
     public boolean equals(Object o) {
-        if (nonNull(o) && o instanceof ServiceToCcdCaseTypeAssoc) {
-            ServiceToCcdCaseTypeAssoc assoc = (ServiceToCcdCaseTypeAssoc)o;
+        if (nonNull(o) && o instanceof ServiceToCcdCaseTypeAssoc assoc) {
             if (this == assoc) {
                 return true;
             }
