@@ -201,7 +201,7 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         return buildingLocations
             .stream()
             .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private void handleIfBuildingLocationsEmpty(BooleanSupplier buildingLocationResponseVerifier,
