@@ -305,9 +305,7 @@ repositories {
 
 dependencies {
 
-    testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.9'){
-      exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
-    }
+
 
   implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
@@ -385,6 +383,17 @@ dependencies {
     implementation group:"org.yaml", name: "snakeyaml", version:"1.30"
     //Fix for CVE-2021-29425
     implementation 'commons-io:commons-io:2.11.0'
+
+    implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
+    implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: '3.8.0'
+    implementation "io.github.openfeign:feign-httpclient:11.0"
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.log4j
+    implementation "com.github.hmcts.java-logging:logging:${versions.reformLogging}"
+    implementation "com.github.hmcts.java-logging:logging-appinsights:${versions.reformLogging}"
+
+    testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.13'){
+      exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+    }
 
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
