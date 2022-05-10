@@ -305,7 +305,7 @@ repositories {
 
 dependencies {
 
-    testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.9'){
+    testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.11'){
       exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
     }
 
@@ -444,7 +444,6 @@ dependencies {
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.0'
 
-    testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
