@@ -176,7 +176,7 @@ public class LrdApiClient {
             .baseUri(lrdApiUrl)
             .header("Content-Type", APPLICATION_JSON_VALUE)
             .header("Accepts", APPLICATION_JSON_VALUE)
-            .header(AUTHORIZATION_HEADER, "Bearer " + idamOpenIdClient.getOpenIdToken());
+            .header(AUTHORIZATION_HEADER, "Bearer " + idamOpenIdClient.getcwdAdminOpenIdToken("lrd-admin"));
     }
 
     public RequestSpecification getMultipleAuthHeaders() {
@@ -186,7 +186,7 @@ public class LrdApiClient {
             .header("Content-Type", APPLICATION_JSON_VALUE)
             .header("Accepts", APPLICATION_JSON_VALUE)
             .header(SERVICE_HEADER, "Bearer " + s2sToken)
-            .header(AUTHORIZATION_HEADER, "Bearer " + idamOpenIdClient.getOpenIdToken());
+            .header(AUTHORIZATION_HEADER, "Bearer " + idamOpenIdClient.getcwdAdminOpenIdToken("lrd-admin"));
     }
 
     @SuppressWarnings("unused")

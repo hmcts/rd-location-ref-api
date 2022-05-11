@@ -305,9 +305,7 @@ repositories {
 
 dependencies {
 
-
-
-  implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
@@ -453,7 +451,6 @@ dependencies {
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.0'
 
-    testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
