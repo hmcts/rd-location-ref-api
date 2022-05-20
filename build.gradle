@@ -35,7 +35,7 @@ def versions = [
         springHystrix      : '2.2.8.RELEASE',
         springfoxSwagger   : '2.9.2',
         pact_version       : '4.1.7',
-        launchDarklySdk    : "5.2.3",
+        launchDarklySdk    : "5.8.1",
         junit              : '5.8.1',
         junitPlatform      : '1.8.1',
         jackson            : '2.13.1',
@@ -305,11 +305,7 @@ repositories {
 
 dependencies {
 
-    testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.9'){
-      exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
-    }
-
-  implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+    implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: versions.springBoot
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
@@ -386,6 +382,17 @@ dependencies {
     //Fix for CVE-2021-29425
     implementation 'commons-io:commons-io:2.11.0'
 
+    implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
+    implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: '3.8.0'
+    implementation "io.github.openfeign:feign-httpclient:11.0"
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.log4j
+    implementation "com.github.hmcts.java-logging:logging:${versions.reformLogging}"
+    implementation "com.github.hmcts.java-logging:logging-appinsights:${versions.reformLogging}"
+
+    testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.13'){
+      exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+    }
+
     compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
     testCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
@@ -444,7 +451,6 @@ dependencies {
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.0'
 
-    testImplementation 'com.github.hmcts:fortify-client:1.2.0:all'
 
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
