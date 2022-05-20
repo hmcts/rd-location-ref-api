@@ -21,4 +21,11 @@
     <packageUrl regex="true">^pkg:maven/io\.netty.*$</packageUrl>
     <cve>CVE-2021-43797</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+    file name: spring-*-5.3.19
+    ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework/spring.*$</packageUrl>
+    <cve>CVE-2016-1000027</cve>
+  </suppress>
 </suppressions>
