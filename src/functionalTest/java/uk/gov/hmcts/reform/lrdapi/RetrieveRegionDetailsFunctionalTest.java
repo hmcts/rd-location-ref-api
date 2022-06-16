@@ -41,7 +41,8 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
         new LrdRegionResponse(new Region("6", "South East", null)),
         new LrdRegionResponse(new Region("7", "South West", null)),
         new LrdRegionResponse(new Region("8", "Wales", null)),
-        new LrdRegionResponse(new Region("9", "Scotland", null))
+        new LrdRegionResponse(new Region("9", "Scotland", null)),
+        new LrdRegionResponse(new Region("10", "Northern Ireland", null))
     );
 
     @ParameterizedTest
