@@ -14,7 +14,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.sonarqube' version '3.1.1'
     id 'org.springframework.boot' version '2.4.12'
-    id "org.flywaydb.flyway" version "8.2.3"
+    id "org.flywaydb.flyway" version "8.5.12"
     id 'au.com.dius.pact' version '4.1.7'
 }
 
@@ -365,7 +365,7 @@ dependencies {
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.5.12'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
 
-    implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
+    implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
     implementation group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 
     implementation group: 'org.springframework', name: 'spring-core', version: versions.springVersion
@@ -377,7 +377,7 @@ dependencies {
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: versions.log4j
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: versions.log4j
     implementation group: 'org.apache.logging.log4j', name: 'log4j-to-slf4j', version: versions.log4j
-    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.6.1'
+    implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.6.2'
 
     implementation group:"org.yaml", name: "snakeyaml", version:"1.30"
     //Fix for CVE-2021-29425
@@ -411,12 +411,13 @@ dependencies {
   }
 
     testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '4.0.0'
-    testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: '4.4.0'
+    testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: '4.5.1'
 
     testImplementation group: 'com.h2database', name: 'h2'
     testImplementation ("com.github.tomakehurst:wiremock-jre8:2.31.0") {
       exclude group: 'com.github.jknack'
     }
+
     testImplementation ("org.mockito:mockito-core:4.3.1") {
       exclude group: "net.bytebuddy", module: "byte-buddy"
       exclude group: "net.bytebuddy", module: "byte-buddy-agent"
@@ -431,7 +432,7 @@ dependencies {
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.3.1'
 
 
-  testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.7'
+  testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
 
     testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
       exclude group: 'junit', module: 'junit'
