@@ -33,6 +33,7 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
     public static final String mapKey = "LrdApiController.retrieveRegionDetails";
 
     List<LrdRegionResponse> expectedListAll = List.of(
+        new LrdRegionResponse(new Region("12", "National", null)),
         new LrdRegionResponse(new Region("1", "London", null)),
         new LrdRegionResponse(new Region("2", "Midlands", null)),
         new LrdRegionResponse(new Region("3", "North East", null)),
@@ -41,8 +42,7 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
         new LrdRegionResponse(new Region("6", "South West", null)),
         new LrdRegionResponse(new Region("7", "Wales", null)),
         new LrdRegionResponse(new Region("10", "Northern Ireland", null)),
-        new LrdRegionResponse(new Region("11", "Scotland", null)),
-        new LrdRegionResponse(new Region("12", "National", null))
+        new LrdRegionResponse(new Region("11", "Scotland", null))
     );
 
     @ParameterizedTest
@@ -61,8 +61,8 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"2, 1",
-        "'2,3', 2"
+    @CsvSource({"1, 1",
+        "'1,2', 2"
     })
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     @SuppressWarnings("unchecked")
