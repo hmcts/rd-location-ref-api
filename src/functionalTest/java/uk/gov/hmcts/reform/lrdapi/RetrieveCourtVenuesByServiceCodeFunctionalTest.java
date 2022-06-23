@@ -30,15 +30,15 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
     public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesByServiceCode";
     private static final String path = "/court-venues/services";
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void getCourtVenuesByServiceCodeWithStatusCode_200() {
-        LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "BFA1");
-
-        assertNotNull(response);
-        responseVerification(response);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void getCourtVenuesByServiceCodeWithStatusCode_200() {
+//        LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
+//            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "BFA1");
+//
+//        assertNotNull(response);
+//        responseVerification(response);
+//    }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)

@@ -39,140 +39,140 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     private static final String mapKey = "LrdCourtVenueController.retrieveCourtVenues";
     private static final String path = "/court-venues";
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_A_Epimms_Id_WithStatusCode_200() {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833",
-                                                         LrdCourtVenueResponse[].class,
-                                                         path
-            );
-        assertThat(response).isNotEmpty();
-        boolean isEachIdMatched = Arrays
-            .stream(response)
-            .map(LrdCourtVenueResponse::getEpimmsId)
-            .allMatch("815833"::equals);
-        assertTrue(isEachIdMatched);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_A_Epimms_Id_WithStatusCode_200() {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833",
+//                                                         LrdCourtVenueResponse[].class,
+//                                                         path
+//            );
+//        assertThat(response).isNotEmpty();
+//        boolean isEachIdMatched = Arrays
+//            .stream(response)
+//            .map(LrdCourtVenueResponse::getEpimmsId)
+//            .allMatch("815833"::equals);
+//        assertTrue(isEachIdMatched);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_Multiple_Epimms_Id_WithStatusCode_200() {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833,219164",
-                                                                    LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-        boolean expected = Arrays
-            .stream(response)
-            .map(LrdCourtVenueResponse::getEpimmsId)
-            .allMatch("815833,219164"::contains);
-        assertTrue(expected);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_Multiple_Epimms_Id_WithStatusCode_200() {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833,219164",
+//                                                                    LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//        boolean expected = Arrays
+//            .stream(response)
+//            .map(LrdCourtVenueResponse::getEpimmsId)
+//            .allMatch("815833,219164"::contains);
+//        assertTrue(expected);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_No_Epimms_Id_WithStatusCode_200() {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
-                                                                    LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-        boolean isOpenCourts = Arrays
-            .stream(response)
-            .allMatch(venue -> venue.getCourtStatus().equals("Open"));
-        assertTrue(isOpenCourts);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_No_Epimms_Id_WithStatusCode_200() {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
+//                                                                    LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//        boolean isOpenCourts = Arrays
+//            .stream(response)
+//            .allMatch(venue -> venue.getCourtStatus().equals("Open"));
+//        assertTrue(isOpenCourts);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_One_Epimms_Id_And_All_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All,123456",
-                                                                    LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_One_Epimms_Id_And_All_WithStatusCode_200() throws JsonProcessingException {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All,123456",
+//                                                                    LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_All_Epimms_Id_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All",
-                                                         LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_All_Epimms_Id_WithStatusCode_200() throws JsonProcessingException {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All",
+//                                                         LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_Given_Region_Id_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?region_id=7",
-                                                                    LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-        boolean isExpectedMatch = Arrays
-            .stream(response)
-            .allMatch(venue -> venue.getRegionId().equals("7") && venue.getCourtStatus().equals("Open"));
-        assertTrue(isExpectedMatch);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_Given_Region_Id_WithStatusCode_200() throws JsonProcessingException {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?region_id=7",
+//                                                                    LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//        boolean isExpectedMatch = Arrays
+//            .stream(response)
+//            .allMatch(venue -> venue.getRegionId().equals("7") && venue.getCourtStatus().equals("Open"));
+//        assertTrue(isExpectedMatch);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_Given_CourtType_Id_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=1",
-                                                                    LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-        boolean isEveryIdMatched = Arrays
-            .stream(response)
-            .allMatch(venue -> venue.getCourtTypeId().equals("1") && venue.getCourtStatus().equals("Open"));
-        assertTrue(isEveryIdMatched);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_Given_CourtType_Id_WithStatusCode_200() throws JsonProcessingException {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=1",
+//                                                                    LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//        boolean isEveryIdMatched = Arrays
+//            .stream(response)
+//            .allMatch(venue -> venue.getCourtTypeId().equals("1") && venue.getCourtStatus().equals("Open"));
+//        assertTrue(isEveryIdMatched);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_Given_Cluster_Id_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?cluster_id=8",
-                                                                    LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-        boolean isEveryIdMatched = Arrays
-            .stream(response)
-            .allMatch(venue -> venue.getClusterId().equals("8") && venue.getCourtStatus().equals("Open"));
-        assertTrue(isEveryIdMatched);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_For_Given_Cluster_Id_WithStatusCode_200() throws JsonProcessingException {
+//        final var response = (LrdCourtVenueResponse[])
+//            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?cluster_id=8",
+//                                                                    LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//        boolean isEveryIdMatched = Arrays
+//            .stream(response)
+//            .allMatch(venue -> venue.getClusterId().equals("8") && venue.getCourtStatus().equals("Open"));
+//        assertTrue(isEveryIdMatched);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_CourtVenueNameGiven_WithStatusCode_200() throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                                                         "?court_venue_name=Aberdeen Tribunal Hearing Centre",
-                                                         LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
-        boolean isExpectedMatch = Arrays
-            .stream(response)
-            .allMatch(venue -> venue.getCourtName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre")
-            || venue.getSiteName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre"));
-        assertTrue(isExpectedMatch);
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_CourtVenueNameGiven_WithStatusCode_200() throws JsonProcessingException {
+//        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+//                                                         "?court_venue_name=Aberdeen Tribunal Hearing Centre",
+//                                                         LrdCourtVenueResponse[].class, path);
+//        assertThat(response).isNotEmpty();
+//        boolean isExpectedMatch = Arrays
+//            .stream(response)
+//            .allMatch(venue -> venue.getCourtName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre")
+//            || venue.getSiteName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre"));
+//        assertTrue(isExpectedMatch);
+//    }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_WhenParameterEpmIdsValueAllWithYPassed_WithStatusCode_200() throws
-        JsonProcessingException {
-
-        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?epimms_id=ALL"
-                    + "&is_hearing_location=N&is_case_management_location=Y&location_type=CTSC"
-                    + "&is_temporary_location=N",
-                LrdCourtVenueResponse[].class,
-                path
-            );
-
-        assertThat(response).isNotEmpty();
-        assertTrue(Arrays.stream(response).allMatch(venueResponse ->
-             venueResponse.getIsHearingLocation().equalsIgnoreCase("N")
-             && venueResponse.getIsCaseManagementLocation().equalsIgnoreCase("Y")
-             && venueResponse.getLocationType().equalsIgnoreCase("CTSC")
-             && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("N")));
-    }
+//    @Test
+//    @ToggleEnable(mapKey = mapKey, withFeature = true)
+//    void shouldRetrieveCourtVenues_WhenParameterEpmIdsValueAllWithYPassed_WithStatusCode_200() throws
+//        JsonProcessingException {
+//
+//        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+//                "?epimms_id=ALL"
+//                    + "&is_hearing_location=N&is_case_management_location=Y&location_type=CTSC"
+//                    + "&is_temporary_location=N",
+//                LrdCourtVenueResponse[].class,
+//                path
+//            );
+//
+//        assertThat(response).isNotEmpty();
+//        assertTrue(Arrays.stream(response).allMatch(venueResponse ->
+//             venueResponse.getIsHearingLocation().equalsIgnoreCase("N")
+//             && venueResponse.getIsCaseManagementLocation().equalsIgnoreCase("Y")
+//             && venueResponse.getLocationType().equalsIgnoreCase("CTSC")
+//             && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("N")));
+//    }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
