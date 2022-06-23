@@ -33,15 +33,15 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
     public static final String HTTP_STATUS = "http_status";
 
     List<LrdRegionResponse> expectedListAll = List.of(
-        new LrdRegionResponse(new Region("1", "National", null)),
-        new LrdRegionResponse(new Region("2", "London", null)),
-        new LrdRegionResponse(new Region("3", "Midlands", null)),
-        new LrdRegionResponse(new Region("4", "North East", null)),
-        new LrdRegionResponse(new Region("5", "North West", null)),
-        new LrdRegionResponse(new Region("6", "South East", null)),
-        new LrdRegionResponse(new Region("7", "South West", null)),
-        new LrdRegionResponse(new Region("8", "Wales", null)),
-        new LrdRegionResponse(new Region("9", "Scotland", null))
+        new LrdRegionResponse(new Region("1", "London", null)),
+        new LrdRegionResponse(new Region("2", "Midlands", null)),
+        new LrdRegionResponse(new Region("3", "North East", null)),
+        new LrdRegionResponse(new Region("4", "North West", null)),
+        new LrdRegionResponse(new Region("5", "South East", null)),
+        new LrdRegionResponse(new Region("6", "South West", null)),
+        new LrdRegionResponse(new Region("7", "Wales", null)),
+        new LrdRegionResponse(new Region("11", "Scotland", null)),
+        new LrdRegionResponse(new Region("12", "National", null))
     );
 
     @ParameterizedTest
@@ -57,7 +57,7 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
     }
 
     @ParameterizedTest
-    @CsvSource({"2, 1", "'2, 3', 2"})
+    @CsvSource({"1, 1", "'1, 2', 2"})
     void returnsRegionDetailsByIdWithStatusCode_200(String regionId, int expectedRegions)
         throws JsonProcessingException {
 
@@ -87,7 +87,7 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
         assertNotNull(response);
         assertEquals(9, response.size());
         assertEquals("1", response.get(0).getRegionId());
-        assertEquals("National", response.get(0).getDescription());
+        assertEquals("London", response.get(0).getDescription());
         assertNull(response.get(0).getWelshDescription());
     }
 
@@ -163,11 +163,11 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
 
     private void responseVerification(List<LrdRegionResponse> response, int expectedRegions) {
         assertThat(response.size()).isEqualTo(expectedRegions);
-        assertThat(response.get(0).getRegionId()).isEqualTo("2");
+        assertThat(response.get(0).getRegionId()).isEqualTo("1");
         assertThat(response.get(0).getDescription()).isEqualTo("London");
         assertThat(response.get(0).getWelshDescription()).isNull();
         if (expectedRegions == 2) {
-            assertThat(response.get(1).getRegionId()).isEqualTo("3");
+            assertThat(response.get(1).getRegionId()).isEqualTo("2");
             assertThat(response.get(1).getDescription()).isEqualTo("Midlands");
             assertThat(response.get(1).getWelshDescription()).isNull();
         }
