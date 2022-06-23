@@ -116,7 +116,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtTypeId("10")
             .courtType("County Court")
             .regionId("1")
-            .region("National")
+            .region("London")
             .clusterId("2")
             .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
             .courtStatus("Open")
