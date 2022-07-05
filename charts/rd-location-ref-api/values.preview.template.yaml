@@ -12,9 +12,9 @@ java:
   postgresql:
     enabled: true
     auth:
-      username: dbrdcaseworker
-      password: dbrdcaseworker
-      database: dbrdcaseworker
+      username: dbrdlocationref
+      password: dbrdlocationref
+      database: dbrdlocationref
       port: 5432
   keyVaults:
     rd:
