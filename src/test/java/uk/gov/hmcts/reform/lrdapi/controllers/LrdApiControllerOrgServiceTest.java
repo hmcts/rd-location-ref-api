@@ -170,5 +170,23 @@ class LrdApiControllerOrgServiceTest {
             .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
         assertNotNull(actual);
         assertEquals(expectedHttpStatus, actual.getStatusCode());
+
+
+        serviceCode = "AAA9";
+        ccdCaseType = null;
+        ccdServiceName = null;
+        ResponseEntity<?> response1 = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertNotNull(actual);
+        assertEquals(HttpStatus.OK, response1.getStatusCode());
+
+
+        serviceCode = "AAA0,ABC9";
+        ccdCaseType = null;
+        ccdServiceName = null;
+        ResponseEntity<?> reponse2 = lrdApiController
+            .retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceName);
+        assertNotNull(actual);
+        assertEquals(HttpStatus.OK, reponse2.getStatusCode());
     }
 }
