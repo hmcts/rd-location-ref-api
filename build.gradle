@@ -40,7 +40,10 @@ def versions = [
         junitPlatform      : '1.8.1',
         jackson            : '2.13.1',
         log4j              : '2.17.1',
-        springVersion      : '5.3.20'
+        springVersion      : '5.3.20',
+        logback            : '1.2.10',
+        feign              : '3.8.0',
+        bytebuddy          : '1.12.7'
 
 ]
 
@@ -371,8 +374,8 @@ dependencies {
     implementation group: 'org.springframework', name: 'spring-core', version: versions.springVersion
    	implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.18'
 
-    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
 
     implementation group: 'org.apache.logging.log4j', name: 'log4j-api', version: versions.log4j
     implementation group: 'org.apache.logging.log4j', name: 'log4j', version: versions.log4j
@@ -383,8 +386,8 @@ dependencies {
     //Fix for CVE-2021-29425
     implementation 'commons-io:commons-io:2.11.0'
 
-    implementation group: 'io.github.openfeign.form', name: 'feign-form', version: '3.8.0'
-    implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: '3.8.0'
+    implementation group: 'io.github.openfeign.form', name: 'feign-form', version: versions.feign
+    implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: versions.feign
     implementation "io.github.openfeign:feign-httpclient:11.0"
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.log4j
     implementation "com.github.hmcts.java-logging:logging:${versions.reformLogging}"
@@ -426,8 +429,8 @@ dependencies {
       exclude group: "net.bytebuddy", module: "byte-buddy"
       exclude group: "net.bytebuddy", module: "byte-buddy-agent"
     }
-  testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.12.7'
-  testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.12.7'
+  testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: versions.bytebuddy
+  testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: versions.bytebuddy
 
   testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.3.1'
 
