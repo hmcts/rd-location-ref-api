@@ -86,7 +86,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("ALL", LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(3);
+        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
