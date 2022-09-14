@@ -128,7 +128,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByDefaultAll(LrdOrgInfoServiceResponse[].class);
-        assertThat(responses).isNotEmpty().hasSize(3);
+        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
@@ -173,7 +173,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName(" aLL ", LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(3);;
+        assertThat(responses).isNotEmpty().hasSize(4);;
     }
 
     @Test
@@ -183,7 +183,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("All, CMC",
                                                                LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(3);
+        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
