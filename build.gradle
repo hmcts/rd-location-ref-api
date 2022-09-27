@@ -454,7 +454,7 @@ dependencies {
     }
 
 
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.0'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.4'
 
 
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
