@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.Authorization;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationBySearchResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
@@ -42,6 +44,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_8;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_NOTES_9;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStringForBuildingLocationDetails;
 
 @RequestMapping(
     path = "/refdata/location"
@@ -207,8 +210,56 @@ public class LrdApiController {
         checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_REGION,region, regionId);
         log.info("{} : Calling retrieveRegionDetails",loggingComponentName);
         Object response = regionService.retrieveRegionDetails(regionId, region);
-
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
+
+    @ApiOperation(
+        value = "This end point will be used to search the building locations based on the the partial search string ."
+            + " When the consumers "
+            + "inputs minimum 3 characters, they will call this api to fetch "
+            + "the required result.",
+        notes = "No roles required to access this API",
+        authorizations = {
+            @Authorization(value = "ServiceAuthorization"),
+            @Authorization(value = "Authorization")
+        }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Successfully retrieved the building location information for the given search string",
+            response = LrdBuildingLocationBySearchResponse[].class
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "Bad Request"
+        ),
+        @ApiResponse(
+            code = 401,
+            message = "Forbidden Error: Access denied"
+        ),
+        @ApiResponse(
+            code = 500,
+            message = "Internal Server Error"
+        )
+    })
+    @GetMapping(
+        path = "/building-locations/search",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retrieveBuildingLocationDetailsBySearchString(
+        @RequestParam(value = "search")
+        @ApiParam(name = "search", value = "Alphabets, Numeric And Special characters(&,/-()[]<space>') "
+               + "only allowed and String should contain minimum three chars.", required = true) String searchString) {
+        log.info("{} : Inside retrieveBuildingLocationDetailsBySearchString",loggingComponentName);
+        String trimmedSearchString = searchString.strip();
+        validateSearchStringForBuildingLocationDetails(trimmedSearchString);
+        log.info("{} : Calling searchBuildingLocationsBySearchString",loggingComponentName);
+        Object responseEntity = buildingLocationService.searchBuildingLocationsBySearchString(trimmedSearchString);
+        return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+    }
+
 
 }

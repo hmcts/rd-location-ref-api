@@ -23,6 +23,13 @@ public interface BuildingLocationRepository extends JpaRepository<BuildingLocati
         + "where upper(loc.buildingLocationName) = upper(:buildingLocationName)")
     BuildingLocation findByBuildingLocationNameIgnoreCase(@Param("buildingLocationName") String buildingLocationName);
 
+
+    @Query(value = "select distinct loc from building_location loc "
+        + "where upper(loc.buildingLocationStatus) = 'OPEN' "
+        + "and upper(loc.buildingLocationName) like %:buildingLocationName%")
+    List<BuildingLocation> findByBuildingLocationNamesBySearch(@Param("buildingLocationName")
+                                                               String buildingLocationName);
+
     @Query(value = "select distinct loc from building_location loc"
         + " LEFT JOIN FETCH court_venue cv on loc.epimmsId = cv.epimmsId"
         + " where upper(loc.buildingLocationStatus) = 'OPEN'")
