@@ -98,7 +98,7 @@ class RetrieveBuildingLocationDetailsBySearchFunctionalTest extends Authorizatio
         );
         assertThat(response).isNotNull();
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), response.getErrorMessage());
-        assertEquals(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, ""), response.getErrorDescription());
+        assertEquals(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, "sdfd*+"), response.getErrorDescription());
     }
 
     @Test
