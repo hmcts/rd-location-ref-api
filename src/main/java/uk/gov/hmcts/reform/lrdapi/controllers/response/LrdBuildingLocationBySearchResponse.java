@@ -16,38 +16,38 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class LrdBuildingLocationBySearchResponse implements Serializable {
 
-    @JsonProperty("building_location_name")
-    private String buildingLocationName;
-
-    @JsonProperty("epims_id")
+    @JsonProperty("epimms_id")
     private String epimmsId;
-
-    @JsonProperty("building_location_status")
-    private String buildingLocationStatus;
 
     @JsonProperty
     private String area;
 
+    @JsonProperty("building_location_name")
+    private String buildingLocationName;
+
     @JsonProperty
     private String region;
+
+    @JsonProperty("building_location_status")
+    private String buildingLocationStatus;
 
     @JsonProperty("region_id")
     private String regionId;
 
-    @JsonProperty("cluster_name")
-    private String clusterName;
-
     @JsonProperty("cluster_id")
     private String clusterId;
+
+    @JsonProperty("cluster_name")
+    private String clusterName;
 
     @JsonProperty("court_finder_url")
     private String courtFinderUrl;
 
     @JsonProperty
-    private String postcode;
+    private String address;
 
     @JsonProperty
-    private String address;
+    private String postcode;
 
 
 }
