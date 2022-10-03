@@ -25,6 +25,7 @@ public interface BuildingLocationRepository extends JpaRepository<BuildingLocati
 
 
     @Query(value = "select distinct loc from building_location loc "
+        + "LEFT JOIN FETCH court_venue cv on loc.epimmsId = cv.epimmsId "
         + "where upper(loc.buildingLocationStatus) = 'OPEN' "
         + "and upper(loc.buildingLocationName) like %:buildingLocationName%")
     List<BuildingLocation> findByBuildingLocationNamesBySearch(@Param("buildingLocationName")
