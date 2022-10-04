@@ -217,7 +217,7 @@ public class LrdApiController {
 
     @ApiOperation(
         value = "This end point will be used to search the open building locations based on the the partial "
-            + "search string . When the consumers "
+            + "search string .  When the consumers "
             + "inputs minimum 3 characters, they will call this api to fetch "
             + "the required result.",
         notes = "No roles required to access this API",

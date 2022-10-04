@@ -64,38 +64,6 @@ class RetrieveBuildingLocationBySearchStringTest extends LrdAuthorizationEnabled
                 .equalsIgnoreCase("Open")));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"Building Location B"})
-    @SuppressWarnings("unchecked")
-    void shouldRetrieveBuildingLocation_For_SearchString_WithFullBuildingName_WithStatusCode_200(String searchString)
-        throws JsonProcessingException {
-        final var response = (List<LrdBuildingLocationBySearchResponse>)
-            lrdApiClient.findBuildingLocationBySearchString(
-                "?search=" + searchString,
-                LrdBuildingLocationBySearchResponse[].class,
-                path
-            );
-        assertThat(response).isNotEmpty().hasSize(1);
-        assertTrue(response.stream().allMatch(location -> location.getBuildingLocationName().toLowerCase()
-            .contains(searchString.toLowerCase())));
-        assertTrue(response.stream().allMatch(location -> location.getBuildingLocationStatus()
-            .equalsIgnoreCase("Open")));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"Building Location 4"})
-    @SuppressWarnings("unchecked")
-    void shouldRetrieveBuildingLocation_For_SearchString_ClosedLocation_WithStatusCode_200(String searchString)
-        throws JsonProcessingException {
-        final var response = (List<LrdBuildingLocationBySearchResponse>)
-            lrdApiClient.findBuildingLocationBySearchString(
-                "?search=" + searchString,
-                LrdBuildingLocationBySearchResponse[].class,
-                path
-            );
-        assertNotNull(response);
-        assertEquals(0,response.size());
-    }
 
     @Test
     @SuppressWarnings("unchecked")
