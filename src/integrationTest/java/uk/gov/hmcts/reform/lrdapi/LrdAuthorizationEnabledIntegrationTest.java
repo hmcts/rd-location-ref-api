@@ -42,7 +42,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.JwtTokenUtil.decodeJwtToken;
 import static uk.gov.hmcts.reform.lrdapi.util.JwtTokenUtil.getUserIdAndRoleFromToken;
 
 @Configuration
-@TestPropertySource(properties = {"S2S_URL=http://127.0.0.1:8990", "IDAM_URL:http://127.0.0.1:5001"})
+@TestPropertySource(properties = {"S2S_URL=http://127.0.0.1:8990", "IDAM_URL:http://127.0.0.1:5000"})
 @DirtiesContext
 public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootIntegrationTest {
 
@@ -56,10 +56,10 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
     public static WireMockExtension s2sService = new WireMockExtension(8990);
 
     @RegisterExtension
-    public static WireMockExtension idamService = new WireMockExtension(5001);
+    public static WireMockExtension idamService = new WireMockExtension(5000);
 
     @RegisterExtension
-    public static WireMockExtension mockHttpServerForOidc = new WireMockExtension(7001);
+    public static WireMockExtension mockHttpServerForOidc = new WireMockExtension(7000);
 
 
     protected LrdApiClient lrdApiClient;
