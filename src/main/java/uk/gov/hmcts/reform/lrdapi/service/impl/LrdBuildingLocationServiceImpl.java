@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationBySearchResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
@@ -84,6 +85,14 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
         }
 
         return getAllBuildingLocations(() -> buildingLocationRepository.findByBuildingLocationStatusOpen());
+    }
+
+    @Override
+    public Object searchBuildingLocationsBySearchString(String searchString) {
+        log.info("{} : Obtaining building locations for the searchString: {}", loggingComponentName, searchString);
+        List<BuildingLocation> buildingLocations = buildingLocationRepository.findByBuildingLocationNamesBySearch(
+            searchString.toUpperCase());
+        return getBuildingLocationListBySearchResponse(buildingLocations);
     }
 
     private List<LrdBuildingLocationResponse> getBuildingLocationsForNumericFilters(
@@ -202,6 +211,37 @@ public class LrdBuildingLocationServiceImpl implements ILrdBuildingLocationServi
             .stream()
             .map(buildingLocation -> this.buildResponse(buildingLocation, buildingLocation.getCourtVenues()))
             .toList();
+    }
+
+    private List<LrdBuildingLocationBySearchResponse> getBuildingLocationListBySearchResponse(
+        List<BuildingLocation> buildingLocations) {
+        return buildingLocations
+            .stream()
+            .map(this::buildLocationBySearchResponse)
+            .toList();
+    }
+
+    private LrdBuildingLocationBySearchResponse buildLocationBySearchResponse(BuildingLocation location) {
+        LrdBuildingLocationBySearchResponse.LrdBuildingLocationBySearchResponseBuilder
+            lrdBuildingLocationBySearchResponseBuilder = LrdBuildingLocationBySearchResponse.builder()
+            .buildingLocationName(location.getBuildingLocationName())
+            .buildingLocationStatus(location.getBuildingLocationStatus())
+            .address(location.getAddress())
+            .area(location.getArea())
+            .epimmsId(location.getEpimmsId());
+        location.getCluster().ifPresent(cluster -> {
+            lrdBuildingLocationBySearchResponseBuilder.clusterId(cluster.getClusterId());
+            lrdBuildingLocationBySearchResponseBuilder.clusterName(cluster.getClusterName());
+        });
+        location.getRegion().ifPresent(region -> {
+            lrdBuildingLocationBySearchResponseBuilder.regionId(region.getRegionId());
+            lrdBuildingLocationBySearchResponseBuilder.region(region.getDescription());
+        });
+
+        return lrdBuildingLocationBySearchResponseBuilder
+            .courtFinderUrl(location.getCourtFinderUrl())
+            .postcode(location.getPostcode())
+            .build();
     }
 
     private void handleIfBuildingLocationsEmpty(BooleanSupplier buildingLocationResponseVerifier,
