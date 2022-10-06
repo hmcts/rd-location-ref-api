@@ -67,6 +67,15 @@ import static org.mockito.Mockito.when;
 @IgnoreNoPactsToVerify
 public class LrdApiProviderTest {
 
+    public static final String CLUSTER_NAME = "ClusterXYZ";
+    public static final String REGION = "Region XYZ";
+    public static final String VENUE_NAME = "venueName";
+    public static final String WELSH_COURT_NAME_1 = "welshCourtName1";
+    public static final String VENUE_CODE = "87675";
+    public static final String SERVICE_URL = "https://serviceurl.com";
+    public static final String FACT_URL = "https://facturl.com";
+    public static final String COURT_FINDER_URL = "https://testUrl.com";
+    public static final String COURT = "Court";
     @MockBean
     ServiceRepository serviceRepository;
 
@@ -148,14 +157,14 @@ public class LrdApiProviderTest {
     public void toReturnBuildingLocationDetails() {
         Cluster cluster = new Cluster();
         cluster.setClusterId("456");
-        cluster.setClusterName("ClusterXYZ");
+        cluster.setClusterName(CLUSTER_NAME);
         cluster.setWelshClusterName("ClusterABC");
         cluster.setCreatedTime(LocalDateTime.now());
         cluster.setUpdatedTime(LocalDateTime.now());
 
         Region region = new Region();
         region.setCreatedTime(LocalDateTime.now());
-        region.setDescription("Region XYZ");
+        region.setDescription(REGION);
         region.setRegionId("123");
         region.setUpdatedTime(LocalDateTime.now());
         region.setWelshDescription("Region ABC");
@@ -174,16 +183,16 @@ public class LrdApiProviderTest {
             .postcode("AB11 6LT")
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
-            .venueName("venueName")
+            .venueName(VENUE_NAME)
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
-            .welshCourtName("welshCourtName1")
+            .welshCourtName(WELSH_COURT_NAME_1)
             .uprn("1234")
-            .venueOuCode("87675")
+            .venueOuCode(VENUE_CODE)
             .mrdBuildingLocationId("8686")
             .mrdVenueId("765")
-            .serviceUrl("https://serviceurl.com")
-            .factUrl("https://facturl.com")
+            .serviceUrl(SERVICE_URL)
+            .factUrl(FACT_URL)
             .build();
 
         Set<CourtVenue> courtVenues = new HashSet<>();
@@ -194,7 +203,7 @@ public class LrdApiProviderTest {
             .area("Area 1")
             .buildingLocationId(123L)
             .buildingLocationName("Taylor House Tribunal Hearing Centre")
-            .courtFinderUrl("https://testUrl.com")
+            .courtFinderUrl(COURT_FINDER_URL)
             .created(LocalDateTime.now())
             .epimmsId("4567")
             .lastUpdated(LocalDateTime.now())
@@ -210,7 +219,7 @@ public class LrdApiProviderTest {
             .area("Area 2")
             .buildingLocationId(1234L)
             .buildingLocationName("Taylor House Tribunal Hearing Centre 2")
-            .courtFinderUrl("https://testUrl.com")
+            .courtFinderUrl(COURT_FINDER_URL)
             .created(LocalDateTime.now())
             .epimmsId("45678")
             .lastUpdated(LocalDateTime.now())
@@ -313,21 +322,21 @@ public class LrdApiProviderTest {
             .dxAddress("dxAddress1")
             .courtStatus("Open")
             .courtName("courtName1")
-            .venueName("venueName")
+            .venueName(VENUE_NAME)
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
             .welshVenueName("testVenue")
             .isTemporaryLocation("N")
             .isNightingaleCourt("N")
-            .locationType("Court")
+            .locationType(COURT)
             .parentLocation("366559")
-            .welshCourtName("welshCourtName1")
+            .welshCourtName(WELSH_COURT_NAME_1)
             .uprn("1234")
-            .venueOuCode("87675")
+            .venueOuCode(VENUE_CODE)
             .mrdBuildingLocationId("8686")
             .mrdVenueId("765")
-            .serviceUrl("https://serviceurl.com")
-            .factUrl("https://facturl.com")
+            .serviceUrl(SERVICE_URL)
+            .factUrl(FACT_URL)
             .build();
     }
 
@@ -348,21 +357,21 @@ public class LrdApiProviderTest {
             .dxAddress("dxAddress")
             .courtStatus("Open")
             .courtName("courtName")
-            .venueName("venueName")
+            .venueName(VENUE_NAME)
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
             .welshVenueName("testVenue1")
             .isTemporaryLocation("N")
             .isNightingaleCourt("N")
-            .locationType("Court")
+            .locationType(COURT)
             .parentLocation("366559")
-            .welshCourtName("welshCourtName1")
+            .welshCourtName(WELSH_COURT_NAME_1)
             .uprn("1234")
-            .venueOuCode("87675")
+            .venueOuCode(VENUE_CODE)
             .mrdBuildingLocationId("8686")
             .mrdVenueId("765")
-            .serviceUrl("https://serviceurl.com")
-            .factUrl("https://facturl.com")
+            .serviceUrl(SERVICE_URL)
+            .factUrl(FACT_URL)
             .build();
 
         CourtVenue secondCourtVenue = CourtVenue.builder()
@@ -381,26 +390,77 @@ public class LrdApiProviderTest {
             .dxAddress("dxAddress")
             .courtStatus("Closed")
             .courtName("courtName")
-            .venueName("venueName")
+            .venueName(VENUE_NAME)
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
             .welshVenueName("testVenue2")
             .isTemporaryLocation("N")
             .isNightingaleCourt("N")
-            .locationType("Court")
+            .locationType(COURT)
             .parentLocation("372653")
-            .welshCourtName("welshCourtName1")
+            .welshCourtName(WELSH_COURT_NAME_1)
             .uprn("1234")
-            .venueOuCode("87675")
+            .venueOuCode(VENUE_CODE)
             .mrdBuildingLocationId("8686")
             .mrdVenueId("765")
-            .serviceUrl("https://serviceurl.com")
-            .factUrl("https://facturl.com")
+            .serviceUrl(SERVICE_URL)
+            .factUrl(FACT_URL)
             .build();
 
         return List.of(firstCourtVenue, secondCourtVenue);
     }
 
+
+    @State({"Building Location details exist for the searchString provided"})
+    public void toReturnBuildingLocationDetailsForSearchString() {
+        Cluster cluster = new Cluster();
+        cluster.setClusterId("456");
+        cluster.setClusterName(CLUSTER_NAME);
+        cluster.setWelshClusterName("ClusterABC");
+        cluster.setCreatedTime(LocalDateTime.now());
+        cluster.setUpdatedTime(LocalDateTime.now());
+
+        Region region = new Region();
+        region.setCreatedTime(LocalDateTime.now());
+        region.setDescription(REGION);
+        region.setRegionId("123");
+        region.setUpdatedTime(LocalDateTime.now());
+        region.setWelshDescription("Region ABC");
+
+        BuildingLocation buildingLocation = BuildingLocation.builder()
+            .buildingLocationStatus("OPEN")
+            .area("Area 1")
+            .buildingLocationId(123L)
+            .buildingLocationName("Taylor House Tribunal Hearing Centre")
+            .courtFinderUrl(COURT_FINDER_URL)
+            .created(LocalDateTime.now())
+            .epimmsId("4567")
+            .lastUpdated(LocalDateTime.now())
+            .postcode("XY2 YY3")
+            .region(region)
+            .cluster(cluster)
+            .address("Address 123")
+            .build();
+
+        BuildingLocation buildingLocation2 = BuildingLocation.builder()
+            .buildingLocationStatus("CLOSED")
+            .area("Area 2")
+            .buildingLocationId(1234L)
+            .buildingLocationName("Taylor House Tribunal Hearing Centre 2")
+            .courtFinderUrl(COURT_FINDER_URL)
+            .created(LocalDateTime.now())
+            .epimmsId("45678")
+            .lastUpdated(LocalDateTime.now())
+            .postcode("XY21 YY3")
+            .region(region)
+            .cluster(cluster)
+            .address("Address 123456")
+            .build();
+
+        when(buildingLocationRepository.findByBuildingLocationNamesBySearch(anyString()))
+            .thenReturn(List.of(buildingLocation, buildingLocation2));
+
+    }
 
     private CourtType getCourtType() {
         CourtType courtType = new CourtType();
@@ -412,7 +472,7 @@ public class LrdApiProviderTest {
 
     private Region getRegion() {
         Region region = new Region();
-        region.setDescription("Region XYZ");
+        region.setDescription(REGION);
         region.setRegionId("123");
         return region;
     }
@@ -420,7 +480,7 @@ public class LrdApiProviderTest {
     private Cluster getCluster() {
         Cluster cluster = new Cluster();
         cluster.setClusterId("456");
-        cluster.setClusterName("ClusterXYZ");
+        cluster.setClusterName(CLUSTER_NAME);
         return cluster;
     }
 
