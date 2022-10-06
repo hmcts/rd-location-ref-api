@@ -139,4 +139,60 @@ class LrdApiControllerGetBuildingLocationsTest {
                      exception.getMessage());
     }
 
+
+    @Test
+    void testRetrieveBuildingLocationDetailsBySearchString_validSearchString_ShouldReturnStatusCode200() {
+        when(lrdBuildingLocationService.searchBuildingLocationsBySearchString("qwerty"))
+            .thenReturn(new ArrayList<>());
+
+        ResponseEntity<Object> responseEntity =
+            lrdApiController.retrieveBuildingLocationDetailsBySearchString("qwerty");
+        assertNotNull(responseEntity);
+        verify(lrdBuildingLocationService, times(1))
+            .searchBuildingLocationsBySearchString("qwerty");
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        //testRetrieveBuildingLocationDetailsBySearchString
+        // _SearchStringwithAllowed_special_chars_ShouldReturnStatusCode200
+        when(lrdBuildingLocationService.searchBuildingLocationsBySearchString("&,/-()[] 'adfs"))
+            .thenReturn(new ArrayList<>());
+
+        ResponseEntity<Object> responseEntity2 =
+            lrdApiController.retrieveBuildingLocationDetailsBySearchString("&,/-()[] 'adfs");
+        assertNotNull(responseEntity);
+        verify(lrdBuildingLocationService, times(1))
+            .searchBuildingLocationsBySearchString("&,/-()[] 'adfs");
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+    }
+
+    @Test
+    void testRetrieveBuildingLocationDetailsBySearchString_searchStringWithSpace_Returns200() {
+        when(lrdBuildingLocationService.searchBuildingLocationsBySearchString("qwe"))
+            .thenReturn(new ArrayList<>());
+
+        ResponseEntity<Object> responseEntity =
+            lrdApiController.retrieveBuildingLocationDetailsBySearchString(" qwe ");
+
+        assertNotNull(responseEntity);
+        verify(lrdBuildingLocationService, times(1))
+            .searchBuildingLocationsBySearchString("qwe");
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+
+    }
+
+    @Test
+    void testRetrieveBuildingLocationDetailsBySearchString_invalidSearchString_Returns400() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveBuildingLocationDetailsBySearchString(" qw "));
+    }
+
+    @Test
+    void testRetrieveBuildingLocationDetailsBySearchString_invalidSearchStringSpecialchar_Returns400() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdApiController.retrieveBuildingLocationDetailsBySearchString(" qw? "));
+    }
+
+
 }
