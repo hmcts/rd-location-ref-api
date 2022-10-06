@@ -58,6 +58,10 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
             "LrdCourtVenueController.retrieveCourtVenuesBySearchString",
             LocationRefConstants.LD_FLAG
         );
+        launchDarklyMap.put(
+            "LrdApiController.retrieveBuildingLocationDetailsBySearchString",
+            LocationRefConstants.LD_LOCATION_SEARCH_FLAG
+        );
     }
 
     @Override
