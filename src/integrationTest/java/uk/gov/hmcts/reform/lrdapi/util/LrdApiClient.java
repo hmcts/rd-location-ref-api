@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationBySearchResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
@@ -134,6 +135,13 @@ public class LrdApiClient {
         return mapCourtVenuesBySearchStringResponse(responseEntity, clazz);
     }
 
+    public Object findBuildingLocationBySearchString(String queryParam, Class<?> clazz, String path) throws
+        JsonProcessingException {
+        ResponseEntity<Object> responseEntity =
+            getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
+        return mapBuildingLocationBySearchResponse(responseEntity, clazz);
+    }
+
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
         JsonProcessingException {
 
@@ -174,6 +182,27 @@ public class LrdApiClient {
         if (status.is2xxSuccessful()) {
             if (clazz.isArray()) {
                 return Arrays.asList((LrdBuildingLocationResponse[])
+                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
+            } else {
+                return objectMapper.convertValue(responseEntity.getBody(), clazz);
+            }
+        } else {
+            Map<String, Object> errorResponseMap = new HashMap<>();
+            errorResponseMap.put("response_body",  objectMapper.readValue(
+                responseEntity.getBody().toString(), ErrorResponse.class));
+            errorResponseMap.put("http_status", status);
+            return errorResponseMap;
+        }
+    }
+
+    private Object mapBuildingLocationBySearchResponse(ResponseEntity<Object> responseEntity, Class clazz)
+        throws JsonProcessingException {
+
+        HttpStatus status = responseEntity.getStatusCode();
+
+        if (status.is2xxSuccessful()) {
+            if (clazz.isArray()) {
+                return Arrays.asList((LrdBuildingLocationBySearchResponse[])
                                          objectMapper.convertValue(responseEntity.getBody(), clazz));
             } else {
                 return objectMapper.convertValue(responseEntity.getBody(), clazz);

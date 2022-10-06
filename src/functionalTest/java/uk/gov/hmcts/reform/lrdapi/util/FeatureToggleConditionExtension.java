@@ -55,7 +55,9 @@ public class FeatureToggleConditionExtension implements ExecutionCondition {
                                            evaluationResult = enabled();
                                        }
                                    } else {
-                                       if (isNotTrue(toggle.withFeature()) || toggle.withFeature()) {
+                                       if (isNotTrue(toggle.withFeature())) {
+                                           evaluationResult = enabled();
+                                       } else {
                                            evaluationResult = disabled();
                                        }
                                    }
