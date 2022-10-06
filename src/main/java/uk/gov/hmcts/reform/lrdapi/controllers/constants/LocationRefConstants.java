@@ -12,6 +12,9 @@ public class LocationRefConstants {
     public static final String REG_EXP_WHITE_SPACE = "\\s";
     public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
     public static final String ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX = "^[A-Za-z0-9_@.,'&-() ]{3,}$";
+
+    public static final String REGEX_FOR_BUILDING_LOCATION_SEARCH = "^[A-Za-z0-9\\/'&()\\[\\], -]{3,}$";
+
     public static final String ALPHABET_REGEX = "[a-zA-Z]";
     public static final String ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE = "[0-9a-zA-Z]+";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
@@ -46,6 +49,9 @@ public class LocationRefConstants {
         + "Please provide service code without special characters";
 
     public static final String LD_FLAG = "lrd_location_api";
+
+    public static final String LD_LOCATION_SEARCH_FLAG = "lrd_location_search_api";
+
     public static final String NO_COURT_VENUES_FOUND_FOR_REGION_ID =
         "No court venues found for region id: %s";
 
