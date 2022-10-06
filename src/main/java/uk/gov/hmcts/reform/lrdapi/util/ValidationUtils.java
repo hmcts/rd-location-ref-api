@@ -27,6 +27,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_ORG_SERVICES;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGEX_FOR_BUILDING_LOCATION_SEARCH;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -59,6 +60,12 @@ public class ValidationUtils {
 
     public static void validateSearchString(String searchString) {
         if (!isRegexSatisfied(searchString, ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX)) {
+            throw new InvalidRequestException(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, searchString));
+        }
+    }
+
+    public static void validateSearchStringForBuildingLocationDetails(String searchString) {
+        if (!isRegexSatisfied(searchString, REGEX_FOR_BUILDING_LOCATION_SEARCH)) {
             throw new InvalidRequestException(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, searchString));
         }
     }

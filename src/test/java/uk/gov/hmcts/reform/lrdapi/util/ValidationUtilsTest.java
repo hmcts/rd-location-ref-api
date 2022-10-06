@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,6 +22,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentif
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStringForBuildingLocationDetails;
 
 class ValidationUtilsTest {
 
@@ -368,6 +370,20 @@ class ValidationUtilsTest {
         assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
 
 
+    }
+
+    @Test
+    void testValidateSearchStringForBuildingLocationDetails_invalidString() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> validateSearchStringForBuildingLocationDetails("asdc?")
+        );
+    }
+
+    @Test
+    void testValidateSearchStringForBuildingLocationDetailsSuccess() {
+        assertDoesNotThrow(() ->
+                               validateSearchStringForBuildingLocationDetails("asdc"));
     }
 
     private List<String> getSingleInvalidIdList() {
