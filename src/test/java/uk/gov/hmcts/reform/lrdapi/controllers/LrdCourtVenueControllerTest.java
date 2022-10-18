@@ -15,9 +15,11 @@ import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -132,6 +134,26 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenuesBySearchStringWithHyphen() {
+        var param = new CourtVenueRequestParam();
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("Stoke-", null,
+                                                                      param.getIsHearingLocation(),
+                                                                      param.getIsCaseManagementLocation(),
+                                                                      param.getLocationType(),
+                                                                      param.getIsTemporaryLocation());
+        assertNotNull(responseEntity);
+        assertThat(responseEntity.getBody()).isNotNull().isEmpty();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
+            anyString(),
+            isNull(),
+            any(CourtVenueRequestParam.class)
+        );
+    }
+
+    @Test
     void testGetCourtVenuesBySearchStringWithInvalidString() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null, null, null, null, null));
@@ -153,5 +175,11 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeIdWithComma() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
+    }
+
+    @Test
+    void testGetCourtVenuesBySearchStringWithConsecutiveSpecialCharacters() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC--", ",1,2,", null, null, null, null));
     }
 }
