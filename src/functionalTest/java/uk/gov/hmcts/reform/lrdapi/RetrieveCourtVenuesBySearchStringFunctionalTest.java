@@ -61,6 +61,29 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_By_SearchStringWithHyphen_WithStatusCode_200() {
+        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                          "?search-string=Stoke-on", LrdCourtVenueResponse[].class, path);
+        assertThat(response).isNotEmpty();
+
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+        var courtNameVerified = courtVenueResponse
+            .stream()
+            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Stoke-".toLowerCase())
+                || venue.getSiteName().strip().toLowerCase().contains("Stoke-".toLowerCase())
+                || venue.getCourtAddress().strip().toLowerCase().contains("Stoke-".toLowerCase())
+                || venue.getPostcode().strip().toLowerCase().contains("Stoke-".toLowerCase()))
+            .collect(Collectors.toList());
+
+        assertTrue(courtNameVerified
+                       .stream()
+                       .allMatch(venue -> venue.getCourtStatus().equals("Open"))
+        );
+        assertThat(courtNameVerified.size()).isPositive();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
                         "?court-type-id=1&search-string=Man", LrdCourtVenueResponse[].class, path);
