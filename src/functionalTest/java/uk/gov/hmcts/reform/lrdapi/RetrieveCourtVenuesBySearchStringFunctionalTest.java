@@ -69,10 +69,10 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         var courtNameVerified = courtVenueResponse
             .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Stoke-".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Stoke-".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Stoke-".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Stoke-".toLowerCase()))
+            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Stoke-on".toLowerCase())
+                || venue.getSiteName().strip().toLowerCase().contains("Stoke-on".toLowerCase())
+                || venue.getCourtAddress().strip().toLowerCase().contains("Stoke-on".toLowerCase())
+                || venue.getPostcode().strip().toLowerCase().contains("Stoke-on".toLowerCase()))
             .collect(Collectors.toList());
 
         assertTrue(courtNameVerified

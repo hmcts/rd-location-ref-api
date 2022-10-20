@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -176,9 +178,13 @@ class LrdCourtVenueControllerTest {
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
     }
 
-    @Test
-    void testGetCourtVenuesBySearchStringWithConsecutiveSpecialCharacters() {
+    @ParameterizedTest
+    @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
+        "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
+        "?search-string=&&&", "?search-string=...", "?search-string=,,,", "?search-string=(((",
+        "?search-string=)))"})
+    void testGetCourtVenuesBySearchStringWithConsecutiveSpecialCharacters(String param) {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC--", ",1,2,", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString(param, ",1,2,", null, null, null, null));
     }
 }

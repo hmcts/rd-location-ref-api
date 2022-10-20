@@ -77,7 +77,9 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
     @ParameterizedTest
     @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
-        "?search-string=zz&court-type-id=1000", "?search-string=AB$&court-type-id=1000",
+        "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
+        "?search-string=&&&", "?search-string=...", "?search-string=,,,", "?search-string=(((",
+        "?search-string=)))", "?search-string=zz&court-type-id=1000", "?search-string=AB$&court-type-id=1000",
         "?search-string=AB$&court-type-id=1,2,$,4"})
     @SuppressWarnings("unchecked")
     void shouldReturn400_WhenInvalidParamsPassed(String parameter) throws JsonProcessingException {
