@@ -64,22 +64,11 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     void shouldRetrieveCourtVenues_By_SearchStringWithHyphen_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
                           "?search-string=Stoke-on", LrdCourtVenueResponse[].class, path);
-        assertThat(response).isNotEmpty();
 
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        var courtNameVerified = courtVenueResponse
-            .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Stoke-on".toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains("Stoke-on".toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains("Stoke-on".toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains("Stoke-on".toLowerCase()))
-            .collect(Collectors.toList());
+        assertThat(response).isNotNull().isNotEmpty();
+        assertThat(response.length).isPositive();
+        assertThat(response[0].getCourtStatus()).isEqualTo("Open");
 
-        assertTrue(courtNameVerified
-                       .stream()
-                       .allMatch(venue -> venue.getCourtStatus().equals("Open"))
-        );
-        assertThat(courtNameVerified.size()).isPositive();
     }
 
     @Test
