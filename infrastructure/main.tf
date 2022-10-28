@@ -71,5 +71,5 @@ module "db-rd-location-ref-api" {
   database_name       = "dbrdlocationref"
   common_tags         = var.common_tags
   postgresql_version  = var.postgresql_version
-  replicas              = var.db_replicas
+  replicas            = var.db_replicas
 }
