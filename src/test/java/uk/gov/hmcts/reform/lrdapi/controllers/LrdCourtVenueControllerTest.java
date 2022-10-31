@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -15,6 +17,7 @@ import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -132,6 +135,26 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenuesBySearchStringWithHyphen() {
+        var param = new CourtVenueRequestParam();
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("Stoke-", null,
+                                                                      param.getIsHearingLocation(),
+                                                                      param.getIsCaseManagementLocation(),
+                                                                      param.getLocationType(),
+                                                                      param.getIsTemporaryLocation());
+        assertNotNull(responseEntity);
+        assertThat(responseEntity.getBody()).isNotNull().isEmpty();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
+            anyString(),
+            isNull(),
+            any(CourtVenueRequestParam.class)
+        );
+    }
+
+    @Test
     void testGetCourtVenuesBySearchStringWithInvalidString() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null, null, null, null, null));
@@ -153,5 +176,15 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeIdWithComma() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
+        "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
+        "?search-string=&&&", "?search-string=...", "?search-string=,,,", "?search-string=(((",
+        "?search-string=)))"})
+    void testGetCourtVenuesBySearchStringWithConsecutiveSpecialCharacters(String param) {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString(param, ",1,2,", null, null, null, null));
     }
 }
