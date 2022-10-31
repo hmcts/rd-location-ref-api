@@ -135,7 +135,29 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .factUrl("")
             .build();
 
+        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
+            .courtVenueId("12")
+            .siteName("Stoke-on-Trent Combined Court")
+            .courtName("STOKE-ON-TRENT COMBINED COURT")
+            .epimmsId("123456")
+            .openForPublic("YES")
+            .courtTypeId("10")
+            .courtType("County Court")
+            .regionId("1")
+            .region("London")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtStatus("Open")
+            .postcode("ST1 3BP")
+            .courtAddress("BETHESDA STREET")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
+            .build();
+
         expectedCourtVenueResponses.add(response1);
+        expectedCourtVenueResponses.add(response2);
 
         return expectedCourtVenueResponses;
     }
