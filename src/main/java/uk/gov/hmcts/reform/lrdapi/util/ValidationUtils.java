@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
@@ -59,7 +59,7 @@ public class ValidationUtils {
     }
 
     public static void validateSearchString(String searchString) {
-        if (!isRegexSatisfied(searchString, ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX)) {
+        if (!isRegexSatisfied(searchString, ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX)) {
             throw new InvalidRequestException(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, searchString));
         }
     }
