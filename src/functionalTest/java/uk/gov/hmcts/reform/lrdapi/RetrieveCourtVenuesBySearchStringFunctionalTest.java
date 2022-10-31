@@ -61,6 +61,18 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_By_SearchStringWithHyphen_WithStatusCode_200() {
+        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                          "?search-string=Stoke-on", LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotNull().isNotEmpty();
+        assertThat(response.length).isPositive();
+        assertThat(response[0].getCourtStatus()).isEqualTo("Open");
+
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
                         "?court-type-id=1&search-string=Man", LrdCourtVenueResponse[].class, path);
