@@ -569,11 +569,32 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .serviceUrl("")
             .factUrl("")
             .build();
+        LrdCourtVenueResponse response5 = LrdCourtVenueResponse.builder()
+            .courtTypeId("10")
+            .courtType("County Court")
+            .siteName("Stoke-on-Trent Combined Court")
+            .openForPublic("YES")
+            .epimmsId("123456")
+            .regionId("1")
+            .region("London")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtName("STOKE-ON-TRENT COMBINED COURT")
+            .courtStatus("Open")
+            .postcode("ST1 3BP")
+            .courtAddress("BETHESDA STREET")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
+            .courtVenueId("12")
+            .build();
 
         courtVenueResponses.add(response1);
         courtVenueResponses.add(response2);
         courtVenueResponses.add(response3);
         courtVenueResponses.add(response4);
+        courtVenueResponses.add(response5);
 
         List<LrdBuildingLocationResponse> locationResponses = getSingleLocationResponse();
 
