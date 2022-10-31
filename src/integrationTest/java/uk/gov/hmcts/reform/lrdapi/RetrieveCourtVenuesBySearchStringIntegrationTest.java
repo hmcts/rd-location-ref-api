@@ -45,6 +45,22 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"?search-string=Stoke-on-Trent", "?search-string=Stoke-", "?search-string=stoke-on",
+        "?search-string=stoke-on-"})
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveCourtVenues_For_SearchStringWithHyphen_WithStatusCode_200(String parameter)
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(parameter, LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertThat(response[0].getSiteName()).isEqualTo("Stoke-on-Trent Combined Court");
+        assertThat(response[0].getCourtName()).isEqualTo("STOKE-ON-TRENT COMBINED COURT");
+        assertThat(response[0].getCourtAddress()).isEqualTo("BETHESDA STREET");
+        assertThat(response[0].getPostcode()).isEqualTo("ST1 3BP");
+    }
+
     @Test
     void shouldRetrieveCourtVenues_For_SearchString_And_CourtTypeId_WithStatusCode_200()
         throws JsonProcessingException {
@@ -60,7 +76,10 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"?search-string=zz&court-type-id=1000", "?search-string=AB$&court-type-id=1000",
+    @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
+        "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
+        "?search-string=&&&", "?search-string=...", "?search-string=,,,", "?search-string=(((",
+        "?search-string=)))", "?search-string=zz&court-type-id=1000", "?search-string=AB$&court-type-id=1000",
         "?search-string=AB$&court-type-id=1,2,$,4"})
     @SuppressWarnings("unchecked")
     void shouldReturn400_WhenInvalidParamsPassed(String parameter) throws JsonProcessingException {

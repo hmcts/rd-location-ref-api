@@ -11,7 +11,8 @@ public class LocationRefConstants {
     public static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©+]*$";
     public static final String REG_EXP_WHITE_SPACE = "\\s";
     public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
-    public static final String ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX = "^[A-Za-z0-9_@.,'&-() ]{3,}$";
+    public static final String ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX = "^(?![-_.@,'&()])(?!.*[-_.@,'&()]{2})"
+        + "[A-Za-z0-9_@.,'&() -]{3,}$";
 
     public static final String REGEX_FOR_BUILDING_LOCATION_SEARCH = "^[A-Za-z0-9\\/'&()\\[\\], -]{3,}$";
 
