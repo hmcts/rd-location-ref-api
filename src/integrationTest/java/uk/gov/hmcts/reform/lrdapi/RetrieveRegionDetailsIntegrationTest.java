@@ -1,19 +1,25 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -69,7 +75,7 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
     }
 
     @Test
-    void returnsRegionDetailsByIdAllWithStatusCode_200() throws JsonProcessingException {
+    void returnsRegionDetailsByIdAllWithStatusCode_200() throws JsonProcessingException, JSONException {
 
         final var response = (List<LrdRegionResponse>)
             lrdApiClient.findRegionDetailsById("ALL", LrdRegionResponse[].class);
@@ -83,12 +89,16 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
 
         final var response = (List<LrdRegionResponse>)
             lrdApiClient.findRegionDetailsById("1, ALL", LrdRegionResponse[].class);
+        List<LrdRegionResponse> sortedList = response.stream()
+            .sorted(Comparator.comparing(LrdRegionResponse::getRegionId))
+            .collect(Collectors.toList());
 
         assertNotNull(response);
-        assertEquals(9, response.size());
-        assertEquals("1", response.get(0).getRegionId());
-        assertEquals("London", response.get(0).getDescription());
-        assertNull(response.get(0).getWelshDescription());
+        assertEquals(9, sortedList.size());
+        assertEquals("1", sortedList.get(0).getRegionId());
+        assertEquals("London", sortedList.get(0).getDescription());
+        assertNull(sortedList.get(0).getWelshDescription());
+
     }
 
     @Test
@@ -173,8 +183,11 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
         }
     }
 
-    private void responseVerificationForAll(List<LrdRegionResponse> actual, List<LrdRegionResponse> expected) {
-        assertThat(actual).hasSize(expected.size()).usingRecursiveComparison().isEqualTo(expected);
+    private void responseVerificationForAll(List<LrdRegionResponse> actualData, List<LrdRegionResponse> expectedData) throws JsonProcessingException, JSONException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String actual = objectMapper.writeValueAsString(actualData);
+        String expected = objectMapper.writeValueAsString(expectedData);
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
 }

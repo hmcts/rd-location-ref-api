@@ -460,8 +460,9 @@ dependencies {
     testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testContainer_postgresql
     testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testContainer_postgresql
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testContainer_postgresql
+    testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.1'
 
-  functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
+    functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
     functionalTestImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform

@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -31,7 +35,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     public static final String HTTP_STATUS = "http_status";
 
     @Test
-    void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException {
+    void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException, JSONException {
 
         final var response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("AAA3", LrdCourtVenuesByServiceCodeResponse.class);
@@ -41,7 +45,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException {
+    void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException, JSONException {
 
         final var response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("aaa3", LrdCourtVenuesByServiceCodeResponse.class);
@@ -95,14 +99,17 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
-    private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
+    private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) throws JSONException, JsonProcessingException {
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
         assertThat(response.getServiceCode()).isEqualTo("AAA3");
         assertThat(response.getCourtTypeId()).isEqualTo("10");
         assertThat(response.getCourtType()).isEqualTo("County Court");
         assertThat(response.getWelshCourtType()).isNull();
-        assertThat(response.getCourtVenues()).isEqualTo(expectedCourtVenueResponses);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String actual = objectMapper.writeValueAsString(response.getCourtVenues());
+        String expected = objectMapper.writeValueAsString(expectedCourtVenueResponses);
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
     private List<LrdCourtVenueResponse> buildCourtVenueResponses() {
