@@ -2,14 +2,12 @@ spring:
   flyway:
     locations: classpath:db/testmigration,classpath:db/testmigrationAks
   datasource:
-    driverClassName: org.h2.Driver
-    url: jdbc:h2:mem:locrefdata
-    platform: h2
-    username: ${POSTGRES_USERNAME:dbrdlocationref}
-    password: ${POSTGRES_PASSWORD:dbrdlocationref}
+    url: ${DB_URL:jdbc:tc:postgresql:11.1:///locrefdata}
+    username: ${DB_USERNAME:dbrdlocationref}
+    password: ${DB_PASSWORD:dbrdlocationref}
   jpa:
     show-sql: true
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     properties:
