@@ -183,7 +183,8 @@ class RetrieveRegionDetailsIntegrationTest extends LrdAuthorizationEnabledIntegr
         }
     }
 
-    private void responseVerificationForAll(List<LrdRegionResponse> actualData, List<LrdRegionResponse> expectedData) throws JsonProcessingException, JSONException {
+    private void responseVerificationForAll(List<LrdRegionResponse> actualData, List<LrdRegionResponse> expectedData)
+        throws JsonProcessingException, JSONException {
         ObjectMapper objectMapper = new ObjectMapper();
         String actual = objectMapper.writeValueAsString(actualData);
         String expected = objectMapper.writeValueAsString(expectedData);

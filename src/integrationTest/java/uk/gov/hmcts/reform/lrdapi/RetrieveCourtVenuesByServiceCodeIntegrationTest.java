@@ -45,7 +45,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException, JSONException {
+    void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200()
+        throws JsonProcessingException, JSONException {
 
         final var response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode("aaa3", LrdCourtVenuesByServiceCodeResponse.class);
@@ -99,7 +100,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
-    private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) throws JSONException, JsonProcessingException {
+    private void responseVerification(LrdCourtVenuesByServiceCodeResponse response)
+        throws JSONException, JsonProcessingException {
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
         assertThat(response.getServiceCode()).isEqualTo("AAA3");
