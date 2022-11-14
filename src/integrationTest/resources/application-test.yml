@@ -6,7 +6,7 @@ spring:
     username: ${DB_USERNAME:dbrdlocationref}
     password: ${DB_PASSWORD:dbrdlocationref}
   jpa:
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
