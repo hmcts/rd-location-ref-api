@@ -4,25 +4,35 @@ alter table court_district_family_jurisdiction_assoc drop CONSTRAINT dfj_court_d
 alter table court_district_civil_jurisdiction_assoc drop CONSTRAINT dcj_court_location_id_fk;
 alter table court_district_civil_jurisdiction_assoc drop CONSTRAINT dcj_court_district_civil_jurisdiction_id_fk;
 
-alter table court_venue ALTER COLUMN court_venue_id SET DATA TYPE bigint;
+alter table court_venue
+ALTER COLUMN court_venue_id TYPE bigint USING court_venue_id::bigint;
 
-alter table building_location ALTER COLUMN building_location_id SET DATA TYPE bigint;
+alter table building_location
+ALTER COLUMN building_location_id TYPE bigint USING building_location_id::bigint;
 
-alter table district_civil_jurisdiction ALTER COLUMN district_civil_jurisdiction_id SET DATA TYPE bigint;
+alter table district_civil_jurisdiction
+ALTER COLUMN district_civil_jurisdiction_id TYPE bigint USING district_civil_jurisdiction_id::bigint;
 
-alter table court_district_civil_jurisdiction_assoc ALTER COLUMN court_district_civil_jurisdiction_assoc_id SET DATA TYPE bigint;
+alter table court_district_civil_jurisdiction_assoc
+ALTER COLUMN court_district_civil_jurisdiction_assoc_id TYPE bigint USING court_district_civil_jurisdiction_assoc_id::bigint;
 
-alter table court_district_civil_jurisdiction_assoc ALTER COLUMN district_civil_jurisdiction_id SET DATA TYPE bigint;
+alter table court_district_civil_jurisdiction_assoc
+ALTER COLUMN district_civil_jurisdiction_id TYPE bigint USING district_civil_jurisdiction_id::bigint;
 
-alter table court_district_civil_jurisdiction_assoc ALTER COLUMN court_location_id SET DATA TYPE bigint;
+alter table court_district_civil_jurisdiction_assoc
+ALTER COLUMN court_location_id TYPE bigint USING court_location_id::bigint;
 
-alter table district_family_jurisdiction ALTER COLUMN district_family_jurisdiction_id SET DATA TYPE bigint;
+alter table district_family_jurisdiction
+ALTER COLUMN district_family_jurisdiction_id TYPE bigint USING district_family_jurisdiction_id::bigint;
 
-alter table court_district_family_jurisdiction_assoc ALTER COLUMN court_district_family_jurisdiction_assoc_id SET DATA TYPE bigint;
+alter table court_district_family_jurisdiction_assoc
+ALTER COLUMN court_district_family_jurisdiction_assoc_id TYPE bigint USING court_district_family_jurisdiction_assoc_id::bigint;
 
-alter table court_district_family_jurisdiction_assoc ALTER COLUMN district_family_jurisdiction_id SET DATA TYPE bigint;
+alter table court_district_family_jurisdiction_assoc
+ALTER COLUMN district_family_jurisdiction_id TYPE bigint USING district_family_jurisdiction_id::bigint;
 
-alter table court_district_family_jurisdiction_assoc ALTER COLUMN court_location_id SET DATA TYPE bigint;
+alter table court_district_family_jurisdiction_assoc
+ALTER COLUMN court_location_id TYPE bigint USING court_location_id::bigint;
 
 create sequence court_venue_seq start 1 increment by 1;
 create sequence building_location_seq start 1 increment by 1;
