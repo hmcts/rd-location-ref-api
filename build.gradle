@@ -43,7 +43,8 @@ def versions = [
         springVersion      : '5.3.20',
         logback            : '1.2.10',
         feign              : '3.8.0',
-        bytebuddy          : '1.12.7'
+        bytebuddy          : '1.12.7',
+        testContainer_postgresql: '1.17.2'
 
 ]
 
@@ -417,7 +418,7 @@ dependencies {
     testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '4.0.0'
     testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: '4.5.1'
 
-    testImplementation group: 'com.h2database', name: 'h2'
+
     testImplementation ("com.github.tomakehurst:wiremock-jre8:2.31.0") {
       exclude group: 'com.github.jknack'
     }
@@ -457,6 +458,10 @@ dependencies {
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.0'
 
+    testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testContainer_postgresql
+    testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testContainer_postgresql
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testContainer_postgresql
+    testImplementation group: 'org.skyscreamer', name: 'jsonassert', version: '1.5.1'
 
     functionalTestImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
     functionalTestRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
