@@ -455,7 +455,7 @@ dependencies {
     }
 
 
-    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.0'
+    testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:3.1.5'
 
     testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testContainer_postgresql
     testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testContainer_postgresql
