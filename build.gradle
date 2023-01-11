@@ -40,7 +40,7 @@ def versions = [
         junitPlatform      : '1.8.1',
         jackson            : '2.14.0-rc1',
         log4j              : '2.17.1',
-        springVersion      : '5.3.20',
+        springVersion      : '5.3.25',
         logback            : '1.2.10',
         feign              : '3.8.0',
         bytebuddy          : '1.12.7',
@@ -373,7 +373,7 @@ dependencies {
     implementation group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 
     implementation group: 'org.springframework', name: 'spring-core', version: versions.springVersion
-   	implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.18'
+   	implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.25'
 
     implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
