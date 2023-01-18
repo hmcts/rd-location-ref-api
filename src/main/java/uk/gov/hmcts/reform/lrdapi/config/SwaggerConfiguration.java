@@ -1,11 +1,19 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
+import org.springdoc.core.GroupedOpenApi;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.HandlerMethod;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,20 +54,43 @@ public class SwaggerConfiguration {
             );
     }*/
 
+//    @Bean
+//    public OpenAPI api() {
+//        return new OpenAPI()
+//            .info(
+//                new Info().title("Api Documentation")
+//                    .description("API to upload and download Documents, retrieve metadata associated with the Documents.")
+//                    .version("2-beta")
+//            )
+//            .security(Collections.singletonList(new SecurityRequirement()
+//                                                    .addList("Authorization","Authorization")
+//                                                    .addList("ServiceAuthorization","ServiceAuthorization")
+//            ))
+//            .externalDocs(new ExternalDocumentation());
+////            .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+//    }
+
     @Bean
-    public OpenAPI api() {
-        return new OpenAPI()
-            .info(
-                new Info().title("Api Documentation")
-                    .description("API to upload and download Documents, retrieve metadata associated with the Documents.")
-                    .version("2-beta")
-            )
-            .security(Collections.singletonList(new SecurityRequirement()
-                                                    .addList("Authorization","Authorization")
-                                                    .addList("ServiceAuthorization","ServiceAuthorization")
-            ))
-            .externalDocs(new ExternalDocumentation());
-//            .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+    public GroupedOpenApi publicApi(OperationCustomizer customGlobalHeaders) {
+        return GroupedOpenApi.builder()
+            .group("rd-location-ref-api")
+            .pathsToMatch("/**")
+            .addOperationCustomizer(customGlobalHeaders)
+            .build();
     }
 
+    @Bean
+    public OperationCustomizer customGlobalHeaders() {
+        return (Operation customOperation, HandlerMethod handlerMethod) -> {
+            Parameter serviceAuthorizationHeader = new Parameter()
+                .in(ParameterIn.HEADER.toString())
+                .schema(new StringSchema())
+                .name("ServiceAuthorization")
+                .description("Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service")
+                .required(true);
+            customOperation.addParametersItem(serviceAuthorizationHeader);
+
+            return customOperation;
+        };
+    }
 }
