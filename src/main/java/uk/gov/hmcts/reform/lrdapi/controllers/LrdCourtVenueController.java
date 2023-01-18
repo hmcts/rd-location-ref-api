@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+//import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.ApiParam;
+//import io.swagger.annotations.ApiResponse;
+//import io.swagger.annotations.ApiResponses;
+//import io.swagger.annotations.Authorization;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,215 +62,215 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStri
 @RestController
 @Slf4j
 public class LrdCourtVenueController {
-
-    @Value("${loggingComponentName}")
-    private String loggingComponentName;
-
-    @Autowired
-    CourtVenueService courtVenueService;
-
-    @ApiOperation(
-        value = "This API will retrieve Court Venues for the request provided",
-        notes = RET_LOC_VEN_NOTES_1 + RET_LOC_VEN_NOTES_2 + RET_LOC_VEN_NOTES_3 + RET_LOC_VEN_NOTES_4
-            + RET_LOC_VEN_NOTES_5 + RET_LOC_VEN_NOTES_6 + RET_LOC_VEN_NOTES_7 + RET_LOC_VEN_NOTES_8
-            + RET_LOC_VEN_NOTES_9 + RET_LOC_VEN_NOTES_10 + RET_LOC_VEN_NOTES_11 + RET_LOC_VEN_NOTES_12
-            + RET_LOC_VEN_NOTES_13 + RET_LOC_VEN_NOTES_14 + RET_LOC_VEN_NOTES_15 + RET_LOC_VEN_NOTES_16
-            + RET_LOC_VEN_NOTES_17 + RET_LOC_VEN_NOTES_18 + RET_LOC_VEN_NOTES_19 + RET_LOC_VEN_NOTES_20
-            + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22,
-        authorizations = {
-            @Authorization(value = "ServiceAuthorization"),
-            @Authorization(value = "Authorization")
-        }
-    )
-    @ApiResponses({
-        @ApiResponse(
-            code = 200,
-            message = "Successfully retrieved list of Court Venues for the request provided",
-            response = LrdCourtVenueResponse[].class
-        ),
-        @ApiResponse(
-            code = 400,
-            message = "Bad Request"
-        ),
-        @ApiResponse(
-            code = 401,
-            message = "Forbidden Error: Access denied"
-        ),
-        @ApiResponse(
-            code = 404,
-            message = "No Court Venues found for the request provided"
-        ),
-        @ApiResponse(
-            code = 500,
-            message = "Internal Server Error"
-        )
-    })
-    @GetMapping(
-        produces = APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenues(
-        @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds,
-        @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
-        @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
-        @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
-        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
-        @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
-        @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
-        @RequestParam(value = "location_type", required = false) @NotNull String locationType,
-        @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
-
-        log.info("{} : Inside retrieveCourtVenues",loggingComponentName);
-        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE,epimmsIds, String.valueOf(courtTypeId),
-                                  String.valueOf(regionId),String.valueOf(clusterId), courtVenueName);
-        CourtVenueRequestParam courtVenueRequestParam =
-            new CourtVenueRequestParam();
-
-        courtVenueRequestParam.setIsHearingLocation(isHearingLocation);
-        courtVenueRequestParam.setIsCaseManagementLocation(isCaseManagementLocation);
-        courtVenueRequestParam.setLocationType(locationType);
-        courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
-
-        CourtVenueRequestParam result =  trimCourtVenueRequestParam(courtVenueRequestParam);
-
-        validateCourtVenueFilters(result);
-
-        log.info("{} : Calling retrieveCourtVenues",loggingComponentName);
-        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
-                                                                                 courtTypeId, regionId, clusterId,
-                                                                                 courtVenueName,
-                                                                                 result);
-        return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
-    }
-
-    @ApiOperation(
-        value = "This API will retrieve Court Venues for given Service Code",
-        notes = "No roles required to access this API",
-        authorizations = {
-            @Authorization(value = "ServiceAuthorization"),
-            @Authorization(value = "Authorization")
-        }
-    )
-    @ApiResponses({
-        @ApiResponse(
-            code = 200,
-            message = "Successfully retrieved list of Court Venues for given Service Code",
-            response = LrdCourtVenuesByServiceCodeResponse.class
-        ),
-        @ApiResponse(
-            code = 400,
-            message = "Bad Request"
-        ),
-        @ApiResponse(
-            code = 401,
-            message = "Forbidden Error: Access denied"
-        ),
-        @ApiResponse(
-            code = 404,
-            message = "No Court Venues found with the given Service Code"
-        ),
-        @ApiResponse(
-            code = 500,
-            message = "Internal Server Error"
-        )
-    })
-    @GetMapping(
-        path = "/services",
-        produces = APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
-        @RequestParam(value = "service_code") @NotBlank String serviceCode) {
-
-        log.info("{} : Inside retrieveCourtVenuesByServiceCode",loggingComponentName);
-        String trimmedServiceCode = serviceCode.strip();
-
-        validateServiceCode(trimmedServiceCode);
-
-        log.info("{} : Calling retrieveCourtVenuesByServiceCode",loggingComponentName);
-        LrdCourtVenuesByServiceCodeResponse response = courtVenueService
-            .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @ApiOperation(
-        value = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
-            + "inputs any 3 characters, they will call this api to fetch "
-            + "the required result.",
-        notes = "No roles required to access this API",
-        authorizations = {
-            @Authorization(value = "ServiceAuthorization"),
-            @Authorization(value = "Authorization")
-        }
-    )
-    @ApiResponses({
-        @ApiResponse(
-            code = 200,
-            message = "Successfully retrieved list of Court Venues for the request provided",
-            response = LrdCourtVenueResponse[].class
-        ),
-        @ApiResponse(
-            code = 400,
-            message = "Bad Request"
-        ),
-        @ApiResponse(
-            code = 401,
-            message = "Forbidden Error: Access denied"
-        ),
-        @ApiResponse(
-            code = 500,
-            message = "Internal Server Error"
-        )
-    })
-    @GetMapping(
-        path = "/venue-search",
-        produces = APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenuesBySearchString(
-        @RequestParam(value = "search-string")
-        @ApiParam(name = "search-string",
-            value = "Alphabets, Numeric And Special characters(_@.,’&-() ) "
-                + "only allowed and String should contain minimum three chars.",
-            required = true)
-            String searchString,
-        @RequestParam(value = "court-type-id", required = false)
-        @ApiParam(name = "court-type-id",
-            value = "Alphabets and Numeric values only allowed in comma separated format")
-            String courtTypeId,
-        @RequestParam(value = "is_hearing_location", required = false)
-        @ApiParam(name = "is_hearing_location",
-            value = "Allowed values are \"Y\" or \"N\"")
-            String isHearingLocation,
-        @RequestParam(value = "is_case_management_location", required = false)
-        @ApiParam(name = "is_case_management_location",
-            value = "Allowed values are \"Y\" or \"N\"")
-            String isCaseManagementLocation,
-        @RequestParam(value = "location_type", required = false)
-        @ApiParam(name = "location_type",
-            value = "allowed values are CTSC, NBC, Court,CCBC etc")
-            String locationType,
-        @RequestParam(value = "is_temporary_location", required = false)
-        @ApiParam(name = "is_temporary_location",
-            value = "Allowed values are \"Y\" or \"N\"")
-            String isTemporaryLocation
-    ) {
-        log.info("{} : Inside retrieveCourtVenuesBySearchString",loggingComponentName);
-        String trimmedSearchString = searchString.strip();
-        validateSearchString(trimmedSearchString);
-        if (StringUtils.isNotBlank(courtTypeId)) {
-            validateCourtTypeId(courtTypeId);
-        }
-
-        CourtVenueRequestParam requestParam = CourtVenueRequestParam
-            .builder()
-            .isHearingLocation(isHearingLocation)
-            .isCaseManagementLocation(isCaseManagementLocation)
-            .locationType(locationType)
-            .isTemporaryLocation(isTemporaryLocation)
-            .build();
-
-        log.info("{} : Calling retrieveCourtVenuesBySearchString",loggingComponentName);
-        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
-            trimmedSearchString, courtTypeId, requestParam);
-        return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
-    }
+//
+//    @Value("${loggingComponentName}")
+//    private String loggingComponentName;
+//
+//    @Autowired
+//    CourtVenueService courtVenueService;
+//
+//    @ApiOperation(
+//        value = "This API will retrieve Court Venues for the request provided",
+//        notes = RET_LOC_VEN_NOTES_1 + RET_LOC_VEN_NOTES_2 + RET_LOC_VEN_NOTES_3 + RET_LOC_VEN_NOTES_4
+//            + RET_LOC_VEN_NOTES_5 + RET_LOC_VEN_NOTES_6 + RET_LOC_VEN_NOTES_7 + RET_LOC_VEN_NOTES_8
+//            + RET_LOC_VEN_NOTES_9 + RET_LOC_VEN_NOTES_10 + RET_LOC_VEN_NOTES_11 + RET_LOC_VEN_NOTES_12
+//            + RET_LOC_VEN_NOTES_13 + RET_LOC_VEN_NOTES_14 + RET_LOC_VEN_NOTES_15 + RET_LOC_VEN_NOTES_16
+//            + RET_LOC_VEN_NOTES_17 + RET_LOC_VEN_NOTES_18 + RET_LOC_VEN_NOTES_19 + RET_LOC_VEN_NOTES_20
+//            + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22,
+//        authorizations = {
+//            @Authorization(value = "ServiceAuthorization"),
+//            @Authorization(value = "Authorization")
+//        }
+//    )
+//    @ApiResponses({
+//        @ApiResponse(
+//            code = 200,
+//            message = "Successfully retrieved list of Court Venues for the request provided",
+//            response = LrdCourtVenueResponse[].class
+//        ),
+//        @ApiResponse(
+//            code = 400,
+//            message = "Bad Request"
+//        ),
+//        @ApiResponse(
+//            code = 401,
+//            message = "Forbidden Error: Access denied"
+//        ),
+//        @ApiResponse(
+//            code = 404,
+//            message = "No Court Venues found for the request provided"
+//        ),
+//        @ApiResponse(
+//            code = 500,
+//            message = "Internal Server Error"
+//        )
+//    })
+//    @GetMapping(
+//        produces = APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenues(
+//        @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds,
+//        @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
+//        @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
+//        @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
+//        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
+//        @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
+//        @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
+//        @RequestParam(value = "location_type", required = false) @NotNull String locationType,
+//        @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
+//
+//        log.info("{} : Inside retrieveCourtVenues",loggingComponentName);
+//        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE,epimmsIds, String.valueOf(courtTypeId),
+//                                  String.valueOf(regionId),String.valueOf(clusterId), courtVenueName);
+//        CourtVenueRequestParam courtVenueRequestParam =
+//            new CourtVenueRequestParam();
+//
+//        courtVenueRequestParam.setIsHearingLocation(isHearingLocation);
+//        courtVenueRequestParam.setIsCaseManagementLocation(isCaseManagementLocation);
+//        courtVenueRequestParam.setLocationType(locationType);
+//        courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
+//
+//        CourtVenueRequestParam result =  trimCourtVenueRequestParam(courtVenueRequestParam);
+//
+//        validateCourtVenueFilters(result);
+//
+//        log.info("{} : Calling retrieveCourtVenues",loggingComponentName);
+//        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
+//                                                                                 courtTypeId, regionId, clusterId,
+//                                                                                 courtVenueName,
+//                                                                                 result);
+//        return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
+//    }
+//
+//    @ApiOperation(
+//        value = "This API will retrieve Court Venues for given Service Code",
+//        notes = "No roles required to access this API",
+//        authorizations = {
+//            @Authorization(value = "ServiceAuthorization"),
+//            @Authorization(value = "Authorization")
+//        }
+//    )
+//    @ApiResponses({
+//        @ApiResponse(
+//            code = 200,
+//            message = "Successfully retrieved list of Court Venues for given Service Code",
+//            response = LrdCourtVenuesByServiceCodeResponse.class
+//        ),
+//        @ApiResponse(
+//            code = 400,
+//            message = "Bad Request"
+//        ),
+//        @ApiResponse(
+//            code = 401,
+//            message = "Forbidden Error: Access denied"
+//        ),
+//        @ApiResponse(
+//            code = 404,
+//            message = "No Court Venues found with the given Service Code"
+//        ),
+//        @ApiResponse(
+//            code = 500,
+//            message = "Internal Server Error"
+//        )
+//    })
+//    @GetMapping(
+//        path = "/services",
+//        produces = APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
+//        @RequestParam(value = "service_code") @NotBlank String serviceCode) {
+//
+//        log.info("{} : Inside retrieveCourtVenuesByServiceCode",loggingComponentName);
+//        String trimmedServiceCode = serviceCode.strip();
+//
+//        validateServiceCode(trimmedServiceCode);
+//
+//        log.info("{} : Calling retrieveCourtVenuesByServiceCode",loggingComponentName);
+//        LrdCourtVenuesByServiceCodeResponse response = courtVenueService
+//            .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(response);
+//    }
+//
+//    @ApiOperation(
+//        value = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
+//            + "inputs any 3 characters, they will call this api to fetch "
+//            + "the required result.",
+//        notes = "No roles required to access this API",
+//        authorizations = {
+//            @Authorization(value = "ServiceAuthorization"),
+//            @Authorization(value = "Authorization")
+//        }
+//    )
+//    @ApiResponses({
+//        @ApiResponse(
+//            code = 200,
+//            message = "Successfully retrieved list of Court Venues for the request provided",
+//            response = LrdCourtVenueResponse[].class
+//        ),
+//        @ApiResponse(
+//            code = 400,
+//            message = "Bad Request"
+//        ),
+//        @ApiResponse(
+//            code = 401,
+//            message = "Forbidden Error: Access denied"
+//        ),
+//        @ApiResponse(
+//            code = 500,
+//            message = "Internal Server Error"
+//        )
+//    })
+//    @GetMapping(
+//        path = "/venue-search",
+//        produces = APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenuesBySearchString(
+//        @RequestParam(value = "search-string")
+//        @ApiParam(name = "search-string",
+//            value = "Alphabets, Numeric And Special characters(_@.,’&-() ) "
+//                + "only allowed and String should contain minimum three chars.",
+//            required = true)
+//            String searchString,
+//        @RequestParam(value = "court-type-id", required = false)
+//        @ApiParam(name = "court-type-id",
+//            value = "Alphabets and Numeric values only allowed in comma separated format")
+//            String courtTypeId,
+//        @RequestParam(value = "is_hearing_location", required = false)
+//        @ApiParam(name = "is_hearing_location",
+//            value = "Allowed values are \"Y\" or \"N\"")
+//            String isHearingLocation,
+//        @RequestParam(value = "is_case_management_location", required = false)
+//        @ApiParam(name = "is_case_management_location",
+//            value = "Allowed values are \"Y\" or \"N\"")
+//            String isCaseManagementLocation,
+//        @RequestParam(value = "location_type", required = false)
+//        @ApiParam(name = "location_type",
+//            value = "allowed values are CTSC, NBC, Court,CCBC etc")
+//            String locationType,
+//        @RequestParam(value = "is_temporary_location", required = false)
+//        @ApiParam(name = "is_temporary_location",
+//            value = "Allowed values are \"Y\" or \"N\"")
+//            String isTemporaryLocation
+//    ) {
+//        log.info("{} : Inside retrieveCourtVenuesBySearchString",loggingComponentName);
+//        String trimmedSearchString = searchString.strip();
+//        validateSearchString(trimmedSearchString);
+//        if (StringUtils.isNotBlank(courtTypeId)) {
+//            validateCourtTypeId(courtTypeId);
+//        }
+//
+//        CourtVenueRequestParam requestParam = CourtVenueRequestParam
+//            .builder()
+//            .isHearingLocation(isHearingLocation)
+//            .isCaseManagementLocation(isCaseManagementLocation)
+//            .locationType(locationType)
+//            .isTemporaryLocation(isTemporaryLocation)
+//            .build();
+//
+//        log.info("{} : Calling retrieveCourtVenuesBySearchString",loggingComponentName);
+//        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
+//            trimmedSearchString, courtTypeId, requestParam);
+//        return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
+//    }
 }
