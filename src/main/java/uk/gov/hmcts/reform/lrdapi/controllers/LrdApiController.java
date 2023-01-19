@@ -1,16 +1,13 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
-//import io.swagger.annotations.ApiOperation;
-//import io.swagger.annotations.ApiParam;
-//import io.swagger.annotations.ApiResponse;
-//import io.swagger.annotations.ApiResponses;
-//import io.swagger.annotations.Authorization;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,59 +55,6 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStri
 @RestController
 @Slf4j
 public class LrdApiController {
-    @Operation(
-        summary = "This API will retrieve service code details association with ccd case type",
-//        notes = "No roles required to access this API",
-//        authorizations = {
-//            @Authorization(value = "ServiceAuthorization"),
-//            @Authorization(value = "Authorization")
-//        }
-        parameters = {
-            @Parameter(in = ParameterIn.HEADER, name = "ServiceAuthorization",
-                description = "Service Authorization (S2S Bearer token)", required = true,
-                schema = @Schema(type = "string")),
-            @Parameter(in = ParameterIn.HEADER, name = "Authorization",
-            description = "Authorization", required = true,
-            schema = @Schema(type = "string"))}
-    )
-    @ApiResponses({
-        @ApiResponse(
-            responseCode = "200",
-            description = "Successfully retrieved list of Service Code or Ccd Case Type Details"
-        ),
-        @ApiResponse(
-            responseCode = "400",
-            description = "Bad Request"
-        ),
-        @ApiResponse(
-            responseCode = "401",
-            description = "Forbidden Error: Access denied"
-        ),
-        @ApiResponse(
-            responseCode = "404",
-            description = "No Service found with the given ID"
-        ),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Internal Server Error"
-        )
-    })
-    @GetMapping(
-        path = "/orgServices",
-        produces = APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Object> retrieveOrgServiceDetails(
-        @RequestParam(value = "serviceCode", required = false) String serviceCode,
-        @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,
-        @RequestParam(value = "ccdServiceNames", required = false) String ccdServiceNames) {
-        log.info("{} : Inside retrieveOrgServiceDetails",loggingComponentName);
-        ValidationUtils.validateInputParameters(serviceCode, ccdCaseType, ccdServiceNames);
-        List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse;
-        log.info("{} :Calling retrieveOrgServiceDetails",loggingComponentName);
-        lrdOrgInfoServiceResponse = lrdService.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceNames);
-        return ResponseEntity.status(200).body(lrdOrgInfoServiceResponse);
-    }
-
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -123,47 +67,95 @@ public class LrdApiController {
 
     @Autowired
     RegionService regionService;
-//
-    @Operation(
-        summary = "This API will retrieve the Building Location details for the request param provided",
 
-//        authorizations = {
-//            @Authorization(value = "ServiceAuthorization"),
-//            @Authorization(value = "Authorization")
-//        },
-//        notes = RET_LOC_NOTES_1 + RET_LOC_NOTES_2 + RET_LOC_NOTES_3 + RET_LOC_NOTES_4 + RET_LOC_NOTES_5
-//            + RET_LOC_NOTES_6 + RET_LOC_NOTES_7 + RET_LOC_NOTES_8 + RET_LOC_NOTES_9 + RET_LOC_NOTES_10
-//            + RET_LOC_NOTES_11 + RET_LOC_NOTES_12 + RET_LOC_NOTES_13 + RET_LOC_NOTES_14 + RET_LOC_NOTES_15
-        parameters = {
-            @Parameter(in = ParameterIn.HEADER, name = "Authorization",
-                description = "Service Authorization (S2S Bearer token)", required = true,
-                schema = @Schema(type = "string")),
-            @Parameter(in = ParameterIn.HEADER, name = "ServiceAuthorization",
-                description = "Authorization", required = true,
-                schema = @Schema(type = "string"))}
+    @Operation(
+        summary = "This API will retrieve service code details association with ccd case type",
+        description = "No roles required to access this API",
+        security =
+            {
+                @SecurityRequirement(name = "Authorization"),
+                @SecurityRequirement(name = "ServiceAuthorization")
+            }
     )
     @ApiResponses({
         @ApiResponse(
             responseCode = "200",
-            description = "Successfully retrieved list of Service Code or Ccd Case Type Details"
-//            response = LrdOrgInfoServiceResponse.class,
-//            responseContainer = "list"
+            description = "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            content = @Content(schema = @Schema(implementation = LrdOrgInfoServiceResponse.class))
         ),
-       @ApiResponse(
+        @ApiResponse(
             responseCode = "400",
-            description = "Bad Request"
+            description = "Bad Request",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "401",
-            description = "Forbidden Error: Access denied"
+            description = "Forbidden Error: Access denied",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "No Service found with the given ID"
+            description = "No Service found with the given ID",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "500",
-            description = "Internal Server Error"
+            description = "Internal Server Error",
+            content = @Content
+        )
+    })
+    @GetMapping(
+        path = "/orgServices",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retrieveOrgServiceDetails(
+        @RequestParam(value = "serviceCode", required = false) String serviceCode,
+        @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,
+        @RequestParam(value = "ccdServiceNames", required = false) String ccdServiceNames) {
+        log.info("{} : Inside retrieveOrgServiceDetails", loggingComponentName);
+        ValidationUtils.validateInputParameters(serviceCode, ccdCaseType, ccdServiceNames);
+        List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse;
+        log.info("{} :Calling retrieveOrgServiceDetails", loggingComponentName);
+        lrdOrgInfoServiceResponse = lrdService.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceNames);
+        return ResponseEntity.status(200).body(lrdOrgInfoServiceResponse);
+    }
+
+    @Operation(
+        summary = "This API will retrieve the Building Location details for the request param provided",
+        description = RET_LOC_NOTES_1 + RET_LOC_NOTES_2 + RET_LOC_NOTES_3 + RET_LOC_NOTES_4 + RET_LOC_NOTES_5
+            + RET_LOC_NOTES_6 + RET_LOC_NOTES_7 + RET_LOC_NOTES_8 + RET_LOC_NOTES_9 + RET_LOC_NOTES_10
+            + RET_LOC_NOTES_11 + RET_LOC_NOTES_12 + RET_LOC_NOTES_13 + RET_LOC_NOTES_14 + RET_LOC_NOTES_15,
+        security =
+            {
+                @SecurityRequirement(name = "Authorization"),
+                @SecurityRequirement(name = "ServiceAuthorization")
+            }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved list of Service Code or Ccd Case Type Details",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationResponse.class)))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Forbidden Error: Access denied",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "No Service found with the given ID",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal Server Error",
+            content = @Content
         )
     })
     @GetMapping(
@@ -176,109 +168,119 @@ public class LrdApiController {
         @RequestParam(value = "region_id", required = false) String regionId,
         @RequestParam(value = "cluster_id", required = false) String clusterId) {
 
-        log.info("{} : Inside retrieveBuildingLocationDetails",loggingComponentName);
-        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION,epimsIds, buildingLocationName,
-                regionId, clusterId);
-        log.info("{} : Calling retrieveBuildingLocationDetails",loggingComponentName);
-        Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(epimsIds,
-                                                                                        buildingLocationName,
-                                                                                        regionId,
-                                                                                        clusterId);
+        log.info("{} : Inside retrieveBuildingLocationDetails", loggingComponentName);
+        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION, epimsIds, buildingLocationName,
+                                  regionId, clusterId
+        );
+        log.info("{} : Calling retrieveBuildingLocationDetails", loggingComponentName);
+        Object responseEntity = buildingLocationService.retrieveBuildingLocationDetails(
+            epimsIds,
+            buildingLocationName,
+            regionId,
+            clusterId
+        );
         return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
     }
-//
-//    @Operation(description = (
-//        value = "This API will retrieve Region details for the given Region description",
-//        notes = "No roles required to access this API",
-//        authorizations = {
-//            @Authorization(value = "ServiceAuthorization"),
-//            @Authorization(value = "Authorization")
-//        }
-//    )
-//    @ApiResponses({
-//        @ApiResponse(
-//            code = 200,
-//            message = "Successfully retrieved a list of Region Details",
-//            response = LrdRegionResponse[].class
-//        ),
-//        @ApiResponse(
-//            code = 400,
-//            message = "Bad Request"
-//        ),
-//        @ApiResponse(
-//            code = 401,
-//            message = "Forbidden Error: Access denied"
-//        ),
-//        @ApiResponse(
-//            code = 404,
-//            message = "No Region(s) found with the given Description(s) or ID(s)"
-//        ),
-//        @ApiResponse(
-//            code = 500,
-//            message = "Internal Server Error"
-//        )
-//    })
-//    @GetMapping(
-//        path = "/regions",
-//        produces = APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<Object> retrieveRegionDetails(
-//        @RequestParam(value = "region", required = false) String region,
-//        @RequestParam(value = "regionId", required = false) String regionId) {
-//        log.info("{} : Inside retrieveRegionDetails",loggingComponentName);
-//        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_REGION,region, regionId);
-//        log.info("{} : Calling retrieveRegionDetails",loggingComponentName);
-//        Object response = regionService.retrieveRegionDetails(regionId, region);
-//        return ResponseEntity.status(HttpStatus.OK).body(response);
-//    }
-//
-//
-//
-//    @Operation(description = (
-//        value = "This end point will be used to search the open building locations based on the the "
-//            + "partial search string . When the consumers "
-//            + "inputs minimum 3 characters, they will call this api to fetch "
-//            + "the required result.",
-//        notes = "No roles required to access this API",
-//        authorizations = {
-//            @Authorization(value = "ServiceAuthorization"),
-//            @Authorization(value = "Authorization")
-//        }
-//    )
-//    @ApiResponses({
-//        @ApiResponse(
-//            code = 200,
-//            message = "Successfully retrieved the building location information for the given search string",
-//            response = LrdBuildingLocationBySearchResponse[].class
-//        ),
-//        @ApiResponse(
-//            code = 400,
-//            message = "Bad Request"
-//        ),
-//        @ApiResponse(
-//            code = 401,
-//            message = "Forbidden Error: Access denied"
-//        ),
-//        @ApiResponse(
-//            code = 500,
-//            message = "Internal Server Error"
-//        )
-//    })
-//    @GetMapping(
-//        path = "/building-locations/search",
-//        produces = APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<Object> retrieveBuildingLocationDetailsBySearchString(
-//        @RequestParam(value = "search")
-//        @ApiParam(name = "search", value = "Alphabets, Numeric And Special characters(&,/-()[]<space>') "
-//               + "only allowed and String should contain minimum three chars.", required = true) String searchString) {
-//        log.info("{} : Inside retrieveBuildingLocationDetailsBySearchString",loggingComponentName);
-//        String trimmedSearchString = searchString.strip();
-//        validateSearchStringForBuildingLocationDetails(trimmedSearchString);
-//        log.info("{} : Calling searchBuildingLocationsBySearchString",loggingComponentName);
-//        Object responseEntity = buildingLocationService.searchBuildingLocationsBySearchString(trimmedSearchString);
-//        return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
-//    }
+
+    @Operation(
+        summary = "This API will retrieve Region details for the given Region description",
+        description = "No roles required to access this API",
+        security =
+            {
+                @SecurityRequirement(name = "Authorization"),
+                @SecurityRequirement(name = "ServiceAuthorization")
+            }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved a list of Region Details",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdRegionResponse.class)))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Forbidden Error: Access denied",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "404",
+            description = "No Region(s) found with the given Description(s) or ID(s)",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal Server Error",
+            content = @Content
+        )
+    })
+    @GetMapping(
+        path = "/regions",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retrieveRegionDetails(
+        @RequestParam(value = "region", required = false) String region,
+        @RequestParam(value = "regionId", required = false) String regionId) {
+        log.info("{} : Inside retrieveRegionDetails", loggingComponentName);
+        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_REGION, region, regionId);
+        log.info("{} : Calling retrieveRegionDetails", loggingComponentName);
+        Object response = regionService.retrieveRegionDetails(regionId, region);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Operation(
+        summary = "This end point will be used to search the open building locations based on the the "
+            + "partial search string . When the consumers "
+            + "inputs minimum 3 characters, they will call this api to fetch "
+            + "the required result.",
+        description = "No roles required to access this API",
+        security =
+            {
+                @SecurityRequirement(name = "Authorization"),
+                @SecurityRequirement(name = "ServiceAuthorization")
+            }
+    )
+    @ApiResponses({
+        @ApiResponse(
+            responseCode = "200",
+            description = "Successfully retrieved the building location information for the given search string",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationBySearchResponse.class)))
+        ),
+        @ApiResponse(
+            responseCode = "400",
+            description = "Bad Request",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "401",
+            description = "Forbidden Error: Access denied",
+            content = @Content
+        ),
+        @ApiResponse(
+            responseCode = "500",
+            description = "Internal Server Error",
+            content = @Content
+        )
+    })
+    @GetMapping(
+        path = "/building-locations/search",
+        produces = APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Object> retrieveBuildingLocationDetailsBySearchString(
+        @RequestParam(value = "search")
+        @Parameter(name = "search", description = "Alphabets, Numeric And Special characters(&,/-()[]<space>') "
+            + "only allowed and String should contain minimum three chars.", required = true) String searchString) {
+        log.info("{} : Inside retrieveBuildingLocationDetailsBySearchString", loggingComponentName);
+        String trimmedSearchString = searchString.strip();
+        validateSearchStringForBuildingLocationDetails(trimmedSearchString);
+        log.info("{} : Calling searchBuildingLocationsBySearchString", loggingComponentName);
+        Object responseEntity = buildingLocationService.searchBuildingLocationsBySearchString(trimmedSearchString);
+        return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
+    }
 
 
 }
