@@ -135,7 +135,9 @@ public class LrdApiController {
         @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Service Code or Ccd Case Type Details",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationResponse.class)))
+            content = @Content(
+                array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationResponse.class))
+            )
         ),
         @ApiResponse(
             responseCode = "400",
@@ -248,7 +250,9 @@ public class LrdApiController {
         @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved the building location information for the given search string",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationBySearchResponse.class)))
+            content = @Content(
+                array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationBySearchResponse.class))
+            )
         ),
         @ApiResponse(
             responseCode = "400",
