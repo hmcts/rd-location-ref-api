@@ -1,17 +1,14 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
-import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -25,18 +22,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 
-import java.util.List;
-import javax.inject.Inject;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 @Configuration
-@ConfigurationProperties(prefix = "security")
 @EnableWebSecurity
-@Slf4j
-@SuppressWarnings("unchecked")
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
-
 
     @Value("${spring.security.oauth2.client.provider.oidc.issuer-uri}")
     private String issuerUri;
@@ -44,91 +33,69 @@ public class SecurityConfiguration {
     @Value("${oidc.issuer}")
     private String issuerOverride;
 
-    @Order(1)
-    private  ServiceAuthFilter serviceAuthFilter;
-    @Order(2)
-    private final SecurityEndpointFilter securityEndpointFilter;
-
-    List<String> anonymousPaths;
+    private ServiceAuthFilter serviceAuthFilter;
 
     private JwtAuthenticationConverter jwtAuthenticationConverter;
 
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    public List<String> getAnonymousPaths() {
-        return anonymousPaths;
-    }
-
-    public void setAnonymousPaths(List<String> anonymousPaths) {
-        this.anonymousPaths = anonymousPaths;
-    }
-
-
-    @Inject
     public SecurityConfiguration(final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
-                                 final ServiceAuthFilter serviceAuthFilter,
-                                 RestAuthenticationEntryPoint restAuthenticationEntryPoint,
-                                 SecurityEndpointFilter securityEndpointFilter) {
-
+                                 final ServiceAuthFilter serviceAuthFilter) {
         this.serviceAuthFilter = serviceAuthFilter;
-        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
-        jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        this.jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-        this.securityEndpointFilter = securityEndpointFilter;
-
     }
 
     @Bean
-    public SecurityFilterChain filterChain(final HttpSecurity http) throws Exception {
-        http
-           .addFilterBefore(serviceAuthFilter, BearerTokenAuthenticationFilter.class)
-           .addFilterAfter(securityEndpointFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers(
+            "/swagger-ui.html",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v3/**",
+            "/health",
+            "/health/liveness",
+            "/health/readiness",
+            "/status/health",
+            "/loggers/**",
+            "/actuator/**",
+            "/loggers/**",
+            "/webjars/springfox-swagger-ui/**",
+            "/csrf",
+            "/error",
+            "/favicon.ico",
+            "/v3/**",
+            "/"
+        );
+    }
 
-            .sessionManagement().sessionCreationPolicy(STATELESS).and()
-           .csrf().disable()
-           .formLogin().disable()
-           .logout().disable()
-           .authorizeRequests()
-           .antMatchers("/error").permitAll()
-           .anyRequest()
-           .authenticated()
-           .and()
-           .oauth2ResourceServer().authenticationEntryPoint(restAuthenticationEntryPoint)
-           .jwt()
-           .jwtAuthenticationConverter(jwtAuthenticationConverter)
-           .and()
-           .and()
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .formLogin().disable()
+            .logout().disable()
+            .addFilterBefore(serviceAuthFilter, BearerTokenAuthenticationFilter.class)
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authorizeRequests()
+            .antMatchers("/api/**").authenticated()
+            .and()
+            .oauth2ResourceServer()
+            .jwt()
+            .jwtAuthenticationConverter(jwtAuthenticationConverter)
+            .and()
+            .and()
             .oauth2Client();
         return http.build();
     }
 
     @Bean
     JwtDecoder jwtDecoder() {
-
-        NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder) JwtDecoders.fromOidcIssuerLocation(issuerUri);
-        // We are using issuerOverride instead of issuerUri as SIDAM has the wrong issuer at the moment
+        NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder)
+            JwtDecoders.fromOidcIssuerLocation(issuerUri);
         OAuth2TokenValidator<Jwt> withTimestamp = new JwtTimestampValidator();
         OAuth2TokenValidator<Jwt> validator = new DelegatingOAuth2TokenValidator<>(withTimestamp);
         jwtDecoder.setJwtValidator(validator);
         return jwtDecoder;
     }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) ->
-            web.ignoring().antMatchers(
-                "/swagger-ui.html",
-                "/swagger-ui/**",
-                "/swagger-resources/**",
-                "/v3/**",
-                "/favicon.ico",
-                "/health",
-                "/mappings",
-                "/info",
-                "/metrics",
-                "/metrics/**",
-                "/");
-    }
 }
-
-
