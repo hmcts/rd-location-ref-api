@@ -116,7 +116,7 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
         RSAKey rsaKey = KeyGenUtil.getRsaJwk();
         Map<String, List<JSONObject>> body = new LinkedHashMap<>();
         List<JSONObject> keyList = new ArrayList<>();
-        keyList.add(rsaKey.toJSONObject());
+        keyList.add((JSONObject) rsaKey.toJSONObject());
         body.put("keys", keyList);
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writeValueAsString(body);

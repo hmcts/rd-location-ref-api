@@ -4,11 +4,12 @@ package uk.gov.hmcts.reform.lrdapi.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -22,6 +23,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -33,16 +36,25 @@ public class SecurityConfiguration {
     @Value("${oidc.issuer}")
     private String issuerOverride;
 
+    @Order(1)
     private ServiceAuthFilter serviceAuthFilter;
+
+    @Order(2)
+    private final SecurityEndpointFilter securityEndpointFilter;
 
     private JwtAuthenticationConverter jwtAuthenticationConverter;
 
+    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     public SecurityConfiguration(final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
-                                 final ServiceAuthFilter serviceAuthFilter) {
+                                 final ServiceAuthFilter serviceAuthFilter,
+                                 RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                                 SecurityEndpointFilter securityEndpointFilter) {
         this.serviceAuthFilter = serviceAuthFilter;
         this.jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.securityEndpointFilter = securityEndpointFilter;
     }
 
     @Bean
@@ -70,17 +82,19 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.addFilterBefore(serviceAuthFilter, BearerTokenAuthenticationFilter.class)
+            .addFilterAfter(securityEndpointFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+
+            .sessionManagement().sessionCreationPolicy(STATELESS).and()
+            .csrf().disable()
             .formLogin().disable()
             .logout().disable()
-            .addFilterBefore(serviceAuthFilter, BearerTokenAuthenticationFilter.class)
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
             .authorizeRequests()
-            .antMatchers("/api/**").authenticated()
+            .antMatchers("/error").permitAll()
+            .anyRequest()
+            .authenticated()
             .and()
-            .oauth2ResourceServer()
+            .oauth2ResourceServer().authenticationEntryPoint(restAuthenticationEntryPoint)
             .jwt()
             .jwtAuthenticationConverter(jwtAuthenticationConverter)
             .and()
