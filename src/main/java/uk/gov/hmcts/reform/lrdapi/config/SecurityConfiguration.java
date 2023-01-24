@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
-
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -23,9 +23,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 
+import javax.inject.Inject;
+import java.util.List;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
+@ConfigurationProperties(prefix = "security")
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
@@ -38,46 +42,39 @@ public class SecurityConfiguration {
 
     @Order(1)
     private ServiceAuthFilter serviceAuthFilter;
-
     @Order(2)
     private final SecurityEndpointFilter securityEndpointFilter;
+
+    List<String> anonymousPaths;
 
     private JwtAuthenticationConverter jwtAuthenticationConverter;
 
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
-    public SecurityConfiguration(final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
-                                 final ServiceAuthFilter serviceAuthFilter,
-                                 RestAuthenticationEntryPoint restAuthenticationEntryPoint,
-                                 SecurityEndpointFilter securityEndpointFilter) {
-        this.serviceAuthFilter = serviceAuthFilter;
-        this.jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
-        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
-        this.securityEndpointFilter = securityEndpointFilter;
+    public List<String> getAnonymousPaths() {
+        return anonymousPaths;
+    }
+
+    public void setAnonymousPaths(List<String> anonymousPaths) {
+        this.anonymousPaths = anonymousPaths;
     }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().antMatchers(
-            "/swagger-ui.html",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/v3/**",
-            "/health",
-            "/health/liveness",
-            "/health/readiness",
-            "/status/health",
-            "/loggers/**",
-            "/actuator/**",
-            "/loggers/**",
-            "/webjars/springfox-swagger-ui/**",
-            "/csrf",
-            "/error",
-            "/favicon.ico",
-            "/v3/**",
-            "/"
-        );
+        return web -> web.ignoring().antMatchers(anonymousPaths.toArray(String[]::new));
+    }
+
+    @Inject
+    public SecurityConfiguration(final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter,
+                                 final ServiceAuthFilter serviceAuthFilter,
+                                 RestAuthenticationEntryPoint restAuthenticationEntryPoint,
+                                 SecurityEndpointFilter securityEndpointFilter) {
+
+        this.serviceAuthFilter = serviceAuthFilter;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        this.securityEndpointFilter = securityEndpointFilter;
     }
 
     @Bean
