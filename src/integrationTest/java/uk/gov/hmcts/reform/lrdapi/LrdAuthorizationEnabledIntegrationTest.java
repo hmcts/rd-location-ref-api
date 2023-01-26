@@ -80,7 +80,7 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
     private long expiration;
 
     @Value("${idam.s2s-auth.microservice}")
-    static String AUTHORISED_SERVICE;
+    static String authorisedService;
 
     @MockBean
     protected JwtDecoder jwtDecoder;
@@ -133,8 +133,8 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
             .compact();
     }
 
-    public static Jwt getJwt() {
-        var s2SToken = generateDummyS2SToken(AUTHORISED_SERVICE);
+    public static synchronized Jwt getJwt() {
+        var s2SToken = generateDummyS2SToken(authorisedService);
         return Jwt.withTokenValue(s2SToken)
             .claim("exp", Instant.ofEpochSecond(1585763216))
             .claim("iat", Instant.ofEpochSecond(1585734416))
