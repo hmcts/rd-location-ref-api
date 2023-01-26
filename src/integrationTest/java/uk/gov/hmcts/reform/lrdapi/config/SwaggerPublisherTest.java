@@ -5,15 +5,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.lrdapi.LrdAuthorizationEnabledIntegrationTest;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -22,8 +27,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Built-in feature which saves service's swagger specs in temporary directory.
  * Each travis run on master should automatically save and upload (if updated) documentation.
  */
-@WebMvcTest
-@ContextConfiguration(classes = SwaggerConfiguration.class)
+@SpringBootTest
+@SpringJUnitWebConfig
 @AutoConfigureMockMvc
 class SwaggerPublisherTest {
 
@@ -32,9 +37,13 @@ class SwaggerPublisherTest {
 
     private MockMvc mvc;
 
+    @MockBean
+    protected JwtDecoder jwtDecoder;
+
     @BeforeEach
     public void setUp() {
         this.mvc = webAppContextSetup(webApplicationContext).build();
+        when(jwtDecoder.decode(anyString())).thenReturn(LrdAuthorizationEnabledIntegrationTest.getJwt());
     }
 
 
@@ -42,7 +51,7 @@ class SwaggerPublisherTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void generateDocs() throws Exception {
-        byte[] specs = mvc.perform(get("/v2/api-docs"))
+        byte[] specs = mvc.perform(get("/v3/api-docs"))
             .andExpect(status().isOk())
             .andReturn()
             .getResponse()
