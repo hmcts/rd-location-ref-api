@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
+import net.thucydides.core.annotations.WithTag;
+import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +32,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest
 @SpringJUnitWebConfig
 @AutoConfigureMockMvc
-//@ActiveProfiles("integration")
+@WithTags({@WithTag("testType:Integration")})
 class SwaggerPublisherTest {
 
     @Autowired
@@ -48,7 +51,7 @@ class SwaggerPublisherTest {
 
 
     @DisplayName("Generate swagger documentation")
-    //@Test
+    @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void generateDocs() throws Exception {
         byte[] specs = mvc.perform(get("/v3/api-docs"))
