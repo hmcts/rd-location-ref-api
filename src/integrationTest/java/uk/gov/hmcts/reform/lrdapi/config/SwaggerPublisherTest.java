@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import uk.gov.hmcts.reform.lrdapi.LrdApiApplication;
 import uk.gov.hmcts.reform.lrdapi.LrdAuthorizationEnabledIntegrationTest;
 
 import java.io.OutputStream;
@@ -31,11 +32,12 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Built-in feature which saves service's swagger specs in temporary directory.
  * Each travis run on master should automatically save and upload (if updated) documentation.
  */
-@SpringBootTest
+//@SpringBootTest
 @SpringJUnitWebConfig
 @AutoConfigureMockMvc
 //@ContextConfiguration(classes = SwaggerConfiguration.class)
 @WithTags({@WithTag("testType:Integration")})
+@SpringBootTest(classes = {LrdApiApplication.class, SwaggerPublisherTest.class})
 class SwaggerPublisherTest {
 
     @Autowired
