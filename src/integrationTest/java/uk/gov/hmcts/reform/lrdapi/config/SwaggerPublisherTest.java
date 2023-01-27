@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
+import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest
 @SpringJUnitWebConfig
 @AutoConfigureMockMvc
+//@ContextConfiguration(classes = SwaggerConfiguration.class)
 @WithTags({@WithTag("testType:Integration")})
 class SwaggerPublisherTest {
 
@@ -45,7 +48,12 @@ class SwaggerPublisherTest {
 
     @BeforeEach
     public void setUp() {
-        this.mvc = webAppContextSetup(webApplicationContext).build();
+        WebRequestTrackingFilter filter;
+        filter = new WebRequestTrackingFilter();
+        filter.init(new MockFilterConfig());
+        this.mvc = webAppContextSetup(webApplicationContext)
+            .addFilter(filter)
+            .build();
         when(jwtDecoder.decode(anyString())).thenReturn(LrdAuthorizationEnabledIntegrationTest.getJwt());
     }
 
