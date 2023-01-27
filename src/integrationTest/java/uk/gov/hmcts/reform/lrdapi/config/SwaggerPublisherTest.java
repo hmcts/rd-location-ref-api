@@ -7,24 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockFilterConfig;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.hmcts.reform.lrdapi.LrdApiApplication;
 import uk.gov.hmcts.reform.lrdapi.LrdAuthorizationEnabledIntegrationTest;
 
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -34,30 +25,29 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
  * Each travis run on master should automatically save and upload (if updated) documentation.
  */
 //@SpringBootTest
-@SpringJUnitWebConfig
-@AutoConfigureMockMvc
-@ContextConfiguration(classes = {LrdApiApplication.class, SwaggerPublisherTest.class})
+//@SpringJUnitWebConfig
+//@AutoConfigureMockMvc
+//@ContextConfiguration(classes = SwaggerConfiguration.class)
 @WithTags({@WithTag("testType:Integration")})
-@SpringBootTest
-class SwaggerPublisherTest {
+//@SpringBootTest(classes = {LrdApiApplication.class,SwaggerPublisherTest.class})
+class SwaggerPublisherTest extends LrdAuthorizationEnabledIntegrationTest {
 
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mvc;
 
-    @MockBean
-    protected JwtDecoder jwtDecoder;
+//    @MockBean
+//    protected JwtDecoder jwtDecoder;
 
     @BeforeEach
     public void setUp() {
-        WebRequestTrackingFilter filter;
-        filter = new WebRequestTrackingFilter();
+        WebRequestTrackingFilter filter = new WebRequestTrackingFilter();
         filter.init(new MockFilterConfig());
         this.mvc = webAppContextSetup(webApplicationContext)
             .addFilter(filter)
             .build();
-        when(jwtDecoder.decode(anyString())).thenReturn(LrdAuthorizationEnabledIntegrationTest.getJwt());
+//        when(jwtDecoder.decode(anyString())).thenReturn(LrdAuthorizationEnabledIntegrationTest.getJwt());
     }
 
 
