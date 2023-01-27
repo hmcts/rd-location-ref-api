@@ -43,7 +43,7 @@ def versions = [
         logback            : '1.2.10',
         feign              : '3.8.0',
         bytebuddy          : '1.12.7',
-        testContainer_postgresql: '1.17.2'
+        testContainer_postgresql: '1.17.6'
 
 ]
 
@@ -342,8 +342,6 @@ dependencies {
         exclude group: "org.apache.sling"
     }
     implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.3.3'
-//    implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-//    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwagger
 
     implementation 'com.github.hmcts:service-auth-provider-java-client:4.0.3'
 
