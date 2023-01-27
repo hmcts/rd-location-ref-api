@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
@@ -35,9 +36,9 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 //@SpringBootTest
 @SpringJUnitWebConfig
 @AutoConfigureMockMvc
-//@ContextConfiguration(classes = SwaggerConfiguration.class)
+@ContextConfiguration(classes = {LrdApiApplication.class, SwaggerPublisherTest.class})
 @WithTags({@WithTag("testType:Integration")})
-@SpringBootTest(classes = {LrdApiApplication.class, SwaggerPublisherTest.class})
+@SpringBootTest
 class SwaggerPublisherTest {
 
     @Autowired
