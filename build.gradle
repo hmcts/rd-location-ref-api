@@ -520,6 +520,10 @@ dependencyManagement {
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
     }
+    
+    dependencySet(group: 'org.springframework', version: '5.3.25') {
+      entry 'spring-beans'
+    }
   }
 }
 
