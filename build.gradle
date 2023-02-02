@@ -16,6 +16,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.12'
     id "org.flywaydb.flyway" version "8.5.12"
     id 'au.com.dius.pact' version '4.1.7'
+    id 'org.owasp.dependencycheck' version '8.0.2'
 }
 
 apply plugin: 'java'
