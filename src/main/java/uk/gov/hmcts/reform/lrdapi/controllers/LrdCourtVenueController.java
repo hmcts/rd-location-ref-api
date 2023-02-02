@@ -93,34 +93,38 @@ public class LrdCourtVenueController {
         ),
         @ApiResponse(
             responseCode = "400",
-            description = "Bad Request"
+            description = "Bad Request",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "401",
-            description = "Forbidden Error: Access denied"
+            description = "Forbidden Error: Access denied",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "404",
-            description = "No Court Venues found for the request provided"
+            description = "No Court Venues found for the request provided",
+            content = @Content
         ),
         @ApiResponse(
             responseCode = "500",
-            description = "Internal Server Error"
+            description = "Internal Server Error",
+            content = @Content
         )
     })
     @GetMapping(
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenues(
-        @RequestParam(value = "epimms_id", required = false) @NotBlank String epimmsIds,
-        @RequestParam(value = "court_type_id", required = false) @NotNull Integer courtTypeId,
-        @RequestParam(value = "region_id", required = false) @NotNull Integer regionId,
-        @RequestParam(value = "cluster_id", required = false) @NotNull Integer clusterId,
-        @RequestParam(value = "court_venue_name", required = false) @NotNull String courtVenueName,
-        @RequestParam(value = "is_hearing_location", required = false) @NotNull String isHearingLocation,
-        @RequestParam(value = "is_case_management_location", required = false) @NotNull String isCaseManagementLocation,
-        @RequestParam(value = "location_type", required = false) @NotNull String locationType,
-        @RequestParam(value = "is_temporary_location", required = false) @NotNull String isTemporaryLocation) {
+        @RequestParam(value = "epimms_id", required = false) String epimmsIds,
+        @RequestParam(value = "court_type_id", required = false) Integer courtTypeId,
+        @RequestParam(value = "region_id", required = false) Integer regionId,
+        @RequestParam(value = "cluster_id", required = false) Integer clusterId,
+        @RequestParam(value = "court_venue_name", required = false) String courtVenueName,
+        @RequestParam(value = "is_hearing_location", required = false) String isHearingLocation,
+        @RequestParam(value = "is_case_management_location", required = false) String isCaseManagementLocation,
+        @RequestParam(value = "location_type", required = false) String locationType,
+        @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation) {
 
         log.info("{} : Inside retrieveCourtVenues", loggingComponentName);
         checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds, String.valueOf(courtTypeId),
