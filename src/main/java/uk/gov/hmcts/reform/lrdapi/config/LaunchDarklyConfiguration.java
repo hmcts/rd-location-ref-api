@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation;
 
-
 @Configuration
 public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
