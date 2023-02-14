@@ -30,6 +30,7 @@ spring:
 
   main:
     allow-bean-definition-overriding: true
+    allow-circular-references: true
   application:
     name: RD Location Ref API
   security:
@@ -77,8 +78,9 @@ security:
     - "/actuator/**"
     - "/loggers/**"
     - "/swagger-ui.html"
+    - "/swagger-ui/**"
     - "/swagger-resources/**"
-    - "/v2/api-docs"
+    - "/v3/**"
     - "/webjars/springfox-swagger-ui/**"
     - "/csrf"
     - "/error"
