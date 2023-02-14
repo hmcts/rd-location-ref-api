@@ -9,13 +9,17 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
-import net.minidev.json.JSONObject;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
@@ -25,7 +29,9 @@ import uk.gov.hmcts.reform.lrdapi.util.KeyGenUtil;
 import uk.gov.hmcts.reform.lrdapi.util.LrdApiClient;
 import uk.gov.hmcts.reform.lrdapi.util.WireMockExtension;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -73,10 +79,17 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
     @Value("${oidc.expiration}")
     private long expiration;
 
+    @Value("${idam.s2s-auth.microservice}")
+    static String authorisedService;
+
+    @MockBean
+    protected JwtDecoder jwtDecoder;
+
     @BeforeEach
     public void setUpClient() {
         when(featureToggleService.isFlagEnabled(anyString(), anyString())).thenReturn(true);
         lrdApiClient = new LrdApiClient(port, issuer, expiration);
+        when(jwtDecoder.decode(anyString())).thenReturn(getJwt());
     }
 
     @BeforeEach
@@ -112,10 +125,32 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
                                                           .withBody(getDynamicJwksResponse())));
     }
 
+    public static String generateDummyS2SToken(String serviceName) {
+        return Jwts.builder()
+            .setSubject(serviceName)
+            .setIssuedAt(new Date())
+            .signWith(SignatureAlgorithm.HS256, TextCodec.BASE64.encode("AA"))
+            .compact();
+    }
+
+    public static synchronized Jwt getJwt() {
+        var s2SToken = generateDummyS2SToken(authorisedService);
+        return Jwt.withTokenValue(s2SToken)
+            .claim("exp", Instant.ofEpochSecond(1585763216))
+            .claim("iat", Instant.ofEpochSecond(1585734416))
+            .claim("token_type", "Bearer")
+            .claim("tokenName", "access_token")
+            .claim("expires_in", 28800)
+            .header("kid", "b/O6OvVv1+y+WgrH5Ui9WTioLt0=")
+            .header("typ", "RS256")
+            .header("alg", "RS256")
+            .build();
+    }
+
     public static String getDynamicJwksResponse() throws JOSEException, JsonProcessingException {
         RSAKey rsaKey = KeyGenUtil.getRsaJwk();
-        Map<String, List<JSONObject>> body = new LinkedHashMap<>();
-        List<JSONObject> keyList = new ArrayList<>();
+        Map<String, List<Map<String, Object>>> body = new LinkedHashMap<>();
+        List<Map<String, Object>> keyList = new ArrayList<>();
         keyList.add(rsaKey.toJSONObject());
         body.put("keys", keyList);
         ObjectMapper objectMapper = new ObjectMapper();
