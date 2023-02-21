@@ -113,12 +113,12 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         boolean isEachIdMatched = Arrays
             .stream(response)
             .map(LrdCourtVenueResponse::getEpimmsId)
-            .allMatch("381649"::equals);
+            .allMatch("219164"::equals);
         assertTrue(isEachIdMatched);
         boolean isEachCourtTypeMatched = Arrays
             .stream(response)
             .map(LrdCourtVenueResponse::getCourtTypeId)
-            .allMatch("31"::equals);
+            .allMatch("23"::equals);
         assertTrue(isEachCourtTypeMatched);
     }
 
