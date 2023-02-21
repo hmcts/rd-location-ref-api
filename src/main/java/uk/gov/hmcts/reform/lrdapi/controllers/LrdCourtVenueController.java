@@ -27,6 +27,7 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EPPIMS_ID_WITH_COURT_TYPE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_1;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_10;
@@ -48,9 +49,11 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_5;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_6;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_7;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_7_1;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_8;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_9;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkBothValuesPresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
@@ -65,6 +68,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStri
 @Slf4j
 public class LrdCourtVenueController {
 
+
     @Value("${loggingComponentName}")
     private String loggingComponentName;
 
@@ -74,11 +78,11 @@ public class LrdCourtVenueController {
     @Operation(
         summary = "This API will retrieve Court Venues for the request provided",
         description = RET_LOC_VEN_NOTES_1 + RET_LOC_VEN_NOTES_2 + RET_LOC_VEN_NOTES_3 + RET_LOC_VEN_NOTES_4
-            + RET_LOC_VEN_NOTES_5 + RET_LOC_VEN_NOTES_6 + RET_LOC_VEN_NOTES_7 + RET_LOC_VEN_NOTES_8
-            + RET_LOC_VEN_NOTES_9 + RET_LOC_VEN_NOTES_10 + RET_LOC_VEN_NOTES_11 + RET_LOC_VEN_NOTES_12
-            + RET_LOC_VEN_NOTES_13 + RET_LOC_VEN_NOTES_14 + RET_LOC_VEN_NOTES_15 + RET_LOC_VEN_NOTES_16
-            + RET_LOC_VEN_NOTES_17 + RET_LOC_VEN_NOTES_18 + RET_LOC_VEN_NOTES_19 + RET_LOC_VEN_NOTES_20
-            + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22,
+            + RET_LOC_VEN_NOTES_5 + RET_LOC_VEN_NOTES_6 + RET_LOC_VEN_NOTES_7 + RET_LOC_VEN_NOTES_7_1
+            + RET_LOC_VEN_NOTES_8 + RET_LOC_VEN_NOTES_9 + RET_LOC_VEN_NOTES_10 + RET_LOC_VEN_NOTES_11
+            + RET_LOC_VEN_NOTES_12 + RET_LOC_VEN_NOTES_13 + RET_LOC_VEN_NOTES_14 + RET_LOC_VEN_NOTES_15
+            + RET_LOC_VEN_NOTES_16 + RET_LOC_VEN_NOTES_17 + RET_LOC_VEN_NOTES_18 + RET_LOC_VEN_NOTES_19
+            + RET_LOC_VEN_NOTES_20 + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
@@ -126,9 +130,18 @@ public class LrdCourtVenueController {
         @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation) {
 
         log.info("{} : Inside retrieveCourtVenues", loggingComponentName);
-        checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds, String.valueOf(courtTypeId),
-                                  String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
-        );
+
+        boolean epimmsIdWithCourtType = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId));
+
+        if (epimmsIdWithCourtType) {
+            checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, EPPIMS_ID_WITH_COURT_TYPE,
+                                      String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
+            );
+        } else {
+            checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds, String.valueOf(courtTypeId),
+                                      String.valueOf(regionId), String.valueOf(clusterId), courtVenueName);
+        }
+
         CourtVenueRequestParam courtVenueRequestParam =
             new CourtVenueRequestParam();
 
@@ -144,11 +157,13 @@ public class LrdCourtVenueController {
         log.info("{} : Calling retrieveCourtVenues", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
-                                                                                 courtVenueName,
+                                                                                 courtVenueName, epimmsIdWithCourtType,
                                                                                  result
         );
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
+
+
 
     @Operation(
         summary = "This API will retrieve Court Venues for given Service Code",

@@ -100,6 +100,29 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         assertThat(response).isNotEmpty();
     }
 
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_For_A_Epimms_Id_With_CourtType_StatusCode_200() {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=381649&court_type_id=31",
+                                                         LrdCourtVenueResponse[].class,
+                                                         path
+            );
+        assertThat(response).isNotEmpty();
+        boolean isEachIdMatched = Arrays
+            .stream(response)
+            .map(LrdCourtVenueResponse::getEpimmsId)
+            .allMatch("381649"::equals);
+        assertTrue(isEachIdMatched);
+        boolean isEachCourtTypeMatched = Arrays
+            .stream(response)
+            .map(LrdCourtVenueResponse::getCourtTypeId)
+            .allMatch("31"::equals);
+        assertTrue(isEachCourtTypeMatched);
+    }
+
+
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_Given_Region_Id_WithStatusCode_200() throws JsonProcessingException {
@@ -245,6 +268,18 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         assertNotNull(response);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
         assertEquals("There are no court venues found", response.getErrorDescription());
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldReturn404_WhenCourtVenueNotFound_WithEpimmsID_AndCourtTypeID() {
+        final var response = (ErrorResponse)
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?epimms_id=815833&court_type_id=0000",
+                                                         LrdCourtVenueResponse[].class, path);
+        assertNotNull(response);
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
+        assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, "[815833]"),
+                     response.getErrorDescription());
     }
 
     @Test

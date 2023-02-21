@@ -105,6 +105,18 @@ public class ValidationUtils {
         }
     }
 
+
+    public static boolean checkBothValuesPresent(String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
+            .count();
+        if (requestParamSize == 2) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * Method to check if the passed identifiers are a valid comma separated values.
      * The identifiers are passed as a string and this string value is considered valid only when there are proper

@@ -93,6 +93,39 @@ class LrdCourtVenueControllerTest {
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            courtVenueRequestParamCaptr.capture()
+        );
+        assertNotNull(courtVenueRequestParamCaptr.getValue());
+        CourtVenueRequestParam result = courtVenueRequestParamCaptr.getValue();
+        assertEquals("Y", result.getIsHearingLocation());
+        assertEquals("Y", result.getIsCaseManagementLocation());
+        assertEquals("CTSC", result.getLocationType());
+        assertEquals("Y", result.getIsTemporaryLocation());
+    }
+
+    @Test
+    void testGetCourtVenueswitEpimmsIdAndCourtType_returns200() {
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenues(
+                "1234", 13, null, null, null, "Y",
+                "Y", "CTSC", "Y"
+            );
+
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ArgumentCaptor<CourtVenueRequestParam> courtVenueRequestParamCaptr =
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            ArgumentCaptor.forClass(String.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(String.class).capture(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
             courtVenueRequestParamCaptr.capture()
         );
         assertNotNull(courtVenueRequestParamCaptr.getValue());
@@ -106,7 +139,7 @@ class LrdCourtVenueControllerTest {
     @Test
     void testGetCourtVenues_WithMultipleParams_Returns400() {
         Exception exception = assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenues("12345", 23, null, null,
+            lrdCourtVenueController.retrieveCourtVenues("12345", null, 12, null,
             null, null, null, null, null));
 
         assertNotNull(exception);

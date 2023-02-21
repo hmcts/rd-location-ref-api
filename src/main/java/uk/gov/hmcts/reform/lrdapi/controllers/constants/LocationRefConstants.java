@@ -101,6 +101,8 @@ public class LocationRefConstants {
 
     public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "epimms_id, court_type_id,"
         + " region_id, cluster_id, court_venue_name";
+
+    public static final String EPPIMS_ID_WITH_COURT_TYPE = "epimms_id_with_court_type";
     public static final String ONLY_ONE_PARAM_REQUIRED_REGION  = "region, regionId";
     public static final String ONLY_ONE_PARAM_REQUIRED_BUILDING_LOCATION =
         "epimms_id, building_location_name, region_id, cluster_id";
@@ -144,6 +146,11 @@ public class LocationRefConstants {
     public static final String RET_LOC_VEN_NOTES_6 = "For the request param 'court_type_id', then all the court venues "
         + "that have the status as 'Open' ";
     public static final String RET_LOC_VEN_NOTES_7 = "with the requested court_type_id are returned as a list.<br>";
+
+    public static final String RET_LOC_VEN_NOTES_7_1 = """
+        request param 'epimms_id' can be passed with 'court_type_id' . Court venues associated with the epimmsId and 
+        court type id returned as list.
+        """;
     public static final String RET_LOC_VEN_NOTES_8 = "For the request param 'region_id', the value needs to be a "
         + "single region_id ";
     public static final String RET_LOC_VEN_NOTES_9 = "for which all the associated court venues with the status "
