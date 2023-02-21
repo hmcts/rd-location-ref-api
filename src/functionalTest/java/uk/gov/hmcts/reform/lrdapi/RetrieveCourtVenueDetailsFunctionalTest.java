@@ -105,7 +105,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_A_Epimms_Id_With_CourtType_StatusCode_200() {
         final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=381649&court_type_id=25",
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=219164&court_type_id=23",
                                                          LrdCourtVenueResponse[].class,
                                                          path
             );
