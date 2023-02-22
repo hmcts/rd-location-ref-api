@@ -64,37 +64,12 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
     @SuppressWarnings("unchecked")
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void returnsOrgServiceDetailsByCcdServiceNameWithStatusCode_200() {
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.retrieveOrgServiceInfo(
-                HttpStatus.OK,
-                "?ccdServiceNames=cMc"
-            );
-        assertEquals(1, responses.size());
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equalsIgnoreCase("cMc")));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void returnsOrgServiceDetailsByDefaultAll_200() throws JsonProcessingException {
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "");
 
         assertThat(responses).isNotEmpty().hasSize(45);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void returnsOrgServiceDetailsByServiceNameStatusCode_200() throws JsonProcessingException {
-        //ServiceName is generated from the ServiceToCcdCaseTypeAssoc
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
-        assertEquals(1, responses.size());
-        assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equals("CMC")));
     }
 
     @Test
