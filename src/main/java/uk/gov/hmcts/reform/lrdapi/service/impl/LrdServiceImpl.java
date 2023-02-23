@@ -33,7 +33,6 @@ public class LrdServiceImpl implements LrdService {
     public List<LrdOrgInfoServiceResponse> retrieveOrgServiceDetails(String serviceCode,
                                                                      String ccdCaseType, String ccdServiceNames) {
         Service servicePojo;
-        ServiceToCcdCaseTypeAssoc serToCcdCaseType;
         List<Service> services;
         final List<LrdOrgInfoServiceResponse> orgInfoServiceResponses = new ArrayList<>();
         if (StringUtils.isNotBlank(serviceCode)) {
@@ -44,11 +43,18 @@ public class LrdServiceImpl implements LrdService {
 
         } else if (StringUtils.isNotBlank(ccdCaseType)) {
 
-            serToCcdCaseType = serviceToCcdCaseTypeAssocRepositry
+            List<ServiceToCcdCaseTypeAssoc> serToCcdCaseTypes = serviceToCcdCaseTypeAssocRepositry
                 .findByCcdCaseTypeIgnoreCase(ccdCaseType.trim());
-            servicePojo = serToCcdCaseType != null ? serToCcdCaseType.getService() : null;
-            ifServiceResponseNullThrowException(servicePojo);
-            orgInfoServiceResponses.add(new LrdOrgInfoServiceResponse(servicePojo));
+
+            if (CollectionUtils.isEmpty(serToCcdCaseTypes)) {
+                throw new EmptyResultDataAccessException(1);
+            }
+
+            List<ServiceToCcdCaseTypeAssoc> distinctCaseTypes = serToCcdCaseTypes.stream().distinct().toList();
+
+            distinctCaseTypes.forEach(caseTypes ->
+                                          orgInfoServiceResponses.add(
+                                              new LrdOrgInfoServiceResponse(caseTypes.getService())));
 
         } else if (StringUtils.isNotBlank(ccdServiceNames) && !ccdServiceNames.trim().equalsIgnoreCase(ALL)
             && !ccdServiceNames.toUpperCase().trim().contains(ALL)) {
