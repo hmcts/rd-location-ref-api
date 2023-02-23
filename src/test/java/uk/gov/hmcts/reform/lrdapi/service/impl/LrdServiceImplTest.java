@@ -66,7 +66,7 @@ class LrdServiceImplTest {
         serviceToCcdCaseTypeAssoc.setService(service);
         services.add(service);
         when(serviceRepository.findByServiceCode(any())).thenReturn(service);
-        when(serToCcdCsTypeRep.findByCcdCaseTypeIgnoreCase(any())).thenReturn(serviceToCcdCaseTypeAssoc);
+        when(serToCcdCsTypeRep.findByCcdCaseTypeIgnoreCase(any())).thenReturn(List.of(serviceToCcdCaseTypeAssoc));
         when(serToCcdCsTypeRep.findByCcdServiceNameInIgnoreCase(any())).thenReturn(List.of(serviceToCcdCaseTypeAssoc));
         when(serviceRepository.findAll()).thenReturn(services);
 
