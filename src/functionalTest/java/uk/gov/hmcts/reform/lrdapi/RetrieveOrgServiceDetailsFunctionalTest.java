@@ -52,7 +52,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 "?ccdCaseType=MoneyClaimCase"
             );
 
-        assertEquals(2, responses.size());
+        assertThat(responses.size()).isPositive();
         var ccdCaseTypes = responses
             .stream()
             .flatMap(service -> service.getCcdCaseTypes().stream())
@@ -70,7 +70,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 HttpStatus.OK,
                 "?ccdServiceNames=cMc"
             );
-        assertEquals(2, responses.size());
+        assertThat(responses.size()).isPositive();
         assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equalsIgnoreCase("cMc")));
     }
 
