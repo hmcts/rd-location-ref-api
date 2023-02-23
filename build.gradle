@@ -28,7 +28,7 @@ def versions = [
         lombok             : '1.18.22',
         gradlePitest       : '1.5.1',
         pitest             : '1.7.0',
-        reformLogging      : '5.1.9',
+        reformLogging      : '6.0.1',
         reformHealthStarter: '0.0.5',
         serenity           : '2.0.76',
         sonarPitest        : '0.5',
@@ -393,7 +393,7 @@ dependencies {
     implementation "io.github.openfeign:feign-httpclient:11.0"
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.log4j
     implementation "com.github.hmcts.java-logging:logging:${versions.reformLogging}"
-    implementation "com.github.hmcts.java-logging:logging-appinsights:${versions.reformLogging}"
+    implementation "com.github.hmcts.java-logging:logging-appinsights:5.1.9"
 
     testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.13'){
       exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
