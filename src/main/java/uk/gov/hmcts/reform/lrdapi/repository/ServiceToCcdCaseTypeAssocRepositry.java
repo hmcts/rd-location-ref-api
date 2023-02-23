@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ServiceToCcdCaseTypeAssocRepositry extends JpaRepository<ServiceToCcdCaseTypeAssoc, Long> {
 
-    ServiceToCcdCaseTypeAssoc findByCcdCaseTypeIgnoreCase(String ccdCaseType);
+    List<ServiceToCcdCaseTypeAssoc> findByCcdCaseTypeIgnoreCase(String ccdCaseType);
 
     List<ServiceToCcdCaseTypeAssoc> findByCcdServiceNameInIgnoreCase(List<String> ccdServiceName);
 }
