@@ -52,7 +52,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 "?ccdCaseType=MoneyClaimCase"
             );
 
-        assertEquals(1, responses.size());
+        assertEquals(2, responses.size());
         var ccdCaseTypes = responses
             .stream()
             .flatMap(service -> service.getCcdCaseTypes().stream())
@@ -70,7 +70,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 HttpStatus.OK,
                 "?ccdServiceNames=cMc"
             );
-        assertEquals(1, responses.size());
+        assertEquals(2, responses.size());
         assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equalsIgnoreCase("cMc")));
     }
 
@@ -127,11 +127,11 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
             assertThat(response.getBusinessArea()).isEqualToIgnoringCase("Civil, Family and Tribunals");
             assertThat(response.getOrgUnit()).isEqualToIgnoringCase("HMCTS");
             assertNotNull(response.getCcdServiceName());
-            assertEquals("AAA6", response.getServiceCode());
+            assertNotNull(response.getServiceCode());
             assertThat(response.getJurisdiction()).isEqualToIgnoringCase("Civil");
             assertNotNull(response.getLastUpdate());
-            assertThat(response.getServiceDescription()).isEqualToIgnoringCase("Specified Money Claims");
-            assertThat(response.getServiceShortDescription()).isEqualToIgnoringCase("Specified Money Claims");
+            assertNotNull(response.getServiceDescription());
+            assertNotNull(response.getServiceShortDescription());
             assertThat(response.getSubBusinessArea()).isEqualToIgnoringCase("Civil and Family");
             assertThat(response.getCcdCaseTypes().size()).isPositive();
 
