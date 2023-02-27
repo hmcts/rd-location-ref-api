@@ -143,8 +143,8 @@ class LrdCourtVenueControllerTest {
             null, null, null, null, null));
 
         assertNotNull(exception);
-        assertEquals("Please provide only 1 of 5 values of params: epimms_id, court_type_id,"
-                     + " region_id, cluster_id, court_venue_name",
+        assertEquals("Please provide only 1 of 4 values of params: (1.epimms_id and court_type_id),"
+                + " (2.region_id), (3.cluster_id), (4.court_venue_name).",
                      exception.getMessage());
     }
 

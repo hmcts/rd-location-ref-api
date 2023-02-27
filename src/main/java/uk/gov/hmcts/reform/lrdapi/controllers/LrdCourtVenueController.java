@@ -54,7 +54,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.RET_LOC_VEN_NOTES_9;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkBothValuesPresent;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfSingleValuePresent;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfMultipleValuePresentForVenue;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
@@ -134,12 +134,12 @@ public class LrdCourtVenueController {
         boolean epimmsIdWithCourtType = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId));
 
         if (epimmsIdWithCourtType) {
-            checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, EPPIMS_ID_WITH_COURT_TYPE,
+            checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, EPPIMS_ID_WITH_COURT_TYPE,
                                       String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
             );
         } else {
-            checkIfSingleValuePresent(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds, String.valueOf(courtTypeId),
-                                      String.valueOf(regionId), String.valueOf(clusterId), courtVenueName);
+            checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds,
+                String.valueOf(courtTypeId), String.valueOf(regionId), String.valueOf(clusterId), courtVenueName);
         }
 
         CourtVenueRequestParam courtVenueRequestParam =
