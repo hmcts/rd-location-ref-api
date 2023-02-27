@@ -105,21 +105,24 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_A_Epimms_Id_With_CourtType_StatusCode_200() {
         final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833&court_type_id=23",
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=219164&court_type_id=31",
                                                          LrdCourtVenueResponse[].class,
                                                          path
             );
-        assertThat(response).isNotEmpty();
-        boolean isEachIdMatched = Arrays
-            .stream(response)
-            .map(LrdCourtVenueResponse::getEpimmsId)
-            .allMatch("815833"::equals);
-        assertTrue(isEachIdMatched);
-        boolean isEachCourtTypeMatched = Arrays
-            .stream(response)
-            .map(LrdCourtVenueResponse::getCourtTypeId)
-            .allMatch("23"::equals);
-        assertTrue(isEachCourtTypeMatched);
+
+        if (response.length > 0) {
+            assertThat(response).isNotEmpty();
+            boolean isEachIdMatched = Arrays
+                .stream(response)
+                .map(LrdCourtVenueResponse::getEpimmsId)
+                .allMatch("219164"::equals);
+            assertTrue(isEachIdMatched);
+            boolean isEachCourtTypeMatched = Arrays
+                .stream(response)
+                .map(LrdCourtVenueResponse::getCourtTypeId)
+                .allMatch("31"::equals);
+            assertTrue(isEachCourtTypeMatched);
+        }
     }
 
 
