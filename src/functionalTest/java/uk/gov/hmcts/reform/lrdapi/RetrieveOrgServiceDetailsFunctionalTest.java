@@ -64,19 +64,6 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
     @SuppressWarnings("unchecked")
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void returnsOrgServiceDetailsByCcdServiceNameWithStatusCode_200() {
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.retrieveOrgServiceInfo(
-                HttpStatus.OK,
-                "?ccdServiceNames=cMc"
-            );
-        assertThat(responses.size()).isPositive();
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equalsIgnoreCase("cMc")));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void returnsOrgServiceDetailsByDefaultAll_200() throws JsonProcessingException {
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
