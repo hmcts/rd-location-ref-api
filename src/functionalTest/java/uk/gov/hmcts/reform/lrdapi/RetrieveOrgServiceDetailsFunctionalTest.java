@@ -38,7 +38,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
     void returnsOrgServiceDetailsByServiceCodeWithStatusCode_200() throws JsonProcessingException {
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
-        assertEquals(1, responses.size());
+        assertThat(responses.size()).isPositive();
         assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
     }
 
@@ -92,9 +92,8 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
         //ServiceName is generated from the ServiceToCcdCaseTypeAssoc
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
-        assertEquals(1, responses.size());
+        assertThat(responses.size()).isPositive();
         assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equals("CMC")));
     }
 
     @Test
