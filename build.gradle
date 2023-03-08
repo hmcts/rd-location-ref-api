@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     id 'application'
-    id 'uk.gov.hmcts.java' version '0.12.2'
+    id 'uk.gov.hmcts.java' version '0.12.39'
     id 'jacoco'
     id 'pmd'
     id 'com.github.ben-manes.versions' version '0.39.0'
@@ -27,7 +27,7 @@ apply plugin: 'idea'
 def versions = [
         lombok             : '1.18.22',
         gradlePitest       : '1.5.1',
-        pitest             : '1.7.0',
+        pitest             : '1.7.4',
         reformLogging      : '6.0.1',
         reformHealthStarter: '0.0.5',
         serenity           : '2.0.76',
@@ -35,9 +35,9 @@ def versions = [
         springBoot         : '2.7.7',
         springHystrix      : '2.2.8.RELEASE',
         pact_version       : '4.1.7',
-        launchDarklySdk    : "5.10.2",
-        junit              : '5.8.1',
-        junitPlatform      : '1.8.1',
+        launchDarklySdk    : "5.10.7",
+        junit              : '5.9.2',
+        junitPlatform      : '1.9.2',
         jackson            : '2.14.0-rc1',
         log4j              : '2.17.1',
         springVersion      : '5.3.22',
@@ -166,7 +166,7 @@ configurations {
 
 
 pmd {
-  toolVersion = '6.12.0'
+  toolVersion = '6.53.0'
   ignoreFailures = true
   sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
   reportsDir = file("$project.buildDir/reports/pmd")
@@ -447,7 +447,7 @@ dependencies {
     testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
     testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.7.0'
 
-    testImplementation 'io.github.openfeign:feign-jackson:11.8'
+    testImplementation 'io.github.openfeign:feign-jackson:12.1'
     testImplementation group: 'com.github.mifmif', name: 'generex', version: '1.0.2'
 
     testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5', {
@@ -513,7 +513,7 @@ dependencyManagement {
 
   dependencies {
     // CVE-2021-42340
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.69') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.71') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
