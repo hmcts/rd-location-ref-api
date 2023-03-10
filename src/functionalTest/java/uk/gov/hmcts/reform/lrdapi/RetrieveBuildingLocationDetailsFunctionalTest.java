@@ -140,7 +140,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
                                "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE",
                                                                           LrdBuildingLocationResponse.class, path);
         assertNotNull(response);
-        assertEquals("ABERDEEN TRIBUNAL HEARING CENTRE", response.getBuildingLocationName());
+        assertEquals("Aberdeen Tribunal Hearing Centre", response.getBuildingLocationName());
     }
 
     @Test
