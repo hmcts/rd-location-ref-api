@@ -6,6 +6,7 @@ import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
@@ -78,6 +79,46 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=" + epimmsId, ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = ((ErrorResponse) errorResponseMap.get("response_body"));
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertThat(errorResponse.getErrorDescription()).isNotNull();
+    }
+
+
+    @ParameterizedTest
+    @CsvSource({
+        "123456789,17",
+        " 123456789 , 17 "
+    })
+    void retrieveCourtVenues_WithEpimmsIdAndCourtType_ShouldReturnStatusCode200(String id, String courtType) throws
+        JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + id + "&court_type_id=" + courtType,
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(2);
+        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
+    }
+
+
+    @ParameterizedTest
+    @CsvSource({
+        "!@£@$,17",
+        "-1111,17 ",
+        "ALL,17"
+    })
+    @SuppressWarnings("unchecked")
+    void shouldReturn400ForInvalidEpimmsIdWithCourtType(String epimmsId, String courtType) throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=" + epimmsId + "&court_type_id="
+                                                             + courtType, ErrorResponse.class, path);
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
