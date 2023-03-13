@@ -373,7 +373,7 @@ dependencies {
     implementation group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 
     implementation group: 'org.springframework', name: 'spring-core', version: versions.springVersion
-   	implementation group: 'org.springframework', name: 'spring-beans', version: '5.3.18'
+   	implementation group: 'org.springframework', name: 'spring-beans', version: versions.springVersion
     implementation group: 'org.springframework.security', name: 'spring-security-core', version: '5.7.5'
 
     implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
