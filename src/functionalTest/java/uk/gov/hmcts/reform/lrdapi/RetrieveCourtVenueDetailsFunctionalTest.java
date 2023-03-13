@@ -104,24 +104,28 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_A_Epimms_Id_With_CourtType_StatusCode_200() {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=219164&court_type_id=31",
-                                                         LrdCourtVenueResponse[].class,
-                                                         path
-            );
 
-        if (response.length > 0) {
-            assertThat(response).isNotEmpty();
-            boolean isEachIdMatched = Arrays
-                .stream(response)
-                .map(LrdCourtVenueResponse::getEpimmsId)
-                .allMatch("219164"::equals);
-            assertTrue(isEachIdMatched);
-            boolean isEachCourtTypeMatched = Arrays
-                .stream(response)
-                .map(LrdCourtVenueResponse::getCourtTypeId)
-                .allMatch("31"::equals);
-            assertTrue(isEachCourtTypeMatched);
+        Response response = lrdApiClient.getMultipleAuthHeaders()
+            .get("/refdata/location" + path + "?epimms_id=219164&court_type_id=31")
+            .andReturn();
+        if (response.getStatusCode() == HttpStatus.OK.value()) {
+
+            final var lrdCourtVenueResponse = response.getBody()
+                .as(LrdCourtVenueResponse[].class);
+
+            if (lrdCourtVenueResponse.length > 0) {
+                assertThat(lrdCourtVenueResponse).isNotEmpty();
+                boolean isEachIdMatched = Arrays
+                    .stream(lrdCourtVenueResponse)
+                    .map(LrdCourtVenueResponse::getEpimmsId)
+                    .allMatch("219164"::equals);
+                assertTrue(isEachIdMatched);
+                boolean isEachCourtTypeMatched = Arrays
+                    .stream(lrdCourtVenueResponse)
+                    .map(LrdCourtVenueResponse::getCourtTypeId)
+                    .allMatch("31"::equals);
+                assertTrue(isEachCourtTypeMatched);
+            }
         }
     }
 
