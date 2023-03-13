@@ -97,6 +97,8 @@ public class ValidationUtils {
         }
     }
 
+
+
     private static void checkSpecialCharacters(String inputValue) {
         inputValue = StringUtils.trim(inputValue);
         if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
@@ -104,6 +106,27 @@ public class ValidationUtils {
             throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
         }
     }
+
+
+    public static boolean checkBothValuesPresent(String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
+            .count();
+        if (requestParamSize == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void checkIfMultipleValuePresentForVenue(final String oneMandatory,String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
+            .count();
+        if (requestParamSize > 1) {
+            throw new InvalidRequestException(oneMandatory);
+        }
+    }
+
 
     /**
      * Method to check if the passed identifiers are a valid comma separated values.
