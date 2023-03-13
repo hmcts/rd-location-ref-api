@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkBothValuesPresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentifiers;
@@ -81,6 +82,21 @@ class ValidationUtilsTest {
         assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex))
             .isEqualTo(getMultipleInvalidIdList());
     }
+
+
+    @Test
+    void testCheckBothValuesPresents() {
+        assertThat(checkBothValuesPresent("asd", "123"))
+            .isTrue();
+    }
+
+
+    @Test
+    void testCheckBothValuesPresentsFalse() {
+        assertThat(checkBothValuesPresent("", "123"))
+            .isFalse();
+    }
+
 
     @Test
     void testIsListContainsText_NoAllProvided_ShouldReturnFalse() {
