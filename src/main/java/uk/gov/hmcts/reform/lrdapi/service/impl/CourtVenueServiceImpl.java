@@ -147,7 +147,18 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
                                                                  Integer regionId, Integer clusterId,
                                                                  String courtVenueName,
+                                                                 boolean epimmsIdwithCourtType,
                                                                  CourtVenueRequestParam courtVenueRequestParam) {
+
+
+        if (epimmsIdwithCourtType) {
+            return getLrdCourtVenueResponses(
+                retrieveCourtVenuesByEpimmsIdAndCourtType(epimmsIds, courtTypeId),
+                courtVenueRequestParam
+            );
+
+        }
+
         if (isNotBlank(epimmsIds)) {
             return getLrdCourtVenueResponses(
                 retrieveCourtVenuesByEpimmsId(epimmsIds),
@@ -201,6 +212,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return getLrdCourtVenueResponses(initialResult, courtVenueRequestParam);
     }
 
+
+
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
         log.info("{} : Obtaining court venue for epimms id(s): {}", loggingComponentName, epimmsId);
 
@@ -229,6 +242,38 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         return getCourtVenueListResponse(courtVenues);
     }
+
+
+    private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsIdAndCourtType(String epimmsId,
+                                                                                  Integer courtTypeId) {
+
+        if (epimmsId.strip().equalsIgnoreCase(LocationRefConstants.ALL)) {
+            throw new InvalidRequestException(String.format(EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED, epimmsId));
+        }
+        List<String> epimsIdList = checkIfValidCsvIdentifiersAndReturnList(
+            epimmsId,
+            EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
+        if (isListContainsTextIgnoreCase(epimsIdList, LocationRefConstants.ALL)) {
+            throw new InvalidRequestException(String.format(EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED, epimmsId));
+        }
+        checkForInvalidIdentifiersAndRemoveFromIdList(
+            epimsIdList,
+            ALPHA_NUMERIC_REGEX, log,
+            loggingComponentName,
+            EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED
+        );
+
+        List<CourtVenue> courtVenues = courtVenueRepository
+            .findByCourtTypeIdAndEpimmsIdWithOpenCourtStatus(epimsIdList, String.valueOf(courtTypeId));
+        handleIfCourtVenuesEmpty(
+            () -> isEmpty(courtVenues), NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, epimsIdList.toString()
+        );
+        return getCourtVenueListResponse(courtVenues);
+    }
+
+
+
 
     private List<LrdCourtVenueResponse> getAllCourtVenues(Supplier<List<CourtVenue>> courtVenueSupplier, String id,
         String noDataFoundMessage) {
