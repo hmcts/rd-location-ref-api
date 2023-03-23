@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
@@ -43,12 +42,12 @@ public class WelcomeController {
      */
 
     @Operation(description = "Welcome message for the Location Ref Data API")
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Welcome message"
         )
-    })
+
     @GetMapping(
         path = "/",
         produces = APPLICATION_JSON_VALUE
