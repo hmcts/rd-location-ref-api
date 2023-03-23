@@ -112,10 +112,7 @@ public class ValidationUtils {
         long requestParamSize = Arrays.stream(params)
             .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
             .count();
-        if (requestParamSize == 2) {
-            return true;
-        }
-        return false;
+        return (requestParamSize == 2);
     }
 
     public static void checkIfMultipleValuePresentForVenue(final String oneMandatory,String... params) {
