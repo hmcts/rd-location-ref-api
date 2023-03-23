@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -88,33 +87,33 @@ public class LrdCourtVenueController {
             @SecurityRequirement(name = "Authorization")
         }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for the request provided",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdCourtVenueResponse.class)))
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "404",
             description = "No Court Venues found for the request provided",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         produces = APPLICATION_JSON_VALUE
     )
@@ -173,33 +172,33 @@ public class LrdCourtVenueController {
             @SecurityRequirement(name = "Authorization")
         }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for given Service Code",
             content = @Content(schema = @Schema(implementation = LrdCourtVenuesByServiceCodeResponse.class))
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "404",
             description = "No Court Venues found with the given Service Code",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         path = "/services",
         produces = APPLICATION_JSON_VALUE
@@ -229,28 +228,28 @@ public class LrdCourtVenueController {
             @SecurityRequirement(name = "Authorization")
         }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for the request provided",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdCourtVenueResponse.class)))
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         path = "/venue-search",
         produces = APPLICATION_JSON_VALUE
