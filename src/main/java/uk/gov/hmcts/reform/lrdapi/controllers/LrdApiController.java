@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,33 +76,33 @@ public class LrdApiController {
                 @SecurityRequirement(name = "ServiceAuthorization")
             }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Service Code or Ccd Case Type Details",
             content = @Content(schema = @Schema(implementation = LrdOrgInfoServiceResponse.class))
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "404",
             description = "No Service found with the given ID",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         path = "/orgServices",
         produces = APPLICATION_JSON_VALUE
@@ -131,35 +130,35 @@ public class LrdApiController {
                 @SecurityRequirement(name = "ServiceAuthorization")
             }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Service Code or Ccd Case Type Details",
             content = @Content(
                 array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationResponse.class))
             )
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "404",
             description = "No Service found with the given ID",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         path = "/building-locations",
         produces = APPLICATION_JSON_VALUE
@@ -193,33 +192,33 @@ public class LrdApiController {
                 @SecurityRequirement(name = "ServiceAuthorization")
             }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved a list of Region Details",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = LrdRegionResponse.class)))
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "404",
             description = "No Region(s) found with the given Description(s) or ID(s)",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         path = "/regions",
         produces = APPLICATION_JSON_VALUE
@@ -246,30 +245,30 @@ public class LrdApiController {
                 @SecurityRequirement(name = "ServiceAuthorization")
             }
     )
-    @ApiResponses({
-        @ApiResponse(
+
+    @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved the building location information for the given search string",
             content = @Content(
                 array = @ArraySchema(schema = @Schema(implementation = LrdBuildingLocationBySearchResponse.class))
             )
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "401",
             description = "Forbidden Error: Access denied",
             content = @Content
-        ),
-        @ApiResponse(
+        )
+    @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
             content = @Content
         )
-    })
+
     @GetMapping(
         path = "/building-locations/search",
         produces = APPLICATION_JSON_VALUE
