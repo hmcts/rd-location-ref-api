@@ -58,10 +58,20 @@ withPipeline(type, product, component) {
 
   before('functionalTest:preview') {
     env.execution_environment = "preview"
+    env.TEST_URL = "http://rd-location-ref-api-preview.preview.hmcts.platform.net"
   }
 
   before('functionalTest:aat') {
     env.execution_environment = "aat"
+    env.TEST_URL = "http://rd-location-ref-api-aat.aat.hmcts.platform.net"
+  }
+
+  before('smoketest:preview') {
+    env.TEST_URL = "http://rd-location-ref-api-preview.preview.platform.hmcts.net"
+  }
+
+  before('smoketest:aat') {
+    env.TEST_URL = "http://rd-location-ref-api-aat.aat.platform.hmcts.net"
   }
 
   afterSuccess('sonarscan') {
