@@ -22,12 +22,14 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
 import uk.gov.hmcts.reform.lrdapi.service.impl.FeatureToggleServiceImpl;
 import uk.gov.hmcts.reform.lrdapi.util.KeyGenUtil;
 import uk.gov.hmcts.reform.lrdapi.util.LrdApiClient;
 import uk.gov.hmcts.reform.lrdapi.util.WireMockExtension;
+import uk.gov.hmcts.reform.lrdapi.util.WireMockUtil;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -101,21 +103,19 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
                                                .withHeader("Content-Type", "application/json")
                                                .withBody("rd_location_ref_api")));
 
+        UserInfo userDetails = UserInfo.builder()
+            .uid("%s")
+            .givenName("Super")
+            .familyName("User")
+            .roles(List.of("%s"))
+            .build();
+
         idamService.stubFor(get(urlPathMatching("/o/userinfo"))
                                 .willReturn(aResponse()
                                                 .withStatus(200)
                                                 .withHeader("Content-Type", "application/json")
-                                                .withBody("{"
-                                                              + "  \"id\": \"%s\","
-                                                              + "  \"uid\": \"%s\","
-                                                              + "  \"forename\": \"Super\","
-                                                              + "  \"surname\": \"User\","
-                                                              + "  \"email\": \"super.user@hmcts.net\","
-                                                              + "  \"accountStatus\": \"active\","
-                                                              + "  \"roles\": ["
-                                                              + "  \"%s\""
-                                                              + "  ]"
-                                                              + "}")
+                                                .withBody(WireMockUtil.getObjectMapper()
+                                                              .writeValueAsString(userDetails))
                                                 .withTransformers("external_user-token-response")));
 
         mockHttpServerForOidc.stubFor(get(urlPathMatching("/jwks"))
