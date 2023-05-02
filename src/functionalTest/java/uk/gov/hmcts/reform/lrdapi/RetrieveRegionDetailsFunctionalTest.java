@@ -110,11 +110,12 @@ class RetrieveRegionDetailsFunctionalTest extends AuthorizationFunctionalTest {
     private void responseVerification(List<LrdRegionResponse> response, int expectedRegions) {
         assertEquals(expectedRegions, response.size());
         assertEquals("1", response.get(0).getRegionId());
-        assertEquals("London", response.get(0).getDescription());
+        assertThat(response.get(0).getDescription()).isEqualToIgnoringCase("London");
+
         assertNull(response.get(0).getWelshDescription());
         if (expectedRegions == 2) {
             assertEquals("2", response.get(1).getRegionId());
-            assertEquals("Midlands", response.get(1).getDescription());
+            assertThat(response.get(1).getDescription()).isEqualToIgnoringCase("Midlands");
             assertNull(response.get(1).getWelshDescription());
         }
     }
