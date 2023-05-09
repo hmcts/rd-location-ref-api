@@ -106,6 +106,11 @@ public class ExceptionMapper {
         return errorDetailsResponseEntity(ex, BAD_REQUEST, ex.getMessage());
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Object> handleMissingServletRequestParameterException(Exception ex) {
+        return errorDetailsResponseEntity(ex, BAD_REQUEST, ex.getMessage());
+    }
+
     private String getTimeStamp() {
         return new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS", Locale.ENGLISH).format(new Date());
     }
