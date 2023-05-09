@@ -9,4 +9,5 @@ maintainers:
 dependencies:
   - name: java
     version: 4.0.13
+
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
