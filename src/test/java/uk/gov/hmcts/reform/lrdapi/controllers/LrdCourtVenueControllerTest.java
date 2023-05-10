@@ -211,6 +211,12 @@ class LrdCourtVenueControllerTest {
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
     }
 
+    @Test
+    void testGetCourtVenuesBySearchStringWithEmptyString() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("", null, null, null, null, null));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
         "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
