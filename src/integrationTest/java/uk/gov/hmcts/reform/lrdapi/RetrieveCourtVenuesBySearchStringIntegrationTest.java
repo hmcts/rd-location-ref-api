@@ -45,6 +45,20 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveCourtVenues_For_NullSearchString_WithStatusCode_400()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertEquals(0,response.length);
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"?search-string=Stoke-on-Trent", "?search-string=Stoke-", "?search-string=stoke-on",
         "?search-string=stoke-on-"})
