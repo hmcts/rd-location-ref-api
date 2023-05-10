@@ -47,16 +47,16 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
     @Test
     @SuppressWarnings("unchecked")
-    void shouldRetrieveCourtVenues_For_NullSearchString_WithStatusCode_400()
+    void shouldReturn400_WhenSearchStringIsEmpty()
         throws JsonProcessingException {
-        final var response = (LrdCourtVenueResponse[])
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
                 "",
-                LrdCourtVenueResponse[].class,
+                ErrorResponse.class,
                 path
             );
 
-        assertEquals(0,response.length);
+        assertNotNull(errorResponseMap);
     }
 
     @ParameterizedTest
