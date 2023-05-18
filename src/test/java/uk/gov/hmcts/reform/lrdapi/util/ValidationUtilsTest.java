@@ -10,17 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkBothValuesPresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentifiers;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStringForBuildingLocationDetails;
 
 class ValidationUtilsTest {
 
@@ -79,6 +82,21 @@ class ValidationUtilsTest {
         assertThat(findInvalidIdentifiers(identifiers, AlphaNumericRegex))
             .isEqualTo(getMultipleInvalidIdList());
     }
+
+
+    @Test
+    void testCheckBothValuesPresents() {
+        assertThat(checkBothValuesPresent("asd", "123"))
+            .isTrue();
+    }
+
+
+    @Test
+    void testCheckBothValuesPresentsFalse() {
+        assertThat(checkBothValuesPresent("", "123"))
+            .isFalse();
+    }
+
 
     @Test
     void testIsListContainsText_NoAllProvided_ShouldReturnFalse() {
@@ -368,6 +386,20 @@ class ValidationUtilsTest {
         assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
 
 
+    }
+
+    @Test
+    void testValidateSearchStringForBuildingLocationDetails_invalidString() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> validateSearchStringForBuildingLocationDetails("asdc?")
+        );
+    }
+
+    @Test
+    void testValidateSearchStringForBuildingLocationDetailsSuccess() {
+        assertDoesNotThrow(() ->
+                               validateSearchStringForBuildingLocationDetails("asdc"));
     }
 
     private List<String> getSingleInvalidIdList() {

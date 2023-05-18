@@ -1,9 +1,8 @@
 
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
@@ -42,14 +41,13 @@ public class WelcomeController {
      * @return Welcome message from the service.
      */
 
-    @ApiOperation("Welcome message for the Location Ref Data API")
-    @ApiResponses({
-        @ApiResponse(
-            code = 200,
-            message = "Welcome message",
-            response = String.class
+    @Operation(description = "Welcome message for the Location Ref Data API")
+
+    @ApiResponse(
+            responseCode = "200",
+            description = "Welcome message"
         )
-    })
+
     @GetMapping(
         path = "/",
         produces = APPLICATION_JSON_VALUE

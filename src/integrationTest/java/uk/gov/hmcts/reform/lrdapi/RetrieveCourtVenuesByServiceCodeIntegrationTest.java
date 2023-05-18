@@ -1,9 +1,13 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
+import org.json.JSONException;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
@@ -88,14 +92,18 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .contains("lrd_location_api".concat(" ").concat(FORBIDDEN_EXCEPTION_LD));
     }
 
-    private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
+    private void responseVerification(LrdCourtVenuesByServiceCodeResponse response)
+        throws JSONException, JsonProcessingException {
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
         assertThat(response.getServiceCode()).isEqualTo("AAA3");
         assertThat(response.getCourtTypeId()).isEqualTo("10");
         assertThat(response.getCourtType()).isEqualTo("County Court");
         assertThat(response.getWelshCourtType()).isNull();
-        assertThat(response.getCourtVenues()).isEqualTo(expectedCourtVenueResponses);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String actual = objectMapper.writeValueAsString(response.getCourtVenues());
+        String expected = objectMapper.writeValueAsString(expectedCourtVenueResponses);
+        JSONAssert.assertEquals(expected, actual, JSONCompareMode.LENIENT);
     }
 
     private List<LrdCourtVenueResponse> buildCourtVenueResponses() {
@@ -109,7 +117,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtTypeId("10")
             .courtType("County Court")
             .regionId("1")
-            .region("National")
+            .region("London")
             .clusterId("2")
             .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
             .courtStatus("Open")
@@ -128,7 +136,29 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .factUrl("")
             .build();
 
+        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
+            .courtVenueId("12")
+            .siteName("Stoke-on-Trent Combined Court")
+            .courtName("STOKE-ON-TRENT COMBINED COURT")
+            .epimmsId("123456")
+            .openForPublic("YES")
+            .courtTypeId("10")
+            .courtType("County Court")
+            .regionId("1")
+            .region("London")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtStatus("Open")
+            .postcode("ST1 3BP")
+            .courtAddress("BETHESDA STREET")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
+            .build();
+
         expectedCourtVenueResponses.add(response1);
+        expectedCourtVenueResponses.add(response2);
 
         return expectedCourtVenueResponses;
     }

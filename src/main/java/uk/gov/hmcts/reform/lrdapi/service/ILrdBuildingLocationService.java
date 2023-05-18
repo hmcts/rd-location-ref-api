@@ -16,4 +16,6 @@ public interface ILrdBuildingLocationService {
                                            String regionId,
                                            String clusterId);
 
+    Object searchBuildingLocationsBySearchString(String buildingLocationName);
+
 }

@@ -2,6 +2,8 @@ truncate table court_type_service_assoc ;
 
   update cluster set mrd_created_time='2022-04-01 02:00:00',mrd_updated_time='2022-04-01 02:00:00';
   update court_type set mrd_created_time='2022-04-01 02:00:00',mrd_updated_time='2022-04-01 02:00:00';
+  update court_type_service_assoc set mrd_created_time='2022-04-01 02:00:00',mrd_updated_time='2022-04-01 02:00:00';
+
  INSERT INTO court_type_service_assoc (court_type_service_assoc_id,service_code, court_type_id, mrd_created_time, mrd_updated_time, mrd_deleted_time) VALUES
  (1,'AAA1', '10', '2022-04-01 02:00:00', '2022-04-01 02:00:00', NULL),
  (2,'AAA2', '10', '2022-04-01 02:00:00', '2022-04-01 02:00:00', NULL),
@@ -30,4 +32,5 @@ truncate table court_type_service_assoc ;
  (10, 'Northern Ireland', NULL, '2022-04-01 02:00:00', '2022-04-01 02:00:00', NULL);
  update region set api_enabled = 'N' where description = 'National';
 update region set api_enabled = 'Y' where description != 'National';
+update region set mrd_created_time='2022-04-01 02:00:00',mrd_updated_time='2022-04-01 02:00:00';
  COMMIT;

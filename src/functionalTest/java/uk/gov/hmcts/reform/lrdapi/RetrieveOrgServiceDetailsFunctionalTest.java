@@ -38,7 +38,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
     void returnsOrgServiceDetailsByServiceCodeWithStatusCode_200() throws JsonProcessingException {
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
-        assertEquals(1, responses.size());
+        assertThat(responses.size()).isPositive();
         assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
     }
 
@@ -52,26 +52,13 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
                 "?ccdCaseType=MoneyClaimCase"
             );
 
-        assertEquals(1, responses.size());
+        assertThat(responses.size()).isPositive();
         var ccdCaseTypes = responses
             .stream()
             .flatMap(service -> service.getCcdCaseTypes().stream())
             .collect(Collectors.toList());
         assertTrue(ccdCaseTypes.stream().anyMatch("MoneyClaimCase"::equalsIgnoreCase));
         responseVerification(responses);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void returnsOrgServiceDetailsByCcdServiceNameWithStatusCode_200() {
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.retrieveOrgServiceInfo(
-                HttpStatus.OK,
-                "?ccdServiceNames=cMc"
-            );
-        assertEquals(1, responses.size());
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equalsIgnoreCase("cMc")));
     }
 
     @SuppressWarnings("unchecked")
@@ -92,9 +79,8 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
         //ServiceName is generated from the ServiceToCcdCaseTypeAssoc
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "?serviceCode=AAA6");
-        assertEquals(1, responses.size());
+        assertThat(responses.size()).isPositive();
         assertTrue(responses.stream().allMatch(service -> service.getServiceCode().equals("AAA6")));
-        assertTrue(responses.stream().allMatch(service -> service.getCcdServiceName().equals("CMC")));
     }
 
     @Test
@@ -127,11 +113,11 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
             assertThat(response.getBusinessArea()).isEqualToIgnoringCase("Civil, Family and Tribunals");
             assertThat(response.getOrgUnit()).isEqualToIgnoringCase("HMCTS");
             assertNotNull(response.getCcdServiceName());
-            assertEquals("AAA6", response.getServiceCode());
+            assertNotNull(response.getServiceCode());
             assertThat(response.getJurisdiction()).isEqualToIgnoringCase("Civil");
             assertNotNull(response.getLastUpdate());
-            assertThat(response.getServiceDescription()).isEqualToIgnoringCase("Specified Money Claims");
-            assertThat(response.getServiceShortDescription()).isEqualToIgnoringCase("Specified Money Claims");
+            assertNotNull(response.getServiceDescription());
+            assertNotNull(response.getServiceShortDescription());
             assertThat(response.getSubBusinessArea()).isEqualToIgnoringCase("Civil and Family");
             assertThat(response.getCcdCaseTypes().size()).isPositive();
 

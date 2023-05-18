@@ -58,13 +58,23 @@ withPipeline(type, product, component) {
 
   before('functionalTest:preview') {
     env.execution_environment = "preview"
+    env.TEST_URL = "http://rd-location-ref-api-preview.preview.hmcts.platform.net"
   }
 
   before('functionalTest:aat') {
     env.execution_environment = "aat"
+    env.TEST_URL = "http://rd-location-ref-api-aat.aat.hmcts.platform.net"
   }
 
-after('sonarscan') {
+  before('smoketest:preview') {
+    env.TEST_URL = "http://rd-location-ref-api-preview.preview.platform.hmcts.net"
+  }
+
+  before('smoketest:aat') {
+    env.TEST_URL = "http://rd-location-ref-api-aat.aat.platform.hmcts.net"
+  }
+
+  afterSuccess('sonarscan') {
         publishHTML target: [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -84,7 +94,7 @@ after('sonarscan') {
         ]
     }
 
-    after('smoketest:preview') {
+  afterSuccess('smoketest:preview') {
         publishHTML target: [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -95,7 +105,7 @@ after('sonarscan') {
         ]
     }
 
-    after('smoketest:aat') {
+  afterSuccess('smoketest:aat') {
         publishHTML target: [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -106,7 +116,7 @@ after('sonarscan') {
         ]
     }
 
-    after('functionalTest:aat') {
+  afterSuccess('functionalTest:aat') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
         publishHTML target: [
             allowMissing         : true,
@@ -118,7 +128,7 @@ after('sonarscan') {
         ]
     }
 
-    after('functionalTest:preview') {
+  afterSuccess('functionalTest:preview') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
         publishHTML target: [
             allowMissing         : true,
@@ -130,7 +140,7 @@ after('sonarscan') {
         ]
     }
 
-    after('pact-provider-verification') {
+  afterSuccess('pact-provider-verification') {
         publishHTML target: [
              allowMissing         : true,
              alwaysLinkToLastBuild: true,

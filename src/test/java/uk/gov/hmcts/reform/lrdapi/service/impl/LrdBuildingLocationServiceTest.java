@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationBySearchResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.BuildingLocation;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
@@ -273,6 +274,45 @@ class LrdBuildingLocationServiceTest {
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void test_searchMultipleBuildingLocationsBySearchString() {
+        when(buildingLocationRepository.findByBuildingLocationNamesBySearch("test".toUpperCase()))
+                .thenReturn(prepareMultiBuildLocationResponse());
+        var buildingLocations = lrdBuildingLocationService
+                .searchBuildingLocationsBySearchString("test".toUpperCase());
+        verifyMultiResponseForBuildingLocationSearch((List<LrdBuildingLocationBySearchResponse>) buildingLocations);
+        verify(buildingLocationRepository, times(1))
+                .findByBuildingLocationNamesBySearch("test".toUpperCase());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void test_searchOneBuildingLocationsBySearchString() {
+        when(buildingLocationRepository.findByBuildingLocationNamesBySearch("test".toUpperCase()))
+                .thenReturn(prepareBuildingLocation());
+
+        var buildingLocation = lrdBuildingLocationService
+                .searchBuildingLocationsBySearchString("test".toUpperCase());
+
+        verifySingleResponseForBuildingLocationSearch((List<LrdBuildingLocationBySearchResponse>) buildingLocation);
+        verify(buildingLocationRepository, times(1))
+                .findByBuildingLocationNamesBySearch("test".toUpperCase());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void test_searchBuildingLocationsBySearchString_noLocationsFound() {
+        when(buildingLocationRepository.findByBuildingLocationNamesBySearch("test".toUpperCase()))
+                .thenReturn(new ArrayList<>());
+        var lrdBuildingLocationBySearchResponse = (List<LrdBuildingLocationBySearchResponse>) lrdBuildingLocationService
+                .searchBuildingLocationsBySearchString("test".toUpperCase());
+        assertEquals(0, lrdBuildingLocationBySearchResponse.size());
+        verify(buildingLocationRepository, times(1))
+                .findByBuildingLocationNamesBySearch("test".toUpperCase());
+    }
+
+
     private void verifyMultiResponse(List<LrdBuildingLocationResponse> buildingLocations) {
         assertThat(buildingLocations).hasSize(2);
 
@@ -322,6 +362,60 @@ class LrdBuildingLocationServiceTest {
         assertEquals("address", buildingLocation.getAddress());
         assertFalse(buildingLocation.getCourtVenues().isEmpty());
     }
+
+    private void verifySingleResponseForBuildingLocationSearch(List<LrdBuildingLocationBySearchResponse>
+                                                                   buildingLocations) {
+        assertThat(buildingLocations).hasSize(1);
+        buildingLocations.forEach(buildingLocation -> {
+                assertEquals("epimmsId", buildingLocation.getEpimmsId());
+                assertEquals("buildingLocationName", buildingLocation.getBuildingLocationName());
+                assertEquals("OPEN", buildingLocation.getBuildingLocationStatus());
+                assertEquals("area", buildingLocation.getArea());
+                assertEquals("regionId", buildingLocation.getRegionId());
+                assertEquals("region", buildingLocation.getRegion());
+                assertEquals("clusterId", buildingLocation.getClusterId());
+                assertEquals("cluster name", buildingLocation.getClusterName());
+                assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
+                assertEquals("postcode", buildingLocation.getPostcode());
+                assertEquals("address", buildingLocation.getAddress());
+            }
+        );
+
+    }
+
+    private void verifyMultiResponseForBuildingLocationSearch(List<LrdBuildingLocationBySearchResponse>
+                                                                  buildingLocations) {
+        assertThat(buildingLocations).hasSize(2);
+
+        buildingLocations.forEach(buildingLocation -> {
+            if (buildingLocation.getEpimmsId().equalsIgnoreCase("epimmsId")) {
+                assertEquals("epimmsId", buildingLocation.getEpimmsId());
+                assertEquals("buildingLocationName", buildingLocation.getBuildingLocationName());
+                assertEquals("OPEN", buildingLocation.getBuildingLocationStatus());
+                assertEquals("area", buildingLocation.getArea());
+                assertEquals("regionId", buildingLocation.getRegionId());
+                assertEquals("region", buildingLocation.getRegion());
+                assertEquals("clusterId", buildingLocation.getClusterId());
+                assertEquals("cluster name", buildingLocation.getClusterName());
+                assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
+                assertEquals("postcode", buildingLocation.getPostcode());
+                assertEquals("address", buildingLocation.getAddress());
+            } else {
+                assertEquals("epimmsId222", buildingLocation.getEpimmsId());
+                assertEquals("buildingLocationName_2", buildingLocation.getBuildingLocationName());
+                assertEquals("CLOSED", buildingLocation.getBuildingLocationStatus());
+                assertEquals("area 2", buildingLocation.getArea());
+                assertEquals("regionId", buildingLocation.getRegionId());
+                assertEquals("region", buildingLocation.getRegion());
+                assertEquals("clusterId", buildingLocation.getClusterId());
+                assertEquals("cluster name", buildingLocation.getClusterName());
+                assertEquals("courtFinderUrl 2", buildingLocation.getCourtFinderUrl());
+                assertEquals("postcode 2", buildingLocation.getPostcode());
+                assertEquals("address 2", buildingLocation.getAddress());
+            }
+        });
+    }
+
 
     private List<BuildingLocation> prepareBuildingLocation() {
 

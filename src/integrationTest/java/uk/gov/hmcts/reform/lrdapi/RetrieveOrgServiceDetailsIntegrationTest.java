@@ -88,7 +88,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("ALL", LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(3);
+        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
@@ -130,7 +130,7 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByDefaultAll(LrdOrgInfoServiceResponse[].class);
-        assertThat(responses).isNotEmpty().hasSize(3);
+        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
@@ -169,15 +169,23 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {" aLL ","All, CMC"})
-    void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200(String ccdServiceName) throws
-        JsonProcessingException {
+    @Test
+    void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200() throws JsonProcessingException {
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.findOrgServiceDetailsByCcdServiceName(ccdServiceName, LrdOrgInfoServiceResponse[].class);
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName(" aLL ", LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(3);;
+        assertThat(responses).isNotEmpty().hasSize(4);;
+    }
+
+    @Test
+    void returnOrgServiceDetailsByMultiCcdSerNamesAllOther200() throws JsonProcessingException {
+
+        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName("All, CMC",
+                                                               LrdOrgInfoServiceResponse[].class);
+
+        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test

@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
@@ -27,6 +27,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_ORG_SERVICES;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGEX_FOR_BUILDING_LOCATION_SEARCH;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
@@ -58,7 +59,13 @@ public class ValidationUtils {
     }
 
     public static void validateSearchString(String searchString) {
-        if (!isRegexSatisfied(searchString, ALPHA_NUMERIC_WITH_SPECICAL_CHAR_REGEX)) {
+        if (!isRegexSatisfied(searchString, ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX)) {
+            throw new InvalidRequestException(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, searchString));
+        }
+    }
+
+    public static void validateSearchStringForBuildingLocationDetails(String searchString) {
+        if (!isRegexSatisfied(searchString, REGEX_FOR_BUILDING_LOCATION_SEARCH)) {
             throw new InvalidRequestException(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, searchString));
         }
     }
@@ -90,6 +97,8 @@ public class ValidationUtils {
         }
     }
 
+
+
     private static void checkSpecialCharacters(String inputValue) {
         inputValue = StringUtils.trim(inputValue);
         if (Pattern.compile(REG_EXP_WHITE_SPACE).matcher(inputValue).find()
@@ -97,6 +106,24 @@ public class ValidationUtils {
             throw new InvalidRequestException(EXCEPTION_MSG_SPCL_CHAR);
         }
     }
+
+
+    public static boolean checkBothValuesPresent(String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
+            .count();
+        return (requestParamSize == 2);
+    }
+
+    public static void checkIfMultipleValuePresentForVenue(final String oneMandatory,String... params) {
+        long requestParamSize = Arrays.stream(params)
+            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
+            .count();
+        if (requestParamSize > 1) {
+            throw new InvalidRequestException(oneMandatory);
+        }
+    }
+
 
     /**
      * Method to check if the passed identifiers are a valid comma separated values.
