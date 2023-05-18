@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.lrdapi.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -155,24 +157,14 @@ class CourtVenueServiceImplTest {
         verifyMultiResponse(courtVenueResponses);
     }
 
-    @Test
-    void testGetAllCourtVenues_EpimmsIdAll() {
+    @ParameterizedTest
+    @ValueSource(strings = {"All","All,123"})
+    void testGetAllCourtVenues_EpimmsIdAll(String epimmsids) {
         when(courtVenueRepository.findAll())
             .thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("All", null,  null, null, null,
-                                           courtVenueRequestParam);
-        verifyMultiResponse(courtVenueResponses);
-    }
-
-    @Test
-    void testGetAllCourtVenues_EpimmsIdAllWithMultipleIds() {
-        when(courtVenueRepository.findAll())
-            .thenReturn(prepareMultiCourtVenueResponse());
-        List<LrdCourtVenueResponse> courtVenueResponses =
-            courtVenueService
-                .retrieveCourtVenueDetails("All,123", null,  null, null, null,
+                .retrieveCourtVenueDetails(epimmsids, null,  null, null, null,
                                            courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
     }

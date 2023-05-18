@@ -66,23 +66,14 @@ class LrdBuildingLocationServiceTest {
         verifyMultiResponse(buildingLocations);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"All","ALL,1,2"})
     @SuppressWarnings("unchecked")
-    void testGetAllBuildingLocations_EpimmsIdAll() {
+    void testGetAllBuildingLocations_EpimmsIdAll(String epimmsids) {
         when(buildingLocationRepository.findAll())
             .thenReturn(prepareMultiBuildLocationResponse());
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("ALL", "",  "", "");
-        verifyMultiResponse(buildingLocations);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void testGetAllBuildingLocations_EpimmsIdAllMultipleIds() {
-        when(buildingLocationRepository.findAll())
-            .thenReturn(prepareMultiBuildLocationResponse());
-        var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("ALL,1,2", "",  "", "");
+            .retrieveBuildingLocationDetails(epimmsids, "",  "", "");
         verifyMultiResponse(buildingLocations);
     }
 

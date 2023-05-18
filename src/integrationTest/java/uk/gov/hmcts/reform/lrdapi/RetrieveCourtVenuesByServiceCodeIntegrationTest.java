@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -30,21 +32,12 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     public static final String HTTP_STATUS = "http_status";
 
-    @Test
-    void returnsCourtVenuesByServiceCodeWithStatusCode_200() throws JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {"AAA3","aaa3"})
+    void returnsCourtVenuesByServiceCodeWithStatusCode_200(String serviceCode) throws JsonProcessingException {
 
         final var response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode("AAA3", LrdCourtVenuesByServiceCodeResponse.class);
-
-        assertThat(response).isNotNull();
-        responseVerification(response);
-    }
-
-    @Test
-    void returnsCourtVenuesByServiceCodeCaseInsensitive_WithStatusCode_200() throws JsonProcessingException {
-
-        final var response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode("aaa3", LrdCourtVenuesByServiceCodeResponse.class);
+            lrdApiClient.findCourtVenuesByServiceCode(serviceCode, LrdCourtVenuesByServiceCodeResponse.class);
 
         assertThat(response).isNotNull();
         responseVerification(response);
