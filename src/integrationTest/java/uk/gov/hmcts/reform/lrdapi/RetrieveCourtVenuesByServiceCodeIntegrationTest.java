@@ -6,10 +6,10 @@ import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
@@ -38,7 +38,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     @ParameterizedTest
     @ValueSource(strings = {"AAA3","aaa3"})
-    void returnsCourtVenuesByServiceCodeWithStatusCode_200(String serviceCode) throws JsonProcessingException {
+    void returnsCourtVenuesByServiceCodeWithStatusCode_200(String serviceCode)
+        throws JsonProcessingException, JSONException {
 
         final var response = (LrdCourtVenuesByServiceCodeResponse)
             lrdApiClient.findCourtVenuesByServiceCode(serviceCode, LrdCourtVenuesByServiceCodeResponse.class);

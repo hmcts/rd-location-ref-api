@@ -139,7 +139,7 @@ class CourtVenueServiceImplTest {
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
                 .retrieveCourtVenueDetails("123", null,  null, null, null,
-                                           courtVenueRequestParam);
+                        false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
@@ -164,7 +164,7 @@ class CourtVenueServiceImplTest {
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
                 .retrieveCourtVenueDetails("All", null,  null, null, null,
-                                           courtVenueRequestParam);
+                                           false, courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
     }
 
@@ -175,9 +175,55 @@ class CourtVenueServiceImplTest {
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
                 .retrieveCourtVenueDetails("All,123", null,  null, null, null,
-                                           courtVenueRequestParam);
+                                           false, courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
     }
+
+
+    @Test
+    void test_RetrieveCourtVenuesByEpimsIDsAndCourtTypeID_OneIdPassed() {
+
+        when(courtVenueRepository.findByCourtTypeIdAndEpimmsIdWithOpenCourtStatus(anyList(),anyString()))
+            .thenReturn(prepareCourtVenue());
+
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails("123", 123,  null, null, null,
+                                           true, courtVenueRequestParam);
+
+        LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
+
+        verifySingleResponse(courtVenueResponse);
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesByEpimsIDsAndCourtType_MultipleIdsPassed() {
+
+        when(courtVenueRepository.findByCourtTypeIdAndEpimmsIdWithOpenCourtStatus(anyList(),anyString()))
+            .thenReturn(prepareMultiCourtVenueResponse());
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails("123,1234", 123,  null, null, null,
+                                           true, courtVenueRequestParam);
+        verifyMultiResponse(courtVenueResponses);
+    }
+
+    @Test
+    void testGetAllCourtVenuesEpimmsIdAllAndCourtTyepId() {
+        assertThrows(InvalidRequestException.class, () ->
+            courtVenueService.retrieveCourtVenueDetails("All", 123,  null, null,
+                                                        null, true, courtVenueRequestParam));
+    }
+
+    @Test
+    void testGetAllCourtVenues_EpimmsIdAllWithMultipleIdsAndCourtVenue() {
+        assertThrows(InvalidRequestException.class, () ->
+            courtVenueService.retrieveCourtVenueDetails("All,123", 123,  null,
+                                                        null, null, true, courtVenueRequestParam));
+    }
+
+
+
 
     @Test
     void testGetAllCourtVenues() {
