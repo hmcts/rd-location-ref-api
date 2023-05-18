@@ -208,22 +208,13 @@ class CourtVenueServiceImplTest {
         verifyMultiResponse(courtVenueResponses);
     }
 
-    @Test
-    void testGetAllCourtVenuesEpimmsIdAllAndCourtTyepId() {
+    @ParameterizedTest
+    @ValueSource(strings = {"All","All,123"})
+    void testGetAllCourtVenuesEpimmsIdAllAndCourtTyepId(String epimmsIds) {
         assertThrows(InvalidRequestException.class, () ->
-            courtVenueService.retrieveCourtVenueDetails("All", 123,  null, null,
+            courtVenueService.retrieveCourtVenueDetails(epimmsIds, 123,  null, null,
                                                         null, true, courtVenueRequestParam));
     }
-
-    @Test
-    void testGetAllCourtVenues_EpimmsIdAllWithMultipleIdsAndCourtVenue() {
-        assertThrows(InvalidRequestException.class, () ->
-            courtVenueService.retrieveCourtVenueDetails("All,123", 123,  null,
-                                                        null, null, true, courtVenueRequestParam));
-    }
-
-
-
 
     @Test
     void testGetAllCourtVenues() {

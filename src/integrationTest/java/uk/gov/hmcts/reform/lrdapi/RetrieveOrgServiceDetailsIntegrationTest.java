@@ -169,23 +169,15 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     }
 
-    @Test
-    void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200() throws JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {" aLL ","All, CMC"})
+    void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200(String ccdServiceNames) throws
+        JsonProcessingException {
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.findOrgServiceDetailsByCcdServiceName(" aLL ", LrdOrgInfoServiceResponse[].class);
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName(ccdServiceNames, LrdOrgInfoServiceResponse[].class);
 
         assertThat(responses).isNotEmpty().hasSize(4);;
-    }
-
-    @Test
-    void returnOrgServiceDetailsByMultiCcdSerNamesAllOther200() throws JsonProcessingException {
-
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.findOrgServiceDetailsByCcdServiceName("All, CMC",
-                                                               LrdOrgInfoServiceResponse[].class);
-
-        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
