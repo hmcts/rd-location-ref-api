@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
@@ -167,23 +169,15 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     }
 
-    @Test
-    void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200() throws JsonProcessingException {
+    @ParameterizedTest
+    @ValueSource(strings = {" aLL ","All, CMC"})
+    void returnOrgServiceDetailsByMultiCcdSerNamesSmallAllSpace200(String ccdServiceNames) throws
+        JsonProcessingException {
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.findOrgServiceDetailsByCcdServiceName(" aLL ", LrdOrgInfoServiceResponse[].class);
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName(ccdServiceNames, LrdOrgInfoServiceResponse[].class);
 
         assertThat(responses).isNotEmpty().hasSize(4);;
-    }
-
-    @Test
-    void returnOrgServiceDetailsByMultiCcdSerNamesAllOther200() throws JsonProcessingException {
-
-        List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
-            lrdApiClient.findOrgServiceDetailsByCcdServiceName("All, CMC",
-                                                               LrdOrgInfoServiceResponse[].class);
-
-        assertThat(responses).isNotEmpty().hasSize(4);
     }
 
     @Test
