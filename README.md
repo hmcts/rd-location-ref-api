@@ -10,8 +10,8 @@ Provides Org service information  to client applications.  Implemented as a Java
 
 To run the project you will need to have the following installed:
 
-* Java 11
-* Docker (optional)
+* Java 17
+* Docker 
 
 For information about the software versions used to build this API and a complete list of it's dependencies see build.gradle
 
@@ -22,25 +22,24 @@ While not essential, it is highly recommended to use the pre-push git hook inclu
 
 If running locally for development or testing you will need to set the following environment variables
 
-* export POSTGRES_USERNAME=dblocrefdata
-* export POSTGRES_PASSWORD=<please check with the dev team>
-* export S2S_SECRET=<please check with the dev team>
+* export POSTGRES_USERNAME=dbrefdata
+* export POSTGRES_PASSWORD=<The database password. Please check with the dev team for more information.>
+* export client-secret=<The actual client-secret. Please check with the dev team for more information.>
+* export totp_secret=<The actual totp_secret. Please check with the dev team for more information.>
+* export key=<The actual key. Please check with the dev team for more information.>
 
 ### Running the application
 
 To run the API quickly use the docker helper script as follows:
 
 ```
-./bin/run-in-docker.sh
+./bin/run-in-docker.sh install
 ```
-
 or
 
 ```
 docker-compose up
 ```
-
-application will listen on 8099 when started using the above methods.
 
 
 Alternatively, you can start the application from the current source files using Gradle as follows:
@@ -52,7 +51,7 @@ Alternatively, you can start the application from the current source files using
 If required, to run with a low memory consumption, the following can be used:
 
 ```
-./gradlew --no-daemon assemble && java -Xmx384m -jar build/libs/rd-professional-api.jar
+./gradlew --no-daemon assemble && java -Xmx384m -jar build/libs/rd-case-worker-api.jar
 ```
 
 ### Using the application
@@ -60,7 +59,7 @@ If required, to run with a low memory consumption, the following can be used:
 To understand if the application is working, you can call it's health endpoint:
 
 ```
-curl http://localhost:8099/health
+curl http://localhost:8091/health
 ```
 
 If the API is running, you should see this response:
@@ -73,7 +72,7 @@ If the API is running, you should see this response:
 
 The application uses a Postgres database which can be run through a docker container on its own if required.
 
-
+this
 
 The application should automatically apply any database migrations using flyway.
 
@@ -114,19 +113,12 @@ If you have some time to spare, you can run the *mutation tests* as follows:
 
 ```
 ./gradlew pitest
- ```
-If you are using windows machine to run PI test , use following property in gradle.build under pitest section.
 ```
- useClasspathFile = true
-```
-
 
 As the project grows, these tests will take longer and longer to execute but are useful indicators of the quality of the test suite.
 
 More information about mutation testing can be found here:
 http://pitest.org/
-
-
 
 ### Testing in Postman
 
@@ -146,6 +138,8 @@ into the pre-script window.  Also add a header as follows:
 ```
 ServiceAuthorization: Bearer {{token}}
 ```
+
+Authorization :  Bearer copy IDAM access token
 
 ### Contract testing with pact
 
@@ -171,3 +165,6 @@ Once Verify on url `http://localhost:9292/`
 The pact contract(s) should be published
 
 Remember to return the localhost back to the remote broker
+  
+for more information, Please refer to the confluence on how to run and publish PACT tests.
+https://tools.hmcts.net/confluence/display/RTRD/PACT+testing
