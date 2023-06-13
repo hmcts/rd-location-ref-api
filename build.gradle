@@ -33,7 +33,7 @@ def versions = [
         reformHealthStarter: '0.0.5',
         serenity           : '2.0.76',
         sonarPitest        : '0.5',
-        springBoot         : '2.7.11',
+        springBoot         : '2.7.12',
         springHystrix      : '2.2.8.RELEASE',
         pact_version       : '4.1.7',
         launchDarklySdk    : "5.10.7",
