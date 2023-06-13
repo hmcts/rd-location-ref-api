@@ -6,12 +6,18 @@ Location Reference Data API
 
 Provides Org service information  to client applications.  Implemented as a Java/SpringBoot application.
 
+Location Data is made up of Building and Court Locations. for overview of the Location Data Please refer the confluence
+https://tools.hmcts.net/confluence/display/RTRD/Reference+Data+Overview#ReferenceDataOverview-LocationReferenceData(LRD)LocationReferenceData(LRD)
+
+For Business/Service Requests please see confluence page
+https://tools.hmcts.net/confluence/display/RTRD/Location+Reference+Data
+
 ### Prerequisites
 
 To run the project you will need to have the following installed:
 
 * Java 17
-* Docker 
+* Docker
 
 For information about the software versions used to build this API and a complete list of it's dependencies see build.gradle
 
@@ -30,6 +36,9 @@ If running locally for development or testing you will need to set the following
 
 ### Running the application
 
+Please Make sure you are connected to the VPN before running application
+(https://portal.platform.hmcts.net/vdesk/webtop.eui?webtop=/Common/webtop_full&webtop_type=webtop_full)
+
 To run the API quickly use the docker helper script as follows:
 
 ```
@@ -42,7 +51,7 @@ docker-compose up
 ```
 
 
-Alternatively, you can start the application from the current source files using Gradle as follows:
+After, you can start the application from the current source files using Gradle as follows:
 
 ```
 ./gradlew clean bootRun
@@ -51,7 +60,7 @@ Alternatively, you can start the application from the current source files using
 If required, to run with a low memory consumption, the following can be used:
 
 ```
-./gradlew --no-daemon assemble && java -Xmx384m -jar build/libs/rd-case-worker-api.jar
+./gradlew --no-daemon assemble && java -Xmx384m -jar build/libs/rd-location-ref-api.jar
 ```
 
 ### Using the application
@@ -67,6 +76,12 @@ If the API is running, you should see this response:
 ```
 {"status":"UP"}
 ```
+If the Application is running, you can see API's in swagger :
+
+```
+http://localhost:8091/swagger-ui.html
+```
+
 
 ### DB Initialisation˙
 
@@ -165,6 +180,6 @@ Once Verify on url `http://localhost:9292/`
 The pact contract(s) should be published
 
 Remember to return the localhost back to the remote broker
-  
+
 for more information, Please refer to the confluence on how to run and publish PACT tests.
 https://tools.hmcts.net/confluence/display/RTRD/PACT+testing
