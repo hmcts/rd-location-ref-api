@@ -36,7 +36,7 @@ def versions = [
         springBoot         : '2.7.12',
         springHystrix      : '2.2.8.RELEASE',
         pact_version       : '4.1.7',
-        launchDarklySdk    : "5.10.7",
+        launchDarklySdk    : "5.10.9",
         junit              : '5.9.2',
         junitPlatform      : '1.9.2',
         jackson            : '2.14.0-rc1',
@@ -372,7 +372,7 @@ dependencies {
     implementation group: 'org.flywaydb', name: 'flyway-core', version: '8.4.3'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
 
-    implementation group: 'com.google.guava', name: 'guava', version: '31.1-jre'
+    implementation group: 'com.google.guava', name: 'guava', version: '32.1.1-jre'
     implementation group: 'javax.el', name: 'javax.el-api', version: '3.0.0'
 
     implementation group: 'org.springframework', name: 'spring-core', version: versions.springVersion
