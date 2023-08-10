@@ -20,6 +20,10 @@ plugins {
   id 'org.owasp.dependencycheck' version '8.3.1'
 }
 
+ext {
+  set('springCloudVersion', "2022.0.4")
+}
+
 apply plugin: 'java'
 apply plugin: 'net.serenity-bdd.aggregator'
 apply plugin: 'project-report'
@@ -319,14 +323,17 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: versions.springBoot
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: versions.springBoot
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '3.0.4'
   implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot){
     exclude group: 'org.glassfish', module: 'jakarta.el'
   }
   implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.0'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot
-
+  implementation (group: 'io.rest-assured', name: 'rest-assured', version: '5.3.0') {
+    exclude group: "com.sun.xml.bind", module: "jaxb-osgi"
+    exclude group: "org.apache.sling"
+  }
   implementation group: 'org.springframework', name: 'spring-aop', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-aspects', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-context', version: versions.springVersion
@@ -338,18 +345,16 @@ dependencies {
   implementation group: 'org.springframework', name: 'spring-tx', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-web', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.springVersion
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.6.15'
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '4.0.1'
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
 
   implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.5'
-  implementation (group: 'io.rest-assured', name: 'rest-assured', version: '5.3.0') {
-    exclude group: "com.sun.xml.bind", module: "jaxb-osgi"
-    exclude group: "org.apache.sling"
-  }
+
   implementation group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '4.0.2'
 
-  implementation 'com.github.hmcts:service-auth-provider-java-client:4.0.3'
+  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.1.0'
 
+  implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
   implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.14.0-rc1'
   implementation group: 'io.jsonwebtoken', name: 'jjwt', version:'0.9.1'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
@@ -377,7 +382,7 @@ dependencies {
 
   implementation group: 'org.springframework', name: 'spring-core', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-beans', version: versions.springVersion
-  implementation group: 'org.springframework.security', name: 'spring-security-core', version: '6.0.2'
+  implementation group: 'org.springframework.security', name: 'spring-security-core'
 
   implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
   implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.7'
@@ -399,7 +404,8 @@ dependencies {
   implementation "com.github.hmcts.java-logging:logging-appinsights:5.1.9"
 
 
-  testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.13'){
+
+  testImplementation ('com.github.hmcts:rd-commons-lib:v0.0.17'){
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
   }
 
@@ -523,13 +529,13 @@ dependencyManagement {
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
     }
-    //CVE-2021-22044
-    dependencySet(group: 'org.springframework.cloud', version: '3.1.5') {
-      entry 'spring-cloud-starter-openfeign'
-      entry 'spring-cloud-openfeign-core'
-    }
+
     // CVE-2021-22060, CVE-2022-22965, CVE-2022-22950, CVE-2022-22971, CVE-2022-22968, CVE-2022-22970, CVE-2022-31690, CVE-2022-31692
     dependency(group: 'org.springframework', name: 'spring-corespring-core', version: '5.3.26') //remove this line after spring boot upgrade to 2.7.7 and spring frame work to 6.0
+  }
+
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
   }
 }
 

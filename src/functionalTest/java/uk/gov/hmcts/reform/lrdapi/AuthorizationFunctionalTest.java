@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
 import static org.junit.jupiter.api.Assertions.assertEquals;
