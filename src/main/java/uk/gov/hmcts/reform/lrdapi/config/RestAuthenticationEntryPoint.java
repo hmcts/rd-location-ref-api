@@ -9,8 +9,8 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component("restAuthenticationEntryPoint")
 @Slf4j

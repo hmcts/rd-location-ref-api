@@ -21,12 +21,12 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
     @Autowired
     private FeatureConditionEvaluation featureConditionEvaluation;
 
-    @Override
+   /* @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(featureConditionEvaluation)
             .addPathPatterns("/refdata/location/orgServices/**")
             .addPathPatterns("/refdata/location/building-locations/**")
             .addPathPatterns("/refdata/location/region**")
             .addPathPatterns("/refdata/location/court-venues/**");
-    }
+    }*/
 }

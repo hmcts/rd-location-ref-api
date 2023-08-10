@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import  org.springframework.http.HttpStatus;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -54,7 +55,7 @@ public class ExceptionMapper {
 
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusException(HttpStatusCodeException ex) {
-        HttpStatus httpStatus = ex.getStatusCode();
+        HttpStatus httpStatus = (HttpStatus) ex.getStatusCode();
         return errorDetailsResponseEntity(ex, httpStatus, httpStatus.getReasonPhrase());
     }
 
