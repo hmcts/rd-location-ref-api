@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.lrdapi.LrdAuthorizationEnabledIntegrationTest;
 
+import javax.servlet.FilterConfig;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -34,10 +35,7 @@ class SwaggerPublisherTest extends LrdAuthorizationEnabledIntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        WebRequestTrackingFilter filter = new WebRequestTrackingFilter();
-        filter.init(new MockFilterConfig());
         this.mvc = webAppContextSetup(webApplicationContext)
-            .addFilter(filter)
             .build();
     }
 

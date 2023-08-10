@@ -9,11 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
@@ -145,7 +141,7 @@ public class LrdApiClient {
     private Object mapApiResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
         JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
         if (status.is2xxSuccessful()) {
             return Arrays.asList((LrdOrgInfoServiceResponse[]) objectMapper.convertValue(
                 responseEntity.getBody(), expectedClass));
@@ -161,7 +157,7 @@ public class LrdApiClient {
     private Object mapRegionResponse(ResponseEntity<Object> responseEntity, Class expectedClass) throws
         JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
         if (status.is2xxSuccessful()) {
             return Arrays.asList((LrdRegionResponse[]) objectMapper.convertValue(
                 responseEntity.getBody(), expectedClass));
@@ -177,7 +173,7 @@ public class LrdApiClient {
     private Object mapBuildingLocationResponse(ResponseEntity<Object> responseEntity, Class clazz)
         throws JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
 
         if (status.is2xxSuccessful()) {
             if (clazz.isArray()) {
@@ -198,7 +194,7 @@ public class LrdApiClient {
     private Object mapBuildingLocationBySearchResponse(ResponseEntity<Object> responseEntity, Class clazz)
         throws JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
 
         if (status.is2xxSuccessful()) {
             if (clazz.isArray()) {
@@ -219,7 +215,7 @@ public class LrdApiClient {
     private Object mapCourtVenuesByServiceCodeResponse(ResponseEntity<Object> responseEntity, Class clazz) throws
         JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
 
         if (status.is2xxSuccessful()) {
             if (clazz.isArray()) {
@@ -241,7 +237,7 @@ public class LrdApiClient {
     private Object mapCourtVenuesBySearchStringResponse(ResponseEntity<Object> responseEntity, Class clazz) throws
         JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
 
         if (status.is2xxSuccessful()) {
             return objectMapper.convertValue(responseEntity.getBody(), clazz);
@@ -258,7 +254,7 @@ public class LrdApiClient {
     private Object mapCourtVenueResponse(ResponseEntity<Object> responseEntity, Class clazz)
         throws JsonProcessingException {
 
-        HttpStatus status = responseEntity.getStatusCode();
+        HttpStatusCode status = responseEntity.getStatusCode();
 
         if (status.is2xxSuccessful()) {
             if (clazz.isArray()) {
