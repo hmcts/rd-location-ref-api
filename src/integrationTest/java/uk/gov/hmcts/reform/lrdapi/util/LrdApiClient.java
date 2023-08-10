@@ -285,7 +285,7 @@ public class LrdApiClient {
                           clasz,
                           params);
         } catch (HttpStatusCodeException ex) {
-            return ResponseEntity.status(ex.getRawStatusCode()).body(ex.getResponseBodyAsString());
+            return ResponseEntity.status(ex.getStatusCode().value()).body(ex.getResponseBodyAsString());
         }
         return responseEntity;
     }
