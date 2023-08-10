@@ -74,19 +74,19 @@ public final class JwtTokenUtil {
      * @param tokenBody tokenBody in string format
      * @return List containing userId and role
      */
-    public static LinkedList getUserIdAndRoleFromToken(String tokenBody) {
+    public static LinkedList<String> getUserIdAndRoleFromToken(String tokenBody) {
         String[] tokenElements = tokenBody.split(",");
         List<String> elements = Arrays.asList(tokenElements).stream()
                 .filter(element -> element.contains(SUBJECT))
                 .map(subElement -> subElement.split(":")[1].replace("\"", ""))
-                .collect(Collectors.toList());
+                .toList();
 
         if (elements.isEmpty()) {
             throw new InvalidTokenException("Token did not returned 'subject' element");
         }
 
         String[] tokenisedSubValue = elements.get(0).split(" ");
-        LinkedList tokenResult = new LinkedList();
+        LinkedList<String> tokenResult = new LinkedList<String>();
         tokenResult.add(tokenisedSubValue[0]);
         tokenResult.add(tokenisedSubValue[1]);
         return tokenResult;
