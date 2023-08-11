@@ -185,7 +185,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     @ParameterizedTest
     @ValueSource(strings = {"?region_id=12x!", "?cluster_id=@£$", "?court_type_id=@_court_type",
-         "?epimms_id=123456789&court_type_id=1&cluster_id=1"})
+        "?epimms_id=123456789&court_type_id=1&cluster_id=1"})
     void shouldReturn400WhenInvalidParamsPassed(String parameter) throws
         JsonProcessingException {
 

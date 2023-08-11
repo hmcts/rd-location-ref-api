@@ -50,7 +50,7 @@ class LrdBuildingLocationServiceTest {
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareBuildingLocation());
 
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("1", "",  "", "");
+            .retrieveBuildingLocationDetails("1", "", "", "");
 
         LrdBuildingLocationResponse buildingLocation = buildingLocations.get(0);
 
@@ -63,18 +63,18 @@ class LrdBuildingLocationServiceTest {
 
         when(buildingLocationRepository.findByEpimmsId(anyList())).thenReturn(prepareMultiBuildLocationResponse());
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("1,2", "",  "", "");
+            .retrieveBuildingLocationDetails("1,2", "", "", "");
         verifyMultiResponse(buildingLocations);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"All","ALL,1,2"})
+    @ValueSource(strings = {"All", "ALL,1,2"})
     @SuppressWarnings("unchecked")
     void testGetAllBuildingLocations_EpimmsIdAll(String epimmsids) {
         when(buildingLocationRepository.findAll())
             .thenReturn(prepareMultiBuildLocationResponse());
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-            .retrieveBuildingLocationDetails(epimmsids, "",  "", "");
+            .retrieveBuildingLocationDetails(epimmsids, "", "", "");
         verifyMultiResponse(buildingLocations);
     }
 
@@ -83,7 +83,7 @@ class LrdBuildingLocationServiceTest {
     void testGetAllBuildingLocations() {
         when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(prepareBuildingLocation());
         var buildingLocations = (List<LrdBuildingLocationResponse>) lrdBuildingLocationService
-            .retrieveBuildingLocationDetails("", "",  "", "");
+            .retrieveBuildingLocationDetails("", "", "", "");
         verifySingleResponse(buildingLocations.get(0));
     }
 
@@ -149,7 +149,7 @@ class LrdBuildingLocationServiceTest {
     @Test
     void test_RetrieveBuildingLocationsByClusterId_NoBuildLocationFound() {
         when(buildingLocationRepository.findByClusterId(anyString())).thenReturn(null);
-        assertThrows(ResourceNotFoundException.class,() -> lrdBuildingLocationService
+        assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
             .retrieveBuildingLocationDetails("", "", "", "1"));
 
         verify(buildingLocationRepository, times(1)).findByClusterId("1");
@@ -161,10 +161,10 @@ class LrdBuildingLocationServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1abc","1,2,3"})
+    @ValueSource(strings = {"1abc", "1,2,3"})
     void test_RetrieveBuildingLocationsByClusterId_InvalidRequest(String input) {
         assertThrows(
-            InvalidRequestException.class,() -> lrdBuildingLocationService
+            InvalidRequestException.class, () -> lrdBuildingLocationService
                 .retrieveBuildingLocationDetails("", "", "", input));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
@@ -175,7 +175,7 @@ class LrdBuildingLocationServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1","123"})
+    @ValueSource(strings = {"1", "123"})
     void test_RetrieveBuildingLocationsByRegionId_NoBuildLocationFound(String input) {
         when(buildingLocationRepository.findByRegionId(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
@@ -189,9 +189,9 @@ class LrdBuildingLocationServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"1abc","1,2,3"})
+    @ValueSource(strings = {"1abc", "1,2,3"})
     void test_RetrieveBuildingLocationsByRegionId_InvalidRequest() {
-        assertThrows(InvalidRequestException.class,() -> lrdBuildingLocationService
+        assertThrows(InvalidRequestException.class, () -> lrdBuildingLocationService
             .retrieveBuildingLocationDetails("", "", "1abc", ""));
         verify(buildingLocationRepository, times(0)).findByClusterId(anyString());
         verify(buildingLocationRepository, times(0)).findByRegionId(anyString());
@@ -206,7 +206,7 @@ class LrdBuildingLocationServiceTest {
     void test_GetAllBuildingLocations_NoBuildLocationFound(String input) {
         when(buildingLocationRepository.findByBuildingLocationStatusOpen()).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> lrdBuildingLocationService
-            .retrieveBuildingLocationDetails(input,input,input,input));
+            .retrieveBuildingLocationDetails(input, input, input, input));
 
         verify(buildingLocationRepository, times(1)).findByBuildingLocationStatusOpen();
         verify(buildingLocationRepository, times(0))
@@ -240,7 +240,7 @@ class LrdBuildingLocationServiceTest {
 
         LrdBuildingLocationResponse buildingLocation =
             (LrdBuildingLocationResponse) lrdBuildingLocationService
-                .retrieveBuildingLocationDetails("", "test",  "", "");
+                .retrieveBuildingLocationDetails("", "test", "", "");
 
         verifySingleResponse(buildingLocation);
         verify(buildingLocationRepository, times(1))
@@ -278,38 +278,38 @@ class LrdBuildingLocationServiceTest {
     @SuppressWarnings("unchecked")
     void test_searchMultipleBuildingLocationsBySearchString() {
         when(buildingLocationRepository.findByBuildingLocationNamesBySearch("test".toUpperCase()))
-                .thenReturn(prepareMultiBuildLocationResponse());
+            .thenReturn(prepareMultiBuildLocationResponse());
         var buildingLocations = lrdBuildingLocationService
-                .searchBuildingLocationsBySearchString("test".toUpperCase());
+            .searchBuildingLocationsBySearchString("test".toUpperCase());
         verifyMultiResponseForBuildingLocationSearch((List<LrdBuildingLocationBySearchResponse>) buildingLocations);
         verify(buildingLocationRepository, times(1))
-                .findByBuildingLocationNamesBySearch("test".toUpperCase());
+            .findByBuildingLocationNamesBySearch("test".toUpperCase());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void test_searchOneBuildingLocationsBySearchString() {
         when(buildingLocationRepository.findByBuildingLocationNamesBySearch("test".toUpperCase()))
-                .thenReturn(prepareBuildingLocation());
+            .thenReturn(prepareBuildingLocation());
 
         var buildingLocation = lrdBuildingLocationService
-                .searchBuildingLocationsBySearchString("test".toUpperCase());
+            .searchBuildingLocationsBySearchString("test".toUpperCase());
 
         verifySingleResponseForBuildingLocationSearch((List<LrdBuildingLocationBySearchResponse>) buildingLocation);
         verify(buildingLocationRepository, times(1))
-                .findByBuildingLocationNamesBySearch("test".toUpperCase());
+            .findByBuildingLocationNamesBySearch("test".toUpperCase());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void test_searchBuildingLocationsBySearchString_noLocationsFound() {
         when(buildingLocationRepository.findByBuildingLocationNamesBySearch("test".toUpperCase()))
-                .thenReturn(new ArrayList<>());
+            .thenReturn(new ArrayList<>());
         var lrdBuildingLocationBySearchResponse = (List<LrdBuildingLocationBySearchResponse>) lrdBuildingLocationService
-                .searchBuildingLocationsBySearchString("test".toUpperCase());
+            .searchBuildingLocationsBySearchString("test".toUpperCase());
         assertEquals(0, lrdBuildingLocationBySearchResponse.size());
         verify(buildingLocationRepository, times(1))
-                .findByBuildingLocationNamesBySearch("test".toUpperCase());
+            .findByBuildingLocationNamesBySearch("test".toUpperCase());
     }
 
 
@@ -367,20 +367,18 @@ class LrdBuildingLocationServiceTest {
                                                                    buildingLocations) {
         assertThat(buildingLocations).hasSize(1);
         buildingLocations.forEach(buildingLocation -> {
-                assertEquals("epimmsId", buildingLocation.getEpimmsId());
-                assertEquals("buildingLocationName", buildingLocation.getBuildingLocationName());
-                assertEquals("OPEN", buildingLocation.getBuildingLocationStatus());
-                assertEquals("area", buildingLocation.getArea());
-                assertEquals("regionId", buildingLocation.getRegionId());
-                assertEquals("region", buildingLocation.getRegion());
-                assertEquals("clusterId", buildingLocation.getClusterId());
-                assertEquals("cluster name", buildingLocation.getClusterName());
-                assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
-                assertEquals("postcode", buildingLocation.getPostcode());
-                assertEquals("address", buildingLocation.getAddress());
-            }
-        );
-
+            assertEquals("epimmsId", buildingLocation.getEpimmsId());
+            assertEquals("buildingLocationName", buildingLocation.getBuildingLocationName());
+            assertEquals("OPEN", buildingLocation.getBuildingLocationStatus());
+            assertEquals("area", buildingLocation.getArea());
+            assertEquals("regionId", buildingLocation.getRegionId());
+            assertEquals("region", buildingLocation.getRegion());
+            assertEquals("clusterId", buildingLocation.getClusterId());
+            assertEquals("cluster name", buildingLocation.getClusterName());
+            assertEquals("courtFinderUrl", buildingLocation.getCourtFinderUrl());
+            assertEquals("postcode", buildingLocation.getPostcode());
+            assertEquals("address", buildingLocation.getAddress());
+        });
     }
 
     private void verifyMultiResponseForBuildingLocationSearch(List<LrdBuildingLocationBySearchResponse>

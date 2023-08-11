@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import io.restassured.parsing.Parser;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +14,6 @@ import uk.gov.hmcts.reform.lrdapi.config.Oauth2;
 import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
-
-import jakarta.annotation.PostConstruct;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphanumeric;
 import static org.junit.jupiter.api.Assertions.assertEquals;

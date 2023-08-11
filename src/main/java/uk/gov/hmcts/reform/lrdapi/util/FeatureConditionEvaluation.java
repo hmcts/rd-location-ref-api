@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.lrdapi.util;
 
 import com.auth0.jwt.JWT;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +16,6 @@ import uk.gov.hmcts.reform.lrdapi.exception.ForbiddenException;
 import uk.gov.hmcts.reform.lrdapi.service.FeatureToggleService;
 
 import java.util.Map;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -33,6 +33,7 @@ public class FeatureConditionEvaluation implements HandlerInterceptor {
 
     @Autowired
     private final FeatureToggleService featureToggleService;
+
     @Override
     public boolean preHandle(HttpServletRequest request,
                              @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
@@ -63,7 +64,7 @@ public class FeatureConditionEvaluation implements HandlerInterceptor {
             ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
 
         if (nonNull(servletRequestAttributes)) {
-           HttpServletRequest request = servletRequestAttributes.getRequest();
+            HttpServletRequest request = servletRequestAttributes.getRequest();
             serviceName = JWT.decode(removeBearerFromToken(request.getHeader(SERVICE_AUTHORIZATION))).getSubject();
         }
         if (StringUtils.isEmpty(serviceName)) {

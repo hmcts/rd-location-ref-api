@@ -1,18 +1,15 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
-import com.microsoft.applicationinsights.web.internal.WebRequestTrackingFilter;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.hmcts.reform.lrdapi.LrdAuthorizationEnabledIntegrationTest;
 
-import javax.servlet.FilterConfig;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
