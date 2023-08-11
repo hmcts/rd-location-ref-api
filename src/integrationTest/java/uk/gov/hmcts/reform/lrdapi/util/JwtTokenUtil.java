@@ -79,7 +79,7 @@ public final class JwtTokenUtil {
         List<String> elements = Arrays.asList(tokenElements).stream()
                 .filter(element -> element.contains(SUBJECT))
                 .map(subElement -> subElement.split(":")[1].replace("\"", ""))
-                .toList();
+                 .collect(Collectors.toList());
 
         if (elements.isEmpty()) {
             throw new InvalidTokenException("Token did not returned 'subject' element");
