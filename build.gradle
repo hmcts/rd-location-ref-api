@@ -324,7 +324,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: versions.springBoot
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: versions.springBoot
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '3.0.4'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: versions.springBoot
   implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot){
     exclude group: 'org.glassfish', module: 'jakarta.el'
   }
@@ -366,13 +366,13 @@ dependencies {
 
   implementation group: 'javax.inject', name: 'javax.inject', version: '1'
   implementation 'com.github.hmcts:idam-java-client:2.0.1'
-  implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: versions.springBoot
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.0'
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.30.2'
   implementation (group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk) {
     exclude group: 'com.google.guava', module: 'guava'
   }
-  implementation ('org.springframework.boot:spring-boot-starter-validation:3.0.4'){
+  implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: versions.springBoot){
     exclude group: 'org.glassfish', module: 'jakarta.el'
   }
 
