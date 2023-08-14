@@ -369,7 +369,9 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.0'
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.30.2'
-  implementation group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: '6.0.5'
+  implementation (group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk) {
+    exclude group: 'com.google.guava', module: 'guava'
+  }
   implementation ('org.springframework.boot:spring-boot-starter-validation:3.0.4'){
     exclude group: 'org.glassfish', module: 'jakarta.el'
   }
@@ -555,6 +557,17 @@ dependencyUpdates.resolutionStrategy = {
     }
   }
 }
+
+configurations.configureEach {
+  resolutionStrategy.eachDependency { details ->
+    // Remedy for CVE-2020-8908, ensures launchdarkly uses correct version
+    if (details.requested.group == 'com.google.guava'
+      && details.requested.name == 'guava') {
+      details.useVersion "32.1.1-jre"
+    }
+  }
+}
+
 
 gradle.startParameter.continueOnFailure = true
 
