@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation;
 
@@ -20,12 +21,12 @@ public class LaunchDarklyConfiguration implements WebMvcConfigurer {
     @Autowired
     private FeatureConditionEvaluation featureConditionEvaluation;
 
-   /* @Override
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(featureConditionEvaluation)
             .addPathPatterns("/refdata/location/orgServices/**")
             .addPathPatterns("/refdata/location/building-locations/**")
             .addPathPatterns("/refdata/location/region**")
             .addPathPatterns("/refdata/location/court-venues/**");
-    }*/
+    }
 }
