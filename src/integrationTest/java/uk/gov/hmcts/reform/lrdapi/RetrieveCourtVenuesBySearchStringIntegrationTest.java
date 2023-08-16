@@ -81,7 +81,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
         throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=Abe&court-type-id=17,10,23",
+                "?search-string=Abe&court_type-id=17,10,23",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -94,8 +94,8 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
         "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
         "?search-string=&&&", "?search-string=...", "?search-string=,,,", "?search-string=(((",
-        "?search-string=)))", "?search-string=zz&court-type-id=1000", "?search-string=AB$&court-type-id=1000",
-        "?search-string=AB$&court-type-id=1,2,$,4"})
+        "?search-string=)))", "?search-string=zz&court_type-id=1000", "?search-string=AB$&court_type-id=1000",
+        "?search-string=AB$&court_type-id=1,2,$,4"})
     @SuppressWarnings("unchecked")
     void shouldReturn400_WhenInvalidParamsPassed(String parameter) throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
@@ -110,7 +110,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturnEmptyList_WhenCourtTypeIdIsInvalid() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000",
+                "?search-string=ABC&court_type-id=100000000",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -122,7 +122,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsHearingLocationContainOtherYN() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_hearing_location=Yes",
+                "?search-string=ABC&court_type-id=100000000&is_hearing_location=Yes",
                 ErrorResponse.class,
                 path
             );
@@ -136,7 +136,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsCaseManagementLocationContainOtherYN() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_case_management_location=Yes",
+                "?search-string=ABC&court_type-id=100000000&is_case_management_location=Yes",
                 ErrorResponse.class,
                 path
             );
@@ -150,7 +150,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsTemporaryLocationContainOtherYN() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_temporary_location=Yes",
+                "?search-string=ABC&court_type-id=100000000&is_temporary_location=Yes",
                 ErrorResponse.class,
                 path
             );
@@ -164,7 +164,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsHearingLocationContainSpecialChar() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_hearing_location=$%$%",
+                "?search-string=ABC&court_type-id=100000000&is_hearing_location=$%$%",
                 ErrorResponse.class,
                 path
             );
@@ -178,7 +178,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsCaseManagementLocationContainSpecialChar() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_case_management_location=$%$%",
+                "?search-string=ABC&court_type-id=100000000&is_case_management_location=$%$%",
                 ErrorResponse.class,
                 path
             );
@@ -192,7 +192,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenIsTemporaryLocationContainSpecialChar() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=ABC&court-type-id=100000000&is_temporary_location=$%$%",
+                "?search-string=ABC&court_type-id=100000000&is_temporary_location=$%$%",
                 ErrorResponse.class,
                 path
             );
@@ -206,7 +206,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn200_WhenIsCaseManagementLocationContainY() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=Abe&court-type-id=10,17,23&is_case_management_location=Y",
+                "?search-string=Abe&court_type-id=10,17,23&is_case_management_location=Y",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -220,7 +220,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn200_WhenIsCaseManagementLocationContainY_lowerCase() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=Abe&court-type-id=10,17,23&is_case_management_location=y",
+                "?search-string=Abe&court_type-id=10,17,23&is_case_management_location=y",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -234,7 +234,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn200_WhenLocationTypeContainValue() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=Abe&court-type-id=10,17,23&location_type=NBC",
+                "?search-string=Abe&court_type-id=10,17,23&location_type=NBC",
                 LrdCourtVenueResponse[].class,
                 path
             );
@@ -248,7 +248,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn200_WhenLocationTypeContainValue_lowercase() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.findCourtVenuesBySearchString(
-                "?search-string=Abe&court-type-id=10,17,23&location_type=nbc",
+                "?search-string=Abe&court_type-id=10,17,23&location_type=nbc",
                 LrdCourtVenueResponse[].class,
                 path
             );
