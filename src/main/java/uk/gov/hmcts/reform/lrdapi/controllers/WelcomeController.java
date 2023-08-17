@@ -61,7 +61,6 @@ public class WelcomeController {
             .ok()
             .cacheControl(CacheControl.noCache())
             .body("{\"message\": \"" + MESSAGE + "\"}");
-
     }
 }
 
