@@ -10,8 +10,8 @@ import uk.gov.hmcts.reform.idam.client.IdamApi;
 
 @EnableJpaAuditing
 @EnableJpaRepositories
-@SpringBootApplication
 @EnableCaching
+@SpringBootApplication(scanBasePackages = {"uk.gov.hmcts.reform.idam","uk.gov.hmcts.reform.lrdapi"})
 @EnableFeignClients(basePackages = {
     "uk.gov.hmcts.reform.lrdapi" },
     basePackageClasses = { IdamApi.class }

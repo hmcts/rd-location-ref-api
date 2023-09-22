@@ -54,7 +54,7 @@ public class ExceptionMapper {
 
     @ExceptionHandler(HttpStatusCodeException.class)
     public ResponseEntity<Object> handleHttpStatusException(HttpStatusCodeException ex) {
-        HttpStatus httpStatus = ex.getStatusCode();
+        HttpStatus httpStatus = (HttpStatus) ex.getStatusCode();
         return errorDetailsResponseEntity(ex, httpStatus, httpStatus.getReasonPhrase());
     }
 
