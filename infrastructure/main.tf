@@ -123,8 +123,8 @@ resource "azurerm_key_vault_secret" "POSTGRES-USER-V15" {
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
 }
 
-resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
-  name          = join("-", [var.component, "POSTGRES-PASS"])
+resource "azurerm_key_vault_secret" "POSTGRES-PASS-V15" {
+  name          = join("-", [var.component, "POSTGRES-PASS-V15"])
   value         = module.db-rd-location-ref-api.postgresql_password
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
 }
