@@ -73,3 +73,60 @@ module "db-rd-location-ref-api" {
   postgresql_version  = var.postgresql_version
   replicas            = var.db_replicas
 }
+
+# Create the database server
+# Name and resource group name will be defaults (<product>-<component>-<env> and <product>-<component>-data-<env> respectively)
+module "db-common-data-v15" {
+  source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
+
+  providers = {
+    azurerm.postgres_network = azurerm.postgres_network
+  }
+
+  admin_user_object_id = var.jenkins_AAD_objectId
+  business_area        = "cft"
+  common_tags          = var.common_tags
+  component            = var.component-V15
+  env                  = var.env
+  pgsql_databases = [
+    {
+      name = "rd-location-api-db"
+    }
+  ]
+  pgsql_version        = "15"
+  product              = var.product-V15
+  name               = join("-", [var.product-V15, var.component-V15])
+}
+
+
+resource "azurerm_key_vault_secret" "POSTGRES-HOST-V15" {
+  name          = join("-", [var.component, "POSTGRES-HOST-V15"])
+  value         = module.db-rd-location-ref-api.host_name
+  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-DATABASE-V15" {
+  name          = join("-", [var.component, "POSTGRES-DATABASE-V15"])
+  value         = module.db-rd-location-ref-api.postgresql_database
+  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_POR-V15T" {
+  name          = join("-", [var.component, "POSTGRES-PORT-V15"])
+  value         = "5432"
+  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-USER-V15" {
+  name          = join("-", [var.component, "POSTGRES-USER-V15"])
+  value         = module.db-rd-location-ref-api.user_name
+  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
+  name          = join("-", [var.component, "POSTGRES-PASS"])
+  value         = module.db-rd-location-ref-api.postgresql_password
+  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
+}
+
+
