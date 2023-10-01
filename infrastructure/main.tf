@@ -74,7 +74,7 @@ module "db-rd-location-ref-api" {
   replicas            = var.db_replicas
 }
 
-# Create the database server
+# Create the database server V15
 # Name and resource group name will be defaults (<product>-<component>-<env> and <product>-<component>-data-<env> respectively)
 module "db-common-data-v15" {
   source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
