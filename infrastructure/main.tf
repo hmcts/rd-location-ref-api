@@ -107,7 +107,7 @@ resource "azurerm_key_vault_secret" "POSTGRES-HOST-V15" {
 
 resource "azurerm_key_vault_secret" "POSTGRES-DATABASE-V15" {
   name          = join("-", [var.component, "POSTGRES-DATABASE-V15"])
-  value         = module.db-rd-location-ref-api-v15.pgsql_databases
+  value         = "rd-location-ref-api-db"
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
 }
 
