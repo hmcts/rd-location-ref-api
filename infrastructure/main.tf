@@ -1,4 +1,12 @@
 locals {
+  tags = (merge(
+    var.common_tags,
+    tomap({
+      "Team Contact" = var.team_contact
+      "Destroy Me"   = var.destroy_me
+    })
+  ))
+
   preview_vault_name      = join("-", [var.raw_product, "aat"])
   non_preview_vault_name  = join("-", [var.raw_product, var.env])
   key_vault_name          = var.env == "preview" || var.env == "spreview" ? local.preview_vault_name : local.non_preview_vault_name
@@ -90,7 +98,7 @@ module "db-rd-location-ref-api-v15" {
   env                  = var.env
   pgsql_databases = [
     {
-      name = "rd-location-ref-api-db"
+      name = "dbrdlocationref"
     }
   ]
   pgsql_version        = "15"
@@ -107,7 +115,7 @@ resource "azurerm_key_vault_secret" "POSTGRES-HOST-V15" {
 
 resource "azurerm_key_vault_secret" "POSTGRES-DATABASE-V15" {
   name          = join("-", [var.component, "POSTGRES-DATABASE-V15"])
-  value         = "rd-location-ref-api-db"
+  value         = "dbrdlocationref"
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
 }
 
