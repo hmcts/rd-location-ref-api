@@ -367,7 +367,7 @@ dependencies {
   implementation 'com.github.hmcts:idam-java-client:2.1.1'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: versions.springBoot
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.4'
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.30.2'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.35'
   implementation (group: 'com.launchdarkly', name: 'launchdarkly-java-server-sdk', version: versions.launchDarklySdk) {
     exclude group: 'com.google.guava', module: 'guava'
   }
