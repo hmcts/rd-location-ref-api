@@ -364,7 +364,7 @@ dependencies {
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.15.2', ext: 'pom'
 
   implementation group: 'javax.inject', name: 'javax.inject', version: '1'
-  implementation 'com.github.hmcts:idam-java-client:2.0.1'
+  implementation 'com.github.hmcts:idam-java-client:2.1.1'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: versions.springBoot
   implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server:3.1.4'
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.30.2'
