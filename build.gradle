@@ -459,7 +459,7 @@ dependencies {
   }, version: '3.1.0'
 
   testImplementation group: 'org.pitest', name: 'pitest', version: '1.11.5'
-  testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.9.11'
+  testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
 
   testImplementation 'io.github.openfeign:feign-jackson:12.2'
   testImplementation group: 'com.github.mifmif', name: 'generex', version: '1.0.2'
