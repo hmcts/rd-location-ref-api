@@ -21,6 +21,12 @@ variable "component-V15" {
   default="postgres-db-v15"
 }
 
+variable "pgsql_admin_username" {
+  description = "Admin username"
+  type        = string
+  default     = "dbrdlocationref@rd-location-ref-api-postgres-db-v15"
+}
+
 variable "location" {
   type    = string
   default = "UK South"
