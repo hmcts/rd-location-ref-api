@@ -40,6 +40,7 @@ variable "db_replicas" {
    default = []
  }
 
+
 variable "product-V15" {
   type = string
   default="rd-location-ref-api"
