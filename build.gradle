@@ -437,7 +437,7 @@ dependencies {
     exclude group: 'com.github.jknack'
   }
 
-  testImplementation ('org.mockito:mockito-core:5.3.1') {
+  testImplementation ('org.mockito:mockito-core:5.6.0') {
     exclude group: "net.bytebuddy", module: "byte-buddy"
     exclude group: "net.bytebuddy", module: "byte-buddy-agent"
   }
@@ -448,7 +448,7 @@ dependencies {
   testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.9'
   testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.14.9'
 
-  testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.3.1'
+  testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.6.0'
 
 
   testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
