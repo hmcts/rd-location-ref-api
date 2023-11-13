@@ -231,34 +231,19 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         responseVerification(response, ALL_OPEN_STR);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"?epimms_id=123456789,ALL","?cluster_id=01234"})
     @SuppressWarnings("unchecked")
-    void retrieveBuildLocations_OneValidepimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200() throws
+    void retrieveBuildLocations_WithEpimmsIdAndAllGiven_ShouldReturnValidResponseAndStatusCode200(String params) throws
         JsonProcessingException {
 
         final var response = (List<LrdBuildingLocationResponse>)
-            lrdApiClient.retrieveResponseForGivenRequest("?epimms_id=123456789,ALL",
+            lrdApiClient.retrieveResponseForGivenRequest(params,
                                                          LrdBuildingLocationResponse[].class, path
             );
 
         assertNotNull(response);
         responseVerification(response, ALL);
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void retrieveBuildLocations_ValidClusterIdPassed_ShouldReturn200() throws
-        JsonProcessingException {
-
-        final var actualResponse =
-            (List<LrdBuildingLocationResponse>) lrdApiClient
-                .retrieveResponseForGivenRequest(
-                    "?cluster_id=01234",
-                    LrdBuildingLocationResponse[].class, path
-                );
-
-        assertNotNull(actualResponse);
-        responseVerification(actualResponse, ALL);
     }
 
     @Test

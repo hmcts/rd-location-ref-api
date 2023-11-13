@@ -3,6 +3,8 @@ package uk.gov.hmcts.reform.lrdapi.service.impl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -158,24 +160,11 @@ class RegionServiceImplTest {
         verify(regionRepositoryMock, times(1)).findByRegionIdIn(any());
     }
 
-    @Test
-    void testRetrieveRegionByRegionIdInvalidIdList() {
+    @ParameterizedTest
+    @ValueSource(strings = {"{121},{2332},{1233432}","ALL,London","London,National"})
+    void testRetrieveRegionByRegionIdInvalidIdList(String regions) {
         assertThrows(InvalidRequestException.class, () -> {
-            regionService.retrieveRegionByRegionId("{121},{2332},{1233432}");
-        });
-    }
-
-    @Test
-    void testRetrieveRegionByRegionIdThrowsInvalidRequest() {
-        assertThrows(InvalidRequestException.class, () -> {
-            regionService.retrieveRegionByRegionId("ALL,London");
-        });
-    }
-
-    @Test
-    void testRetrieveRegionByRegionIdWithoutAllThrowsInvalidRequest() {
-        assertThrows(InvalidRequestException.class, () -> {
-            regionService.retrieveRegionByRegionId("London,National");
+            regionService.retrieveRegionByRegionId(regions);
         });
     }
 

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi;
 
+
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
@@ -15,8 +16,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @WithTags({@WithTag("testType:Smoke")})
 @Slf4j
-class SmokeTest {
 
+class SmokeTest {
     // use this when testing locally - replace the below content with this line
     private final String targetInstance =
         StringUtils.defaultIfBlank(
@@ -29,7 +30,6 @@ class SmokeTest {
         // local test
         /*SerenityRest.proxy("proxyout.reform.hmcts.net", 8080);
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
-
         SerenityRest.useRelaxedHTTPSValidation();
 
         Response response = SerenityRest
