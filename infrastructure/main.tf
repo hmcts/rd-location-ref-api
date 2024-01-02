@@ -74,20 +74,6 @@ module "db-rd-location-ref-api" {
   replicas            = var.db_replicas
 }
 
-module "db-rd-location-ref-api" {
-  source              = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  name                = join("-", [var.product, var.component, "postgres-db"])
-  product             = var.product
-  component           = var.component
-  location            = var.location
-  subscription        = var.subscription
-  env                 = var.env
-  postgresql_user     = "dbrdlocationref"
-  database_name       = "dbrdlocationref"
-  common_tags         = var.common_tags
-  postgresql_version  = var.postgresql_version
-  replicas            = var.db_replicas
-}
 
 # Create the database server v16
 # Name and resource group name will be defaults (<product>-<component>-<env> and <product>-<component>-data-<env> respectively)
