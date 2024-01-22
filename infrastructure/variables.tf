@@ -53,6 +53,12 @@ variable "component-v16" {
 variable "aks_subscription_id" {
 }
 
+variable "force_user_permissions_trigger" {
+  default     = ""
+  type        = string
+  description = "Update this to a new value to force the user permissions script to run again"
+}
+
 variable "team_contact" {
   type        = string
   description = "The name of your Slack channel people can use to contact your team about your infrastructure"

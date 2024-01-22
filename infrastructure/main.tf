@@ -97,6 +97,7 @@ module "db-rd-location-ref-api-v16" {
 
   # Setup Access Reader db user
   force_user_permissions_trigger = "1"
+
   subnet_suffix        = "expanded"
   pgsql_version        = "16"
   product              = var.product-v16
