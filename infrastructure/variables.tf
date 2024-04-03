@@ -107,9 +107,19 @@ variable "kv_subscription" {
 
 variable "pgsql_server_configuration" {
   description = "Postgres server configuration"
-  default =
+  type        = list(object({ name : string, value : string }))
+  default = [
     {
       name  = "azure.extensions"
-      value = "PLPGSQL,PG_STAT_STATEMENTS,PG_BUFFERCACHE"
+      value = "PLPGSQL"
+    },
+    {
+      name  = "azure.extensions"
+      value = "PG_STAT_STATEMENTS"
+    },
+    {
+      name  = "azure.extensions"
+      value = "PG_BUFFERCACHE"
     }
+  ]
 }
