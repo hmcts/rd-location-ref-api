@@ -112,6 +112,10 @@ variable "pgsql_server_configuration" {
     {
       name  = "azure.extensions"
       value = "PLPGSQL,PG_STAT_STATEMENTS,PG_BUFFERCACHE"
+    },
+    {
+      name  = "backslash_quote"
+      value = "ON"
     }
   ]
 }
