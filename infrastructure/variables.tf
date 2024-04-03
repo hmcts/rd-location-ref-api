@@ -107,5 +107,5 @@ variable "kv_subscription" {
 
 variable "pgsql_server_configuration" {
   name = "azure.extensions"
-  value = "PG_CRON,PG_BUFFERCACHE,PG_HINT_PLAN"
+  default = "PG_CRON,PG_BUFFERCACHE,PG_HINT_PLAN"
 }
