@@ -98,7 +98,6 @@ module "db-rd-location-ref-api-v16" {
   # Setup Access Reader db user
   force_user_permissions_trigger = "1"
 
-
   # Sets correct DB owner after migration to fix permissions
   enable_schema_ownership = var.enable_schema_ownership
   force_schema_ownership_trigger = "1"
