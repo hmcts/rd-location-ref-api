@@ -109,7 +109,7 @@ variable "pgsql_server_configuration" {
   description = "Postgres server configuration"
   type = map(string)
   default = {
-    "azure.extensions" = "plpgsql,pg_stat_statements,pg_buffercache",
+    "azure.extensions" = "plpgsql,pg_stat_statements,pg_buffercache"
     "backslash_quote" = "ON"
   }
 }
