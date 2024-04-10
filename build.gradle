@@ -33,7 +33,7 @@ def versions = [
   lombok             : '1.18.22',
   gradlePitest       : '1.5.1',
   pitest             : '1.7.4',
-  reformLogging      : '6.0.1',
+  reformLogging      : '6.1.4',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
   springBoot         : '3.1.6',
