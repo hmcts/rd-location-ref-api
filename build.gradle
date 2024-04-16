@@ -43,7 +43,7 @@ def versions = [
   junit              : '5.10.2',
   junitPlatform      : '1.10.2',
   jackson            : '2.14.0-rc1',
-  log4j              : '2.20.0',
+  log4j              : '2.23.1',
   springVersion      : '6.0.14',
   logback            : '1.4.14',
   feign              : '3.8.0',
