@@ -32,7 +32,7 @@ apply plugin: 'idea'
 def versions = [
   lombok             : '1.18.22',
   gradlePitest       : '1.5.1',
-  pitest             : '1.7.4',
+  pitest             : '1.16.0',
   reformLogging      : '6.1.4',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
@@ -272,7 +272,7 @@ jacocoTestReport {
 }
 
 pitest {
-  junit5PluginVersion = '0.15'
+  junit5PluginVersion = '1.0.0'
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.lrdapi.config.*',
