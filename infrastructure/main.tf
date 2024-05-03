@@ -99,6 +99,7 @@ module "db-rd-location-ref-api-v16" {
   force_user_permissions_trigger = "3"
 
 
+
   # Sets correct DB owner after migration to fix permissions
   enable_schema_ownership = var.enable_schema_ownership
   force_schema_ownership_trigger = "3"
