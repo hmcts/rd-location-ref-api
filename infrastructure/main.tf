@@ -29,49 +29,16 @@ resource "azurerm_key_vault_secret" "location_s2s_secret" {
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
 }
 
-resource "azurerm_key_vault_secret" "POSTGRES-HOST" {
-  name          = join("-", [var.component, "POSTGRES-HOST"])
-  value         = module.db-rd-location-ref-api.host_name
-  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES-DATABASE" {
-  name          = join("-", [var.component, "POSTGRES-DATABASE"])
-  value         = module.db-rd-location-ref-api.postgresql_database
-  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
-  name          = join("-", [var.component, "POSTGRES-PORT"])
-  value         = "5432"
-  key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
-}
-
 resource "azurerm_key_vault_secret" "POSTGRES-USER" {
   name          = join("-", [var.component, "POSTGRES-USER"])
-  value         = module.db-rd-location-ref-api.user_name
+  value         = module.db-rd-location-ref-api-v16.user_name
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   name          = join("-", [var.component, "POSTGRES-PASS"])
-  value         = module.db-rd-location-ref-api.postgresql_password
+  value         = module.db-rd-location-ref-api-v16.postgresql_password
   key_vault_id  = data.azurerm_key_vault.rd_key_vault.id
-}
-
-module "db-rd-location-ref-api" {
-  source              = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  name                = join("-", [var.product, var.component, "postgres-db"])
-  product             = var.product
-  component           = var.component
-  location            = var.location
-  subscription        = var.subscription
-  env                 = var.env
-  postgresql_user     = "dbrdlocationref"
-  database_name       = "dbrdlocationref"
-  common_tags         = var.common_tags
-  postgresql_version  = var.postgresql_version
-  replicas            = var.db_replicas
 }
 
 
