@@ -10,14 +10,14 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.43'
   id 'jacoco'
   id 'pmd'
-  id 'com.github.ben-manes.versions' version '0.49.0'
-  id "info.solidsoft.pitest" version '1.7.0'
+  id 'com.github.ben-manes.versions' version '0.51.0'
+  id "info.solidsoft.pitest" version '1.15.0'
   id 'io.spring.dependency-management' version '1.1.4'
-  id 'org.sonarqube' version '4.2.0.3129'
+  id 'org.sonarqube' version '4.4.1.3373'
   id 'org.springframework.boot' version '3.1.6'
-  id "org.flywaydb.flyway" version "9.19.4"
+  id "org.flywaydb.flyway" version "9.22.3"
   id 'au.com.dius.pact' version '4.1.7'
-  id 'org.owasp.dependencycheck' version '8.3.1'
+  id 'org.owasp.dependencycheck' version '8.4.3'
 }
 
 ext {
@@ -32,18 +32,18 @@ apply plugin: 'idea'
 def versions = [
   lombok             : '1.18.22',
   gradlePitest       : '1.5.1',
-  pitest             : '1.7.4',
-  reformLogging      : '6.0.1',
+  pitest             : '1.16.0',
+  reformLogging      : '6.1.4',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
   springBoot         : '3.1.6',
   springHystrix      : '2.2.10',
   pact_version       : '4.1.7',
   launchDarklySdk    : "5.10.9",
-  junit              : '5.10.1',
-  junitPlatform      : '1.10.1',
+  junit              : '5.10.2',
+  junitPlatform      : '1.10.2',
   jackson            : '2.14.0-rc1',
-  log4j              : '2.20.0',
+  log4j              : '2.23.1',
   springVersion      : '6.0.14',
   logback            : '1.4.14',
   feign              : '3.8.0',
@@ -259,7 +259,7 @@ pact {
 }
 
 jacoco {
-  toolVersion = "0.8.11"
+  toolVersion = "0.8.12"
 }
 
 jacocoTestReport {
@@ -272,7 +272,7 @@ jacocoTestReport {
 }
 
 pitest {
-  junit5PluginVersion = '0.15'
+  junit5PluginVersion = '1.0.0'
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.lrdapi.config.*',
@@ -327,9 +327,9 @@ dependencies {
   implementation (group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: versions.springBoot){
     exclude group: 'org.glassfish', module: 'jakarta.el'
   }
-  implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.4'
+  implementation group: 'org.springframework.retry', name: 'spring-retry', version: '2.0.5'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: versions.springBoot
-  implementation (group: 'io.rest-assured', name: 'rest-assured', version: '5.3.2') {
+  implementation (group: 'io.rest-assured', name: 'rest-assured', version: '5.4.0') {
     exclude group: "com.sun.xml.bind", module: "jaxb-osgi"
     exclude group: "org.apache.sling"
   }
@@ -344,7 +344,7 @@ dependencies {
   implementation group: 'org.springframework', name: 'spring-tx', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-web', version: versions.springVersion
   implementation group: 'org.springframework', name: 'spring-webmvc', version: versions.springVersion
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.5.0'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
 
   implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.1.8'
@@ -361,7 +361,7 @@ dependencies {
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.15.3', ext: 'pom'
+  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.17.0', ext: 'pom'
 
   implementation group: 'javax.inject', name: 'javax.inject', version: '1'
   implementation 'com.github.hmcts:idam-java-client:2.1.1'
@@ -385,7 +385,7 @@ dependencies {
   implementation group: 'org.springframework', name: 'spring-beans', version: versions.springVersion
   implementation group: 'org.springframework.security', name: 'spring-security-core'
 
-  implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.77'
+  implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.78.1'
   implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
   implementation group: 'ch.qos.logback', name: 'logback-classic', version: versions.logback
 
@@ -395,7 +395,7 @@ dependencies {
 
   implementation group:"org.yaml", name: "snakeyaml", version: '2.2'
   //Fix for CVE-2021-29425
-  implementation 'commons-io:commons-io:2.15.1'
+  implementation 'commons-io:commons-io:2.16.1'
 
   implementation group: 'io.github.openfeign.form', name: 'feign-form', version: versions.feign
   implementation group: 'io.github.openfeign.form', name: 'feign-form-spring', version: versions.feign
@@ -413,31 +413,31 @@ dependencies {
     exclude group: 'org.apache.groovy', module: 'groovy-xml'
   }
 
-  compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
-  smokeTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.30'
+  compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  smokeTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
 
   testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0") {
     exclude group: "org.hamcrest", module: "hamcrest-core"
     exclude group: "org.hamcrest", module: "hamcrest-library"
   }
 
-  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.3.2'
-  testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: '5.3.2'
+  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.4.0'
+  testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: '5.4.0'
 
 
   testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.2") {
     exclude group: 'com.github.jknack'
   }
 
-  testImplementation ('org.mockito:mockito-core:5.7.0') {
+  testImplementation ('org.mockito:mockito-core:5.11.0') {
     exclude group: "net.bytebuddy", module: "byte-buddy"
     exclude group: "net.bytebuddy", module: "byte-buddy-agent"
   }
@@ -445,10 +445,10 @@ dependencies {
     exclude group: "net.bytebuddy", module: "byte-buddy"
     exclude group: "net.bytebuddy", module: "byte-buddy-agent"
   }
-  testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.10'
-  testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.14.9'
+  testImplementation group: 'net.bytebuddy', name: 'byte-buddy', version: '1.14.14'
+  testImplementation group: 'net.bytebuddy', name: 'byte-buddy-agent', version: '1.14.14'
 
-  testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.7.0'
+  testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.11.0'
 
 
   testImplementation group: 'org.powermock', name: 'powermock-api-mockito2', version: '2.0.9'
@@ -458,7 +458,7 @@ dependencies {
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }, version: '3.1.0'
 
-  testImplementation group: 'org.pitest', name: 'pitest', version: '1.15.3'
+  testImplementation group: 'org.pitest', name: 'pitest', version: '1.16.0'
   testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
 
   testImplementation 'io.github.openfeign:feign-jackson:12.5'
@@ -499,16 +499,16 @@ dependencies {
   integrationTestImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
   integrationTestRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-engine', version: versions.junitPlatform
 
-  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.8'
-  contractTestRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.8'
+  contractTestImplementation group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.9'
+  contractTestRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.9'
 
 
-  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.1')
-  contractTestRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.10.1')
-  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.1')
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: '4.6.8'
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: '4.6.8'
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: '4.6.8'
+  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.2')
+  contractTestRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.10.2')
+  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.2')
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: '4.6.9'
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: '4.6.9'
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: '4.6.9'
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
@@ -532,7 +532,7 @@ dependencyManagement {
   dependencies {
     // CVE-2021-42340
     // CVE-2023-28709
-    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.16') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '10.1.23') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
