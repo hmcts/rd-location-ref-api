@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.collect.Sets;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
@@ -357,9 +358,9 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         } else if (TWO_STR.equalsIgnoreCase(responseType)) {
             assertThat(response).hasSize(2).hasSameElementsAs(getTwoLocationResponse());
         } else if (ALL.equalsIgnoreCase(responseType)) {
-            assertThat(response).hasSize(4).hasSameElementsAs(getAllLocationResponse());
+            assertThat(response).hasSize(5).hasSameElementsAs(getAllLocationResponse());
         } else {
-            assertThat(response).hasSize(3).hasSameElementsAs(getAllOpenLocationResponse());
+            assertThat(response).hasSize(4).hasSameElementsAs(getAllOpenLocationResponse());
         }
     }
 
@@ -380,7 +381,41 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .courtFinderUrl("Court Finder URL 4")
             .build();
 
+        LrdCourtVenueResponse courtVenue = LrdCourtVenueResponse.builder()
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .siteName("Aberdeen Tribunal Hearing Centre 7")
+            .openForPublic("YES")
+            .epimmsId("123457")
+            .regionId("2")
+            .region("Midlands")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 7")
+            .courtStatus("Open")
+            .postcode("AB11 1TY")
+            .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("13")
+            .build();
+
+        LrdBuildingLocationResponse locationResponses5 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041999")
+            .regionId("2")
+            .region("Midlands")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Open")
+            .epimmsId("123457")
+            .buildingLocationName("Building Location 4")
+            .area("Area D")
+            .postcode("EC2A 3AQ")
+            .address("4 Street, London")
+            .courtFinderUrl("Court Finder URL 4")
+            .courtVenues(Sets.newHashSet(courtVenue))
+            .build();
+
         locationResponses.add(locationResponses4);
+        locationResponses.add(locationResponses5);
         return locationResponses;
     }
 
@@ -472,6 +507,39 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
 
         locationResponses.add(locationResponses3);
 
+        LrdCourtVenueResponse courtVenue = LrdCourtVenueResponse.builder()
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .siteName("Aberdeen Tribunal Hearing Centre 7")
+            .openForPublic("YES")
+            .epimmsId("123457")
+            .regionId("2")
+            .region("Midlands")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 7")
+            .courtStatus("Open")
+            .postcode("AB11 1TY")
+            .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
+            .courtVenueId("13")
+            .build();
+
+        LrdBuildingLocationResponse locationResponses5 = LrdBuildingLocationResponse.builder()
+            .buildingLocationId("22041999")
+            .regionId("2")
+            .region("Midlands")
+            .clusterId("01234")
+            .clusterName("Cluster B")
+            .buildingLocationStatus("Open")
+            .epimmsId("123457")
+            .buildingLocationName("Building Location 4")
+            .area("Area D")
+            .postcode("EC2A 3AQ")
+            .address("4 Street, London")
+            .courtFinderUrl("Court Finder URL 4")
+            .courtVenues(Sets.newHashSet(courtVenue))
+            .build();
+        locationResponses.add(locationResponses5);
         return locationResponses;
     }
 

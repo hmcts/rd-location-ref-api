@@ -53,7 +53,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(12);
+        assertThat(response).isNotEmpty().hasSize(13);
     }
 
     @Test
@@ -66,7 +66,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(12);;
+        assertThat(response).isNotEmpty().hasSize(13);;
         assertTrue(response.stream().allMatch(venue -> venue.getCourtStatus().equalsIgnoreCase("Open")));
     }
 
@@ -137,7 +137,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?court_type_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(9);
+        assertThat(response).isNotEmpty().hasSize(10);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals(id.trim())));
     }
 
@@ -165,7 +165,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?cluster_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(5);
+        assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
     }
 
@@ -287,7 +287,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(9);
+        assertThat(response).isNotEmpty().hasSize(10);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
     }
 
@@ -317,7 +317,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(5);
+        assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")));
     }
 
@@ -365,7 +365,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(null, LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(12);
+        assertThat(response).isNotEmpty().hasSize(13);
 
     }
 

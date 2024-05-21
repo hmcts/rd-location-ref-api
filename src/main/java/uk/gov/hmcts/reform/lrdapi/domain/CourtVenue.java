@@ -141,6 +141,9 @@ public class CourtVenue implements Serializable {
     @Size(max = 16)
     private CourtType courtType;
 
+    @Column(name = "external_short_name")
+    private String externalShortName;
+
     public Optional<LocalDateTime> getClosedDate() {
         return Optional.ofNullable(closedDate);
     }
