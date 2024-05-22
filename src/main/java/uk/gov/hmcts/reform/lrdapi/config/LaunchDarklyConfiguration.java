@@ -13,7 +13,10 @@ import uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation;
 @Configuration
 public class LaunchDarklyConfiguration implements WebMvcConfigurer {
 
-    @Bean
+    public LaunchDarklyConfiguration() {
+    }
+
+    //@Bean
     public LDClient ldClient(@Value("${launchdarkly.sdk.key}") String sdkKey) {
         return new LDClient(sdkKey);
     }
