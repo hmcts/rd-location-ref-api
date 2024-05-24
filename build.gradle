@@ -14,8 +14,8 @@ plugins {
   id "info.solidsoft.pitest" version '1.15.0'
   id 'io.spring.dependency-management' version '1.1.5'
   id 'org.sonarqube' version '5.0.0.4638'
-  id 'org.springframework.boot' version '3.1.6'
-//  id 'org.springframework.boot' version '3.2.5'
+//  id 'org.springframework.boot' version '3.1.6'
+  id 'org.springframework.boot' version '3.2.5'
   id "org.flywaydb.flyway" version "9.22.3"
   id 'au.com.dius.pact' version '4.1.7'
   id 'org.owasp.dependencycheck' version '8.4.3'
@@ -37,8 +37,8 @@ def versions = [
   reformLogging      : '6.1.4',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
-  springBoot         : '3.1.6',
-//  springBoot         : '3.2.5',
+//  springBoot         : '3.1.6',
+  springBoot         : '3.2.5',
   springHystrix      : '2.2.10',
   pact_version       : '4.1.7',
   launchDarklySdk    : "5.10.9",
@@ -46,10 +46,10 @@ def versions = [
   junitPlatform      : '1.10.2',
   jackson            : '2.14.0-rc1',
   log4j              : '2.23.1',
-  springVersion      : '6.1.6',
-//  springVersion      : '6.1.7',
+//  springVersion      : '6.1.6',
+  springVersion      : '6.1.7',
   logback            : '1.4.14',
-  feign              : '3.8.0',
+  feign              : '4.1.0',
   bytebuddy          : '1.12.7',
   testContainer_postgresql: '1.17.6'
 
