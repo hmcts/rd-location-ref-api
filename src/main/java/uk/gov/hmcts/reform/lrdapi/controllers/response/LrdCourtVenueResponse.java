@@ -127,6 +127,9 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("fact_url")
     private String factUrl;
 
+    @JsonProperty("external_short_name")
+    private String externalShortName;
+
     public LrdCourtVenueResponse(CourtVenue courtVenue) {
 
         if (nonNull(courtVenue)) {
@@ -166,6 +169,7 @@ public class LrdCourtVenueResponse implements Serializable {
             this.mrdVenueId = courtVenue.getMrdVenueId();
             this.serviceUrl = courtVenue.getServiceUrl();
             this.factUrl = courtVenue.getFactUrl();
+            this.externalShortName = courtVenue.getExternalShortName();
             courtVenue.getRegion().ifPresent(reg -> {
                 region = reg.getDescription();
                 regionId = reg.getRegionId();
