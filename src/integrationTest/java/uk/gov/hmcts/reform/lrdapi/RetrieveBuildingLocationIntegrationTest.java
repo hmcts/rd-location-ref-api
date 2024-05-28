@@ -396,6 +396,7 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .postcode("AB11 1TY")
             .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
             .courtVenueId("13")
+            .externalShortName("Aberdeen Tribunal External")
             .build();
 
         LrdBuildingLocationResponse locationResponses5 = LrdBuildingLocationResponse.builder()
@@ -522,6 +523,7 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .postcode("AB11 1TY")
             .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
             .courtVenueId("13")
+            .externalShortName("Aberdeen Tribunal External")
             .build();
 
         LrdBuildingLocationResponse locationResponses5 = LrdBuildingLocationResponse.builder()

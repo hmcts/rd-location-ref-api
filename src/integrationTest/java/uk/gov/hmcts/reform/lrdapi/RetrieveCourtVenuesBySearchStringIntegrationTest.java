@@ -43,6 +43,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
         assertThat(response).isNotEmpty().hasSize(12);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
+        assertEquals("Aberdeen Tribunal External", response[11].getExternalShortName());
     }
 
     @Test
@@ -88,6 +89,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
         assertThat(response).isNotEmpty().hasSize(12);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
+        assertEquals("Aberdeen Tribunal External", response[11].getExternalShortName());
     }
 
     @ParameterizedTest

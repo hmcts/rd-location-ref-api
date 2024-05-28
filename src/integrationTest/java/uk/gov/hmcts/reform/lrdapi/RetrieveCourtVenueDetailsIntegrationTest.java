@@ -54,6 +54,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             );
 
         assertThat(response).isNotEmpty().hasSize(13);
+        assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
     }
 
     @Test
@@ -68,6 +69,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(13);;
         assertTrue(response.stream().allMatch(venue -> venue.getCourtStatus().equalsIgnoreCase("Open")));
+        assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
     }
 
 
@@ -139,6 +141,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(10);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals(id.trim())));
+        assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
+
     }
 
     @ParameterizedTest
@@ -167,6 +171,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
+        assertEquals("Aberdeen Tribunal External", response.get(5).getExternalShortName());
     }
 
     @Test
@@ -289,6 +294,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(10);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
+        assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
     }
 
     @Test
@@ -366,6 +372,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(null, LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(13);
+        assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
 
     }
 
