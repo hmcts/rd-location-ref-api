@@ -58,6 +58,7 @@ class LrdCourtVenueResponseTest {
             .mrdVenueId("765")
             .serviceUrl("https://serviceurl.com")
             .factUrl("https://facturl.com")
+            .externalShortName("External Short Court")
             .build();
 
         LrdCourtVenueResponse courtVenueResponse = new LrdCourtVenueResponse(courtVenue);
@@ -84,6 +85,7 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getMrdVenueId());
         assertNotNull(courtVenueResponse.getServiceUrl());
         assertNotNull(courtVenueResponse.getFactUrl());
+        assertNotNull(courtVenueResponse.getExternalShortName());
     }
 
     @Test
