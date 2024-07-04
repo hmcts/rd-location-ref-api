@@ -61,6 +61,7 @@ import static org.mockito.Mockito.when;
     host = "${PACT_BROKER_URL:localhost}",
     port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
         @VersionSelector(tag = "master")},
+    providerTags = "${pactbroker.providerTags:master}",
     enablePendingPacts = "${pactbroker.enablePending:true}")
 @ContextConfiguration(classes = {LrdApiController.class, LrdCourtVenueController.class, LrdServiceImpl.class,
     LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class, CourtVenueServiceImpl.class})
