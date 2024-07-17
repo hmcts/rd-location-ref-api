@@ -413,16 +413,16 @@ dependencies {
     exclude group: 'org.apache.groovy', module: 'groovy-xml'
   }
 
-  compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
-  smokeTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.32'
+  compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  integrationTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  integrationTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  smokeTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+  smokeTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
 
   testImplementation("org.hamcrest:hamcrest-junit:2.0.0.0") {
     exclude group: "org.hamcrest", module: "hamcrest-core"
