@@ -40,8 +40,8 @@ def versions = [
   springHystrix      : '2.2.10',
   pact_version       : '4.1.7',
   launchDarklySdk    : "5.10.9",
-  junit              : '5.10.2',
-  junitPlatform      : '1.10.2',
+  junit              : '5.10.3',
+  junitPlatform      : '1.10.3',
   jackson            : '2.14.0-rc1',
   log4j              : '2.23.1',
   springVersion      : '6.0.14',
@@ -503,9 +503,9 @@ dependencies {
   contractTestRuntimeOnly group: 'au.com.dius.pact.consumer', name: 'junit5', version: '4.6.11'
 
 
-  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.2')
-  contractTestRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.10.2')
-  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.2')
+  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.3')
+  contractTestRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.10.3')
+  contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.3')
   contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: '4.6.11'
   contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: '4.6.11'
   contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: '4.6.11'
