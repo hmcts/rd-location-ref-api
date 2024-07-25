@@ -21,7 +21,7 @@ plugins {
 }
 
 ext {
-  set('springCloudVersion', "2022.0.4")
+  set('springCloudVersion', "2022.0.5")
 }
 
 apply plugin: 'java'
@@ -470,7 +470,7 @@ dependencies {
   }
 
 
-  testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.0.1'
+  testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.1.4'
 
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testContainer_postgresql
   testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testContainer_postgresql
