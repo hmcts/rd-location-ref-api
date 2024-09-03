@@ -574,7 +574,6 @@ configurations.configureEach {
   }
 }
 
-
 gradle.startParameter.continueOnFailure = true
 
 bootJar {
