@@ -123,7 +123,7 @@ values(
   'Court Finder URL 3',
   'EC2A 2YZ',
   '3 Street, London',
-  now())
+  now());
 
 
 insert into
@@ -150,7 +150,7 @@ values(
   'Court Finder URL 3',
   'EC2A 2YZ',
   '3 Street, London',
-  now())
+  now());
 
 
   insert into
@@ -177,7 +177,7 @@ values(
     'Court Finder URL 3',
     'EC2A 2YZ',
     '3 Street, London',
-    now())
+    now());
 
 insert into
     building_location(
@@ -203,4 +203,4 @@ insert into
     'Court Finder URL 3',
     'EC2A 2YZ',
     '3 Street, London',
-    now())
+    now());
