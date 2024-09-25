@@ -535,11 +535,10 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         );
     }
 
-    private static LrdBuildingLocationResponse getLrdBuildingLocationResponse(String buildingLocationId,
-                                                                              String epimsId,
-                                                                              String buildingLocationStatus,
-                                                                              String buildingLocationName,
-                                                                              Set<LrdCourtVenueResponse> courtVenueResponses) {
+    private static LrdBuildingLocationResponse getLrdBuildingLocationResponse(
+        String buildingLocationId,
+        String epimsId, String buildingLocationStatus, String buildingLocationName,
+        Set<LrdCourtVenueResponse> courtVenueResponses) {
         return LrdBuildingLocationResponse.builder()
             .buildingLocationId(buildingLocationId)
             .regionId("1")
