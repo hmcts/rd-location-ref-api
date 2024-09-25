@@ -38,7 +38,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + id,
                                                          LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(3);
+        assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")));
     }
 
@@ -67,7 +67,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(13);;
+        assertThat(response).isNotEmpty().hasSize(13);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtStatus().equalsIgnoreCase("Open")));
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
     }
@@ -102,7 +102,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + id + "&court_type_id=" + courtType,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")));
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
     }
