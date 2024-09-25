@@ -72,3 +72,83 @@ values(
   'EC2A 2YZ',
   '3 Street, London',
   now())
+
+
+insert into
+  building_location(
+    building_location_id,
+    region_id,
+    building_location_status_id,
+    cluster_id,
+    epimms_id,
+    building_location_name,
+    area,
+    court_finder_url,
+    postcode,
+    address,
+    updated_time)
+values(
+  '22041998',
+  '2',
+  '45678',
+  '01234',
+  'epimmsId1235',
+  'Building Location C',
+  'Area C',
+  'Court Finder URL 3',
+  'EC2A 2YZ',
+  '3 Street, London',
+  now())
+
+
+insert into
+  building_location(
+    building_location_id,
+    region_id,
+    building_location_status_id,
+    cluster_id,
+    epimms_id,
+    building_location_name,
+    area,
+    court_finder_url,
+    postcode,
+    address,
+    updated_time)
+values(
+  '22041999',
+  '2',
+  '45678',
+  '01234',
+  'epimmsId1236',
+  'Building Location C',
+  'Area C',
+  'Court Finder URL 3',
+  'EC2A 2YZ',
+  '3 Street, London',
+  now())
+
+insert into
+  building_location(
+    building_location_id,
+    region_id,
+    building_location_status_id,
+    cluster_id,
+    epimms_id,
+    building_location_name,
+    area,
+    court_finder_url,
+    postcode,
+    address,
+    updated_time)
+values(
+  '22042000',
+  '2',
+  '45678',
+  '01234',
+  'epimmsId1237',
+  'Building Location C',
+  'Area C',
+  'Court Finder URL 3',
+  'EC2A 2YZ',
+  '3 Street, London',
+  now())
