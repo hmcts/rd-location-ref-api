@@ -66,7 +66,7 @@ insert into
     address,
     updated_time)
 values(
-  '2',
+  '3',
   '3',
   'OPEN',
   '9',
