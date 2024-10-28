@@ -31,8 +31,8 @@ apply plugin: 'idea'
 
 def versions = [
   lombok             : '1.18.22',
-  gradlePitest       : '1.5.1',
-  pitest             : '1.16.0',
+  gradlePitest       : '1.15.0',
+  pitest             : '1.17.0',
   reformLogging      : '6.1.7',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
@@ -272,6 +272,7 @@ jacocoTestReport {
 }
 
 pitest {
+  pitestVersion = versions.pitest
   junit5PluginVersion = '1.2.1'
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
   excludedClasses = [
@@ -458,16 +459,16 @@ dependencies {
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
   }, version: '3.1.0'
 
-  testImplementation group: 'org.pitest', name: 'pitest', version: '1.17.0'
-  testImplementation 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.15.0'
+  testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
+  testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
 
   testImplementation 'io.github.openfeign:feign-jackson:12.5'
   testImplementation group: 'com.github.mifmif', name: 'generex', version: '1.0.2'
 
-  testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5', {
+  testImplementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', {
     exclude group: 'junit', module: 'junit'
     exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-  }
+  }, version: versions.sonarPitest
 
 
   testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.1.4'
