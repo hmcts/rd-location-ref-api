@@ -36,6 +36,7 @@ def versions = [
   reformLogging      : '6.1.7',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
+  junitPitest        : '1.2.1',
   springBoot         : '3.3.5',
   springHystrix      : '2.2.10',
   pact_version       : '4.1.7',
@@ -273,7 +274,7 @@ jacocoTestReport {
 
 pitest {
   pitestVersion = versions.pitest
-  junit5PluginVersion = '1.2.1'
+  junit5PluginVersion = versions.junitPitest
   targetClasses = ['uk.gov.hmcts.reform.lrdapi.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.lrdapi.config.*',
