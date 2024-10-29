@@ -510,7 +510,7 @@ dependencies {
   contractTestImplementation('org.junit.jupiter:junit-jupiter-api:5.10.3')
   contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5', version: '4.6.15'
   contractTestImplementation group: 'au.com.dius.pact.provider', name: 'spring', version: '4.6.14'
-  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: '4.6.14'
+  contractTestImplementation group: 'au.com.dius.pact.provider', name: 'junit5spring', version: '4.6.15'
 
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
