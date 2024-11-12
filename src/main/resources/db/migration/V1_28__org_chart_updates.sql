@@ -40,8 +40,8 @@ insert into locrefdata.service (service_id, org_unit_id, business_area_id, sub_b
   (select sub_business_area_id from locrefdata.org_sub_business_area   where description ='Tribunals'),
   (select jurisdiction_id from locrefdata.jurisdiction where description ='General Regulatory Chamber'),
   'BAB5',
-  'Electronic Comms etc Communications, Postal Services & Network Information Systems',
-  'Electronic Comms etc Communications, Postal Services & Network Information Systems',
+  'Electronic Communications, Postal Services & Network Information Systems',
+  'Electronic Communications, Postal Services & Network Information Systems',
   timezone('utc', now()));
 
 insert into locrefdata.service (service_id, org_unit_id, business_area_id, sub_business_area_id, jurisdiction_id, service_code,
