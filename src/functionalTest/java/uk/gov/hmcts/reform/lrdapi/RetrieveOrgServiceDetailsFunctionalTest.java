@@ -69,7 +69,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "");
 
-        assertThat(responses).isNotEmpty().hasSize(45);
+        assertThat(responses).isNotEmpty().hasSize(92);
     }
 
     @SuppressWarnings("unchecked")
