@@ -32,7 +32,7 @@ variable "common_tags" {
 
 variable "postgresql_version" {
   type    = string
-  default = "11"
+  default = "16"
 }
 
 variable "db_replicas" {
