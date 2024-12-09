@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Sets;
-import net.thucydides.core.annotations.WithTag;
-import net.thucydides.core.annotations.WithTags;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
