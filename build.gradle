@@ -26,6 +26,7 @@ def versions = [
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
   junitPitest        : '1.2.1',
+  commonsLang3       : '3.17.0',
   pact_version       : '4.6.16',
   launchDarklySdk    : "5.10.9",
   junit              : '5.11.3',
@@ -308,6 +309,14 @@ repositories {
   mavenCentral()
   maven {
     url "https://jitpack.io"
+  }
+}
+
+configurations.configureEach {
+  resolutionStrategy.eachDependency { details ->
+    if (details.requested.name == 'commons-lang3') {
+      details.useVersion versions.commonsLang3
+    }
   }
 }
 
