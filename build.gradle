@@ -312,17 +312,9 @@ repositories {
   }
 }
 
-configurations.configureEach {
-  resolutionStrategy.eachDependency { details ->
-    if (details.requested.name == 'commons-lang3') {
-      details.useVersion versions.commonsLang3
-    }
-  }
-}
-
 dependencies {
 
-  implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+  implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.1.0'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
@@ -355,7 +347,7 @@ dependencies {
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: versions.jackson
 
-  implementation group: 'javax.inject', name: 'javax.inject', version: '1'
+  implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.1'
   implementation 'com.github.hmcts:idam-java-client:3.0.3'
 
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.47'
@@ -365,7 +357,7 @@ dependencies {
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.4'
 
   implementation group: 'com.google.guava', name: 'guava', version: '33.3.1-jre'
-  implementation group: 'javax.el', name: 'javax.el-api', version: '3.0.1-b06'
+  implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
 
   implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.79'
   implementation group: 'ch.qos.logback', name: 'logback-core', version: versions.logback
@@ -383,6 +375,7 @@ dependencies {
   implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: versions.log4j
   implementation "com.github.hmcts.java-logging:logging:${versions.reformLogging}"
   implementation "com.github.hmcts.java-logging:logging-appinsights:5.1.9"
+  implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
 
   testImplementation 'com.github.hmcts:rd-commons-lib:0.1.0'
 
@@ -506,6 +499,11 @@ dependencyUpdates.resolutionStrategy = {
         selection.reject('Release candidate')
       }
     }
+  }
+}
+
+configurations.configureEach {
+  resolutionStrategy.eachDependency { details ->
   }
 }
 
