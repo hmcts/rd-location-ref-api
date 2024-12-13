@@ -502,11 +502,6 @@ dependencyUpdates.resolutionStrategy = {
   }
 }
 
-configurations.configureEach {
-  resolutionStrategy.eachDependency { details ->
-  }
-}
-
 gradle.startParameter.continueOnFailure = true
 
 bootJar {
