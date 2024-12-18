@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi.config;
 
+import jakarta.inject.Inject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,6 @@ import uk.gov.hmcts.reform.authorisation.filters.ServiceAuthFilter;
 import uk.gov.hmcts.reform.lrdapi.oidc.JwtGrantedAuthoritiesConverter;
 
 import java.util.List;
-import javax.inject.Inject;
 
 @Configuration
 @ConfigurationProperties(prefix = "security")
