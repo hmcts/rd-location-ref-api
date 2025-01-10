@@ -41,9 +41,10 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(12);
+        assertThat(response).isNotEmpty().hasSize(13);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
         assertEquals("Aberdeen Tribunal External", response[11].getExternalShortName());
+        assertEquals("Welsh Aberdeen Tribunal External", response[12].getWelshExternalShortName());
     }
 
     @Test
@@ -87,9 +88,10 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(12);
+        assertThat(response).isNotEmpty().hasSize(13);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
         assertEquals("Aberdeen Tribunal External", response[11].getExternalShortName());
+        assertEquals("Welsh Aberdeen Tribunal External", response[12].getWelshExternalShortName());
     }
 
     @ParameterizedTest

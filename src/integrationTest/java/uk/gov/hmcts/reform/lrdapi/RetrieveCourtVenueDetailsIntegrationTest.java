@@ -53,8 +53,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(13);
+        assertThat(response).isNotEmpty().hasSize(14);
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
+        assertEquals("Welsh Aberdeen Tribunal External", response.get(13).getWelshExternalShortName());
     }
 
     @Test
@@ -67,9 +68,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(13);
+        assertThat(response).isNotEmpty().hasSize(14);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtStatus().equalsIgnoreCase("Open")));
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
+        assertEquals("Welsh Aberdeen Tribunal External", response.get(13).getWelshExternalShortName());
     }
 
 
@@ -139,10 +141,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?court_type_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(10);
+        assertThat(response).isNotEmpty().hasSize(11);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals(id.trim())));
         assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
-
+        assertEquals("Welsh Aberdeen Tribunal External", response.get(10).getWelshExternalShortName());
     }
 
     @ParameterizedTest
@@ -169,9 +171,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?cluster_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(6);
+        assertThat(response).isNotEmpty().hasSize(7);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
         assertEquals("Aberdeen Tribunal External", response.get(5).getExternalShortName());
+        assertEquals("Welsh Aberdeen Tribunal External", response.get(6).getWelshExternalShortName());
     }
 
     @Test
@@ -292,9 +295,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(10);
+        assertThat(response).isNotEmpty().hasSize(11);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
         assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
+        assertEquals("Welsh Aberdeen Tribunal External", response.get(10).getWelshExternalShortName());
     }
 
     @Test
