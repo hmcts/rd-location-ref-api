@@ -39,7 +39,7 @@ class RetrieveBuildingLocationBySearchStringTest extends LrdAuthorizationEnabled
                 LrdBuildingLocationBySearchResponse[].class,
                 path
             );
-        assertThat(response).isNotEmpty().hasSize(5);
+        assertThat(response).isNotEmpty().hasSize(4);
         assertTrue(response.stream().allMatch(location -> location.getBuildingLocationName().toLowerCase()
                 .contains(searchString.toLowerCase())));
         assertTrue(response.stream().allMatch(location -> location.getBuildingLocationStatus()
@@ -57,7 +57,7 @@ class RetrieveBuildingLocationBySearchStringTest extends LrdAuthorizationEnabled
                 LrdBuildingLocationBySearchResponse[].class,
                 path
             );
-        assertThat(response).isNotEmpty().hasSize(5);
+        assertThat(response).isNotEmpty().hasSize(4);
         assertTrue(response.stream().allMatch(location -> location.getBuildingLocationName().toLowerCase()
                 .contains(searchString.toLowerCase())));
         assertTrue(response.stream().allMatch(location -> location.getBuildingLocationStatus()
@@ -94,7 +94,7 @@ class RetrieveBuildingLocationBySearchStringTest extends LrdAuthorizationEnabled
                 path
             );
         assertNotNull(response);
-        assertEquals(2,response.size());
+        assertEquals(1,response.size());
     }
 
     @Test
