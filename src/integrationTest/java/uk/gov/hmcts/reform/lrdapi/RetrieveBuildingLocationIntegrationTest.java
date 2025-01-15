@@ -363,7 +363,7 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         } else if (TWO_STR.equalsIgnoreCase(responseType)) {
             assertThat(response).hasSize(2).containsAnyElementsOf(getTwoLocationResponse());
         } else if (ALL.equalsIgnoreCase(responseType)) {
-            assertThat(response).hasSize(14).containsAnyElementsOf(getAllLocationResponse());
+            assertThat(response).hasSize(16).containsAnyElementsOf(getAllLocationResponse());
         } else {
             assertThat(response).hasSize(4).hasSameElementsAs(getAllOpenLocationResponse());
         }
