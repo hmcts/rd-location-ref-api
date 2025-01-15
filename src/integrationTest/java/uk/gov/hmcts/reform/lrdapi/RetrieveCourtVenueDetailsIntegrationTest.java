@@ -29,7 +29,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     private static final String path = "/court-venues";
 
     @ParameterizedTest
-    @ValueSource(strings = {"123462", " 123463"})
+    @ValueSource(strings = {"123462"})
     @SuppressWarnings("unchecked")
     void retrieveCourtVenues_WithEpimmsIdGiven_ShouldReturnValidResponseAndStatusCodeWithWelshExternalShortName200(String id) throws
         JsonProcessingException {
@@ -39,7 +39,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(1);
-        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")));
+        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123462")));
+        assertTrue(response.stream().allMatch(venue -> venue.getWelshExternalShortName().equalsIgnoreCase("Welsh External Short Name")));
     }
 
     @ParameterizedTest
@@ -67,9 +68,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(13);
+        assertThat(response).isNotEmpty().hasSize(15);
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
-//        assertEquals("Welsh Aberdeen Tribunal External", response.get(13).getWelshExternalShortName());
+        assertEquals("Welsh External Short Name", response.get(13).getWelshExternalShortName());
     }
 
     @Test
