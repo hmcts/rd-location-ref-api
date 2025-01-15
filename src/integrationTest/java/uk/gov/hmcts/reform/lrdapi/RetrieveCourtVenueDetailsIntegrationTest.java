@@ -31,8 +31,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     @ParameterizedTest
     @ValueSource(strings = {"123462"})
     @SuppressWarnings("unchecked")
-    void retrieveCourtVenues_WithEpimmsIdGiven_ShouldReturnValidResponseAndStatusCodeWithWelshExternalShortName200(String id) throws
-        JsonProcessingException {
+    void retrieveCourtVenues_WithEpimmsIdGiven_ShouldReturnValidResponseAndStatusCodeWithWelshExternalShortName200(
+        String id) throws JsonProcessingException {
 
         final var response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + id,
@@ -40,7 +40,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123462")));
-        assertTrue(response.stream().allMatch(venue -> venue.getWelshExternalShortName().equalsIgnoreCase("Welsh External Short Name")));
+        assertTrue(response.stream().allMatch(venue -> venue.getWelshExternalShortName().equalsIgnoreCase(
+            "Welsh External Short Name")));
     }
 
     @ParameterizedTest
