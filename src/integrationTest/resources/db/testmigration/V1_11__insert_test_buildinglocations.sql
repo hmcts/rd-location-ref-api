@@ -283,7 +283,7 @@ insert into
     'Area C',
     'Court Finder URL 3',
     'EC2A 2YZ',
-    '3 Street, London',
+    '3 Street London',
     now());
 
 
@@ -310,6 +310,6 @@ insert into
     'Area C',
     'Court Finder URL 3',
     'EC2A 2YZ',
-    '3 Street, London',
+    '3 Street London',
     now());
 
