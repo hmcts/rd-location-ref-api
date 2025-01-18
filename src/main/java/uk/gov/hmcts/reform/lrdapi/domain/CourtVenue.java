@@ -144,6 +144,9 @@ public class CourtVenue implements Serializable {
     @Column(name = "external_short_name")
     private String externalShortName;
 
+    @Column(name = "welsh_external_short_name")
+    private String welshExternalShortName;
+
     public Optional<LocalDateTime> getClosedDate() {
         return Optional.ofNullable(closedDate);
     }

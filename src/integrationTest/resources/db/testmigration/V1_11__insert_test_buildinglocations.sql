@@ -259,3 +259,57 @@ insert into
     'EC2A 2YZ',
     '3 Street, London',
     now());
+
+insert into
+    building_location(
+      building_location_id,
+      region_id,
+      building_location_status_id,
+      cluster_id,
+      epimms_id,
+      building_location_name,
+      area,
+      court_finder_url,
+      postcode,
+      address,
+      updated_time)
+  values(
+    '220420013',
+    '2',
+    '45678',
+    '01234',
+    '123462',
+    'Building Location C',
+    'Area C',
+    'Court Finder URL 3',
+    'EC2A 2YZ',
+    '3 Street London',
+    now());
+
+
+insert into
+    building_location(
+      building_location_id,
+      region_id,
+      building_location_status_id,
+      cluster_id,
+      epimms_id,
+      building_location_name,
+      area,
+      court_finder_url,
+      postcode,
+      address,
+      updated_time)
+  values(
+    '220420012',
+    '2',
+    '45678',
+    '01234',
+    '123463',
+    'Building Location C',
+    'Area C',
+    'Court Finder URL 3',
+    'EC2A 2YZ',
+    '3 Street London',
+    now());
+

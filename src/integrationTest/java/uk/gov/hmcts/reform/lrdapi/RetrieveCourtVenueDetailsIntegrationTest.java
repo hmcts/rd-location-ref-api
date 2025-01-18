@@ -29,6 +29,22 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     private static final String path = "/court-venues";
 
     @ParameterizedTest
+    @ValueSource(strings = {"123462"})
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdGiven_ShouldReturnValidResponseAndStatusCodeWithWelshExternalShortName200(
+        String id) throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + id,
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123462")));
+        assertTrue(response.stream().allMatch(venue -> venue.getWelshExternalShortName().equalsIgnoreCase(
+            "Welsh External Short Name")));
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = {"123456789", " 123456789 ", "123456789, *"})
     @SuppressWarnings("unchecked")
     void retrieveCourtVenues_WithEpimmsIdGiven_ShouldReturnValidResponseAndStatusCode200(String id) throws
@@ -53,8 +69,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(13);
+        assertThat(response).isNotEmpty().hasSize(15);
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
+        assertEquals("Welsh External Short Name", response.get(13).getWelshExternalShortName());
     }
 
     @Test
@@ -67,9 +84,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path
             );
 
-        assertThat(response).isNotEmpty().hasSize(13);
+        assertThat(response).isNotEmpty().hasSize(15);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtStatus().equalsIgnoreCase("Open")));
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
+        assertEquals("Welsh External Short Name", response.get(13).getWelshExternalShortName());
     }
 
 
@@ -139,10 +157,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?court_type_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(10);
+        assertThat(response).isNotEmpty().hasSize(12);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals(id.trim())));
         assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
-
+        assertEquals("Welsh External Short Name", response.get(10).getWelshExternalShortName());
     }
 
     @ParameterizedTest
@@ -169,9 +187,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?cluster_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(6);
+        assertThat(response).isNotEmpty().hasSize(8);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
         assertEquals("Aberdeen Tribunal External", response.get(5).getExternalShortName());
+        assertEquals("Welsh External Short Name", response.get(6).getWelshExternalShortName());
     }
 
     @Test
@@ -292,9 +311,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(10);
+        assertThat(response).isNotEmpty().hasSize(12);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
         assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
+        assertEquals("Welsh External Short Name", response.get(10).getWelshExternalShortName());
     }
 
     @Test
@@ -323,7 +343,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(6);
+        assertThat(response).isNotEmpty().hasSize(8);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")));
     }
 
@@ -371,9 +391,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest(null, LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(13);
+        assertThat(response).isNotEmpty().hasSize(15);
         assertEquals("Aberdeen Tribunal External", response.get(12).getExternalShortName());
-
     }
 
     @Test
