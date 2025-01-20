@@ -16,9 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
 
@@ -174,7 +172,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(8);
-        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())));
+        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())
+        && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @ParameterizedTest
@@ -204,7 +203,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
-            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1")));
+            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1") && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @ParameterizedTest
@@ -238,7 +237,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             venue.getIsHearingLocation().equalsIgnoreCase("Y")
             && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
             && venue.getLocationType().equalsIgnoreCase("CTSC")
-            && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")));
+            && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
+                && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @Test
@@ -259,7 +259,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             venue.getIsHearingLocation().equalsIgnoreCase("Y")
             && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
             && venue.getLocationType().equalsIgnoreCase("CTSC")
-            && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")));
+            && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
+            && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @Test
@@ -297,7 +298,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(2);
         assertTrue(response.stream().allMatch(venue ->
-             venue.getIsHearingLocation().equalsIgnoreCase("Y")));
+             venue.getIsHearingLocation().equalsIgnoreCase("Y")
+        && venue.getWelshExternalShortName().isBlank()));
     }
 
     @Test
@@ -329,7 +331,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             );
 
         assertThat(response).isNotEmpty().hasSize(8);
-        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals("1")));
+        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals("1")
+        && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @Test
@@ -344,7 +347,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             );
 
         assertThat(response).isNotEmpty().hasSize(8);
-        assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")));
+        assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")
+        && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @Test
@@ -361,7 +365,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
-            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 10")));
+            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 10")
+        && venue.getWelshExternalShortName().isEmpty()));
     }
 
     @Test
