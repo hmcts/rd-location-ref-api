@@ -56,7 +56,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                          LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(1);
-        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")));
+        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")
+            && StringUtils.isNullOrEmpty(venue.getExternalShortName())));
     }
 
     @ParameterizedTest
@@ -126,6 +127,22 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
     }
 
+    @ParameterizedTest
+    @CsvSource({ "123462,17" })
+    void retrieveCourtVenues_WithEpimmsIdAndCourtType_WithWelshShortName_ShouldReturnStatusCode200(
+            String id, String courtType) throws
+            JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+                lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + id
+                + "&court_type_id=" + courtType,LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123462")));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
+        assertTrue(response.stream().allMatch(venue -> venue.getWelshExternalShortName()
+                .equals("Welsh External Short Name")));
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -180,6 +197,21 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     }
 
     @ParameterizedTest
+    @ValueSource(strings = {"3"})
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithRegionIdGiven_WithWelshNameShouldReturnValidResponseAndStatusCode200(String id) throws
+            JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+                lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?region_id=" + id,
+                        LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())
+                && venue.getWelshExternalShortName().equalsIgnoreCase("Welsh External Short Name")));
+    }
+
+    @ParameterizedTest
     @ValueSource(strings = {"2", " 2 "})
     @SuppressWarnings("unchecked")
     void retrieveCourtVenues_WithClusterIdGiven_ShouldReturnValidResponseAndStatusCode200(String id) throws
@@ -195,6 +227,22 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"1"})
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithClusterIdGiven_WithWelshShortName_ShouldReturnValidResponseAndStatusCode200(
+            String id) throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+                lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?cluster_id=" + id,
+                        LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(5);
+        assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
+        assertEquals("Aberdeen Tribunal External", response.get(3).getExternalShortName());
+        assertEquals("Welsh External Short Name",response.get(3).getWelshExternalShortName());
+    }
+
     @Test
     @SuppressWarnings("unchecked")
     void retrieveCourtVenues_WithCourtVenueNameGiven_ShouldReturnValidResponseAndStatusCode200() throws
@@ -208,6 +256,22 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
             .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1")
             && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithCourtVenueNameGiven_WithWelshShortName_ShouldReturnValidResponseAndStatusCode200()
+            throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+                lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                        "?court_venue_name=ABERDEEN TRIBUNAL HEARING CENTRE 22",
+                        LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
+                .equals("ABERDEEN TRIBUNAL HEARING CENTRE 22")
+                && venue.getWelshExternalShortName().equalsIgnoreCase("Welsh External Short Name")));
     }
 
     @ParameterizedTest
@@ -243,6 +307,28 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             && venue.getLocationType().equalsIgnoreCase("CTSC")
             && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
                 && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+    }
+
+    @Test
+    void shouldReturn200WhenParameterEpmIdsValueAllWithYPassed_AndContainsWelshShortName() throws
+            JsonProcessingException {
+
+        List<LrdCourtVenueResponse> response = (List<LrdCourtVenueResponse>)
+                lrdApiClient.retrieveCourtVenueResponseForGivenRequest(
+                        "?epimms_id=123463"
+                                + "&is_hearing_location=N&is_case_management_location=Y&location_type=CTSC"
+                                + "&is_temporary_location=Y",
+                        LrdCourtVenueResponse[].class,
+                        path
+                );
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue ->
+                venue.getIsHearingLocation().equalsIgnoreCase("N")
+                        && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
+                        && venue.getLocationType().equalsIgnoreCase("CTSC")
+                        && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
+                        && venue.getWelshExternalShortName().equalsIgnoreCase("Welsh External Short Name")));
     }
 
     @Test

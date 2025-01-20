@@ -215,7 +215,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty().hasSize(3);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
@@ -229,7 +229,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty().hasSize(3);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
