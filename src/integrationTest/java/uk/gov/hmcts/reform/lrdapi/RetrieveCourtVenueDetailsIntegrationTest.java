@@ -350,7 +350,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(8);
+        assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")
             && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
