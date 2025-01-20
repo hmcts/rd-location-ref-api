@@ -192,7 +192,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
         assertEquals("Aberdeen Tribunal External", response.get(5).getExternalShortName());
-        assertEquals("Welsh External Short Name", response.get(6).getWelshExternalShortName());
+
     }
 
     @Test
