@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.opentelemetry.api.internal.StringUtils;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
 import org.junit.jupiter.api.Test;
@@ -173,9 +174,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?region_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-            assertThat(response).isNotEmpty().hasSize(8);
-            assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())
-            && venue.getWelshExternalShortName().isEmpty()));
+        assertThat(response).isNotEmpty().hasSize(8);
+        assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())
+            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @ParameterizedTest
@@ -205,7 +206,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
-            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1") && venue.getWelshExternalShortName().isEmpty()));
+            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1")
+            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @ParameterizedTest
@@ -240,7 +242,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
             && venue.getLocationType().equalsIgnoreCase("CTSC")
             && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
-                && venue.getWelshExternalShortName().isEmpty()));
+                && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -262,7 +264,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
             && venue.getLocationType().equalsIgnoreCase("CTSC")
             && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
-            && venue.getWelshExternalShortName().isEmpty()));
+            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -301,7 +303,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertThat(response).isNotEmpty().hasSize(2);
         assertTrue(response.stream().allMatch(venue ->
              venue.getIsHearingLocation().equalsIgnoreCase("Y")
-        && venue.getWelshExternalShortName().isBlank()));
+             && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -334,7 +336,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(8);
         assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals("1")
-        && venue.getWelshExternalShortName().isEmpty()));
+            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -348,9 +350,9 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-            assertThat(response).isNotEmpty().hasSize(8);
-            assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")
-            && venue.getWelshExternalShortName().isEmpty()));
+        assertThat(response).isNotEmpty().hasSize(8);
+        assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")
+            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -365,10 +367,10 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                 path
             );
 
-            assertThat(response).isNotEmpty().hasSize(1);
-            assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
-                .equals("ABERDEEN TRIBUNAL HEARING CENTRE 10")
-            && venue.getWelshExternalShortName().isEmpty()));
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
+            .equals("ABERDEEN TRIBUNAL HEARING CENTRE 10")
+            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
