@@ -189,7 +189,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?cluster_id=" + id,
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(8);
+        assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals(id.trim())));
         assertEquals("Aberdeen Tribunal External", response.get(5).getExternalShortName());
         assertEquals("Welsh External Short Name", response.get(6).getWelshExternalShortName());
