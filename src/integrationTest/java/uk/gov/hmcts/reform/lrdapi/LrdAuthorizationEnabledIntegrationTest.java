@@ -16,12 +16,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.hmcts.reform.idam.client.models.UserInfo;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.ServiceToCcdCaseTypeAssocRepositry;
@@ -72,7 +72,7 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
 
     protected LrdApiClient lrdApiClient;
 
-    @MockBean
+    @MockitoBean
     protected FeatureToggleServiceImpl featureToggleService;
 
     @Value("${oidc.issuer}")
@@ -84,7 +84,7 @@ public abstract class LrdAuthorizationEnabledIntegrationTest extends SpringBootI
     @Value("${idam.s2s-auth.microservice}")
     static String authorisedService;
 
-    @MockBean
+    @MockitoBean
     protected JwtDecoder jwtDecoder;
 
     @BeforeEach
