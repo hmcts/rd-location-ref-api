@@ -2,7 +2,7 @@ spring:
   flyway:
     locations: classpath:db/testmigration,classpath:db/testmigrationAks
   datasource:
-    url: ${DB_URL:jdbc:tc:postgresql:11.1:///locrefdata}
+    url: ${DB_URL:jdbc:tc:postgresql:16:///locrefdata}
     username: ${DB_USERNAME:dbrdlocationref}
     password: ${DB_PASSWORD:dbrdlocationref}
   jpa:
