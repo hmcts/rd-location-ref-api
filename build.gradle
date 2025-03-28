@@ -17,7 +17,7 @@ plugins {
 }
 
 ext {
-  set('springCloudVersion', "2024.0.0")
+  set('springCloudVersion', "2024.0.1")
 }
 
 def versions = [
@@ -424,7 +424,7 @@ dependencies {
 
   testImplementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: versions.sonarPitest
 
-  testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.2.0'
+  testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.2.1'
 
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testContainer_postgresql
   testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testContainer_postgresql
