@@ -22,7 +22,7 @@ ext {
 
 def versions = [
   lombok             : '1.18.38',
-  reformLogging      : '6.1.8',
+  reformLogging      : '6.1.9',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
   junitPitest        : '1.2.1',
