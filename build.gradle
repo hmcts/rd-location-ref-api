@@ -308,7 +308,7 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    url "https://jitpack.io"
+    url "https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1"
   }
 }
 
@@ -378,7 +378,7 @@ dependencies {
   implementation "com.github.hmcts.java-logging:logging-appinsights:5.1.9"
   implementation group: 'org.apache.commons', name: 'commons-lang3', version: versions.commonsLang3
 
-  testImplementation 'com.github.hmcts:rd-commons-lib:0.1.0'
+  testImplementation 'com.github.hmcts:rd-commons-lib:0.1.1'
 
   compileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
   annotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
