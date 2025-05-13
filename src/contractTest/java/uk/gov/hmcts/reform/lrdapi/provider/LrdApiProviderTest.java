@@ -289,6 +289,7 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findByCourtTypeIdAndEpimmsIdWithOpenCourtStatus(anyList(), anyString())).thenReturn(courtVenues);
     }
 
     @State({"Court Venues exist for the search string provided"})
