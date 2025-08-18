@@ -116,6 +116,10 @@ variable "pgsql_server_configuration" {
     {
       name  = "backslash_quote"
       value = "ON"
+    },
+    {
+      name  = "azure.enable_temp_tablespaces_on_local_ssd"
+      value = "OFF"
     }
   ]
 }
