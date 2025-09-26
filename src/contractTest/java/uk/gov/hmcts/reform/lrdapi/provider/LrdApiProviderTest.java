@@ -12,9 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.LrdApiController;
 import uk.gov.hmcts.reform.lrdapi.controllers.LrdCourtVenueController;
@@ -78,22 +78,22 @@ public class LrdApiProviderTest {
     public static final String FACT_URL = "https://facturl.com";
     public static final String COURT_FINDER_URL = "https://testUrl.com";
     public static final String COURT = "Court";
-    @MockBean
+    @MockitoBean
     ServiceRepository serviceRepository;
 
-    @MockBean
+    @MockitoBean
     RegionRepository regionRepository;
 
-    @MockBean
+    @MockitoBean
     ServiceToCcdCaseTypeAssocRepositry serviceToCcdCaseTypeAssocRepositry;
 
-    @MockBean
+    @MockitoBean
     BuildingLocationRepository buildingLocationRepository;
 
-    @MockBean
+    @MockitoBean
     CourtTypeServiceAssocRepository courtTypeServiceAssocRepository;
 
-    @MockBean
+    @MockitoBean
     CourtVenueRepository courtVenueRepository;
 
     @Autowired
@@ -289,6 +289,8 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findByCourtTypeIdAndEpimmsIdWithOpenCourtStatus(anyList(), anyString()))
+            .thenReturn(courtVenues);
     }
 
     @State({"Court Venues exist for the search string provided"})

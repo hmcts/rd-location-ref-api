@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.thucydides.core.annotations.WithTag;
-import net.thucydides.core.annotations.WithTags;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -69,7 +69,7 @@ class RetrieveOrgServiceDetailsFunctionalTest extends AuthorizationFunctionalTes
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.retrieveOrgServiceInfo(HttpStatus.OK, "");
 
-        assertThat(responses).isNotEmpty().hasSize(45);
+        assertThat(responses).isNotEmpty().hasSize(92);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,8 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import net.thucydides.core.annotations.WithTag;
-import net.thucydides.core.annotations.WithTags;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -41,9 +41,10 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(12);
+        assertThat(response).isNotEmpty().hasSize(14);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
         assertEquals("Aberdeen Tribunal External", response[11].getExternalShortName());
+        assertEquals("Welsh External Short Name", response[12].getWelshExternalShortName());
     }
 
     @Test
@@ -87,9 +88,10 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(12);
+        assertThat(response).isNotEmpty().hasSize(14);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
         assertEquals("Aberdeen Tribunal External", response[11].getExternalShortName());
+        assertEquals("Welsh External Short Name", response[12].getWelshExternalShortName());
     }
 
     @ParameterizedTest
@@ -213,7 +215,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty().hasSize(3);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
@@ -227,7 +229,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(2);
+        assertThat(response).isNotEmpty().hasSize(3);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 

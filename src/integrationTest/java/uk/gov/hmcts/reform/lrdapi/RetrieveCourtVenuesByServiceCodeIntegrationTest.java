@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.lrdapi;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.thucydides.core.annotations.WithTag;
-import net.thucydides.core.annotations.WithTags;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -113,7 +113,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtVenueId("11")
             .siteName("Aberdeen Tribunal Hearing Centre 11")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 11")
-            .epimmsId("123456")
+            .epimmsId("123459")
             .openForPublic("YES")
             .courtTypeId("10")
             .courtType("County Court")
@@ -128,20 +128,13 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("N")
             .locationType("NBC")
             .isTemporaryLocation("N")
-            .welshCourtName("")
-            .uprn("")
-            .venueOuCode("")
-            .mrdBuildingLocationId("")
-            .mrdVenueId("")
-            .serviceUrl("")
-            .factUrl("")
             .build();
 
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtVenueId("12")
             .siteName("Stoke-on-Trent Combined Court")
             .courtName("STOKE-ON-TRENT COMBINED COURT")
-            .epimmsId("123456")
+            .epimmsId("123460")
             .openForPublic("YES")
             .courtTypeId("10")
             .courtType("County Court")
