@@ -177,7 +177,7 @@ pmd {
 }
 
 checkstyle {
-  toolVersion = "11.0.1"
+  toolVersion = "11.1.0"
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
@@ -358,7 +358,7 @@ dependencies {
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.22.3'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.8'
 
-  implementation group: 'com.google.guava', name: 'guava', version: '33.4.8-jre'
+  implementation group: 'com.google.guava', name: 'guava', version: '33.5.0-jre'
   implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
 
   implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.82'
