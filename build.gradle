@@ -34,7 +34,7 @@ def versions = [
   junitPlatform      : '1.14.0',
   jackson            : '2.19.1',
   log4j              : '2.24.3',
-  logback            : '1.5.18',
+  logback            : '1.5.19',
   feign              : '3.8.0',
   bytebuddy          : '1.12.7',
   testContainer_postgresql: '1.21.3',
