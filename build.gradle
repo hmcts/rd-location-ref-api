@@ -32,7 +32,7 @@ def versions = [
   launchDarklySdk    : "5.10.9",
   junit              : '6.0.0',
   junitPlatform      : '6.0.0',
-  jackson            : '2.19.1',
+  jackson            : '2.20.0',
   log4j              : '2.25.2',
   logback            : '1.5.19',
   feign              : '3.8.0',
@@ -344,7 +344,7 @@ dependencies {
   implementation group: 'io.jsonwebtoken', name: 'jjwt', version:'0.13.0'
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.jackson, ext: 'pom'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.jackson
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.20'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.20.0', ext: 'pom'
   implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: versions.jackson
