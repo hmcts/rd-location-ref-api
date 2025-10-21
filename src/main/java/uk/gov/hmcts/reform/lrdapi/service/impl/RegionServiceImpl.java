@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-import static org.apache.commons.lang3.StringUtils.replaceIgnoreCase;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 import static org.springframework.util.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALL;
