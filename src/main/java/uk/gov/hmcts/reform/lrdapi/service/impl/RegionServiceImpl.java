@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -114,7 +115,7 @@ public class RegionServiceImpl implements RegionService {
     }
 
     private boolean doesStringContainAlphabetOtherThanAll(String param) {
-        String paramWithoutAll = replaceIgnoreCase(param.toUpperCase(), ALL, "");
+        String paramWithoutAll = Strings.CI.replace(param.toUpperCase(), ALL, "");
 
         return isPatternPresent(paramWithoutAll, ALPHABET_REGEX);
     }
