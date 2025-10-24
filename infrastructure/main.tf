@@ -44,7 +44,7 @@ module "db-rd-location-ref-api-v16" {
   common_tags          = var.common_tags
   component            = var.component-v16
   env                  = var.env
-  enable_db_reporting_privileges = true
+  enable_db_report_privileges = true
   pgsql_databases = [
     {
       name = "dbrdlocationref"
