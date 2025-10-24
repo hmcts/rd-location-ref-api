@@ -47,13 +47,13 @@ module "db-rd-location-ref-api-v16" {
   pgsql_databases = [
     {
       name = "dbrdlocationref"
+      report_privilege_schema : "locrefdata"
+      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
     }
   ]
 
   # Setup Access Reader db user
   force_user_permissions_trigger = "3"
-
-
 
   # Sets correct DB owner after migration to fix permissions
   enable_schema_ownership        = var.enable_schema_ownership
@@ -77,13 +77,6 @@ module "db-rd-location-ref-api-v16" {
   # Reporting
   enable_db_reporting_privileges = true
   force_db_report_privileges_trigger = "1"
-  pgsql_databases = [
-    {
-      name = var.database_name
-      report_privilege_schema : "locrefdata"
-      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
-    }
-  ]
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-HOST" {
