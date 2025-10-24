@@ -74,6 +74,16 @@ module "db-rd-location-ref-api-v16" {
   email_address_key              = var.email_address_key
   email_address_key_vault_id     = data.azurerm_key_vault.rd_key_vault.id
 
+  # Reporting
+  enable_db_reporting_privileges = true
+  force_db_report_privileges_trigger = "1"
+  pgsql_databases = [
+    {
+      name = var.database_name
+      report_privilege_schema : "locrefdata"
+      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
+    }
+  ]
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-HOST" {
