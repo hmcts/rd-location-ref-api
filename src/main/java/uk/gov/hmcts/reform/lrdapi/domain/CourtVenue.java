@@ -156,5 +156,6 @@ public class CourtVenue implements Serializable {
     public Optional<Region> getRegion() {
         return Optional.ofNullable(region);
     }
+    
 
 }
