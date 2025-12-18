@@ -32,7 +32,7 @@ def versions = [
   launchDarklySdk    : "5.10.9",
   junit              : '6.0.0',
   junitPlatform      : '6.0.0',
-  jackson            : '2.20.0',
+  jackson            : '2.20.1',
   log4j              : '2.25.2',
   logback            : '1.5.20',
   logstashEncoder    : '8.1',
@@ -341,13 +341,13 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.3.3'
 
   implementation group: 'com.auth0', name: 'java-jwt', version: '4.5.0'
-  implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.20.0'
+  implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.20.1'
   implementation group: 'io.jsonwebtoken', name: 'jjwt', version:'0.9.1'
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.jackson, ext: 'pom'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.jackson
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.20'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.jackson
-  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.20.0', ext: 'pom'
+  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: '2.20.1', ext: 'pom'
   implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: versions.jackson
 
   implementation group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.1'
