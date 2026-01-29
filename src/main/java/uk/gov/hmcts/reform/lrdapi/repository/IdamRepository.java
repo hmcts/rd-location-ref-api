@@ -36,9 +36,6 @@ public class IdamRepository {
         CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("token");
         Cache<Object, Object> nativeCache = requireNonNull(caffeineCache).getNativeCache();
 
-        log.info("{}:: generating Bearer Token, current size of cache: "
-                     + nativeCache.estimatedSize(), loggingComponentName);
-
         try {
             return idamClient.getUserInfo("Bearer " + jwtToken);
         } catch (FeignException feignException) {
