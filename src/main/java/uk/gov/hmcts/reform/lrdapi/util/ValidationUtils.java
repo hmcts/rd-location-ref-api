@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.util;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
@@ -233,7 +234,7 @@ public class ValidationUtils {
     }
 
     private static void checkIfStringStartsAndEndsWithComma(String csvIds, String exceptionMessage) {
-        if (StringUtils.startsWith(csvIds, COMMA) || StringUtils.endsWith(csvIds, COMMA)) {
+        if (Strings.CS.startsWith(csvIds, COMMA) || Strings.CS.endsWith(csvIds, COMMA)) {
             throw new InvalidRequestException(String.format(exceptionMessage, csvIds));
         }
     }
@@ -257,8 +258,8 @@ public class ValidationUtils {
 
     private static void validateSingleFilters(String value, String filterString) {
         if (value != null
-            && !StringUtils.equalsIgnoreCase(value, IS_Y)
-            && !StringUtils.equalsIgnoreCase(value, IS_N)) {
+            && !Strings.CI.equals(value, IS_Y)
+            && !Strings.CI.equals(value, IS_N)) {
             throw new InvalidRequestException(String.format(INVALID_ADDITIONAL_FILTER, filterString));
         }
     }
