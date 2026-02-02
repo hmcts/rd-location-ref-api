@@ -128,6 +128,8 @@ public class LrdCourtVenueController {
         @RequestParam(value = "location_type", required = false) String locationType,
         @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation) {
 
+        log.debug("{} : Inside retrieveCourtVenues", loggingComponentName);
+
         boolean epimmsIdWithCourtType = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId));
 
         if (epimmsIdWithCourtType) {
@@ -151,6 +153,7 @@ public class LrdCourtVenueController {
 
         validateCourtVenueFilters(result);
 
+        log.debug("{} : Calling retrieveCourtVenues", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
                                                                                  courtVenueName, epimmsIdWithCourtType,
@@ -203,10 +206,12 @@ public class LrdCourtVenueController {
     public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
         @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
+        log.debug("{} : Inside retrieveCourtVenuesByServiceCode", loggingComponentName);
         String trimmedServiceCode = serviceCode.strip();
 
         validateServiceCode(trimmedServiceCode);
 
+        log.debug("{} : Calling retrieveCourtVenuesByServiceCode", loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
             .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 

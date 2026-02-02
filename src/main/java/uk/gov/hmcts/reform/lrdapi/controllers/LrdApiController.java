@@ -111,8 +111,10 @@ public class LrdApiController {
         @RequestParam(value = "serviceCode", required = false) String serviceCode,
         @RequestParam(value = "ccdCaseType", required = false) String ccdCaseType,
         @RequestParam(value = "ccdServiceNames", required = false) String ccdServiceNames) {
+        log.debug("{} : Inside retrieveOrgServiceDetails", loggingComponentName);
         ValidationUtils.validateInputParameters(serviceCode, ccdCaseType, ccdServiceNames);
         List<LrdOrgInfoServiceResponse> lrdOrgInfoServiceResponse;
+        log.debug("{} :Calling retrieveOrgServiceDetails", loggingComponentName);
         lrdOrgInfoServiceResponse = lrdService.retrieveOrgServiceDetails(serviceCode, ccdCaseType, ccdServiceNames);
         return ResponseEntity.status(200).body(lrdOrgInfoServiceResponse);
     }
