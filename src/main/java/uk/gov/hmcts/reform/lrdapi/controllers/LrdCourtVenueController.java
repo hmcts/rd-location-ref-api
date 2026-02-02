@@ -128,7 +128,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "location_type", required = false) String locationType,
         @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation) {
 
-        log.info("{} : Inside retrieveCourtVenues", loggingComponentName);
+        log.debug("{} : Inside retrieveCourtVenues", loggingComponentName);
 
         boolean epimmsIdWithCourtType = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId));
 
@@ -153,7 +153,7 @@ public class LrdCourtVenueController {
 
         validateCourtVenueFilters(result);
 
-        log.info("{} : Calling retrieveCourtVenues", loggingComponentName);
+        log.debug("{} : Calling retrieveCourtVenues", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
                                                                                  courtTypeId, regionId, clusterId,
                                                                                  courtVenueName, epimmsIdWithCourtType,
@@ -206,12 +206,12 @@ public class LrdCourtVenueController {
     public ResponseEntity<Object> retrieveCourtVenuesByServiceCode(
         @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
-        log.info("{} : Inside retrieveCourtVenuesByServiceCode", loggingComponentName);
+        log.debug("{} : Inside retrieveCourtVenuesByServiceCode", loggingComponentName);
         String trimmedServiceCode = serviceCode.strip();
 
         validateServiceCode(trimmedServiceCode);
 
-        log.info("{} : Calling retrieveCourtVenuesByServiceCode", loggingComponentName);
+        log.debug("{} : Calling retrieveCourtVenuesByServiceCode", loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
             .retrieveCourtVenuesByServiceCode(trimmedServiceCode);
 
