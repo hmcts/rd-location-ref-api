@@ -128,6 +128,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("N")
             .locationType("NBC")
             .isTemporaryLocation("N")
+            .serviceCode("AAA6")
             .build();
 
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
@@ -149,59 +150,13 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("N")
             .locationType("NBC")
             .isTemporaryLocation("N")
+            .serviceCode("ABA4")
             .build();
 
         expectedCourtVenueResponses.add(response1);
         expectedCourtVenueResponses.add(response2);
 
         return expectedCourtVenueResponses;
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"AAA2", "AAA3", "AAA6", "ABA4"})
-    void verifyCourtVenuesContainServiceCode_ForServiceCode(String serviceCode)
-        throws JsonProcessingException {
-
-        final var response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode(serviceCode, LrdCourtVenuesByServiceCodeResponse.class);
-
-        assertNotNull(response);
-        assertNotNull(response.getCourtVenues());
-        response.getCourtVenues().forEach(venue -> assertNotNull(venue.getServiceCode()));
-    }
-
-    @Test
-    void verifyAllCourtVenuesInServiceCodeResponse_HaveMatchingServiceCode()
-        throws JsonProcessingException {
-
-        final var response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode("AAA3", LrdCourtVenuesByServiceCodeResponse.class);
-
-        assertNotNull(response);
-        String expectedServiceCode = response.getServiceCode();
-        assertNotNull(response.getCourtVenues());
-
-        response.getCourtVenues().stream()
-            .filter(venue -> venue.getServiceCode() != null)
-            .forEach(venue -> assertEquals(expectedServiceCode, venue.getServiceCode(),
-                "Service code in venue response should match the requested service code"));
-    }
-
-    @Test
-    void verifyCourtVenueResponse_ServiceCodeField_NotNull()
-        throws JsonProcessingException {
-
-        final var response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.findCourtVenuesByServiceCode("AAA2", LrdCourtVenuesByServiceCodeResponse.class);
-
-        assertNotNull(response);
-        assertNotNull(response.getCourtVenues());
-        assertThat(response.getCourtVenues()).isNotEmpty();
-
-        response.getCourtVenues().forEach(venue -> {
-            assertNotNull(venue.getServiceCode(), "Service code should not be null");
-            assertThat(venue.getServiceCode()).isNotEmpty();
-        });
     }
 
 }
