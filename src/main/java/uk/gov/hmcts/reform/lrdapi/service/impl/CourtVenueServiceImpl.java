@@ -90,7 +90,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         List<LrdCourtVenueResponse> courtVenueResponses = getCourtVenueListResponse(courtVenues);
 
-        return new LrdCourtVenuesByServiceCodeResponse(courtVenueResponses, serviceCodeIgnoreCase);
+        return new LrdCourtVenuesByServiceCodeResponse(courtVenues.get(0).getCourtType(),
+                                                       courtVenueResponses, serviceCodeIgnoreCase);
 
     }
 

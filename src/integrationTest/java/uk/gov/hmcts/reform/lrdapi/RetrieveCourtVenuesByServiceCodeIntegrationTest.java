@@ -58,7 +58,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals("No court types found for the given service code ABCD1",
+        assertEquals("No court venues found for the given service code ABCD1",
                      errorResponse.getErrorDescription());
     }
 
