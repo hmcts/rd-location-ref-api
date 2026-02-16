@@ -523,7 +523,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     @ParameterizedTest
     @CsvSource({
-        "123456789,AAA2",
+        "123456789,AAA6",
         "123461,AAA2",
         "123462,AAA3"
     })
