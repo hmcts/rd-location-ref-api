@@ -128,6 +128,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("N")
             .locationType("NBC")
             .isTemporaryLocation("N")
+            .serviceCode("AAA6")
             .build();
 
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
@@ -149,6 +150,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("N")
             .locationType("NBC")
             .isTemporaryLocation("N")
+            .serviceCode("ABA4")
             .build();
 
         expectedCourtVenueResponses.add(response1);
