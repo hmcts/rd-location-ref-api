@@ -5,17 +5,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
-import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
-import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
-import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
@@ -26,7 +22,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
@@ -61,9 +56,6 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenue
 public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Autowired
-    CourtTypeServiceAssocRepository courtTypeServiceAssocRepository;
-
-    @Autowired
     CourtVenueRepository courtVenueRepository;
 
     @Value("${loggingComponentName}")
@@ -82,22 +74,23 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     @Override
     public LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode) {
 
+        validateServiceCode(serviceCode);
+
         String serviceCodeIgnoreCase = serviceCode.toUpperCase();
 
-        CourtTypeServiceAssoc courtTypeServiceAssoc =
-            courtTypeServiceAssocRepository.findByServiceCode(serviceCodeIgnoreCase);
+        log.info("{} : Obtaining court venues for service code: {}", loggingComponentName, serviceCode);
 
-        if (isNull(courtTypeServiceAssoc)) {
-            throw new ResourceNotFoundException("No court types found for the given service code " + serviceCode);
-        }
+        List<CourtVenue> courtVenues = courtVenueRepository.findByServiceCode(serviceCodeIgnoreCase);
 
-        CourtType courtType = courtTypeServiceAssoc.getCourtType();
+        handleIfCourtVenuesEmpty(
+            () -> isEmpty(courtVenues),
+            "No court venues found for the given service code " + serviceCode,
+            serviceCode
+        );
 
-        if (CollectionUtils.isEmpty(courtType.getCourtVenues())) {
-            throw new ResourceNotFoundException("No court venues found for the given service code " + serviceCode);
-        }
+        List<LrdCourtVenueResponse> courtVenueResponses = getCourtVenueListResponse(courtVenues);
 
-        return new LrdCourtVenuesByServiceCodeResponse(courtType, serviceCodeIgnoreCase);
+        return new LrdCourtVenuesByServiceCodeResponse(courtVenueResponses, serviceCodeIgnoreCase);
 
     }
 

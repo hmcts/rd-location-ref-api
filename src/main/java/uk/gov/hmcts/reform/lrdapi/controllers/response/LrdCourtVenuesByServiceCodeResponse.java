@@ -46,4 +46,9 @@ public class LrdCourtVenuesByServiceCodeResponse {
         }
     }
 
+    public LrdCourtVenuesByServiceCodeResponse(List<LrdCourtVenueResponse> courtVenues, String serviceCode) {
+        this.serviceCode = serviceCode;
+        this.courtVenues = courtVenues;
+    }
+
 }

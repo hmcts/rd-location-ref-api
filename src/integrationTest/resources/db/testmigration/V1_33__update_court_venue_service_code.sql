@@ -1,4 +1,3 @@
--- Update court venue test data with service_code values
 UPDATE court_venue SET service_code = 'AAA2' WHERE court_venue_id = 1;
 UPDATE court_venue SET service_code = 'AAA3' WHERE court_venue_id = 2;
 UPDATE court_venue SET service_code = 'AAA6' WHERE court_venue_id = 3;
@@ -14,6 +13,4 @@ UPDATE court_venue SET service_code = 'ABA4' WHERE court_venue_id = 12;
 UPDATE court_venue SET service_code = 'AAA2' WHERE court_venue_id = 13;
 UPDATE court_venue SET service_code = 'AAA3' WHERE court_venue_id = 14;
 UPDATE court_venue SET service_code = 'AAA6' WHERE court_venue_id = 15;
-
 COMMIT;
-
