@@ -34,7 +34,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void getCourtVenuesByServiceCodeWithStatusCode_200() {
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "BFA1");
+            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "AAA3");
 
         assertNotNull(response);
         responseVerification(response);
