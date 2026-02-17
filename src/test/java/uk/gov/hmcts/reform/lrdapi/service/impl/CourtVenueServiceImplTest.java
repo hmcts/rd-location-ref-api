@@ -106,6 +106,7 @@ class CourtVenueServiceImplTest {
         assertEquals("765",response.getCourtVenues().get(0).getMrdVenueId());
         assertEquals("https://serviceurl.com",response.getCourtVenues().get(0).getServiceUrl());
         assertEquals("https://facturl.com",response.getCourtVenues().get(0).getFactUrl());
+        assertEquals("ABC1",response.getCourtVenues().get(0).getServiceCode());
 
         verify(courtVenueRepository, times(1)).findByServiceCode("ABC1");
     }

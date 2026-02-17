@@ -98,8 +98,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
         assertThat(response.getServiceCode()).isEqualTo("AAA3");
-        assertThat(response.getCourtTypeId()).isEqualTo("10");
-        assertThat(response.getCourtType()).isEqualTo("County Court");
+        assertThat(response.getCourtTypeId()).isEqualTo("17");
+        assertThat(response.getCourtType()).isEqualTo("Employment Tribunal");
         assertThat(response.getWelshCourtType()).isNull();
         ObjectMapper objectMapper = new ObjectMapper();
         String actual = objectMapper.writeValueAsString(response.getCourtVenues());
@@ -153,8 +153,54 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .serviceCode("ABA4")
             .build();
 
+        LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
+            .courtVenueId("10")
+            .siteName("Aberdeen Tribunal Hearing Centre 11")
+            .courtName("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .epimmsId("123458")
+            .openForPublic("YES")
+            .courtTypeId("17")
+            .courtType("County Court")
+            .regionId("1")
+            .region("London")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtStatus("Open")
+            .postcode("ST1 3BP")
+            .courtAddress("BETHESDA STREET")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
+            .serviceCode("AAA3")
+            .build();
+
+        LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
+            .courtVenueId("14")
+            .siteName("Stoke-on-Trent Combined Court")
+            .courtName("AB10, 57 HUNTLY STREET, ABERDEEN")
+            .epimmsId("123462")
+            .openForPublic("YES")
+            .courtTypeId("17")
+            .courtType("County Court")
+            .regionId("1")
+            .region("London")
+            .clusterId("2")
+            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtStatus("Open")
+            .postcode("ST1 3BP")
+            .courtAddress("BETHESDA STREET")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .locationType("NBC")
+            .isTemporaryLocation("N")
+            .serviceCode("AAA3")
+            .build();
+
         expectedCourtVenueResponses.add(response1);
         expectedCourtVenueResponses.add(response2);
+        expectedCourtVenueResponses.add(response3);
+        expectedCourtVenueResponses.add(response4);
 
         return expectedCourtVenueResponses;
     }
