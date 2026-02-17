@@ -48,7 +48,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
 
         assertNotNull(response);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
-        assertEquals("No court types found for the given service code BFA2",
+        assertEquals("No court venues found for the given service code BFA2",
                      response.getErrorDescription());
     }
 
