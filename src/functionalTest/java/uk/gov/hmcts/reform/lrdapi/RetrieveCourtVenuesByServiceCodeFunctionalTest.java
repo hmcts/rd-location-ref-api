@@ -89,7 +89,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
 
 
     private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
-        assertEquals("BFA1", response.getServiceCode());
+        assertEquals("AAA3", response.getServiceCode());
         assertEquals("23", response.getCourtTypeId());
         assertThat(response.getCourtType()).isEqualToIgnoringCase("Immigration and Asylum Tribunal");
         assertNull(response.getWelshCourtType());
