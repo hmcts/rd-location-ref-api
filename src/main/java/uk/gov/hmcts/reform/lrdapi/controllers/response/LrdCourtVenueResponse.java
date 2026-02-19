@@ -25,6 +25,9 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("epimms_id")
     private String epimmsId;
 
+    @JsonProperty("service_code")
+    private String serviceCode;
+
     @JsonProperty("site_name")
     private String siteName;
 
@@ -151,6 +154,7 @@ public class LrdCourtVenueResponse implements Serializable {
             this.courtType = courtVenue.getCourtType().getTypeOfCourt();
             this.dxAddress = courtVenue.getDxAddress();
             this.epimmsId = courtVenue.getEpimmsId();
+            this.serviceCode = courtVenue.getServiceCode();
             this.openForPublic = Boolean.TRUE.equals(courtVenue.getOpenForPublic()) ? "YES" : "NO";
             this.phoneNumber = courtVenue.getPhoneNumber();
             this.welshCourtAddress = courtVenue.getWelshCourtAddress();

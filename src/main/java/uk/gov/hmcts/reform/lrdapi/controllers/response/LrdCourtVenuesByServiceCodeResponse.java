@@ -46,4 +46,15 @@ public class LrdCourtVenuesByServiceCodeResponse {
         }
     }
 
+    public LrdCourtVenuesByServiceCodeResponse(CourtType courtType,
+                                               List<LrdCourtVenueResponse> courtVenues, String serviceCode) {
+        if (nonNull(courtType)) {
+            this.serviceCode = serviceCode;
+            this.courtTypeId = courtType.getCourtTypeId();
+            this.courtType = courtType.getTypeOfCourt();
+            this.welshCourtType = courtType.getWelshCourtType();
+        }
+        this.courtVenues = courtVenues;
+    }
+
 }

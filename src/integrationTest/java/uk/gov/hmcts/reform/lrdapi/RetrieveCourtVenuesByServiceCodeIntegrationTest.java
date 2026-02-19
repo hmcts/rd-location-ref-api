@@ -58,7 +58,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals("No court types found for the given service code ABCD1",
+        assertEquals("No court venues found for the given service code ABCD1",
                      errorResponse.getErrorDescription());
     }
 
@@ -98,8 +98,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
         assertThat(response.getServiceCode()).isEqualTo("AAA3");
-        assertThat(response.getCourtTypeId()).isEqualTo("10");
-        assertThat(response.getCourtType()).isEqualTo("County Court");
+        assertThat(response.getCourtTypeId()).isEqualTo("17");
+        assertThat(response.getCourtType()).isEqualTo("Employment Tribunal");
         assertThat(response.getWelshCourtType()).isNull();
         ObjectMapper objectMapper = new ObjectMapper();
         String actual = objectMapper.writeValueAsString(response.getCourtVenues());
@@ -110,13 +110,47 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     private List<LrdCourtVenueResponse> buildCourtVenueResponses() {
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = new ArrayList<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtVenueId("11")
-            .siteName("Aberdeen Tribunal Hearing Centre 11")
-            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 11")
-            .epimmsId("123459")
+            .courtVenueId("2")
+            .siteName("Aberdeen Tribunal Hearing Centre 2")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 2")
+            .epimmsId("123456788")
             .openForPublic("YES")
-            .courtTypeId("10")
-            .courtType("County Court")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .regionId("1")
+            .region("London")
+            .clusterId("1")
+            .clusterName("Avon, Somerset and Gloucestershire")
+            .courtStatus("Open")
+            .postcode("AB11 7KT")
+            .courtAddress("AB2, 49 HUNTLY STREET, ABERDEEN")
+            .serviceCode("AAA3")
+            .build();
+
+        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
+            .courtVenueId("6")
+            .siteName("Aberdeen Tribunal Hearing Centre 6")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 6")
+            .epimmsId("epimmsId1236")
+            .openForPublic("YES")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .regionId("2")
+            .region("Midlands")
+            .courtStatus("Open")
+            .postcode("AB11 7GQ")
+            .courtAddress("AB6, 53 HUNTLY STREET, ABERDEEN")
+            .serviceCode("AAA3")
+            .build();
+
+        LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
+            .courtVenueId("10")
+            .siteName("Aberdeen Tribunal Hearing Centre 10")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 10")
+            .epimmsId("123458")
+            .openForPublic("YES")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
             .regionId("1")
             .region("London")
             .clusterId("2")
@@ -124,35 +158,37 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtStatus("Open")
             .postcode("AB11 5QA")
             .courtAddress("AB10, 57 HUNTLY STREET, ABERDEEN")
-            .isCaseManagementLocation("N")
-            .isHearingLocation("N")
-            .locationType("NBC")
-            .isTemporaryLocation("N")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
+            .locationType("CTSC")
+            .isTemporaryLocation("Y")
+            .serviceCode("AAA3")
             .build();
 
-        LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
-            .courtVenueId("12")
-            .siteName("Stoke-on-Trent Combined Court")
-            .courtName("STOKE-ON-TRENT COMBINED COURT")
-            .epimmsId("123460")
+        LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
+            .courtVenueId("14")
+            .siteName("Aberdeen Tribunal Hearing Centre 7")
+            .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 22")
+            .epimmsId("123462")
             .openForPublic("YES")
-            .courtTypeId("10")
-            .courtType("County Court")
-            .regionId("1")
-            .region("London")
-            .clusterId("2")
-            .clusterName("Bedfordshire, Cambridgeshire, Hertfordshire")
+            .courtTypeId("17")
+            .courtType("Employment Tribunal")
+            .regionId("3")
+            .region("North East")
+            .clusterId("1")
+            .clusterName("Avon, Somerset and Gloucestershire")
             .courtStatus("Open")
-            .postcode("ST1 3BP")
-            .courtAddress("BETHESDA STREET")
-            .isCaseManagementLocation("N")
-            .isHearingLocation("N")
-            .locationType("NBC")
-            .isTemporaryLocation("N")
+            .postcode("AB11 1TY")
+            .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
+            .serviceCode("AAA3")
+            .externalShortName("Aberdeen Tribunal External")
+            .welshExternalShortName("Welsh External Short Name")
             .build();
 
         expectedCourtVenueResponses.add(response1);
         expectedCourtVenueResponses.add(response2);
+        expectedCourtVenueResponses.add(response3);
+        expectedCourtVenueResponses.add(response4);
 
         return expectedCourtVenueResponses;
     }
