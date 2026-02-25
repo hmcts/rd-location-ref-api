@@ -94,6 +94,22 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
         assertEquals("Welsh External Short Name", response[12].getWelshExternalShortName());
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveCourtVenues_For_SearchString_And_ServiceCode_WithStatusCode_200()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&service_code=AAA3",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty().hasSize(4);
+        assertTrue(Arrays.stream(response).allMatch(venue -> "AAA3".equals(venue.getServiceCode())));
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
         "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
@@ -104,6 +120,20 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
     void shouldReturn400_WhenInvalidParamsPassed(String parameter) throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesBySearchString(parameter, ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldReturn400_WhenServiceCodeContainsSpecialCharacters() throws JsonProcessingException {
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&service_code=AB$",
+                ErrorResponse.class,
+                path
+            );
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
