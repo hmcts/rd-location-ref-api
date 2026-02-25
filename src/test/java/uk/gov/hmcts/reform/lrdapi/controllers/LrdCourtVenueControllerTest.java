@@ -163,7 +163,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
             anyString(),
             isNull(),
-            anyString(),
+            isNull(),
             any(CourtVenueRequestParam.class)
         );
     }

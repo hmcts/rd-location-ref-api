@@ -268,7 +268,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "service_code", required = false)
         @Parameter(name = "service_code",
             description = "Alphabets and Numeric values only allowed in comma separated format")
-        String service_code,
+        String serviceCode,
         @RequestParam(value = "is_hearing_location", required = false)
         @Parameter(name = "is_hearing_location",
             description = "Allowed values are \"Y\" or \"N\"")
@@ -293,8 +293,8 @@ public class LrdCourtVenueController {
             validateCourtTypeId(courtTypeId);
         }
 
-        if (StringUtils.isNotBlank(service_code)) {
-            validateServiceCode(service_code);
+        if (StringUtils.isNotBlank(serviceCode)) {
+            validateServiceCode(serviceCode);
         }
 
         CourtVenueRequestParam requestParam = CourtVenueRequestParam
@@ -307,7 +307,7 @@ public class LrdCourtVenueController {
 
         log.info("{} : Calling retrieveCourtVenuesBySearchString", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
-            trimmedSearchString, courtTypeId, service_code, requestParam);
+            trimmedSearchString, courtTypeId, serviceCode, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 }

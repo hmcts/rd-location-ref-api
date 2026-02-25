@@ -64,5 +64,5 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
     List<CourtVenue> findBySearchStringAndCourtTypeId(String searchString, List<String> courtTypeId,
                                                       List<String> serviceCode,String isCaseManagementLocation,
                                                       String isHearingLocation,String locationType,
-                                                      String isTemporaryLocation );
+                                                      String isTemporaryLocation);
 }
