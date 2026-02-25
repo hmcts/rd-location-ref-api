@@ -247,6 +247,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
         assertThat(response).isNotEmpty().hasSize(3);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
+        assertServiceCodePresent(response);
     }
 
     @Test
@@ -261,6 +262,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
         assertThat(response).isNotEmpty().hasSize(3);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
+        assertServiceCodePresent(response);
     }
 
     @Test
@@ -275,6 +277,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
 
         assertThat(response).isNotEmpty().hasSize(1);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
+        assertServiceCodePresent(response);
     }
 
     @Test
@@ -288,6 +291,23 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
             );
         assertThat(response).isNotEmpty().hasSize(1);
         responseVerification(new ArrayList<>(Arrays.asList(response)));
+        assertServiceCodePresent(response);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldReturn200_WhenServiceCodeAndIsHearingLocationProvided() throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&service_code=AAA3&is_hearing_location=Y",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty();
+        assertTrue(Arrays.stream(response).allMatch(venue -> "AAA3".equals(venue.getServiceCode())));
+        assertTrue(Arrays.stream(response).allMatch(venue -> "Y".equalsIgnoreCase(venue.getIsHearingLocation())));
+        assertServiceCodePresent(response);
     }
 
     void responseVerification(ArrayList<LrdCourtVenueResponse> courtVenueResponse) {
@@ -315,6 +335,12 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
         assertThat(reason.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(reason.getErrorDescription()).isEqualTo(String.format(INVALID_ADDITIONAL_FILTER,
                                                                          expectedErrorDescription));
+    }
+
+    private void assertServiceCodePresent(LrdCourtVenueResponse[] response) {
+        assertTrue(Arrays.stream(response)
+                       .map(LrdCourtVenueResponse::getServiceCode)
+                       .allMatch(code -> code != null && !code.isBlank()));
     }
 
 }

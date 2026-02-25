@@ -119,6 +119,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
             || venue.getCourtAddress().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getPostcode().strip().toLowerCase().contains("Man".toLowerCase())));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
+        assertTrue(courtVenueResponse.stream()
+                       .allMatch(venue -> venue.getServiceCode() != null && !venue.getServiceCode().isBlank()));
         assertThat(courtVenueResponse.size()).isPositive();
     }
 
