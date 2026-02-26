@@ -61,31 +61,33 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     @Value("${loggingComponentName}")
     private String loggingComponentName;
 
-    public static void validateServiceCode(String serviceCode) {
+    public static String validateServiceCode(String serviceCode) {
+        String trimmedServiceCode = StringUtils.strip(serviceCode);
 
-        if (isBlank(serviceCode)) {
+        if (isBlank(trimmedServiceCode)) {
             throw new InvalidRequestException("No service code provided");
         }
-        if (isFalse(isRegexSatisfied(serviceCode, ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE))) {
+        if (isFalse(isRegexSatisfied(trimmedServiceCode, ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE))) {
             throw new InvalidRequestException(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR);
         }
+        return trimmedServiceCode;
     }
 
     @Override
     public LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode) {
 
-        validateServiceCode(serviceCode);
+        String trimmedServiceCode = validateServiceCode(serviceCode);
 
-        String serviceCodeIgnoreCase = serviceCode.toUpperCase();
+        String serviceCodeIgnoreCase = trimmedServiceCode.toUpperCase();
 
-        log.info("{} : Obtaining court venues for service code: {}", loggingComponentName, serviceCode);
+        log.info("{} : Obtaining court venues for service code: {}", loggingComponentName, trimmedServiceCode);
 
         List<CourtVenue> courtVenues = courtVenueRepository.findByServiceCode(serviceCodeIgnoreCase);
 
         handleIfCourtVenuesEmpty(
             () -> isEmpty(courtVenues),
-            "No court venues found for the given service code " + serviceCode,
-            serviceCode
+            "No court venues found for the given service code " + trimmedServiceCode,
+            trimmedServiceCode
         );
 
         List<LrdCourtVenueResponse> courtVenueResponses = getCourtVenueListResponse(courtVenues);
