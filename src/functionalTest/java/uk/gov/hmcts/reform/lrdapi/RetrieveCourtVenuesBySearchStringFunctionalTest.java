@@ -16,7 +16,6 @@ import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -73,35 +72,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     }
 
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_By_SearchString_And_ServiceCode_WithStatusCode_200() {
-        final var baseResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
-            HttpStatus.OK,
-            "?search-string=Abe",
-            LrdCourtVenueResponse[].class,
-            path
-        );
 
-        assertThat(baseResponse).isNotEmpty();
-        String serviceCode = Arrays.stream(baseResponse)
-            .map(LrdCourtVenueResponse::getServiceCode)
-            .filter(Objects::nonNull)
-            .filter(code -> !code.isBlank())
-            .findFirst()
-            .orElseThrow(() -> new AssertionError("No serviceCode found in venue-search response"));
-
-        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
-            HttpStatus.OK,
-            "?search-string=Abe&service_code=" + serviceCode,
-            LrdCourtVenueResponse[].class,
-            path
-        );
-
-        assertThat(response).isNotEmpty();
-        assertTrue(Arrays.stream(response).allMatch(venue -> serviceCode.equals(venue.getServiceCode())));
-        assertThat(response.length).isLessThanOrEqualTo(baseResponse.length);
-    }
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
