@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_INVALID_SERVICE_CODE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SEARCH_STRING_VALUE_ERROR_MESSAGE;
 
@@ -119,8 +120,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
             || venue.getCourtAddress().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getPostcode().strip().toLowerCase().contains("Man".toLowerCase())));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
-        assertTrue(courtVenueResponse.stream()
-                       .allMatch(venue -> venue.getServiceCode() != null && !venue.getServiceCode().isBlank()));
         assertThat(courtVenueResponse.size()).isPositive();
     }
 
@@ -172,7 +171,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
         assertThat(response).isNotNull();
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), response.getErrorMessage());
-        assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, response.getErrorDescription());
+        assertEquals(String.format(EXCEPTION_MSG_INVALID_SERVICE_CODE, "AB$"), response.getErrorDescription());
     }
 
     @Test

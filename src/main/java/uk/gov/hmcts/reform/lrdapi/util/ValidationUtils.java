@@ -81,7 +81,6 @@ public class ValidationUtils {
         });
     }
 
-
     public static void validateServiceCodes(String serviceCodes) {
         checkIfStringStartsAndEndsWithComma(serviceCodes, SERVICE_CODE_START_END_WITH_COMMA);
         Arrays.stream(serviceCodes.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
