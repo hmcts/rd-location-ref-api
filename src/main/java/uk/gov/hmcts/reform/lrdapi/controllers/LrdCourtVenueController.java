@@ -58,6 +58,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequ
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 
 @RequestMapping(
@@ -294,7 +295,7 @@ public class LrdCourtVenueController {
         }
 
         if (StringUtils.isNotBlank(serviceCode)) {
-            validateServiceCode(serviceCode);
+            validateServiceCodes(serviceCode);
         }
 
         CourtVenueRequestParam requestParam = CourtVenueRequestParam

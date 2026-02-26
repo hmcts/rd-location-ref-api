@@ -77,6 +77,8 @@ public class LocationRefConstants {
     public static final String COURT_TYPE_ID_START_END_WITH_COMMA =
         "Invalid court type ids: %s";
 
+    public static final String SERVICE_CODE_START_END_WITH_COMMA =
+        "Invalid service codes: %s";
 
     public static final String IS_HEARING_LOCATION_Y = "Y";
     public static final String IS_HEARING_LOCATION_N = "N";
@@ -148,7 +150,7 @@ public class LocationRefConstants {
     public static final String RET_LOC_VEN_NOTES_7 = "with the requested court_type_id are returned as a list.<br>";
 
     public static final String RET_LOC_VEN_NOTES_7_1 = """
-        request param 'epimms_id' can be passed with 'court_type_id' . Court venues associated with the epimmsId and 
+        request param 'epimms_id' can be passed with 'court_type_id' . Court venues associated with the epimmsId and
         court type id returned as list.
         """;
     public static final String RET_LOC_VEN_NOTES_8 = "For the request param 'region_id', the value needs to be a "
