@@ -48,6 +48,7 @@ public class LocationRefConstants {
         "No Building Location found for the given building location name: %s";
     public static final String EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR = "Invalid service code. "
         + "Please provide service code without special characters";
+    public static final String EXCEPTION_MSG_INVALID_SERVICE_CODE = "Invalid service codes: %s";
 
     public static final String LD_FLAG = "lrd_location_api";
 
