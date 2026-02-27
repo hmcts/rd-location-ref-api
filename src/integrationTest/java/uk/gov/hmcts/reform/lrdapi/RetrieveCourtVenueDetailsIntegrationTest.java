@@ -604,8 +604,8 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     void retrieveCourtVenues_WithEpimmsIdAndServiceCodeAndCourtTypeId_200() throws JsonProcessingException {
 
         final var response = (List<LrdCourtVenueResponse>)
-            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6" +
-                                                                       "&epimms_id=123456789&court_type_id=17",
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6"
+                                                                       + "&epimms_id=123456789&court_type_id=17",
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(1);

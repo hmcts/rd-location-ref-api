@@ -131,7 +131,8 @@ public class LrdCourtVenueController {
 
         log.info("{} : Inside retrieveCourtVenues", loggingComponentName);
 
-        boolean epimmsIdWithCourtTypeOrServiceCodePresent = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId),
+        boolean epimmsIdWithCourtTypeOrServiceCodePresent = checkBothValuesPresent(epimmsIds,
+                                                                                   String.valueOf(courtTypeId),
                                                                String.valueOf(serviceCode));
 
         if (epimmsIdWithCourtTypeOrServiceCodePresent) {
