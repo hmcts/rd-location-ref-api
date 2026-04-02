@@ -79,7 +79,7 @@ module "db-rd-location-ref-api-v16" {
 
 resource "azurerm_key_vault_secret" "POSTGRES-HOST" {
   name         = join("-", [var.component, "POSTGRES-HOST"])
-  value        = module.db-rd-location-ref-api-v16.fqdn
+  value        = var.pg_host != null ? var.pg_host : module.db-rd-location-ref-api-v16.fqdn
   key_vault_id = data.azurerm_key_vault.rd_key_vault.id
 }
 
