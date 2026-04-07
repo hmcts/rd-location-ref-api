@@ -122,8 +122,8 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
                 assertTrue(isEachIdMatched);
                 boolean isEachCourtTypeMatched = Arrays
                     .stream(lrdCourtVenueResponse)
-                    .map(LrdCourtVenueResponse::getCourtTypeId)
-                    .allMatch("31"::equals);
+                    .map(LrdCourtVenueResponse::getCourtType)
+                    .allMatch("Social Security and Child Support Tribunal"::equals);
                 assertTrue(isEachCourtTypeMatched);
             }
         }
@@ -152,7 +152,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         assertThat(response).isNotEmpty();
         boolean isEveryIdMatched = Arrays
             .stream(response)
-            .allMatch(venue -> venue.getCourtTypeId().equals("1") && venue.getCourtStatus().equals("Open"));
+            .allMatch(venue -> venue.getCourtType().equals("Admin Court") && venue.getCourtStatus().equals("Open"));
         assertTrue(isEveryIdMatched);
     }
 

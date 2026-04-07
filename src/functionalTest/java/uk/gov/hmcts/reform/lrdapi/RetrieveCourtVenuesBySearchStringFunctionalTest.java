@@ -80,7 +80,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertThat(response).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtTypeId().equals("1")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtType().equals("Admin Court")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                venue.getCourtName().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getSiteName().strip().toLowerCase().contains("Man".toLowerCase())
@@ -100,7 +100,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertThat(response).isNotNull();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtTypeId().equals("23")));
+        assertTrue(courtVenueResponse.stream()
+                       .allMatch(venue -> venue.getCourtType().equals("Immigration and Asylum Tribunal")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
                    || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())

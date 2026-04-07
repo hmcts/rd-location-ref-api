@@ -124,7 +124,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")));
-        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtType().equals("Employment Tribunal")));
     }
 
     @ParameterizedTest
@@ -139,7 +139,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123462")));
-        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtType().equals("Employment Tribunal")));
         assertTrue(response.stream().allMatch(venue -> venue.getWelshExternalShortName()
                 .equals("Welsh External Short Name")));
     }
@@ -176,7 +176,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty().hasSize(12);
-        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals(id.trim())));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtType().equals("Employment Tribunal")));
         assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
         assertEquals("Welsh External Short Name", response.get(10).getWelshExternalShortName());
     }
@@ -404,7 +404,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             );
 
         assertThat(response).isNotEmpty().hasSize(12);
-        assertTrue(response.stream().allMatch(venue -> venue.getCourtTypeId().equals("17")));
+        assertTrue(response.stream().allMatch(venue -> venue.getCourtType().equals("Employment Tribunal")));
         assertEquals("Aberdeen Tribunal External", response.get(9).getExternalShortName());
         assertEquals("Welsh External Short Name", response.get(10).getWelshExternalShortName());
     }

@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -40,7 +42,9 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("court_type")
     private String courtType;
 
-    @JsonProperty("court_type_id")
+    @Deprecated
+    @JsonIgnore
+    @Schema(hidden = true)
     private String courtTypeId;
 
     @JsonProperty("cluster_id")

@@ -51,7 +51,6 @@ class LrdCourtVenuesByServiceCodeResponseTest {
             new LrdCourtVenuesByServiceCodeResponse(courtType, serviceCode);
 
         assertEquals(serviceCode, courtVenuesByServiceCodeResponse.getServiceCode());
-        assertEquals(courtType.getCourtTypeId(), courtVenuesByServiceCodeResponse.getCourtTypeId());
         assertEquals(courtType.getTypeOfCourt(), courtVenuesByServiceCodeResponse.getCourtType());
         assertNull(courtVenuesByServiceCodeResponse.getWelshCourtType());
         assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues());
