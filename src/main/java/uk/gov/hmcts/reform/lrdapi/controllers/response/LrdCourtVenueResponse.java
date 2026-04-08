@@ -43,6 +43,8 @@ public class LrdCourtVenueResponse implements Serializable {
     private String courtType;
 
     /**
+     * Deprecated internal court type identifier.
+     *
      * @deprecated This field is hidden from the API response; use {@code courtType} instead.
      */
     @Deprecated(since = "2026-04")
