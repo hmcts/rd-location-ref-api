@@ -22,7 +22,10 @@ public class LrdCourtVenuesByServiceCodeResponse {
     @JsonProperty("service_code")
     private String serviceCode;
 
-    @Deprecated
+    /**
+     * @deprecated This field is hidden from the API response; use {@code courtType} instead.
+     */
+    @Deprecated(since = "2026-04")
     @JsonIgnore
     @Schema(hidden = true)
     protected String courtTypeId;

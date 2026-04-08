@@ -42,7 +42,10 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("court_type")
     private String courtType;
 
-    @Deprecated
+    /**
+     * @deprecated This field is hidden from the API response; use {@code courtType} instead.
+     */
+    @Deprecated(since = "2026-04")
     @JsonIgnore
     @Schema(hidden = true)
     private String courtTypeId;
