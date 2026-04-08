@@ -57,7 +57,7 @@ idam:
   api:
     url: ${IDAM_URL:http://127.0.0.1:5000}
 
-auth.idam.client.baseUrl: ${IDAM_URL:http://127.0.0.1:5000}
+auth.idam.client.baseUrl: ${http://127.0.0.1:5000/o}
 oidc:
   issuer: ${OIDC_ISSUER:http://127.0.0.1:5000/openam/oauth2/hmcts}
   expiration: 14400000 # milliseconds 4 hours
