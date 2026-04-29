@@ -1,6 +1,6 @@
 -- Backup court_venue data before adding service_code composite key
-DROP TABLE IF EXISTS court_venue_backup;
-CREATE TABLE court_venue_backup AS
+DROP TABLE IF EXISTS backup_court_venue;
+CREATE TABLE backup_court_venue AS
 SELECT * FROM court_venue;
 
 -- Capture backup metadata for audit/recovery proof
