@@ -284,6 +284,4 @@ public class LrdApiController {
         Object responseEntity = buildingLocationService.searchBuildingLocationsBySearchString(trimmedSearchString);
         return ResponseEntity.status(HttpStatus.OK).body(responseEntity);
     }
-
-
 }
