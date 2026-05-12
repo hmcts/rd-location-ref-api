@@ -41,8 +41,7 @@ import static org.mockito.Mockito.when;
 @Provider("referenceData_location_civil_service")
 @PactBroker(scheme = "${PACT_BROKER_SCHEME:http}",
     host = "${PACT_BROKER_URL:localhost}",
-    port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {
-    @VersionSelector(tag = "master")})
+    port = "${PACT_BROKER_PORT:80}", consumerVersionSelectors = {@VersionSelector(tag = "master")})
 @ContextConfiguration(classes = {LrdApiController.class, LrdCourtVenueController.class, LrdServiceImpl.class,
     LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class, CourtVenueServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiCivilProviderTest"})
