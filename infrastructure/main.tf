@@ -49,13 +49,14 @@ module "db-rd-location-ref-api-v16" {
     {
       name = "dbrdlocationref"
       report_privilege_schema : "locrefdata"
-      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
+      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "backup_court_venue","region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
     }
   ]
 
-  # Setup Access Reader db user
+  # Trigger to the force user permission script to rerun
   force_user_permissions_trigger = "3"
-  force_db_report_privileges_trigger = "1"
+  # Trigger to rerun and grant Access Reader role to the specified tables in the list report_privilege_tables
+  force_db_report_privileges_trigger = "2"
 
   # Sets correct DB owner after migration to fix permissions
   enable_schema_ownership        = var.enable_schema_ownership
