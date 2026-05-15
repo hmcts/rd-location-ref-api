@@ -109,71 +109,71 @@ class CourtVenueTest {
     @Test
     void testCourtVenueBuilderWithServiceCode() {
         Region region = new Region();
-        region.setDescription("Region ABC");
+        region.setDescription("regionDescription");
         region.setRegionId("789");
 
         CourtType courtType = new CourtType();
         courtType.setCourtTypeId("20");
-        courtType.setTypeOfCourt("District Court");
+        courtType.setTypeOfCourt("courtType2");
 
         Cluster cluster = new Cluster();
         cluster.setClusterId("789");
-        cluster.setClusterName("ClusterABC");
+        cluster.setClusterName("clusterName2");
 
         LocalDateTime now = LocalDateTime.now();
 
         CourtVenue courtVenue = CourtVenue.builder()
             .courtVenueId(2L)
-            .siteName("London Court")
+            .siteName("siteName2")
             .region(region)
             .courtType(courtType)
             .cluster(cluster)
             .openForPublic(Boolean.FALSE)
-            .courtAddress("123 Main Street")
-            .postcode("SW1A 1AA")
-            .phoneNumber("0207946253")
-            .courtLocationCode("LON001")
-            .dxAddress("55 Strand")
-            .welshSiteName("Llys Llundain")
-            .welshCourtAddress("123 Heol Fawr")
+            .courtAddress("courtAddress2")
+            .postcode("AB CDE")
+            .phoneNumber("987654321")
+            .courtLocationCode("courtLocationCode2")
+            .dxAddress("dxAddress2")
+            .welshSiteName("welshSiteName2")
+            .welshCourtAddress("welshCourtAddress2")
             .courtStatus("Open")
             .courtOpenDate(now)
-            .courtName("LONDON COURT")
+            .courtName("courtName2")
             .createdTime(now)
             .updatedTime(now)
-            .venueName("London Venue")
+            .venueName("venueName2")
             .isCaseManagementLocation("N")
             .isHearingLocation("Y")
-            .welshVenueName("Lleoliad Llundain")
+            .welshVenueName("welshVenueName2")
             .isTemporaryLocation("Y")
             .isNightingaleCourt("N")
-            .locationType("Nightingale")
+            .locationType("Court")
             .parentLocation("100")
             .serviceCode("AAA3")
             .build();
 
         assertEquals(2L, courtVenue.getCourtVenueId());
-        assertEquals("London Court", courtVenue.getSiteName());
+        assertEquals("siteName2", courtVenue.getSiteName());
         assertEquals("789", courtVenue.getRegion().get().getRegionId());
         assertEquals("20", courtVenue.getCourtType().getCourtTypeId());
         assertEquals("789", courtVenue.getCluster().get().getClusterId());
         assertTrue(!courtVenue.getOpenForPublic());
-        assertEquals("123 Main Street", courtVenue.getCourtAddress());
-        assertEquals("SW1A 1AA", courtVenue.getPostcode());
-        assertEquals("0207946253", courtVenue.getPhoneNumber());
-        assertEquals("LON001", courtVenue.getCourtLocationCode());
-        assertEquals("55 Strand", courtVenue.getDxAddress());
-        assertEquals("Llys Llundain", courtVenue.getWelshSiteName());
-        assertEquals("123 Heol Fawr", courtVenue.getWelshCourtAddress());
+        assertEquals("courtAddress2", courtVenue.getCourtAddress());
+        assertEquals("AB CDE", courtVenue.getPostcode());
+        assertEquals("987654321", courtVenue.getPhoneNumber());
+        assertEquals("courtLocationCode2", courtVenue.getCourtLocationCode());
+        assertEquals("dxAddress2", courtVenue.getDxAddress());
+        assertEquals("welshSiteName2", courtVenue.getWelshSiteName());
+        assertEquals("welshCourtAddress2", courtVenue.getWelshCourtAddress());
         assertEquals("Open", courtVenue.getCourtStatus());
-        assertEquals("LONDON COURT", courtVenue.getCourtName());
-        assertEquals("London Venue", courtVenue.getVenueName());
+        assertEquals("courtName2", courtVenue.getCourtName());
+        assertEquals("venueName2", courtVenue.getVenueName());
         assertEquals("N", courtVenue.getIsCaseManagementLocation());
         assertEquals("Y", courtVenue.getIsHearingLocation());
-        assertEquals("Lleoliad Llundain", courtVenue.getWelshVenueName());
+        assertEquals("welshVenueName2", courtVenue.getWelshVenueName());
         assertEquals("Y", courtVenue.getIsTemporaryLocation());
         assertEquals("N", courtVenue.getIsNightingaleCourt());
-        assertEquals("Nightingale", courtVenue.getLocationType());
+        assertEquals("Court", courtVenue.getLocationType());
         assertEquals("100", courtVenue.getParentLocation());
         assertEquals("AAA3", courtVenue.getServiceCode());
     }
