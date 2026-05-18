@@ -1,6 +1,6 @@
 plugins {
   id 'application'
-  id 'uk.gov.hmcts.java' version '0.12.67'
+  id 'uk.gov.hmcts.java' version '0.12.70'
   id 'idea'
   id 'jacoco'
   id 'pmd'
@@ -23,7 +23,7 @@ ext {
 
 def versions = [
   lombok             : '1.18.42',
-  reformLogging      : '6.1.9',
+  reformLogging      : '8.0.0',
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
   junitPitest        : '1.2.1',
