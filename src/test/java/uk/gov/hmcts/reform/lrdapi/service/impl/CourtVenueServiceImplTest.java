@@ -94,7 +94,6 @@ class CourtVenueServiceImplTest {
 
         assertNotNull(response);
         assertEquals("ABC1", response.getServiceCode());
-        assertEquals(courtType.getCourtTypeId(), response.getCourtTypeId());
         assertEquals(courtType.getTypeOfCourt(), response.getCourtType());
         assertNotNull(response.getCourtVenues());
         assertNull(response.getWelshCourtType());

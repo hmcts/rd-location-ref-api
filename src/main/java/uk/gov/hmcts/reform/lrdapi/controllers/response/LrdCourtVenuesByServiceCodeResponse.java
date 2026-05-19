@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +22,14 @@ public class LrdCourtVenuesByServiceCodeResponse {
     @JsonProperty("service_code")
     private String serviceCode;
 
-    @JsonProperty("court_type_id")
+    /**
+     * Deprecated internal court type identifier.
+     *
+     * @deprecated This field is hidden from the API response; use {@code courtType} instead.
+     */
+    @Deprecated(since = "2026-04")
+    @JsonIgnore
+    @Schema(hidden = true)
     protected String courtTypeId;
 
     @JsonProperty("court_type")
@@ -36,7 +45,6 @@ public class LrdCourtVenuesByServiceCodeResponse {
 
         if (nonNull(courtType)) {
             this.serviceCode = serviceCode;
-            this.courtTypeId = courtType.getCourtTypeId();
             this.courtType = courtType.getTypeOfCourt();
             this.welshCourtType = courtType.getWelshCourtType();
             this.courtVenues = courtType.getCourtVenues()

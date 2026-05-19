@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi.controllers.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -40,7 +42,14 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("court_type")
     private String courtType;
 
-    @JsonProperty("court_type_id")
+    /**
+     * Deprecated internal court type identifier.
+     *
+     * @deprecated This field is hidden from the API response; use {@code courtType} instead.
+     */
+    @Deprecated(since = "2026-04")
+    @JsonIgnore
+    @Schema(hidden = true)
     private String courtTypeId;
 
     @JsonProperty("cluster_id")
@@ -150,7 +159,6 @@ public class LrdCourtVenueResponse implements Serializable {
                 clusterId = cluster.getClusterId();
                 clusterName = cluster.getClusterName();
             });
-            this.courtTypeId = courtVenue.getCourtType().getCourtTypeId();
             this.courtType = courtVenue.getCourtType().getTypeOfCourt();
             this.dxAddress = courtVenue.getDxAddress();
             this.epimmsId = courtVenue.getEpimmsId();

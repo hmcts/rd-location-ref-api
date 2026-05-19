@@ -387,7 +387,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .build();
 
         LrdCourtVenueResponse courtVenue = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 7")
             .openForPublic("YES")
@@ -439,7 +438,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
     private List<LrdBuildingLocationResponse> getTwoLocationResponse() {
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 8")
             .openForPublic("YES")
@@ -511,7 +509,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
 
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 2")
             .openForPublic("YES")
@@ -564,7 +561,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
 
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtTypeId("23")
             .courtType("Immigration and Asylum Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic("YES")
@@ -602,7 +598,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
 
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 4")
             .openForPublic("YES")
@@ -640,7 +635,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
 
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 9")
             .openForPublic("YES")
@@ -678,7 +672,6 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
         Set<LrdCourtVenueResponse> courtVenueResponses = new HashSet<>();
 
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
-            .courtTypeId("17")
             .courtType("Employment Tribunal")
             .siteName("Aberdeen Tribunal Hearing Centre 3")
             .openForPublic("YES")

@@ -110,7 +110,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = buildCourtVenueResponses();
 
         assertThat(response.getServiceCode()).isEqualTo("AAA3");
-        assertThat(response.getCourtTypeId()).isEqualTo("10");
         assertThat(response.getCourtType()).isEqualTo("County Court");
         assertThat(response.getWelshCourtType()).isNull();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -127,7 +126,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 11")
             .epimmsId("123459")
             .openForPublic("YES")
-            .courtTypeId("10")
             .courtType("County Court")
             .regionId("1")
             .region("London")
@@ -149,7 +147,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtName("STOKE-ON-TRENT COMBINED COURT")
             .epimmsId("123460")
             .openForPublic("YES")
-            .courtTypeId("10")
             .courtType("County Court")
             .regionId("1")
             .region("London")
