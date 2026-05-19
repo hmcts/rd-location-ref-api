@@ -1,7 +1,7 @@
 -- service_code backfill is environment-specific for existing court_venue data.
--- Populate court_venue.service_code before V1_35 runs.
+
 
 DO $$
 BEGIN
-    NULL;
+    NULL;-- Populate court_venue.service_code via file upload this is just a placeholder can delete it
 END $$;
