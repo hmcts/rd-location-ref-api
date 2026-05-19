@@ -58,6 +58,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequ
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 
 @RequestMapping(
@@ -265,6 +266,10 @@ public class LrdCourtVenueController {
         @Parameter(name = "court-type-id",
             description = "Alphabets and Numeric values only allowed in comma separated format")
         String courtTypeId,
+        @RequestParam(value = "service_code", required = false)
+        @Parameter(name = "service_code",
+            description = "Alphabets and Numeric values only allowed in comma separated format")
+        String serviceCode,
         @RequestParam(value = "is_hearing_location", required = false)
         @Parameter(name = "is_hearing_location",
             description = "Allowed values are \"Y\" or \"N\"")
@@ -289,6 +294,10 @@ public class LrdCourtVenueController {
             validateCourtTypeId(courtTypeId);
         }
 
+        if (StringUtils.isNotBlank(serviceCode)) {
+            validateServiceCodes(serviceCode);
+        }
+
         CourtVenueRequestParam requestParam = CourtVenueRequestParam
             .builder()
             .isHearingLocation(isHearingLocation)
@@ -299,7 +308,7 @@ public class LrdCourtVenueController {
 
         log.info("{} : Calling retrieveCourtVenuesBySearchString", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
-            trimmedSearchString, courtTypeId, requestParam);
+            trimmedSearchString, courtTypeId, serviceCode, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 }

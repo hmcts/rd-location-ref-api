@@ -26,5 +26,6 @@ public interface CourtVenueService {
                                                           CourtVenueRequestParam courtVenueRequestParam);
 
     List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
+                                                                  String serviceCode,
                                                                   CourtVenueRequestParam requestParam);
 }

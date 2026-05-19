@@ -152,7 +152,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenuesBySearchString() {
         var param = new CourtVenueRequestParam();
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("MAN", null,
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("MAN", null,null,
                                                                       param.getIsHearingLocation(),
                                                                       param.getIsCaseManagementLocation(),
                                                                       param.getLocationType(),
@@ -163,6 +163,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
             anyString(),
             isNull(),
+            isNull(),
             any(CourtVenueRequestParam.class)
         );
     }
@@ -172,6 +173,7 @@ class LrdCourtVenueControllerTest {
         var param = new CourtVenueRequestParam();
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("Stoke-", null,
+                                                                      null,
                                                                       param.getIsHearingLocation(),
                                                                       param.getIsCaseManagementLocation(),
                                                                       param.getLocationType(),
@@ -183,6 +185,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
             anyString(),
             isNull(),
+            isNull(),
             any(CourtVenueRequestParam.class)
         );
     }
@@ -190,31 +193,63 @@ class LrdCourtVenueControllerTest {
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidString() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null,
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithStringLessThan3Char() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("AB", null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("AB", null,
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeId() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*",
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
+    }
+
+    @Test
+    void testGetCourtVenuesBySearchStringWithInvalidServiceCode() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
+                                                                      "1,2,*", null,
+                                                                      null, null,
+                                                                      null));
+    }
+
+    @Test
+    void testGetCourtVenuesBySearchStringWithInvalidServiceCodeWithComma() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
+                                                                      ",1,2,", null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeIdWithComma() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,",
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithEmptyString() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("", null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("", null, null,
+                                                                      null,null,
+                                                                      null, null));
     }
 
     @ParameterizedTest
@@ -224,6 +259,8 @@ class LrdCourtVenueControllerTest {
         "?search-string=)))"})
     void testGetCourtVenuesBySearchStringWithConsecutiveSpecialCharacters(String param) {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString(param, ",1,2,", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString(param, ",1,2,", null,
+                                                                      null, null,
+                                                                      null, null));
     }
 }
