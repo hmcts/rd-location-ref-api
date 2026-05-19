@@ -119,6 +119,7 @@ public class LrdCourtVenueController {
     )
     public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenues(
         @RequestParam(value = "epimms_id", required = false) String epimmsIds,
+        @RequestParam(value = "service_code", required = false) String serviceCode,
         @RequestParam(value = "court_type_id", required = false) Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) Integer regionId,
         @RequestParam(value = "cluster_id", required = false) Integer clusterId,
@@ -130,15 +131,18 @@ public class LrdCourtVenueController {
 
         log.info("{} : Inside retrieveCourtVenues", loggingComponentName);
 
-        boolean epimmsIdWithCourtType = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId));
+        boolean epimmsIdWithCourtTypeOrServiceCodePresent = checkBothValuesPresent(epimmsIds,
+                                                                                   String.valueOf(courtTypeId),
+                                                               String.valueOf(serviceCode));
 
-        if (epimmsIdWithCourtType) {
+        if (epimmsIdWithCourtTypeOrServiceCodePresent) {
             checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, EPPIMS_ID_WITH_COURT_TYPE,
                                       String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
             );
         } else {
             checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds,
-                String.valueOf(courtTypeId), String.valueOf(regionId), String.valueOf(clusterId), courtVenueName);
+                String.valueOf(courtTypeId),  String.valueOf(serviceCode), String.valueOf(regionId),
+                                                String.valueOf(clusterId), courtVenueName);
         }
 
         CourtVenueRequestParam courtVenueRequestParam =
@@ -154,11 +158,10 @@ public class LrdCourtVenueController {
         validateCourtVenueFilters(result);
 
         log.info("{} : Calling retrieveCourtVenues", loggingComponentName);
-        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
-                                                                                 courtTypeId, regionId, clusterId,
-                                                                                 courtVenueName, epimmsIdWithCourtType,
-                                                                                 result
-        );
+        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds, courtTypeId, serviceCode,
+                                                                                 regionId,clusterId, courtVenueName,
+                                                                              epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                                              result);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 

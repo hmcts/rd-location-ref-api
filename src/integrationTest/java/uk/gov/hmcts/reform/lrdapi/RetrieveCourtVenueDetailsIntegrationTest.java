@@ -566,4 +566,56 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertNotNull(venueResponse.getServiceCode());
         assertEquals("123456789", venueResponse.getEpimmsId());
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithServiceCode_200() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6&epimms_id=123456789",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdAndServiceCode_200() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(4);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdAndServiceCodeAndCourtTypeId_200() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6"
+                                                                       + "&epimms_id=123456789&court_type_id=17",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("17", venueResponse.getCourtTypeId());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+
 }
