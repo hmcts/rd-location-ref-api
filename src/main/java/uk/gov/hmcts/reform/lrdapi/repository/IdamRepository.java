@@ -36,7 +36,7 @@ public class IdamRepository {
         CaffeineCache caffeineCache = (CaffeineCache) cacheManager.getCache("token");
         Cache<Object, Object> nativeCache = requireNonNull(caffeineCache).getNativeCache();
 
-        log.info("{}:: generating Bearer Token, current size of cache: "
+        log.debug("{}:: generating Bearer Token, current size of cache: "
                      + nativeCache.estimatedSize(), loggingComponentName);
 
         try {
