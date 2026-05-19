@@ -9,7 +9,7 @@ BEGIN
         SELECT 1
         FROM information_schema.tables
         WHERE table_schema = 'locrefdata'
-          AND table_name = 'backup_court_venue_2026'
+          AND table_name = 'court_venue_backup_2026'
     ) AND NOT EXISTS (
         SELECT 1
         FROM information_schema.columns
@@ -17,12 +17,13 @@ BEGIN
           AND table_name = 'court_venue'
           AND column_name = 'service_code'
     ) THEN -- Add service_code column to court_venue table
-      ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS service_code VARCHAR(16);
+      ALTER TABLE locrefdata.court_venue ADD COLUMN IF NOT EXISTS service_code VARCHAR(16);
 -- Drop the existing unique constraint on (epimms_id, court_type_id)
-     ALTER TABLE court_venue DROP CONSTRAINT IF EXISTS court_location_unique;
+     ALTER TABLE locrefdata.court_venue DROP CONSTRAINT IF EXISTS court_location_unique;
 -- Add a new unique constraint with epimms_id and service_code
-     ALTER TABLE court_venue ADD CONSTRAINT court_location_unique UNIQUE (epimms_id, service_code);
+     ALTER TABLE locrefdata.court_venue ADD CONSTRAINT court_location_unique UNIQUE (epimms_id, service_code);
 -- Add foreign key constraint for service_code
-    ALTER TABLE court_venue ADD CONSTRAINT court_venue_service_code_fk FOREIGN KEY (service_code) REFERENCES SERVICE (service_code);
+    ALTER TABLE locrefdata.court_venue ADD CONSTRAINT court_venue_service_code_fk
+        FOREIGN KEY (service_code) REFERENCES locrefdata.service (service_code);
     END IF;
 END $$;
