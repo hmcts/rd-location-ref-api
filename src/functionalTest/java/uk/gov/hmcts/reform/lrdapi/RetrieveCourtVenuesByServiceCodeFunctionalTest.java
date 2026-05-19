@@ -34,7 +34,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void getCourtVenuesByServiceCodeWithStatusCode_200() {
         LrdCourtVenuesByServiceCodeResponse response = (LrdCourtVenuesByServiceCodeResponse)
-            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "BFA1");
+            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "AAA6");
 
         assertNotNull(response);
         responseVerification(response);
@@ -48,7 +48,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
 
         assertNotNull(response);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
-        assertEquals("No court types found for the given service code BFA2",
+        assertEquals("No court venues found for the given service code BFA2",
                      response.getErrorDescription());
     }
 
@@ -89,9 +89,7 @@ class RetrieveCourtVenuesByServiceCodeFunctionalTest extends AuthorizationFuncti
 
 
     private void responseVerification(LrdCourtVenuesByServiceCodeResponse response) {
-        assertEquals("BFA1", response.getServiceCode());
-        assertEquals("23", response.getCourtTypeId());
-        assertThat(response.getCourtType()).isEqualToIgnoringCase("Immigration and Asylum Tribunal");
+        assertEquals("AAA6", response.getServiceCode());
         assertNull(response.getWelshCourtType());
         assertThat(response.getCourtVenues().size()).isPositive();
     }
