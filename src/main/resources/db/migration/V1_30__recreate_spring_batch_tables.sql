@@ -1,5 +1,3 @@
---a second cleanup step for environments that had already gone through V30 in a previous release
-
 -- ensure we have table names available
 drop table if exists batch_step_execution_context_archived2;
 drop table if exists batch_job_execution_context_archived2;
