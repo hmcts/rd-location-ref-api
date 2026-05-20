@@ -1,12 +1,3 @@
-DO $$
-BEGIN
-    IF EXISTS (
-        SELECT 1
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-          AND table_name = 'court_venue'
-          AND column_name = 'service_code'
-    ) THEN
         UPDATE court_venue SET service_code = 'AAA2' WHERE court_venue_id = 1;
         UPDATE court_venue SET service_code = 'AAA3' WHERE court_venue_id = 2;
         UPDATE court_venue SET service_code = 'AAA6' WHERE court_venue_id = 3;
@@ -22,5 +13,3 @@ BEGIN
         UPDATE court_venue SET service_code = 'AAA2' WHERE court_venue_id = 13;
         UPDATE court_venue SET service_code = 'AAA3' WHERE court_venue_id = 14;
         UPDATE court_venue SET service_code = 'AAA6' WHERE court_venue_id = 15;
-    END IF;
-END $$;

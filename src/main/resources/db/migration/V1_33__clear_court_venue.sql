@@ -17,6 +17,6 @@ BEGIN
           AND table_name = 'court_venue'
           AND column_name = 'service_code'
     ) THEN
-DELETE FROM court_venue;
-END IF;
+        DELETE FROM court_venue;
+    END IF;
 END $$;
