@@ -1,22 +1,4 @@
-DO $$
-BEGIN
-    IF EXISTS (
-        SELECT 1
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-          AND table_name = 'court_venue'
-    ) AND EXISTS (
-        SELECT 1
-        FROM information_schema.tables
-        WHERE table_schema = 'public'
-          AND table_name = 'court_venue_backup_2026'
-    ) AND NOT EXISTS (
-        SELECT 1
-        FROM information_schema.columns
-        WHERE table_schema = 'public'
-          AND table_name = 'court_venue'
-          AND column_name = 'service_code'
-    ) THEN -- Add service_code column to court_venue table
+-- Add service_code column to court_venue table
       ALTER TABLE public.court_venue ADD COLUMN IF NOT EXISTS service_code VARCHAR(16);
 -- Drop the existing unique constraint on (epimms_id, court_type_id)
      ALTER TABLE public.court_venue DROP CONSTRAINT IF EXISTS court_location_unique;
@@ -25,5 +7,3 @@ BEGIN
 -- Add foreign key constraint for service_code
     ALTER TABLE public.court_venue ADD CONSTRAINT court_venue_service_code_fk
         FOREIGN KEY (service_code) REFERENCES public.service (service_code);
-    END IF;
-END $$;
