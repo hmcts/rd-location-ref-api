@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants;
 import uk.gov.hmcts.reform.lrdapi.exception.ForbiddenException;
@@ -109,6 +110,11 @@ public class ExceptionMapper {
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<Object> handleMissingServletRequestParameterException(Exception ex) {
+        return errorDetailsResponseEntity(ex, BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Object> handleHandlerMethodValidationException(Exception ex) {
         return errorDetailsResponseEntity(ex, BAD_REQUEST, ex.getMessage());
     }
 

@@ -401,6 +401,7 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .postcode("AB11 1TY")
             .courtAddress("AB7, 54 HUNTLY STREET, ABERDEEN")
             .courtVenueId("13")
+            .serviceCode("AAA2")
             .externalShortName("Aberdeen Tribunal External")
             .welshExternalShortName("Welsh Aberdeen Tribunal External")
             .build();
@@ -452,6 +453,7 @@ class RetrieveBuildingLocationIntegrationTest extends LrdAuthorizationEnabledInt
             .postcode("AB11 2HT")
             .courtAddress("AB8, 55 HUNTLY STREET, ABERDEEN")
             .courtVenueId("8")
+            .serviceCode("ABA4")
             .build();
 
         courtVenueResponses.add(response1);
