@@ -33,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 
@@ -144,6 +145,18 @@ class CourtVenueServiceImplTest {
         when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "   "})
+    void testRetrieveCourtVenuesByServiceCode_WithBlankServiceCode(String serviceCode) {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> courtVenueService.retrieveCourtVenuesByServiceCode(serviceCode)
+        );
+
+        assertEquals("No service code provided", exception.getMessage());
+        verifyNoInteractions(courtVenueRepository);
     }
 
     @Test
