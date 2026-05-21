@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -112,6 +113,25 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertTrue(courtVenueResponse.stream()
                        .allMatch(venue -> venue.getIsCaseManagementLocation().equalsIgnoreCase("y")));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getLocationType().equals("NBC")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
+        assertThat(courtVenueResponse.size()).isPositive();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_By_ServiceCodeAndSearchString_WithStatusCode_200() {
+        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                "?search-string=Abe&service_code=AAA3", LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty();
+
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
+        assertTrue(courtVenueResponse.stream().allMatch(venue -> "AAA3".equals(venue.getServiceCode())));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+            venue.getCourtName().strip().toLowerCase(Locale.ROOT).contains("abe")
+                || venue.getSiteName().strip().toLowerCase(Locale.ROOT).contains("abe")
+                || venue.getCourtAddress().strip().toLowerCase(Locale.ROOT).contains("abe")
+                || venue.getPostcode().strip().toLowerCase(Locale.ROOT).contains("abe")));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
     }
