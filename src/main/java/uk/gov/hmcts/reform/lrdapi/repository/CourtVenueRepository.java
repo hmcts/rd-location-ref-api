@@ -22,7 +22,7 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
              select cv from court_venue cv LEFT JOIN FETCH cv.courtType
              LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region
              where cv.courtStatus='Open'
-             and (:serviceCode is null or upper(cv.serviceCode) = upper(:serviceCode))
+             and (:serviceCode is null or upper(cv.serviceCode) = :serviceCode)
              and (:courtTypeId is null or cv.courtTypeId = :courtTypeId)
              and (:epimmsIdList is null or cv.epimmsId in (:epimmsIdList))
              and (:courtTypeId is not null or :epimmsIdList is not null)
