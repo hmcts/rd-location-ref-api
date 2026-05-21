@@ -18,8 +18,8 @@ import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.stream.Stream;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -161,7 +161,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
                 || venue.getSiteName().strip().toLowerCase(Locale.ROOT).contains(searchToken.toLowerCase(Locale.ROOT))
                 || venue.getCourtAddress().strip().toLowerCase(Locale.ROOT)
                     .contains(searchToken.toLowerCase(Locale.ROOT))
-                || venue.getPostcode().strip().toLowerCase(Locale.ROOT).contains(searchToken.toLowerCase(Locale.ROOT))));
+                || venue.getPostcode().strip().toLowerCase(Locale.ROOT)
+                    .contains(searchToken.toLowerCase(Locale.ROOT))));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
     }
