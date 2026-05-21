@@ -106,9 +106,9 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                                                          String serviceCodes,
                                                                          CourtVenueRequestParam requestParam) {
         log.info("{} : Obtaining court venue for search String: searchString: {}, courtTypeId: {}, "
-                     + "isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
+                     + "serviceCodes: {}, isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
                      + "isTemporaryLocation: {} ",
-                 loggingComponentName, searchString, courtTypeId,serviceCodes,  requestParam.getIsHearingLocation(),
+                 loggingComponentName, searchString, courtTypeId, serviceCodes, requestParam.getIsHearingLocation(),
                  requestParam.getIsCaseManagementLocation(),
                  requestParam.getLocationType(), requestParam.getIsTemporaryLocation());
 
