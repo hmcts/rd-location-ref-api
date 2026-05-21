@@ -34,6 +34,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 
 @ExtendWith(MockitoExtension.class)
 class CourtVenueServiceImplTest {
@@ -53,6 +54,33 @@ class CourtVenueServiceImplTest {
         courtVenueRequestParam =
             new CourtVenueRequestParam();
 
+    }
+
+    @Test
+    void testValidateServiceCode_ValidValueWithSpaces_ReturnsTrimmedValue() {
+        assertEquals("ABC1", CourtVenueServiceImpl.validateServiceCode(" ABC1 "));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "   "})
+    void testValidateServiceCode_BlankValue_ThrowsInvalidRequestException(String serviceCode) {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> CourtVenueServiceImpl.validateServiceCode(serviceCode)
+        );
+
+        assertEquals("No service code provided", exception.getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"@AB_C", " @AB_C ", "%$^$%^$%"})
+    void testValidateServiceCode_InvalidValue_ThrowsInvalidRequestException(String serviceCode) {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> CourtVenueServiceImpl.validateServiceCode(serviceCode)
+        );
+
+        assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, exception.getMessage());
     }
 
     @Test
