@@ -401,6 +401,13 @@ class CourtVenueServiceImplTest {
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
         verifySingleResponse(courtVenueResponse);
+        verify(courtVenueRepository, times(1)).findBySearchStringAndCourtTypeId("ABC",
+                                                                                List.of("1", "2"),
+                                                                                List.of("AAA2"),
+                                                                                "Y",
+                                                                                "Y",
+                                                                                "TEST",
+                                                                                "Y");
     }
 
     @Test
