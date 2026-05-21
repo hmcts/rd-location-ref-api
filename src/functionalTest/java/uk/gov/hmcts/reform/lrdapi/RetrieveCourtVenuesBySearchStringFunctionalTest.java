@@ -120,18 +120,31 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_ServiceCodeAndSearchString_WithStatusCode_200() {
-        final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?search-string=Tri&service_code=BFA1", LrdCourtVenueResponse[].class, path);
+        final var unfilteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                "?search-string=Abe", LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty();
+        assertThat(unfilteredResponse).isNotEmpty();
 
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> "BFA1".equals(venue.getServiceCode())));
+        String serviceCode = Arrays.stream(unfilteredResponse)
+            .map(LrdCourtVenueResponse::getServiceCode)
+            .filter(code -> code != null && !code.isBlank())
+            .findFirst()
+            .orElse(null);
+
+        assertThat(serviceCode).isNotBlank();
+
+        final var filteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                "?search-string=Abe&service_code=" + serviceCode, LrdCourtVenueResponse[].class, path);
+
+        assertThat(filteredResponse).isNotEmpty();
+
+        var courtVenueResponse = new ArrayList<>(Arrays.asList(filteredResponse));
+        assertTrue(courtVenueResponse.stream().allMatch(venue -> serviceCode.equals(venue.getServiceCode())));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-            venue.getCourtName().strip().toLowerCase(Locale.ROOT).contains("tri")
-                || venue.getSiteName().strip().toLowerCase(Locale.ROOT).contains("tri")
-                || venue.getCourtAddress().strip().toLowerCase(Locale.ROOT).contains("tri")
-                || venue.getPostcode().strip().toLowerCase(Locale.ROOT).contains("tri")));
+            venue.getCourtName().strip().toLowerCase(Locale.ROOT).contains("abe")
+                || venue.getSiteName().strip().toLowerCase(Locale.ROOT).contains("abe")
+                || venue.getCourtAddress().strip().toLowerCase(Locale.ROOT).contains("abe")
+                || venue.getPostcode().strip().toLowerCase(Locale.ROOT).contains("abe")));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
     }
