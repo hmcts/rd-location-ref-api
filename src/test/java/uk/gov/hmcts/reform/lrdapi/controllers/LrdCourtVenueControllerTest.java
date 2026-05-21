@@ -227,6 +227,36 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenuesBySearchStringWithValidServiceCodes() {
+        var param = new CourtVenueRequestParam();
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
+                                                                      "AAA3,ABA4",
+                                                                      param.getIsHearingLocation(),
+                                                                      param.getIsCaseManagementLocation(),
+                                                                      param.getLocationType(),
+                                                                      param.getIsTemporaryLocation());
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ArgumentCaptor<String> searchStringCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> courtTypeIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> serviceCodeCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
+            searchStringCaptor.capture(),
+            courtTypeIdCaptor.capture(),
+            serviceCodeCaptor.capture(),
+            any(CourtVenueRequestParam.class)
+        );
+
+        assertEquals("ABC", searchStringCaptor.getValue());
+        assertThat(courtTypeIdCaptor.getValue()).isNull();
+        assertEquals("AAA3,ABA4", serviceCodeCaptor.getValue());
+    }
+
+    @Test
     void testGetCourtVenuesBySearchStringWithInvalidServiceCodeWithComma() {
         assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
