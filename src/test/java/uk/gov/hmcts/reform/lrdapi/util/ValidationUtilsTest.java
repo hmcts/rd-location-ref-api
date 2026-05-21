@@ -23,8 +23,8 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.findInvalidIdentif
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
-import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStringForBuildingLocationDetails;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 class ValidationUtilsTest {
 
