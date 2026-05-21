@@ -11,12 +11,14 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.lib.util.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.stream.Stream;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -120,26 +122,31 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_ServiceCodeAndSearchString_WithStatusCode_200() {
-        final var unfilteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
-            HttpStatus.OK,
-            "?search-string=Abe",
-            LrdCourtVenueResponse[].class,
-            path
-        );
+        LrdCourtVenuesByServiceCodeResponse serviceCodeResponse = (LrdCourtVenuesByServiceCodeResponse)
+            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "BFA1");
 
-        assertThat(unfilteredResponse).isNotEmpty();
+        assertThat(serviceCodeResponse).isNotNull();
+        assertThat(serviceCodeResponse.getCourtVenues()).isNotEmpty();
 
-        String serviceCode = Arrays.stream(unfilteredResponse)
-            .map(LrdCourtVenueResponse::getServiceCode)
-            .filter(code -> code != null && !code.isBlank())
+        String searchToken = serviceCodeResponse.getCourtVenues().stream()
+            .flatMap(venue -> Stream.of(
+                venue.getCourtName(),
+                venue.getSiteName(),
+                venue.getCourtAddress(),
+                venue.getPostcode()
+            ))
+            .filter(value -> value != null && !value.isBlank())
+            .flatMap(value -> Arrays.stream(value.split("[^A-Za-z0-9]+")))
+            .filter(token -> token.length() >= 3)
             .findFirst()
+            .map(token -> token.substring(0, 3))
             .orElse(null);
 
-        assertThat(serviceCode).isNotBlank();
+        assertThat(searchToken).isNotBlank();
 
         final var filteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
             HttpStatus.OK,
-            "?search-string=Abe&service_code=" + serviceCode,
+            "?search-string=" + searchToken + "&service_code=" + serviceCodeResponse.getServiceCode(),
             LrdCourtVenueResponse[].class,
             path
         );
@@ -147,12 +154,14 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertThat(filteredResponse).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(filteredResponse));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> serviceCode.equals(venue.getServiceCode())));
+        assertTrue(courtVenueResponse.stream()
+                       .allMatch(venue -> serviceCodeResponse.getServiceCode().equals(venue.getServiceCode())));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-            venue.getCourtName().strip().toLowerCase(Locale.ROOT).contains("abe")
-                || venue.getSiteName().strip().toLowerCase(Locale.ROOT).contains("abe")
-                || venue.getCourtAddress().strip().toLowerCase(Locale.ROOT).contains("abe")
-                || venue.getPostcode().strip().toLowerCase(Locale.ROOT).contains("abe")));
+            venue.getCourtName().strip().toLowerCase(Locale.ROOT).contains(searchToken.toLowerCase(Locale.ROOT))
+                || venue.getSiteName().strip().toLowerCase(Locale.ROOT).contains(searchToken.toLowerCase(Locale.ROOT))
+                || venue.getCourtAddress().strip().toLowerCase(Locale.ROOT)
+                    .contains(searchToken.toLowerCase(Locale.ROOT))
+                || venue.getPostcode().strip().toLowerCase(Locale.ROOT).contains(searchToken.toLowerCase(Locale.ROOT))));
         assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
     }
