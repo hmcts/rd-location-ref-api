@@ -76,6 +76,18 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, errorResponse.getErrorDescription());
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"", "   "})
+    void returnsCourtVenuesByBlankServiceCodeWithStatusCode_400(String serviceCode) throws
+        JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.findCourtVenuesByServiceCode(serviceCode, ErrorResponse.class);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+    }
+
     @Test
     void returnsCourtVenuesByServiceCode_LdFlagOff_WithStatusCode_403()
         throws Exception {
