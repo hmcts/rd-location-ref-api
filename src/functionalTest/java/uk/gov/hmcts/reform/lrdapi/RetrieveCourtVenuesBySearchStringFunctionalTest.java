@@ -120,8 +120,12 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_ServiceCodeAndSearchString_WithStatusCode_200() {
-        final var unfilteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?search-string=Abe", LrdCourtVenueResponse[].class, path);
+        final var unfilteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
+            HttpStatus.OK,
+            "?search-string=Abe",
+            LrdCourtVenueResponse[].class,
+            path
+        );
 
         assertThat(unfilteredResponse).isNotEmpty();
 
@@ -133,8 +137,12 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
         assertThat(serviceCode).isNotBlank();
 
-        final var filteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?search-string=Abe&service_code=" + serviceCode, LrdCourtVenueResponse[].class, path);
+        final var filteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
+            HttpStatus.OK,
+            "?search-string=Abe&service_code=" + serviceCode,
+            LrdCourtVenueResponse[].class,
+            path
+        );
 
         assertThat(filteredResponse).isNotEmpty();
 
