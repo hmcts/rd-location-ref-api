@@ -68,6 +68,9 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCod
 @Slf4j
 public class LrdCourtVenueController {
 
+    private static final String DEPRECATED_COURT_TYPE_ID = "Deprecated parameter, please use `service_code` instead.";
+    private static final String WARNING_COURT_VENUE_ID = "&#9888; **Note: the `court_venue_id` property returned "
+        + "should not be used: as it is an internal value that may change.**";
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -219,17 +222,17 @@ public class LrdCourtVenueController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
     @Operation(
         summary = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
             + "inputs any 3 characters, they will call this api to fetch "
             + "the required result.",
-        description = "No roles required to access this API",
+        description = "No roles required to access this API<br/><br/>" + WARNING_COURT_VENUE_ID,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
         }
     )
-
     @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for the request provided",
@@ -250,7 +253,6 @@ public class LrdCourtVenueController {
             description = "Internal Server Error",
             content = @Content
         )
-
     @GetMapping(
         path = "/venue-search",
         produces = APPLICATION_JSON_VALUE
@@ -264,7 +266,8 @@ public class LrdCourtVenueController {
         String searchString,
         @RequestParam(value = "court-type-id", required = false)
         @Parameter(name = "court-type-id",
-            description = "Alphabets and Numeric values only allowed in comma separated format")
+            description = "Alphabets and Numeric values only allowed in comma separated format. <br/><br/>"
+             + DEPRECATED_COURT_TYPE_ID, deprecated = true)
         String courtTypeId,
         @RequestParam(value = "service_code", required = false)
         @Parameter(name = "service_code",
