@@ -49,7 +49,7 @@ module "db-rd-location-ref-api-v16" {
     {
       name = "dbrdlocationref"
       report_privilege_schema : "locrefdata"
-      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "backup_court_venue", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
+      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "court_venue_2026", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
     }
   ]
 
