@@ -179,5 +179,5 @@ public class LocationRefConstants {
     public static final String RET_LOC_VEN_NOTES_21 = "At a time only one param is allowed "
         + "from 'region_id','cluster_id',";
     public static final String RET_LOC_VEN_NOTES_22 = "'court_venue_name'. 'epimms_id' can be passed along with "
-        + "'court_type_id'. ";
+        + "'court_type_id' or 'service_code'.";
 }
