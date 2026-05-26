@@ -287,4 +287,41 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                                                                          expectedErrorDescription));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveCourtVenues_For_SearchString_WithServiceCodeInResponse_WithStatusCode_200()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty();
+        for (LrdCourtVenueResponse venue : response) {
+            assertNotNull(venue.getServiceCode(), "Service code should not be null in search response");
+            assertThat(venue.getServiceCode()).isNotEmpty();
+        }
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveCourtVenues_For_SearchString_AllHaveValidServiceCode()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Sto",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty();
+        assertTrue(Arrays.stream(response)
+            .allMatch(venue -> venue.getServiceCode() != null && !venue.getServiceCode().isEmpty()),
+            "All venues should have a non-empty service code");
+    }
+
 }
+
+
