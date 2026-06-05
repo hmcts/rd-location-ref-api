@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
@@ -32,6 +33,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SEARCH_STRING_VALUE_ERROR_MESSAGE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SERVICE_CODE_START_END_WITH_COMMA;
 
 public class ValidationUtils {
 
@@ -75,6 +77,15 @@ public class ValidationUtils {
         Arrays.stream(courtTypeId.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
             if (!isRegexSatisfied(c.trim(), ALPHA_NUMERIC_REGEX)) {
                 throw new InvalidRequestException(String.format(COURT_TYPE_ID_START_END_WITH_COMMA, courtTypeId));
+            }
+        });
+    }
+
+    public static void validateServiceCodes(String serviceCodes) {
+        checkIfStringStartsAndEndsWithComma(serviceCodes, SERVICE_CODE_START_END_WITH_COMMA);
+        Arrays.stream(serviceCodes.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
+            if (!isRegexSatisfied(c.trim(), ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE)) {
+                throw new InvalidRequestException(String.format(SERVICE_CODE_START_END_WITH_COMMA, serviceCodes));
             }
         });
     }

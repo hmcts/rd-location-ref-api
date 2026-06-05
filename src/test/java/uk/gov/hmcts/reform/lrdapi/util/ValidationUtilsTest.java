@@ -24,6 +24,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsText
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStringForBuildingLocationDetails;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 class ValidationUtilsTest {
 
@@ -400,6 +401,19 @@ class ValidationUtilsTest {
     void testValidateSearchStringForBuildingLocationDetailsSuccess() {
         assertDoesNotThrow(() ->
                                validateSearchStringForBuildingLocationDetails("asdc"));
+    }
+
+    @Test
+    void testValidateServiceCodes_WithValidServiceCodes_ShouldNotThrowException() {
+        assertDoesNotThrow(() -> validateServiceCodes("AAA3, ABA4"));
+    }
+
+    @Test
+    void testValidateServiceCodes_WithInvalidServiceCodes_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> validateServiceCodes("AAA3, AB_4")
+        );
     }
 
     private List<String> getSingleInvalidIdList() {
