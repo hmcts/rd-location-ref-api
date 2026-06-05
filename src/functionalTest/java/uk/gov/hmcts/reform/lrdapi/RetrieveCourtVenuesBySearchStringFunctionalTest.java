@@ -16,8 +16,6 @@ import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +35,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     public static final String mapKey = "LrdCourtVenueController.retrieveCourtVenuesBySearchString";
     private static final String path = "/court-venues/venue-search";
-    private static final List<String> SEARCH_STRINGS_WITH_DATA = List.of("Abe", "Man", "Arn", "Stoke-on");
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
@@ -141,49 +138,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_By_SingleServiceCodeAndSearchString_WithStatusCode_200() {
-        var searchString = findSearchStringWithMinimumServiceCodes(1);
-        var searchStringResponse = retrieveCourtVenuesBySearchString("?search-string=" + searchString);
-        var serviceCode = getDistinctNonBlankServiceCodes(searchStringResponse).getFirst();
-        final var filteredResponse = retrieveCourtVenuesBySearchString(
-            String.format("?search-string=%s&service_code=%s", searchString, serviceCode)
-        );
-
-        assertThat(filteredResponse).isNotNull().isNotEmpty();
-
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(filteredResponse));
-        assertTrue(courtVenueResponse.stream()
-                       .allMatch(venue -> serviceCode.equals(venue.getServiceCode())));
-        assertCourtVenuesMatchSearchStringAndAreOpen(courtVenueResponse, searchString);
-    }
-
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_By_MultipleServiceCodesAndSearchString_WithStatusCode_200() {
-        var searchString = findSearchStringWithMinimumServiceCodes(2);
-        var searchStringResponse = retrieveCourtVenuesBySearchString("?search-string=" + searchString);
-        var serviceCodes = getDistinctNonBlankServiceCodes(searchStringResponse).stream().limit(2).toList();
-        final var filteredResponse = retrieveCourtVenuesBySearchString(
-            String.format("?search-string=%s&service_code=%s",
-                          searchString,
-                          String.join(",", serviceCodes))
-        );
-
-        assertThat(filteredResponse).isNotNull().isNotEmpty();
-
-        var expectedServiceCodes = Set.copyOf(serviceCodes);
-        var courtVenueResponse = new ArrayList<>(Arrays.asList(filteredResponse));
-        assertTrue(courtVenueResponse.stream()
-                       .allMatch(venue -> expectedServiceCodes.contains(venue.getServiceCode())));
-        assertThat(courtVenueResponse.stream()
-                       .map(LrdCourtVenueResponse::getServiceCode)
-                       .collect(Collectors.toSet()))
-            .containsAll(expectedServiceCodes);
-        assertCourtVenuesMatchSearchStringAndAreOpen(courtVenueResponse, searchString);
-    }
-
-    @Test
-    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_NoSearchString_WithStatusCode_400() {
         ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.BAD_REQUEST, "?search-string",
@@ -255,52 +209,5 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
-    }
-
-    private LrdCourtVenueResponse[] retrieveCourtVenuesBySearchString(String parameter) {
-        return (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
-            HttpStatus.OK,
-            parameter,
-            LrdCourtVenueResponse[].class,
-            path
-        );
-    }
-
-    private String findSearchStringWithMinimumServiceCodes(int minimumServiceCodeCount) {
-        for (String searchString : SEARCH_STRINGS_WITH_DATA) {
-            var response = retrieveCourtVenuesBySearchString("?search-string=" + searchString);
-            if (getDistinctNonBlankServiceCodes(response).size() >= minimumServiceCodeCount) {
-                return searchString;
-            }
-        }
-
-        throw new AssertionError(
-            "No functional search result contained at least "
-                + minimumServiceCodeCount
-                + " distinct service code(s)"
-        );
-    }
-
-    private List<String> getDistinctNonBlankServiceCodes(LrdCourtVenueResponse[] response) {
-        return Arrays.stream(response)
-            .map(LrdCourtVenueResponse::getServiceCode)
-            .filter(serviceCode -> serviceCode != null && !serviceCode.isBlank())
-            .distinct()
-            .toList();
-    }
-
-    private void assertCourtVenuesMatchSearchStringAndAreOpen(List<LrdCourtVenueResponse> courtVenueResponse,
-                                                              String searchString) {
-        assertTrue(courtVenueResponse.stream().allMatch(venue ->
-            venue.getCourtName().strip().toLowerCase().contains(searchString.toLowerCase())
-                || venue.getSiteName().strip().toLowerCase().contains(searchString.toLowerCase())
-                || venue.getCourtAddress().strip().toLowerCase().contains(searchString.toLowerCase())
-                || venue.getPostcode().strip().toLowerCase().contains(searchString.toLowerCase())));
-        assertTrue(courtVenueResponse.stream()
-                       .allMatch(venue -> "Open".equals(venue.getCourtStatus())));
-        assertTrue(courtVenueResponse.stream().allMatch(venue ->
-            venue.getCourtName() != null && !venue.getCourtName().isBlank()
-                && venue.getSiteName() != null && !venue.getSiteName().isBlank()
-                && venue.getPostcode() != null && !venue.getPostcode().isBlank()));
     }
 }

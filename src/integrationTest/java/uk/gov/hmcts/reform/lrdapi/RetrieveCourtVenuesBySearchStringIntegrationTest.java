@@ -110,6 +110,27 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
         responseVerification(new ArrayList<>(Arrays.asList(response)));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void shouldRetrieveCourtVenues_For_SearchString_And_MultipleServiceCodes_WithStatusCode_200()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.findCourtVenuesBySearchString(
+                "?search-string=Abe&service_code=AAA3,ABA4",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotEmpty().hasSize(7);
+        assertTrue(Arrays.stream(response)
+                       .allMatch(venue -> Arrays.asList("AAA3", "ABA4").contains(venue.getServiceCode())));
+        assertThat(Arrays.stream(response)
+                       .map(LrdCourtVenueResponse::getServiceCode)
+                       .collect(Collectors.toSet()))
+            .containsExactlyInAnyOrder("AAA3", "ABA4");
+        responseVerification(new ArrayList<>(Arrays.asList(response)));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"?search-string=abc--", "?search-string=ab__c", "?search-string=___c",
         "?search-string=___", "?search-string=@@@", "?search-string=---", "?search-string='''",
