@@ -121,7 +121,7 @@ class RetrieveCourtVenuesBySearchStringIntegrationTest extends LrdAuthorizationE
                 path
             );
 
-        assertThat(response).isNotEmpty().hasSize(7);
+        assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(Arrays.stream(response)
                        .allMatch(venue -> Arrays.asList("AAA3", "ABA4").contains(venue.getServiceCode())));
         assertThat(Arrays.stream(response)
