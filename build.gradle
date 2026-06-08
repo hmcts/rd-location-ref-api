@@ -27,7 +27,7 @@ def versions = [
   reformHealthStarter: '0.0.5',
   sonarPitest        : '0.5',
   junitPitest        : '1.2.1',
-  commonsLang3       : '3.17.0',
+  commonsLang3       : '3.20.0',
   pact_version       : '4.6.17',
   launchDarklySdk    : "5.10.9",
   junit              : '6.0.0',
@@ -499,6 +499,9 @@ dependencyManagement {
     }
     dependencySet(group: 'commons-io', version: '2.22.0') {
       entry 'commons-io'
+    }
+    dependencySet(group: 'org.apache.commons', version: versions.commonsLang3) {
+      entry 'commons-lang3'
     }
   }
 }
