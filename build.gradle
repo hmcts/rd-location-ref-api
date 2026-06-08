@@ -497,6 +497,9 @@ dependencyManagement {
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
     }
+    dependencySet(group: 'commons-io', version: '2.22.0') {
+      entry 'commons-io'
+    }
   }
 }
 
