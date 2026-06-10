@@ -29,7 +29,7 @@ def versions = [
   junitPitest        : '1.2.1',
   commonsLang3       : '3.20.0',
   pact_version       : '4.6.17',
-  launchDarklySdk    : "5.10.9",
+  launchDarklySdk    : "7.13.4",
   junit              : '6.0.0',
   junitPlatform      : '6.0.0',
   jackson            : '2.20.1',
