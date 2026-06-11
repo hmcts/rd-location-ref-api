@@ -31,4 +31,5 @@ public interface RegionService {
      * @return The the response object containing the details of the requested region(s).
      */
     List<LrdRegionResponse> retrieveRegionByRegionId(String regionId);
+
 }
