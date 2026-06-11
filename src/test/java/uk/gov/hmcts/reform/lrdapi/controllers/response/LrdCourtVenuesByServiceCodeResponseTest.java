@@ -41,6 +41,7 @@ class LrdCourtVenuesByServiceCodeResponseTest {
             .venueName("venueName")
             .isCaseManagementLocation("Y")
             .isHearingLocation("Y")
+            .serviceCode("ABC1")
             .build();
 
         courtType.setCourtVenues(Collections.singletonList(courtVenue));
@@ -57,6 +58,6 @@ class LrdCourtVenuesByServiceCodeResponseTest {
         assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getVenueName());
         assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getIsCaseManagementLocation());
         assertNotNull(courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getIsHearingLocation());
-
+        assertEquals("ABC1", courtVenuesByServiceCodeResponse.getCourtVenues().get(0).getServiceCode());
     }
 }

@@ -506,4 +506,64 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsId_ShouldReturnServiceCodeInResponse() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=123456789",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getServiceCode());
+        assertTrue(venueResponse.getServiceCode().matches("[A-Z0-9]+"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "123456789,AAA6",
+        "123461,AAA2",
+        "123462,AAA3"
+    })
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsId_ShouldReturnCorrectServiceCode(String epimmsId, String expectedServiceCode)
+        throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=" + epimmsId,
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertEquals(expectedServiceCode, response.get(0).getServiceCode());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_AllVenues_ShouldAllHaveServiceCode() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=ALL",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty();
+        assertTrue(response.stream().allMatch(venue -> venue.getServiceCode() != null
+            && !venue.getServiceCode().isEmpty()));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdAndServiceCode_ShouldEnforceUniqueConstraint() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?epimms_id=123456789",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
 }

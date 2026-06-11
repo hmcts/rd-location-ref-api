@@ -79,6 +79,7 @@ class CourtVenueServiceImplTest {
             .mrdVenueId("765")
             .serviceUrl("https://serviceurl.com")
             .factUrl("https://facturl.com")
+            .serviceCode("ABC1")
             .build();
 
         List<CourtVenue> courtVenues = Collections.singletonList(courtVenue);
@@ -526,6 +527,7 @@ class CourtVenueServiceImplTest {
                             .mrdVenueId("765")
                             .serviceUrl("https://serviceurl.com")
                             .factUrl("https://facturl.com")
+                            .serviceCode("AAA2")
                             .build());
 
         return courtVenues;
@@ -559,6 +561,7 @@ class CourtVenueServiceImplTest {
                             .mrdVenueId("765")
                             .serviceUrl("https://serviceurl.com")
                             .factUrl("https://facturl.com")
+                            .serviceCode("AAA3")
                             .build());
 
         return courtVenues;
