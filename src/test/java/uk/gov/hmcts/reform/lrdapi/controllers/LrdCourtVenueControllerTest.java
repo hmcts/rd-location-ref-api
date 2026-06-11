@@ -73,6 +73,18 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenues_ByInvalidServiceCodeWithSpaces_Returns400() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesByServiceCode(" @AB_C "));
+    }
+
+    @Test
+    void testGetCourtVenues_ByInvalidServiceCodeWithSpecialCharacters_Returns400() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesByServiceCode("%$^$%^$%"));
+    }
+
+    @Test
     void testGetCourtVenues_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(

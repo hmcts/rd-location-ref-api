@@ -207,9 +207,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
         log.info("{} : Inside retrieveCourtVenuesByServiceCode", loggingComponentName);
-        String trimmedServiceCode = serviceCode.strip();
-
-        validateServiceCode(trimmedServiceCode);
+        String trimmedServiceCode = validateServiceCode(serviceCode);
 
         log.info("{} : Calling retrieveCourtVenuesByServiceCode", loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
