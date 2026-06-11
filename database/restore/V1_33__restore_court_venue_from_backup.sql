@@ -5,7 +5,8 @@ SET search_path TO locrefdata;
 ALTER TABLE court_venue_backup_2026 ADD COLUMN IF NOT EXISTS service_code VARCHAR(16);
 
 
-TRUNCATE TABLE court_venue;
+-- Use DELETE rather than TRUNCATE because court_venue is FK-referenced.
+DELETE FROM court_venue;
 
 INSERT INTO court_venue
 SELECT * FROM court_venue_backup_2026;
