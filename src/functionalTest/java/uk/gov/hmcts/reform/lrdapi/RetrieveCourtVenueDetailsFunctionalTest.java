@@ -129,6 +129,44 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         }
     }
 
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_For_EpimmsId_And_ServiceCode_StatusCode_200() {
+        Response response = lrdApiClient.getMultipleAuthHeaders()
+            .get("/refdata/location" + path + "?epimms_id=219164&service_code=BFA1")
+            .andReturn();
+
+        int statusCode = response.getStatusCode();
+        assertTrue(statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NOT_FOUND.value());
+
+        if (statusCode == HttpStatus.OK.value()) {
+            final var lrdCourtVenueResponse = response.getBody()
+                .as(LrdCourtVenueResponse[].class);
+
+            if (lrdCourtVenueResponse.length > 0) {
+                assertThat(lrdCourtVenueResponse).isNotEmpty();
+                boolean isEachIdMatched = Arrays
+                    .stream(lrdCourtVenueResponse)
+                    .map(LrdCourtVenueResponse::getEpimmsId)
+                    .allMatch("219164"::equals);
+                assertTrue(isEachIdMatched);
+                boolean isEachServiceCodeMatched = Arrays
+                    .stream(lrdCourtVenueResponse)
+                    .map(LrdCourtVenueResponse::getServiceCode)
+                    .allMatch(code -> "BFA1".equalsIgnoreCase(code));
+                assertTrue(isEachServiceCodeMatched);
+            }
+        }
+
+        if (statusCode == HttpStatus.NOT_FOUND.value()) {
+            ErrorResponse errorResponse = response.getBody().as(ErrorResponse.class);
+            assertNotNull(errorResponse);
+            assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
+            assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, "[219164]"),
+                         errorResponse.getErrorDescription());
+        }
+    }
+
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)

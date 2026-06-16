@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -88,7 +89,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenues_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(
-                "1234", null, null, null, null, "Y",
+                "1234", null, null, null, null, null, "Y",
                 "Y", "CTSC", "Y"
             );
 
@@ -102,6 +103,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
@@ -120,7 +122,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenueswitEpimmsIdAndCourtType_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(
-                "1234", 13, null, null, null, "Y",
+                "1234", null, 13, null, null, null, "Y",
                 "Y", "CTSC", "Y"
             );
 
@@ -134,6 +136,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
@@ -149,14 +152,46 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenues_WithServiceCode_Returns200() {
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenues(
+                "1234", "ABC1", null, null, null, null, "Y",
+                "Y", "CTSC", "Y"
+            );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ArgumentCaptor<CourtVenueRequestParam> courtVenueRequestParamCaptr =
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class);
+        ArgumentCaptor<String> serviceCodeCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Boolean> booleanCaptor = ArgumentCaptor.forClass(Boolean.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            ArgumentCaptor.forClass(String.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            serviceCodeCaptor.capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(Integer.class).capture(),
+            ArgumentCaptor.forClass(String.class).capture(),
+            booleanCaptor.capture(),
+            courtVenueRequestParamCaptr.capture()
+        );
+        assertEquals("ABC1", serviceCodeCaptor.getValue());
+        assertTrue(booleanCaptor.getValue());
+        assertNotNull(courtVenueRequestParamCaptr.getValue());
+    }
+
+    @Test
     void testGetCourtVenues_WithMultipleParams_Returns400() {
         Exception exception = assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenues("12345", null, 12, null,
-            null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenues("12345", null, null, 12,
+            null, null, null, null, null,
+                                                        null));
 
         assertNotNull(exception);
-        assertEquals("Please provide only 1 of 4 values of params: (1.epimms_id and court_type_id),"
-                + " (2.region_id), (3.cluster_id), (4.court_venue_name).",
+        assertEquals("Please provide only 1 of 4 values of params: (1.epimms_id and "
+                         + "[court_type_id or service_code]), (2.region_id), (3.cluster_id), (4.court_venue_name).",
                      exception.getMessage());
     }
 
@@ -164,7 +199,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenuesBySearchString() {
         var param = new CourtVenueRequestParam();
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("MAN", null,
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("MAN", null,null,
                                                                       param.getIsHearingLocation(),
                                                                       param.getIsCaseManagementLocation(),
                                                                       param.getLocationType(),
@@ -175,6 +210,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
             anyString(),
             isNull(),
+            isNull(),
             any(CourtVenueRequestParam.class)
         );
     }
@@ -184,6 +220,7 @@ class LrdCourtVenueControllerTest {
         var param = new CourtVenueRequestParam();
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenuesBySearchString("Stoke-", null,
+                                                                      null,
                                                                       param.getIsHearingLocation(),
                                                                       param.getIsCaseManagementLocation(),
                                                                       param.getLocationType(),
@@ -195,6 +232,7 @@ class LrdCourtVenueControllerTest {
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
             anyString(),
             isNull(),
+            isNull(),
             any(CourtVenueRequestParam.class)
         );
     }
@@ -202,31 +240,93 @@ class LrdCourtVenueControllerTest {
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidString() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("$AB_C", null,
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithStringLessThan3Char() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("AB", null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("AB", null,
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeId() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", "1,2,*",
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
+    }
+
+    @Test
+    void testGetCourtVenuesBySearchStringWithInvalidServiceCode() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
+                                                                      "1,2,*", null,
+                                                                      null, null,
+                                                                      null));
+    }
+
+    @Test
+    void testGetCourtVenuesBySearchStringWithValidServiceCodes() {
+        var param = new CourtVenueRequestParam();
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
+                                                                      "AAA3,ABA4",
+                                                                      param.getIsHearingLocation(),
+                                                                      param.getIsCaseManagementLocation(),
+                                                                      param.getLocationType(),
+                                                                      param.getIsTemporaryLocation());
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ArgumentCaptor<String> searchStringCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> courtTypeIdCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> serviceCodeCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesBySearchString(
+            searchStringCaptor.capture(),
+            courtTypeIdCaptor.capture(),
+            serviceCodeCaptor.capture(),
+            any(CourtVenueRequestParam.class)
+        );
+
+        assertEquals("ABC", searchStringCaptor.getValue());
+        assertThat(courtTypeIdCaptor.getValue()).isNull();
+        assertEquals("AAA3,ABA4", serviceCodeCaptor.getValue());
+    }
+
+    @Test
+    void testGetCourtVenuesBySearchStringWithInvalidServiceCodeWithComma() {
+        assertThrows(InvalidRequestException.class, () ->
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", null,
+                                                                      ",1,2,", null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithInvalidCourtTypeIdWithComma() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("ABC", ",1,2,",
+                                                                      null,null,
+                                                                      null, null,
+                                                                      null));
     }
 
     @Test
     void testGetCourtVenuesBySearchStringWithEmptyString() {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString("", null, null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString("", null, null,
+                                                                      null,null,
+                                                                      null, null));
     }
 
     @ParameterizedTest
@@ -236,6 +336,8 @@ class LrdCourtVenueControllerTest {
         "?search-string=)))"})
     void testGetCourtVenuesBySearchStringWithConsecutiveSpecialCharacters(String param) {
         assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenuesBySearchString(param, ",1,2,", null, null, null, null));
+            lrdCourtVenueController.retrieveCourtVenuesBySearchString(param, ",1,2,", null,
+                                                                      null, null,
+                                                                      null, null));
     }
 }

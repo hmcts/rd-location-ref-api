@@ -98,5 +98,6 @@ class LrdCourtVenuesByServiceCodeResponseTest {
             .isHearingLocation("Y")
             .serviceCode("ABC1")
             .build();
+
     }
 }
