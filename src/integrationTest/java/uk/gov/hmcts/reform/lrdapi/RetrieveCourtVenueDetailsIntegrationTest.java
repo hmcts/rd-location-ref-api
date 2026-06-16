@@ -633,5 +633,4 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertEquals(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, errorResponse.getErrorDescription());
     }
 
-
 }
