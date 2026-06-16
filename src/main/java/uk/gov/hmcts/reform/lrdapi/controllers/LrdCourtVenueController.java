@@ -174,13 +174,12 @@ public class LrdCourtVenueController {
 
     @Operation(
         summary = "This API will retrieve Court Venues for given Service Code",
-        description = "No roles required to access this API",
+        description = "No roles required to access this API<br/><br/>" + WARNING_COURT_VENUE_ID,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
         }
     )
-
     @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for given Service Code",
@@ -206,7 +205,6 @@ public class LrdCourtVenueController {
             description = "Internal Server Error",
             content = @Content
         )
-
     @GetMapping(
         path = "/services",
         produces = APPLICATION_JSON_VALUE
@@ -215,9 +213,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
         log.info("{} : Inside retrieveCourtVenuesByServiceCode", loggingComponentName);
-        String trimmedServiceCode = serviceCode.strip();
-
-        validateServiceCode(trimmedServiceCode);
+        String trimmedServiceCode = validateServiceCode(serviceCode);
 
         log.info("{} : Calling retrieveCourtVenuesByServiceCode", loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService

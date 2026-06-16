@@ -14,7 +14,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
-import uk.gov.hmcts.reform.lrdapi.domain.CourtTypeServiceAssoc;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
@@ -37,7 +36,9 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 
 @ExtendWith(MockitoExtension.class)
 class CourtVenueServiceImplTest {
@@ -57,6 +58,33 @@ class CourtVenueServiceImplTest {
         courtVenueRequestParam =
             new CourtVenueRequestParam();
 
+    }
+
+    @Test
+    void testValidateServiceCode_ValidValueWithSpaces_ReturnsTrimmedValue() {
+        assertEquals("ABC1", CourtVenueServiceImpl.validateServiceCode(" ABC1 "));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "   "})
+    void testValidateServiceCode_BlankValue_ThrowsInvalidRequestException(String serviceCode) {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> CourtVenueServiceImpl.validateServiceCode(serviceCode)
+        );
+
+        assertEquals("No service code provided", exception.getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"@AB_C", " @AB_C ", "%$^$%^$%"})
+    void testValidateServiceCode_InvalidValue_ThrowsInvalidRequestException(String serviceCode) {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> CourtVenueServiceImpl.validateServiceCode(serviceCode)
+        );
+
+        assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, exception.getMessage());
     }
 
     @Test
@@ -86,11 +114,8 @@ class CourtVenueServiceImplTest {
             .build();
 
         List<CourtVenue> courtVenues = Collections.singletonList(courtVenue);
-        courtType.setCourtVenues(courtVenues);
-        CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
-        courtTypeServiceAssoc.setCourtType(courtType);
 
-        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
+        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(courtVenues);
 
         LrdCourtVenuesByServiceCodeResponse response
             = courtVenueService.retrieveCourtVenuesByServiceCode("ABC1");
@@ -113,24 +138,34 @@ class CourtVenueServiceImplTest {
         assertEquals("765",response.getCourtVenues().get(0).getMrdVenueId());
         assertEquals("https://serviceurl.com",response.getCourtVenues().get(0).getServiceUrl());
         assertEquals("https://facturl.com",response.getCourtVenues().get(0).getFactUrl());
+        assertEquals("ABC1",response.getCourtVenues().get(0).getServiceCode());
 
-        verify(courtTypeServiceAssocRepository, times(1)).findByServiceCode("ABC1");
+        verify(courtVenueRepository, times(1)).findByServiceCode("ABC1");
     }
 
     @Test
     void testRetrieveCourtVenuesByServiceCode_WithInvalidServiceCode() {
-        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(null);
+        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(null);
 
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "   "})
+    void testRetrieveCourtVenuesByServiceCode_WithBlankServiceCode(String serviceCode) {
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> courtVenueService.retrieveCourtVenuesByServiceCode(serviceCode)
+        );
+
+        assertEquals("No service code provided", exception.getMessage());
+        verifyNoInteractions(courtVenueRepository);
+    }
+
     @Test
     void testRetrieveCourtVenuesByServiceCode_WithNoCourtVenues() {
-        CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
-        CourtType courtType = new CourtType();
-        courtTypeServiceAssoc.setCourtType(courtType);
 
-        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
+        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(List.of());
 
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
     }

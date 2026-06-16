@@ -71,11 +71,10 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
                                                       String isHearingLocation,String locationType,
                                                       String isTemporaryLocation);
 
-  
+
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where upper(cv.serviceCode) = upper(:serviceCode)")
     List<CourtVenue> findByServiceCode(String serviceCode);
-
 
 }

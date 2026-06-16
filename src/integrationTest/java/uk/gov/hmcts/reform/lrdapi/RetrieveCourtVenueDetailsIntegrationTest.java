@@ -568,6 +568,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertEquals("123456789", venueResponse.getEpimmsId());
     }
 
+
     @Test
     @SuppressWarnings("unchecked")
     void retrieveCourtVenues_WithEpimmsIdAndServiceCode_200() throws JsonProcessingException {
