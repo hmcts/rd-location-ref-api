@@ -86,15 +86,29 @@ class ValidationUtilsTest {
 
 
     @Test
-    void testCheckBothValuesPresents() {
-        assertThat(checkBothValuesPresent("asd", "123"))
+    void testCheckBothValuesPresents_WithCourtType() {
+        assertThat(checkBothValuesPresent("asd", "123", ""))
             .isTrue();
     }
 
 
     @Test
-    void testCheckBothValuesPresentsFalse() {
-        assertThat(checkBothValuesPresent("", "123"))
+    void testCheckBothValuesPresents_WithServiceCode() {
+        assertThat(checkBothValuesPresent("asd", "", "SRV1"))
+            .isTrue();
+    }
+
+
+    @Test
+    void testCheckBothValuesPresentsFalse_EpimmsMissing() {
+        assertThat(checkBothValuesPresent("", "123", "SRV1"))
+            .isFalse();
+    }
+
+
+    @Test
+    void testCheckBothValuesPresentsFalse_NoCourtTypeOrServiceCode() {
+        assertThat(checkBothValuesPresent("asd", "", ""))
             .isFalse();
     }
 

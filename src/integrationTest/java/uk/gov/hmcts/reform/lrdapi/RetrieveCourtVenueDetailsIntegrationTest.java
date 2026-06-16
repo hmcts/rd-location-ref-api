@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
 
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings("unchecked")
@@ -566,4 +567,70 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertNotNull(venueResponse.getServiceCode());
         assertEquals("123456789", venueResponse.getEpimmsId());
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdAndServiceCode_200() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6&epimms_id=123456789",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithServiceCode_200() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(4);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdAndServiceCodeAndCourtTypeId_200() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueResponse>)
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6"
+                                                                       + "&epimms_id=123456789&court_type_id=17",
+                                                                   LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueResponse venueResponse = response.get(0);
+        assertNotNull(venueResponse.getEpimmsId());
+        assertNotNull(venueResponse.getServiceCode());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("17", venueResponse.getCourtTypeId());
+        assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithEpimmsIdAndServiceCodeAndRegionId_ShouldReturn400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?service_code=AAA6&epimms_id=123456789&region_id=1",
+                                                         ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, errorResponse.getErrorDescription());
+    }
+
 }

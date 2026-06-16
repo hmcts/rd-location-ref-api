@@ -63,6 +63,9 @@ public class LocationRefConstants {
     public static final String NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID =
         "No court venues found for court type id: %s";
 
+    public static final String NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE =
+        "No court venues found for service code: %s";
+
     public static final String NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID =
         "No court venues found for epimms id: %s";
 
@@ -103,7 +106,7 @@ public class LocationRefConstants {
     public static final String IS_N = "N";
 
     public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "Please provide only 1 of 4 values of params:"
-        + " (1.epimms_id and court_type_id), (2.region_id), (3.cluster_id), (4.court_venue_name).";
+        + " (1.epimms_id and [court_type_id or service_code]), (2.region_id), (3.cluster_id), (4.court_venue_name).";
 
     public static final String EPPIMS_ID_WITH_COURT_TYPE = "epimms_id_with_court_type";
     public static final String ONLY_ONE_PARAM_REQUIRED_REGION  = "region, regionId";
@@ -179,5 +182,5 @@ public class LocationRefConstants {
     public static final String RET_LOC_VEN_NOTES_21 = "At a time only one param is allowed "
         + "from 'region_id','cluster_id',";
     public static final String RET_LOC_VEN_NOTES_22 = "'court_venue_name'. 'epimms_id' can be passed along with "
-        + "'court_type_id'. ";
+        + "'court_type_id' or 'service_code'.";
 }
