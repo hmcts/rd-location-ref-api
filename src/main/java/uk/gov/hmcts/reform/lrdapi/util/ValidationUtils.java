@@ -109,11 +109,11 @@ public class ValidationUtils {
     }
 
 
-    public static boolean checkBothValuesPresent(String... params) {
-        long requestParamSize = Arrays.stream(params)
-            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
-            .count();
-        return (requestParamSize == 2);
+    public static boolean checkBothValuesPresent(String epimmsIds, String courtTypeId, String serviceCode) {
+        boolean epimmsPresent = StringUtils.isNotBlank(epimmsIds) && !"null".equals(epimmsIds);
+        boolean courtTypePresent = StringUtils.isNotBlank(courtTypeId) && !"null".equals(courtTypeId);
+        boolean serviceCodePresent = StringUtils.isNotBlank(serviceCode) && !"null".equals(serviceCode);
+        return epimmsPresent && (courtTypePresent || serviceCodePresent);
     }
 
     public static void checkIfMultipleValuePresentForVenue(final String oneMandatory,String... params) {
