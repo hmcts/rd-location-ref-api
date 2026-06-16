@@ -58,6 +58,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequ
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 
 @RequestMapping(
@@ -225,17 +226,17 @@ public class LrdCourtVenueController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
     @Operation(
         summary = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
             + "inputs any 3 characters, they will call this api to fetch "
             + "the required result.",
-        description = "No roles required to access this API",
+        description = "No roles required to access this API<br/><br/>" + WARNING_COURT_VENUE_ID,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
         }
     )
-
     @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for the request provided",
@@ -256,7 +257,6 @@ public class LrdCourtVenueController {
             description = "Internal Server Error",
             content = @Content
         )
-
     @GetMapping(
         path = "/venue-search",
         produces = APPLICATION_JSON_VALUE
@@ -270,8 +270,13 @@ public class LrdCourtVenueController {
         String searchString,
         @RequestParam(value = "court-type-id", required = false)
         @Parameter(name = "court-type-id",
-            description = "Alphabets and Numeric values only allowed in comma separated format")
+            description = "Alphabets and Numeric values only allowed in comma separated format. <br/><br/>"
+             + DEPRECATED_COURT_TYPE_ID, deprecated = true)
         String courtTypeId,
+        @RequestParam(value = "service_code", required = false)
+        @Parameter(name = "service_code",
+            description = "Alphabets and Numeric values only allowed in comma separated format")
+        String serviceCode,
         @RequestParam(value = "is_hearing_location", required = false)
         @Parameter(name = "is_hearing_location",
             description = "Allowed values are \"Y\" or \"N\"")
@@ -296,6 +301,10 @@ public class LrdCourtVenueController {
             validateCourtTypeId(courtTypeId);
         }
 
+        if (StringUtils.isNotBlank(serviceCode)) {
+            validateServiceCodes(serviceCode);
+        }
+
         CourtVenueRequestParam requestParam = CourtVenueRequestParam
             .builder()
             .isHearingLocation(isHearingLocation)
@@ -306,7 +315,7 @@ public class LrdCourtVenueController {
 
         log.info("{} : Calling retrieveCourtVenuesBySearchString", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
-            trimmedSearchString, courtTypeId, requestParam);
+            trimmedSearchString, courtTypeId, serviceCode, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 }

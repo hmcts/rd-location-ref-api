@@ -48,6 +48,7 @@ public class LocationRefConstants {
         "No Building Location found for the given building location name: %s";
     public static final String EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR = "Invalid service code. "
         + "Please provide service code without special characters";
+    public static final String EXCEPTION_MSG_INVALID_SERVICE_CODE = "Invalid service codes: %s";
 
     public static final String LD_FLAG = "lrd_location_api";
 
@@ -80,6 +81,8 @@ public class LocationRefConstants {
     public static final String COURT_TYPE_ID_START_END_WITH_COMMA =
         "Invalid court type ids: %s";
 
+    public static final String SERVICE_CODE_START_END_WITH_COMMA =
+        "Invalid service codes: %s";
 
     public static final String IS_HEARING_LOCATION_Y = "Y";
     public static final String IS_HEARING_LOCATION_N = "N";

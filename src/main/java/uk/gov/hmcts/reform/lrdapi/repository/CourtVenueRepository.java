@@ -57,6 +57,7 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.courtStatus='Open' "
         + "and (coalesce(:courtTypeId) is null or (cv.courtTypeId in (:courtTypeId))) "
+        + "and (coalesce(:serviceCode) is null or (cv.serviceCode in (:serviceCode))) "
         + "and ((:isCaseManagementLocation) is null or (cv.isCaseManagementLocation in (:isCaseManagementLocation))) "
         + "and ((:isHearingLocation) is null or (cv.isHearingLocation in (:isHearingLocation))) "
         + "and ((:locationType) is null or (cv.locationType in (:locationType))) "
@@ -66,10 +67,11 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + "or upper(cv.postcode) like %:searchString% "
         + "or upper(cv.courtAddress) like %:searchString%)")
     List<CourtVenue> findBySearchStringAndCourtTypeId(String searchString, List<String> courtTypeId,
-                                                      String isCaseManagementLocation, String isHearingLocation,
-                                                      String locationType, String isTemporaryLocation);
+                                                      List<String> serviceCode,String isCaseManagementLocation,
+                                                      String isHearingLocation,String locationType,
+                                                      String isTemporaryLocation);
 
-
+  
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where upper(cv.serviceCode) = upper(:serviceCode)")

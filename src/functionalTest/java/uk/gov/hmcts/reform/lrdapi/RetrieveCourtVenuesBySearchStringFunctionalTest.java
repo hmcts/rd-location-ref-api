@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_INVALID_SERVICE_CODE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SEARCH_STRING_VALUE_ERROR_MESSAGE;
 
 @SerenityTest
@@ -46,7 +47,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         var courtNameVerified = courtVenueResponse
             .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
+            .filter(venue -> venue.getCourtName().strip().toLowerCase()
+                .contains("Abe".toLowerCase())
                 || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
                 || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
                 || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
@@ -71,6 +73,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     }
 
+
+
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
@@ -80,13 +84,15 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertThat(response).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtTypeId().equals("1")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+                                                            venue.getCourtTypeId().equals("1")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                venue.getCourtName().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getSiteName().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getCourtAddress().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getPostcode().strip().toLowerCase().contains("Man".toLowerCase())));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+                                                            venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
     }
 
@@ -100,17 +106,34 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertThat(response).isNotNull();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtTypeId().equals("23")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+                                                            venue.getCourtTypeId().equals("23")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
                    || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
                    || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
                    || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
         assertTrue(courtVenueResponse.stream()
-                       .allMatch(venue -> venue.getIsCaseManagementLocation().equalsIgnoreCase("y")));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getLocationType().equals("NBC")));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
+                       .allMatch(venue -> venue.getIsCaseManagementLocation()
+                           .equalsIgnoreCase("y")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+                                                            venue.getLocationType().equals("NBC")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+                                                            venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldReturnEmptyList_WhenServiceCodeAndSearchStringHaveNoMatchingData_WithStatusCode_200() {
+        final var filteredResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
+            HttpStatus.OK,
+            "?search-string=Abe&service_code=BFA1",
+            LrdCourtVenueResponse[].class,
+            path
+        );
+
+        assertThat(filteredResponse).isNotNull().isEmpty();
     }
 
     @Test
@@ -123,6 +146,22 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertThat(response).isNotNull();
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), response.getErrorMessage());
         assertEquals(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, ""), response.getErrorDescription());
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldReturn400_WhenServiceCodeContainsSpecialCharacters() {
+        ErrorResponse response = (ErrorResponse)
+            lrdApiClient.retrieveResponseForGivenRequest(
+                HttpStatus.BAD_REQUEST,
+                "?search-string=Abe&service_code=AB$",
+                LrdCourtVenueResponse[].class,
+                path
+            );
+
+        assertThat(response).isNotNull();
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), response.getErrorMessage());
+        assertEquals(String.format(EXCEPTION_MSG_INVALID_SERVICE_CODE, "AB$"), response.getErrorDescription());
     }
 
     @Test

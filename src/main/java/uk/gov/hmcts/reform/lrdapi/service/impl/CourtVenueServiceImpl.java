@@ -104,11 +104,12 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
+                                                                         String serviceCodes,
                                                                          CourtVenueRequestParam requestParam) {
         log.info("{} : Obtaining court venue for search String: searchString: {}, courtTypeId: {}, "
-                     + "isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
+                     + "serviceCodes: {}, isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
                      + "isTemporaryLocation: {} ",
-                 loggingComponentName, searchString, courtTypeId, requestParam.getIsHearingLocation(),
+                 loggingComponentName, searchString, courtTypeId, serviceCodes, requestParam.getIsHearingLocation(),
                  requestParam.getIsCaseManagementLocation(),
                  requestParam.getLocationType(), requestParam.getIsTemporaryLocation());
 
@@ -117,6 +118,9 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
             Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).toList();
+
+        List<String> serviceCodeList = StringUtils.isEmpty(serviceCodes) ? null :
+            Arrays.stream(serviceCodes.split(COMMA)).map(String::strip).toList();
 
         String isCaseManagementLocation = (StringUtils.isNotEmpty(result.getIsCaseManagementLocation()))
             ? result.getIsCaseManagementLocation().toUpperCase()
@@ -134,14 +138,17 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             ? result.getIsTemporaryLocation().toUpperCase()
             : result.getIsTemporaryLocation();
 
-        return   getCourtVenueListResponse(courtVenueRepository.findBySearchStringAndCourtTypeId(
+        List<CourtVenue> courtVenues = courtVenueRepository.findBySearchStringAndCourtTypeId(
             searchString.toUpperCase(),
             courtTypeIdList,
+            serviceCodeList,
             isCaseManagementLocation,
             isHearingLocation,
             locationType,
             isTemporaryLocation
-        ));
+        );
+
+        return   getCourtVenueListResponse(courtVenues);
     }
 
     @Override
