@@ -350,7 +350,7 @@ class CourtVenueServiceImplTest {
     @Test
     void test_RetrieveCourtVenuesByServiceCode() {
 
-        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -360,7 +360,7 @@ class CourtVenueServiceImplTest {
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
         verifySingleResponse(courtVenueResponse);
-        verify(courtVenueRepository, times(1)).findByServiceCode("AAA6");
+        verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA6");
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findByClusterIdWithOpenCourtStatus(anyString());
@@ -373,7 +373,7 @@ class CourtVenueServiceImplTest {
     @Test
     void test_RetrieveCourtVenuesByServiceCode_WhenCourtTypeAlsoProvided() {
 
-        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString())).thenReturn(prepareCourtVenue());
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
@@ -383,7 +383,7 @@ class CourtVenueServiceImplTest {
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
 
         verifySingleResponse(courtVenueResponse);
-        verify(courtVenueRepository, times(1)).findByServiceCode("AAA6");
+        verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA6");
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findByClusterIdWithOpenCourtStatus(anyString());
@@ -485,7 +485,7 @@ class CourtVenueServiceImplTest {
 
     @Test
     void test_RetrieveCourtVenuesByServiceCode_NotFound() {
-        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(null);
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
             .retrieveCourtVenueDetails("", null, "AAA6", null, null, null,
                                        false, courtVenueRequestParam));
@@ -496,7 +496,7 @@ class CourtVenueServiceImplTest {
         verify(courtVenueRepository, times(0)).findAll();
         verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
         verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
-        verify(courtVenueRepository, times(1)).findByServiceCode("AAA6");
+        verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA6");
         verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteName(anyString());
     }
 
