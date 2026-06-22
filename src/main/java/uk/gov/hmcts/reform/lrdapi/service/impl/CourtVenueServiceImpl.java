@@ -174,7 +174,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
             List<LrdCourtVenueResponse> lrdCourtVenueResponse =
                 getAllCourtVenues(
-                    () -> courtVenueRepository.findByServiceCode(serviceCode), serviceCode,
+                    () -> courtVenueRepository.findByServiceCodeWithOpenCourtStatus(serviceCode), serviceCode,
                     NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE
                 );
             return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
