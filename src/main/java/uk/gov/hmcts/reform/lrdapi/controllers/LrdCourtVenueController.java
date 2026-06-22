@@ -145,8 +145,11 @@ public class LrdCourtVenueController {
                                       String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
             );
         } else {
+             String eitherServiceCodeOrCourtTypeId = StringUtils.isNotBlank(serviceCode) ?
+                 serviceCode : String.valueOf(courtTypeId);
+
             checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds,
-                String.valueOf(courtTypeId),  String.valueOf(serviceCode), String.valueOf(regionId),
+                                                eitherServiceCodeOrCourtTypeId, String.valueOf(regionId),
                                                 String.valueOf(clusterId), courtVenueName);
         }
 

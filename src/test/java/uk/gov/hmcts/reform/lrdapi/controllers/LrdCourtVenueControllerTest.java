@@ -183,6 +183,39 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenues_WithServiceCodeAndCourtTypeWithoutEpimms_Returns200() {
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenues(
+                null, "ABC1", 13, null, null, null, "Y",
+                "Y", "CTSC", "Y"
+            );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ArgumentCaptor<CourtVenueRequestParam> courtVenueRequestParamCaptr =
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class);
+        ArgumentCaptor<Integer> courtTypeIdCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<String> serviceCodeCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Boolean> booleanCaptor = ArgumentCaptor.forClass(Boolean.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            isNull(),
+            courtTypeIdCaptor.capture(),
+            serviceCodeCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            booleanCaptor.capture(),
+            courtVenueRequestParamCaptr.capture()
+        );
+        assertEquals(13, courtTypeIdCaptor.getValue());
+        assertEquals("ABC1", serviceCodeCaptor.getValue());
+        assertThat(booleanCaptor.getValue()).isFalse();
+        assertNotNull(courtVenueRequestParamCaptr.getValue());
+    }
+
+    @Test
     void testGetCourtVenues_WithMultipleParams_Returns400() {
         Exception exception = assertThrows(InvalidRequestException.class, () ->
             lrdCourtVenueController.retrieveCourtVenues("12345", null, null, 12,

@@ -162,13 +162,22 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             );
 
         }
-
         if (isNotBlank(epimmsIds)) {
             return getLrdCourtVenueResponses(
                 retrieveCourtVenuesByEpimmsId(epimmsIds),
                 courtVenueRequestParam
             );
 
+        }
+        if (isNotEmpty(serviceCode)) {
+            log.info("{} : Obtaining court venues for service codes: {}", loggingComponentName, serviceCode);
+
+            List<LrdCourtVenueResponse> lrdCourtVenueResponse =
+                getAllCourtVenues(
+                    () -> courtVenueRepository.findByServiceCode(serviceCode), serviceCode,
+                    NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE
+                );
+            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
         if (isNotEmpty(courtTypeId)) {
             log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
@@ -178,16 +187,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                     () -> courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(courtTypeId.toString()),
                     courtTypeId.toString(),
                     NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID
-                );
-            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
-        }
-        if (isNotEmpty(serviceCode)) {
-            log.info("{} : Obtaining court venues for service codes: {}", loggingComponentName, serviceCode);
-
-            List<LrdCourtVenueResponse> lrdCourtVenueResponse =
-                getAllCourtVenues(
-                    () -> courtVenueRepository.findByServiceCode(serviceCode), serviceCode,
-                    NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE
                 );
             return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
         }
