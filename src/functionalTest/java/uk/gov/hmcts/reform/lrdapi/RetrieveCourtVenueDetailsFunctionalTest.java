@@ -28,6 +28,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
 @SerenityTest
@@ -196,16 +197,15 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_ServiceCode_And_CourtType_Without_Epimms_WithStatusCode_200() {
-        final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?service_code=AAA6&court_type_id=999",
+    void shouldReturn404_For_ServiceCode_And_CourtType_Without_Epimms_WhenFiltersDoNotMatch() {
+        final var response = (ErrorResponse)
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?service_code=AAA6&court_type_id=999",
                                                          LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty();
-        boolean isEveryServiceCodeMatched = Arrays
-            .stream(response)
-            .allMatch(venue -> "AAA6".equalsIgnoreCase(venue.getServiceCode()));
-        assertTrue(isEveryServiceCodeMatched);
+        assertNotNull(response);
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
+        assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID, "AAA6", "999"),
+                     response.getErrorDescription());
     }
 
     @Test

@@ -34,34 +34,7 @@ public class FeatureToggleServiceImpl implements FeatureToggleService {
     @PostConstruct
     public void mapServiceToFlag() {
         launchDarklyMap = new HashMap<>();
-        launchDarklyMap.put(
-            "LrdApiController.retrieveOrgServiceDetails",
-            "lrd-get-org-services-flag"
-        );
-        launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetails",
-            LocationRefConstants.LD_FLAG
-        );
-        launchDarklyMap.put(
-            "LrdApiController.retrieveRegionDetails",
-            LocationRefConstants.LD_FLAG
-        );
-        launchDarklyMap.put(
-            "LrdCourtVenueController.retrieveCourtVenuesByServiceCode",
-            LocationRefConstants.LD_FLAG
-        );
-        launchDarklyMap.put(
-            "LrdCourtVenueController.retrieveCourtVenues",
-            LocationRefConstants.LD_FLAG
-        );
-        launchDarklyMap.put(
-            "LrdCourtVenueController.retrieveCourtVenuesBySearchString",
-            LocationRefConstants.LD_FLAG
-        );
-        launchDarklyMap.put(
-            "LrdApiController.retrieveBuildingLocationDetailsBySearchString",
-            LocationRefConstants.LD_LOCATION_SEARCH_FLAG
-        );
+
     }
 
     @Override

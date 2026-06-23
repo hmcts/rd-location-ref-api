@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EPPIMS_ID_WITH_COURT_TYPE;
@@ -145,8 +146,11 @@ public class LrdCourtVenueController {
                                       String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
             );
         } else {
-            String eitherServiceCodeOrCourtTypeId = StringUtils.isNotBlank(serviceCode)
-                ? serviceCode : String.valueOf(courtTypeId);
+            String eitherServiceCodeOrCourtTypeId =
+                Stream.of(serviceCode, courtTypeId == null ? null : String.valueOf(courtTypeId))
+                    .filter(StringUtils::isNotBlank)
+                    .reduce((first, second) -> first + "," + second)
+                    .orElse(null);
 
             checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds,
                                                 eitherServiceCodeOrCourtTypeId, String.valueOf(regionId),
