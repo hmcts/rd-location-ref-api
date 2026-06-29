@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.lib.util.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
@@ -199,15 +200,28 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_ServiceCode_And_CourtType_Without_Epimms_WithStatusCode_200()
         throws JsonProcessingException {
+        LrdCourtVenuesByServiceCodeResponse serviceCodeResponse = (LrdCourtVenuesByServiceCodeResponse)
+            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "AAA6");
+
+        assertNotNull(serviceCodeResponse);
+        assertThat(serviceCodeResponse.getCourtVenues()).isNotEmpty();
+
+        String courtTypeId = serviceCodeResponse.getCourtVenues()
+            .stream()
+            .map(LrdCourtVenueResponse::getCourtTypeId)
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Expected at least one court type id for service code AAA6"));
+
         final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?service_code=AAA6&court_type_id=17",
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                                                         "?service_code=AAA6&court_type_id=" + courtTypeId,
                                                          LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
         boolean isExpectedMatch = Arrays
             .stream(response)
             .allMatch(venue -> "AAA6".equalsIgnoreCase(venue.getServiceCode())
-                && "17".equals(venue.getCourtTypeId())
+                && courtTypeId.equals(venue.getCourtTypeId())
                 && "Open".equals(venue.getCourtStatus()));
         assertTrue(isExpectedMatch);
     }
