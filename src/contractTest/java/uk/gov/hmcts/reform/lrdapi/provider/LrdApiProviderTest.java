@@ -309,6 +309,33 @@ public class LrdApiProviderTest {
             )));
     }
 
+    @State({"Service ID"})
+    public void toReturnCourtVenuesForServiceId() {
+        CourtType courtType = getSearchCourtType();
+
+        when(courtVenueRepository.findByServiceCode(anyString()))
+            .thenAnswer(invocation -> List.of(getSearchCourtVenue(
+                courtType,
+                invocation.getArgument(0, String.class)
+            )));
+    }
+
+    @State({"Search for locations"})
+    public void toReturnCourtVenuesForSearch() {
+        CourtType courtType = getSearchCourtType();
+        var courtVenues = List.of(getSearchCourtVenue(courtType, "AAA6"));
+
+        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(courtVenues);
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId(
+            any(), any(), any(), any(), any(), any(), any()
+        )).thenReturn(courtVenues);
+        when(courtVenueRepository.findByServiceCode(anyString()))
+            .thenAnswer(invocation -> List.of(getSearchCourtVenue(
+                courtType,
+                invocation.getArgument(0, String.class)
+            )));
+    }
+
     @State({"Court Venues exist for the search string provided"})
     public void toReturnCourtVenuesBySearchString() {
         Cluster cluster = getCluster();
@@ -452,6 +479,42 @@ public class LrdApiProviderTest {
             .build();
     }
 
+    private CourtVenue getSearchCourtVenue(CourtType courtType, String serviceCode) {
+        return CourtVenue.builder()
+            .courtVenueId(10576L)
+            .epimmsId("20262")
+            .serviceCode(serviceCode)
+            .siteName("Central London County Court")
+            .region(getSearchRegion())
+            .courtType(courtType)
+            .openForPublic(Boolean.TRUE)
+            .courtAddress("Thomas More Building, Royal Courts of Justice, Strand, London")
+            .postcode("WC2A 2LL")
+            .phoneNumber("0207 947 7502")
+            .courtLocationCode("372")
+            .dxAddress("DX: 44453 STRAND")
+            .courtStatus("Open")
+            .courtName("Central London County Court")
+            .venueName("Central London")
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
+            .locationType("COURT")
+            .parentLocation("")
+            .welshCourtName("")
+            .welshCourtAddress("")
+            .welshSiteName("")
+            .welshVenueName("")
+            .uprn("")
+            .venueOuCode("")
+            .mrdBuildingLocationId("MRD-BLD-295")
+            .mrdVenueId("MRD-CRT-0808")
+            .serviceUrl("")
+            .factUrl("https://www.find-court-tribunal.service.gov.uk/courts/administrative-court")
+            .build();
+    }
+
 
     @State({"Building Location details exist for the searchString provided"})
     public void toReturnBuildingLocationDetailsForSearchString() {
@@ -519,11 +582,25 @@ public class LrdApiProviderTest {
         return region;
     }
 
+    private Region getSearchRegion() {
+        Region region = new Region();
+        region.setDescription("London");
+        region.setRegionId("1");
+        return region;
+    }
+
     private Cluster getCluster() {
         Cluster cluster = new Cluster();
         cluster.setClusterId("456");
         cluster.setClusterName(CLUSTER_NAME);
         return cluster;
+    }
+
+    private CourtType getSearchCourtType() {
+        CourtType courtType = new CourtType();
+        courtType.setCourtTypeId("10");
+        courtType.setTypeOfCourt("County Court");
+        return courtType;
     }
 
 }
