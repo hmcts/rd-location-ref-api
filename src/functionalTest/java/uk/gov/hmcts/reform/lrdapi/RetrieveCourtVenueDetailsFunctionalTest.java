@@ -197,6 +197,23 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_For_ServiceCode_And_CourtType_Without_Epimms_WithStatusCode_200()
+        throws JsonProcessingException {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?service_code=AAA6&court_type_id=17",
+                                                         LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty();
+        boolean isExpectedMatch = Arrays
+            .stream(response)
+            .allMatch(venue -> "AAA6".equalsIgnoreCase(venue.getServiceCode())
+                && "17".equals(venue.getCourtTypeId())
+                && "Open".equals(venue.getCourtStatus()));
+        assertTrue(isExpectedMatch);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldReturn404_For_ServiceCode_And_CourtType_Without_Epimms_WhenFiltersDoNotMatch() {
         final var response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?service_code=AAA6&court_type_id=999",

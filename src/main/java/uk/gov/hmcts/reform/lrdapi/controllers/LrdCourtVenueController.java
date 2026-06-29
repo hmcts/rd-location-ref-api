@@ -146,8 +146,10 @@ public class LrdCourtVenueController {
                                       String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
             );
         } else {
+            String courtTypeIdValue = courtTypeId == null ? null : String.valueOf(courtTypeId);
+
             String eitherServiceCodeOrCourtTypeId =
-                Stream.of(serviceCode, courtTypeId == null ? null : String.valueOf(courtTypeId))
+                Stream.of(serviceCode, courtTypeIdValue)
                     .filter(StringUtils::isNotBlank)
                     .reduce((first, second) -> first + "," + second)
                     .orElse(null);
