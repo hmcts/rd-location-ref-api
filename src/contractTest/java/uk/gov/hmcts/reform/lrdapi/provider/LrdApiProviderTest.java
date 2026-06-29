@@ -294,6 +294,21 @@ public class LrdApiProviderTest {
             .thenReturn(courtVenues);
     }
 
+    @State({"There are court locations to be returned"})
+    public void toReturnCivilCourtVenues() {
+        Cluster cluster = getCluster();
+        Region region = getRegion();
+        CourtType courtType = getCourtType();
+
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString()))
+            .thenAnswer(invocation -> List.of(getCivilCourtVenue(
+                cluster,
+                region,
+                courtType,
+                invocation.getArgument(0, String.class)
+            )));
+    }
+
     @State({"Court Venues exist for the search string provided"})
     public void toReturnCourtVenuesBySearchString() {
         Cluster cluster = getCluster();
@@ -413,6 +428,28 @@ public class LrdApiProviderTest {
             .build();
 
         return List.of(firstCourtVenue, secondCourtVenue);
+    }
+
+    private CourtVenue getCivilCourtVenue(Cluster cluster, Region region, CourtType courtType, String serviceCode) {
+        return CourtVenue.builder()
+            .courtVenueId(12345L)
+            .epimmsId("epimmsIdTest123")
+            .serviceCode(serviceCode)
+            .siteName("siteNameTest123")
+            .region(region)
+            .courtType(courtType)
+            .cluster(cluster)
+            .openForPublic(Boolean.TRUE)
+            .courtAddress("courtAddressTest123")
+            .postcode("postcodeTest123")
+            .phoneNumber("phoneNumberTest123")
+            .courtLocationCode("courtLocationCodeTest123")
+            .courtStatus("courtStatusTest123")
+            .courtName("courtNameTest123")
+            .venueName("venueNameTest123")
+            .locationType("locationTypeTest123")
+            .parentLocation("parentLocationTest123")
+            .build();
     }
 
 
