@@ -294,6 +294,22 @@ public class LrdApiProviderTest {
             .thenReturn(courtVenues);
     }
 
+    //Adding a provisional provider test do not have a correspondign consumer calling it
+    @State({"Court venues exist for epimms id, court type and service code"})
+    public void toReturnCourtVenuesForEpimmsCourtTypeAndServiceCode() {
+        Cluster cluster = getCluster();
+
+        Region region = getRegion();
+
+        CourtType courtType = getCourtType();
+
+        var courtVenues = getMultipleCourtVenues(cluster, region, courtType);
+
+        when(courtVenueRepository.findByCourtTypeIdServiceCodeAndEpimmsIdWithOpenCourtStatus(anyList(),
+                                                                                             anyString(), any()))
+            .thenReturn(courtVenues);
+    }
+
     @State({"There are court locations to be returned"})
     public void toReturnCivilCourtVenues() {
         Cluster cluster = getCluster();
