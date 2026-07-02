@@ -21,6 +21,8 @@ ext {
   set('springCloudVersion', "2025.0.0")
 }
 
+ext['jackson-bom.version'] = '2.22.0'
+
 def versions = [
   lombok             : '1.18.42',
   reformLogging      : '8.0.0',
