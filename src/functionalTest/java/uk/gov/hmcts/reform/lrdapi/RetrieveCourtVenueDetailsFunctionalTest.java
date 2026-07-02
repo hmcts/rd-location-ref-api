@@ -60,7 +60,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     void shouldRetrieveCourtVenues_For_Multiple_Epimms_Id_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=815833,219164",
-                                                         LrdCourtVenueResponse[].class, path);
+                                                                    LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean expected = Arrays
             .stream(response)
@@ -74,7 +74,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     void shouldRetrieveCourtVenues_For_No_Epimms_Id_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, null,
-                                                         LrdCourtVenueResponse[].class, path);
+                                                                    LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean isOpenCourts = Arrays
             .stream(response)
@@ -87,7 +87,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     void shouldRetrieveCourtVenues_For_One_Epimms_Id_And_All_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?epimms_id=All,123456",
-                                                         LrdCourtVenueResponse[].class, path);
+                                                                    LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
     }
 
@@ -173,7 +173,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     void shouldRetrieveCourtVenues_For_Given_Region_Id_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?region_id=7",
-                                                         LrdCourtVenueResponse[].class, path);
+                                                                    LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean isExpectedMatch = Arrays
             .stream(response)
@@ -225,13 +225,13 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_CourtVenueNameGiven_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                                                                                                    "?court_venue_name=Aberdeen Tribunal Hearing Centre",
-                                                                                                    LrdCourtVenueResponse[].class, path);
+                                                         "?court_venue_name=Aberdeen Tribunal Hearing Centre",
+                                                         LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean isExpectedMatch = Arrays
             .stream(response)
             .allMatch(venue -> venue.getCourtName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre")
-                || venue.getSiteName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre"));
+            || venue.getSiteName().equalsIgnoreCase("Aberdeen Tribunal Hearing Centre"));
         assertTrue(isExpectedMatch);
     }
 
@@ -241,19 +241,19 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         JsonProcessingException {
 
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                                                                                                    "?epimms_id=ALL"
-                                                                                                        + "&is_hearing_location=N&is_case_management_location=Y&location_type=CTSC"
-                                                                                                        + "&is_temporary_location=N",
-                                                                                                    LrdCourtVenueResponse[].class,
-                                                                                                    path
-        );
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=N&is_case_management_location=Y&location_type=CTSC"
+                    + "&is_temporary_location=N",
+                LrdCourtVenueResponse[].class,
+                path
+            );
 
         assertThat(response).isNotEmpty();
         assertTrue(Arrays.stream(response).allMatch(venueResponse ->
-                                                        venueResponse.getIsHearingLocation().equalsIgnoreCase("N")
-                                                            && venueResponse.getIsCaseManagementLocation().equalsIgnoreCase("Y")
-                                                            && venueResponse.getLocationType().equalsIgnoreCase("CTSC")
-                                                            && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("N")));
+             venueResponse.getIsHearingLocation().equalsIgnoreCase("N")
+             && venueResponse.getIsCaseManagementLocation().equalsIgnoreCase("Y")
+             && venueResponse.getLocationType().equalsIgnoreCase("CTSC")
+             && venueResponse.getIsTemporaryLocation().equalsIgnoreCase("N")));
     }
 
     @Test
@@ -261,7 +261,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     void shouldReturn404_WhenNoEpimmsIdFound() {
         final var response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?epimms_id=000000",
-                                                         LrdCourtVenueResponse[].class, path);
+                                                                    LrdCourtVenueResponse[].class, path);
         assertNotNull(response);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
         assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, "[000000]"),
@@ -320,9 +320,9 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         JsonProcessingException {
         final var response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND,
-                                                         "?epimms_id=ALL"
-                                                             + "&is_hearing_location=N&is_case_management_location=N&location_type=CCBC"
-                                                             + "&is_temporary_Location=N", LrdCourtVenueResponse[].class, path);
+                "?epimms_id=ALL"
+                    + "&is_hearing_location=N&is_case_management_location=N&location_type=CCBC"
+                    + "&is_temporary_Location=N", LrdCourtVenueResponse[].class, path);
 
         assertNotNull(response);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
