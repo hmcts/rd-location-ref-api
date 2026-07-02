@@ -40,7 +40,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_SearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?search-string=Abe", LrdCourtVenueResponse[].class, path);
+                                                                                                    "?search-string=Abe", LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
 
@@ -65,7 +65,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_SearchStringWithHyphen_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                          "?search-string=Stoke-on", LrdCourtVenueResponse[].class, path);
+                                                                                                    "?search-string=Stoke-on", LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotNull().isNotEmpty();
         assertThat(response.length).isPositive();
@@ -79,18 +79,19 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                        "?court-type-id=1&search-string=Man", LrdCourtVenueResponse[].class, path);
+                                                                                                    "?court-type-id" +
+                                                                                                        "=10&search-string=Man", LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-                                                            venue.getCourtTypeId().equals("1")));
+                                                            venue.getCourtTypeId().equals("10")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-               venue.getCourtName().strip().toLowerCase().contains("Man".toLowerCase())
-            || venue.getSiteName().strip().toLowerCase().contains("Man".toLowerCase())
-            || venue.getCourtAddress().strip().toLowerCase().contains("Man".toLowerCase())
-            || venue.getPostcode().strip().toLowerCase().contains("Man".toLowerCase())));
+                                                            venue.getCourtName().strip().toLowerCase().contains("Man".toLowerCase())
+                                                                || venue.getSiteName().strip().toLowerCase().contains("Man".toLowerCase())
+                                                                || venue.getCourtAddress().strip().toLowerCase().contains("Man".toLowerCase())
+                                                                || venue.getPostcode().strip().toLowerCase().contains("Man".toLowerCase())));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                                                             venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
@@ -100,8 +101,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_MultipleParamsAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?court-type-id=23&is_case_management_location=y&location_type=NBC&search-string=Arn",
-                        LrdCourtVenueResponse[].class, path);
+                                                                                                    "?court-type-id=23&is_case_management_location=y&location_type=NBC&search-string=Arn",
+                                                                                                    LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotNull();
 
@@ -109,10 +110,10 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                                                             venue.getCourtTypeId().equals("23")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-               venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
-                   || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
-                   || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
-                   || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
+                                                            venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
+                                                                || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
+                                                                || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
+                                                                || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
         assertTrue(courtVenueResponse.stream()
                        .allMatch(venue -> venue.getIsCaseManagementLocation()
                            .equalsIgnoreCase("y")));
@@ -142,7 +143,7 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         ErrorResponse response = (ErrorResponse)
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.BAD_REQUEST, "?search-string",
                                                          LrdCourtVenueResponse[].class, path
-        );
+            );
         assertThat(response).isNotNull();
         assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), response.getErrorMessage());
         assertEquals(String.format(SEARCH_STRING_VALUE_ERROR_MESSAGE, ""), response.getErrorDescription());
