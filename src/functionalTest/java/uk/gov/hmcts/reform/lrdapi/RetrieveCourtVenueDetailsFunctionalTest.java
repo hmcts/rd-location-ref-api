@@ -185,12 +185,12 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_Given_CourtType_Id_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=1",
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=10",
                                                                     LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean isEveryIdMatched = Arrays
             .stream(response)
-            .allMatch(venue -> venue.getCourtTypeId().equals("1") && venue.getCourtStatus().equals("Open"));
+            .allMatch(venue -> venue.getCourtTypeId().equals("10") && venue.getCourtStatus().equals("Open"));
         assertTrue(isEveryIdMatched);
     }
 
