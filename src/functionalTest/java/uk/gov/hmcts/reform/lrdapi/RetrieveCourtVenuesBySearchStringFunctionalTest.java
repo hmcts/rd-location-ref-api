@@ -79,13 +79,13 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                        "?court-type-id=1&search-string=Man", LrdCourtVenueResponse[].class, path);
+                        "?court-type-id=10&search-string=Man", LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-                                                            venue.getCourtTypeId().equals("1")));
+                                                            venue.getCourtTypeId().equals("10")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                venue.getCourtName().strip().toLowerCase().contains("Man".toLowerCase())
             || venue.getSiteName().strip().toLowerCase().contains("Man".toLowerCase())
