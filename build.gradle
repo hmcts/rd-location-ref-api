@@ -591,4 +591,3 @@ rootProject.tasks.named("processFunctionalTestResources") {
 rootProject.tasks.named("processIntegrationTestResources") {
   duplicatesStrategy = 'include'
 }
-
