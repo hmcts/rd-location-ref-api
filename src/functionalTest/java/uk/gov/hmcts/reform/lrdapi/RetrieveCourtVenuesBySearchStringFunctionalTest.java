@@ -47,7 +47,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         var courtNameVerified = courtVenueResponse
             .stream()
-            .filter(venue -> venue.getCourtName().strip().toLowerCase().contains("Abe".toLowerCase())
+            .filter(venue -> venue.getCourtName().strip().toLowerCase()
+                .contains("Abe".toLowerCase())
                 || venue.getSiteName().strip().toLowerCase().contains("Abe".toLowerCase())
                 || venue.getCourtAddress().strip().toLowerCase().contains("Abe".toLowerCase())
                 || venue.getPostcode().strip().toLowerCase().contains("Abe".toLowerCase()))
@@ -72,6 +73,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
     }
 
+
+
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
@@ -88,7 +91,8 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
             || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
             || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
             || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
-        assertTrue(courtVenueResponse.stream().allMatch(venue -> venue.getCourtStatus().equals("Open")));
+        assertTrue(courtVenueResponse.stream().allMatch(venue ->
+                                                            venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
     }
 

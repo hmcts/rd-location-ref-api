@@ -208,7 +208,7 @@ class RetrieveBuildingLocationDetailsFunctionalTest extends AuthorizationFunctio
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"?1", "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE", "?region_id=1",
+    @ValueSource(strings = {"1", "?building_location_name=ABERDEEN TRIBUNAL HEARING CENTRE", "?region_id=1",
         "?cluster_id=1" })
     @ExtendWith(FeatureToggleConditionExtension.class)
     @ToggleEnable(mapKey = mapKey, withFeature = false)
