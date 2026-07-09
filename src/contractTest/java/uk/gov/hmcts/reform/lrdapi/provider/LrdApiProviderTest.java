@@ -261,7 +261,7 @@ public class LrdApiProviderTest {
 
         CourtType courtType = getCourtType();
 
-        CourtVenue courtVenue = getCourtVenue(cluster, region, courtType);
+        CourtVenue courtVenue = getCourtVenue(cluster, region, courtType, "");
 
         courtType.setCourtVenues(Collections.singletonList(courtVenue));
 
@@ -317,7 +317,7 @@ public class LrdApiProviderTest {
         CourtType courtType = getCourtType();
 
         when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString()))
-            .thenAnswer(invocation -> List.of(getCivilCourtVenue(
+            .thenAnswer(invocation -> List.of(getCourtVenue(
                 cluster,
                 region,
                 courtType,
@@ -368,11 +368,12 @@ public class LrdApiProviderTest {
             any(),any(),any(),any(),any(),any(),any())).thenReturn(courtVenues);
     }
 
-    private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {
+    private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType, String serviceCode) {
         return CourtVenue.builder()
             .courtVenueId(1L)
             .epimmsId("12345")
             .siteName("siteName1")
+            .serviceCode(serviceCode)
             .region(region)
             .courtType(courtType)
             .cluster(cluster)
@@ -471,28 +472,6 @@ public class LrdApiProviderTest {
             .build();
 
         return List.of(firstCourtVenue, secondCourtVenue);
-    }
-
-    private CourtVenue getCivilCourtVenue(Cluster cluster, Region region, CourtType courtType, String serviceCode) {
-        return CourtVenue.builder()
-            .courtVenueId(12345L)
-            .epimmsId("epimmsIdTest")
-            .serviceCode(serviceCode)
-            .siteName("siteNameTest")
-            .region(region)
-            .courtType(courtType)
-            .cluster(cluster)
-            .openForPublic(Boolean.TRUE)
-            .courtAddress("courtAddressTest")
-            .postcode("postcodeTest")
-            .phoneNumber("phoneNumberTest")
-            .courtLocationCode("courtLocationCodeTest")
-            .courtStatus("courtStatusTest")
-            .courtName("courtNameTest")
-            .venueName("venueNameTest")
-            .locationType("locationTypeTest")
-            .parentLocation("parentLocationTest")
-            .build();
     }
 
     private CourtVenue getSearchCourtVenue(CourtType courtType, String serviceCode) {
