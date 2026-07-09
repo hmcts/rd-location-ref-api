@@ -79,18 +79,18 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                        "?court-type-id=10&search-string=Man", LrdCourtVenueResponse[].class, path);
+                        "?court-type-id=23&search-string=Arn", LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-                                                            venue.getCourtTypeId().equals("10")));
+                                                            venue.getCourtTypeId().equals("23")));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-               venue.getCourtName().strip().toLowerCase().contains("Man".toLowerCase())
-            || venue.getSiteName().strip().toLowerCase().contains("Man".toLowerCase())
-            || venue.getCourtAddress().strip().toLowerCase().contains("Man".toLowerCase())
-            || venue.getPostcode().strip().toLowerCase().contains("Man".toLowerCase())));
+               venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
+            || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
+            || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
+            || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                                                             venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
