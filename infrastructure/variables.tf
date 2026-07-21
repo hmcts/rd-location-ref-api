@@ -140,3 +140,9 @@ variable "email_address_key" {
   type        = string
   default     = "db-alert-monitoring-email-address"
 }
+
+variable "pg_host" {
+  description = "Override the value of PostgreSQL host saved in KeyVault."
+  type        = string
+  default     = null
+}
