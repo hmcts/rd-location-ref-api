@@ -39,23 +39,24 @@ module "db-rd-location-ref-api-v16" {
     azurerm.postgres_network = azurerm.postgres_network
   }
 
-  admin_user_object_id = var.jenkins_AAD_objectId
-  business_area        = "cft"
-  common_tags          = var.common_tags
-  component            = var.component-v16
-  env                  = var.env
+  admin_user_object_id        = var.jenkins_AAD_objectId
+  business_area               = "cft"
+  common_tags                 = var.common_tags
+  component                   = var.component-v16
+  env                         = var.env
   enable_db_report_privileges = true
   pgsql_databases = [
     {
       name = "dbrdlocationref"
       report_privilege_schema : "locrefdata"
-      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
+      report_privilege_tables : ["SERVICE_TO_CCD_CASE_TYPE_ASSOC", "building_location", "court_venue", "court_venue_backup_2026", "region", "cluster", "court_type", "court_type_service_assoc", "dataload_schedular_audit", "dataload_exception_records"]
     }
   ]
 
-  # Setup Access Reader db user
+  # Trigger to the force user permission script to rerun
   force_user_permissions_trigger = "3"
-  force_db_report_privileges_trigger = "1"
+  # Trigger to rerun and grant Access Reader role to the specified tables in the list report_privilege_tables  
+  force_db_report_privileges_trigger = "2"
 
   # Sets correct DB owner after migration to fix permissions
   enable_schema_ownership        = var.enable_schema_ownership
@@ -71,10 +72,10 @@ module "db-rd-location-ref-api-v16" {
   product       = "rd"
   name          = local.db_name
 
-  pgsql_server_configuration     = var.pgsql_server_configuration
-  action_group_name              = join("-", [var.action_group_name, local.db_name, "replica", var.env])
-  email_address_key              = var.email_address_key
-  email_address_key_vault_id     = data.azurerm_key_vault.rd_key_vault.id
+  pgsql_server_configuration = var.pgsql_server_configuration
+  action_group_name          = join("-", [var.action_group_name, local.db_name, "replica", var.env])
+  email_address_key          = var.email_address_key
+  email_address_key_vault_id = data.azurerm_key_vault.rd_key_vault.id
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-HOST" {
