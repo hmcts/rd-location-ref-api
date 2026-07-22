@@ -87,8 +87,10 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName("ALL", LrdOrgInfoServiceResponse[].class);
+        final var expectedResponses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByDefaultAll(LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(4);
+        assertSameServices(responses, expectedResponses);
     }
 
     @Test
@@ -130,7 +132,10 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         final var responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByDefaultAll(LrdOrgInfoServiceResponse[].class);
-        assertThat(responses).isNotEmpty().hasSize(4);
+        final var expectedResponses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByCcdServiceName("ALL", LrdOrgInfoServiceResponse[].class);
+
+        assertSameServices(responses, expectedResponses);
     }
 
     @Test
@@ -176,8 +181,19 @@ class RetrieveOrgServiceDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         List<LrdOrgInfoServiceResponse> responses = (List<LrdOrgInfoServiceResponse>)
             lrdApiClient.findOrgServiceDetailsByCcdServiceName(ccdServiceNames, LrdOrgInfoServiceResponse[].class);
+        List<LrdOrgInfoServiceResponse> expectedResponses = (List<LrdOrgInfoServiceResponse>)
+            lrdApiClient.findOrgServiceDetailsByDefaultAll(LrdOrgInfoServiceResponse[].class);
 
-        assertThat(responses).isNotEmpty().hasSize(4);;
+        assertSameServices(responses, expectedResponses);
+    }
+
+    private void assertSameServices(List<LrdOrgInfoServiceResponse> responses,
+                                    List<LrdOrgInfoServiceResponse> expectedResponses) {
+        assertThat(responses).isNotEmpty().hasSameSizeAs(expectedResponses);
+        assertThat(responses.stream().map(LrdOrgInfoServiceResponse::getServiceCode).toList())
+            .containsExactlyInAnyOrderElementsOf(
+                expectedResponses.stream().map(LrdOrgInfoServiceResponse::getServiceCode).toList()
+            );
     }
 
     @Test

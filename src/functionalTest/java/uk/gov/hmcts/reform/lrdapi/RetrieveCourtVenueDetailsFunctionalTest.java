@@ -129,6 +129,44 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
         }
     }
 
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_For_EpimmsId_And_ServiceCode_StatusCode_200() {
+        Response response = lrdApiClient.getMultipleAuthHeaders()
+            .get("/refdata/location" + path + "?epimms_id=219164&service_code=BFA1")
+            .andReturn();
+
+        int statusCode = response.getStatusCode();
+        assertTrue(statusCode == HttpStatus.OK.value() || statusCode == HttpStatus.NOT_FOUND.value());
+
+        if (statusCode == HttpStatus.OK.value()) {
+            final var lrdCourtVenueResponse = response.getBody()
+                .as(LrdCourtVenueResponse[].class);
+
+            if (lrdCourtVenueResponse.length > 0) {
+                assertThat(lrdCourtVenueResponse).isNotEmpty();
+                boolean isEachIdMatched = Arrays
+                    .stream(lrdCourtVenueResponse)
+                    .map(LrdCourtVenueResponse::getEpimmsId)
+                    .allMatch("219164"::equals);
+                assertTrue(isEachIdMatched);
+                boolean isEachServiceCodeMatched = Arrays
+                    .stream(lrdCourtVenueResponse)
+                    .map(LrdCourtVenueResponse::getServiceCode)
+                    .allMatch(code -> "BFA1".equalsIgnoreCase(code));
+                assertTrue(isEachServiceCodeMatched);
+            }
+        }
+
+        if (statusCode == HttpStatus.NOT_FOUND.value()) {
+            ErrorResponse errorResponse = response.getBody().as(ErrorResponse.class);
+            assertNotNull(errorResponse);
+            assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
+            assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, "[219164]"),
+                         errorResponse.getErrorDescription());
+        }
+    }
+
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
@@ -147,13 +185,27 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_For_Given_CourtType_Id_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=1",
-                                                                    LrdCourtVenueResponse[].class, path);
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?court_type_id=23",
+                                                         LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean isEveryIdMatched = Arrays
             .stream(response)
-            .allMatch(venue -> venue.getCourtTypeId().equals("1") && venue.getCourtStatus().equals("Open"));
+            .allMatch(venue -> venue.getCourtTypeId().equals("23") && venue.getCourtStatus().equals("Open"));
         assertTrue(isEveryIdMatched);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldRetrieveCourtVenues_For_ServiceCode_And_CourtType_Without_Epimms_WithStatusCode_200() {
+        final var response = (LrdCourtVenueResponse[])
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?service_code=AAA6&court_type_id=999",
+                                                         LrdCourtVenueResponse[].class, path);
+
+        assertThat(response).isNotEmpty();
+        boolean isEveryServiceCodeMatched = Arrays
+            .stream(response)
+            .allMatch(venue -> "AAA6".equalsIgnoreCase(venue.getServiceCode()));
+        assertTrue(isEveryServiceCodeMatched);
     }
 
     @Test
@@ -161,7 +213,7 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
     void shouldRetrieveCourtVenues_For_Given_Cluster_Id_WithStatusCode_200() throws JsonProcessingException {
         final var response = (LrdCourtVenueResponse[])
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?cluster_id=8",
-                                                                    LrdCourtVenueResponse[].class, path);
+                                                         LrdCourtVenueResponse[].class, path);
         assertThat(response).isNotEmpty();
         boolean isEveryIdMatched = Arrays
             .stream(response)
