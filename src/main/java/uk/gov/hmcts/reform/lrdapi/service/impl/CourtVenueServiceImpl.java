@@ -44,7 +44,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfValidCsvIdentifiersAndReturnList;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsTextIgnoreCase;
@@ -170,15 +170,23 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         }
         if (isNotEmpty(serviceCode)) {
-            log.info("{} : Obtaining court venues for service codes: {}", loggingComponentName, serviceCode);
+            String optionalCourtTypeId = isNotEmpty(courtTypeId) ? courtTypeId.toString() : null;
 
-            List<LrdCourtVenueResponse> lrdCourtVenueResponse =
-                getAllCourtVenues(
-                    () -> courtVenueRepository.findByServiceCodeWithOpenCourtStatus(serviceCode), serviceCode,
-                    NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE
+            log.info("{} : Obtaining court venues for service code: {} and optional court type id: {}",
+                     loggingComponentName, serviceCode, optionalCourtTypeId);
+
+            List<CourtVenue> courtVenues =
+                courtVenueRepository.findByServiceCodeWithOpenCourtStatus(serviceCode,
+                                                                          optionalCourtTypeId);
+            if (isEmpty(courtVenues)) {
+                throw new ResourceNotFoundException(
+                    String.format(NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID, serviceCode,
+                                  optionalCourtTypeId)
                 );
-            return getLrdCourtVenueResponses(lrdCourtVenueResponse, courtVenueRequestParam);
+            }
+            return getLrdCourtVenueResponses(getCourtVenueListResponse(courtVenues), courtVenueRequestParam);
         }
+
         if (isNotEmpty(courtTypeId)) {
             log.info("{} : Obtaining court venues for court type id: {}", loggingComponentName, courtTypeId);
 

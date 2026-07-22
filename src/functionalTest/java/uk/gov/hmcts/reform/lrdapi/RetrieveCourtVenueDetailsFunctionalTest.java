@@ -13,6 +13,7 @@ import uk.gov.hmcts.reform.lib.util.serenity5.SerenityTest;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
@@ -28,6 +29,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension.getToggledOffMessage;
 
 @SerenityTest
@@ -196,16 +198,45 @@ class RetrieveCourtVenueDetailsFunctionalTest extends AuthorizationFunctionalTes
 
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
-    void shouldRetrieveCourtVenues_For_ServiceCode_And_CourtType_Without_Epimms_WithStatusCode_200() {
+    void shouldRetrieveCourtVenues_For_ServiceCode_And_CourtType_Without_Epimms_WithStatusCode_200()
+        throws JsonProcessingException {
+        LrdCourtVenuesByServiceCodeResponse serviceCodeResponse = (LrdCourtVenuesByServiceCodeResponse)
+            lrdApiClient.retrieveCourtVenuesByServiceCode(HttpStatus.OK, "AAA6");
+
+        assertNotNull(serviceCodeResponse);
+        assertThat(serviceCodeResponse.getCourtVenues()).isNotEmpty();
+
+        String courtTypeId = serviceCodeResponse.getCourtVenues()
+            .stream()
+            .map(LrdCourtVenueResponse::getCourtTypeId)
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("Expected at least one court type id for service code AAA6"));
+
         final var response = (LrdCourtVenueResponse[])
-            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?service_code=AAA6&court_type_id=999",
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
+                                                         "?service_code=AAA6&court_type_id=" + courtTypeId,
                                                          LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
-        boolean isEveryServiceCodeMatched = Arrays
+        boolean isExpectedMatch = Arrays
             .stream(response)
-            .allMatch(venue -> "AAA6".equalsIgnoreCase(venue.getServiceCode()));
-        assertTrue(isEveryServiceCodeMatched);
+            .allMatch(venue -> "AAA6".equalsIgnoreCase(venue.getServiceCode())
+                && courtTypeId.equals(venue.getCourtTypeId())
+                && "Open".equals(venue.getCourtStatus()));
+        assertTrue(isExpectedMatch);
+    }
+
+    @Test
+    @ToggleEnable(mapKey = mapKey, withFeature = true)
+    void shouldReturn404_For_ServiceCode_And_CourtType_Without_Epimms_WhenFiltersDoNotMatch() {
+        final var response = (ErrorResponse)
+            lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?service_code=AAA6&court_type_id=999",
+                                                         LrdCourtVenueResponse[].class, path);
+
+        assertNotNull(response);
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
+        assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID, "AAA6", "999"),
+                     response.getErrorDescription());
     }
 
     @Test

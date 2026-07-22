@@ -66,6 +66,9 @@ public class LocationRefConstants {
     public static final String NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE =
         "No court venues found for service code: %s";
 
+    public static final String NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID =
+        "No court venues found for service code: %s and optional court type id: %s";
+
     public static final String NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID =
         "No court venues found for epimms id: %s";
 

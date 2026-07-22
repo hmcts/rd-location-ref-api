@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
 
 @WithTags({@WithTag("testType:Integration")})
@@ -604,16 +605,33 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
     @Test
     @SuppressWarnings("unchecked")
-    void retrieveCourtVenues_WithServiceCodeAndCourtTypeIdWithoutEpimms_UsesServiceCode() throws
+    void retrieveCourtVenues_WithServiceCodeAndCourtTypeIdWithoutEpimms_UsesBothFilters() throws
         JsonProcessingException {
 
         final var response = (List<LrdCourtVenueResponse>)
-            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6&court_type_id=999",
+            lrdApiClient.retrieveCourtVenueResponseForGivenRequest("?service_code=AAA6&court_type_id=17",
                                                                    LrdCourtVenueResponse[].class, path);
 
-        assertThat(response).isNotEmpty().hasSize(4);
+        assertThat(response).isNotEmpty().hasSize(3);
         assertTrue(response.stream().allMatch(venue -> "AAA6".equals(venue.getServiceCode())));
-        assertTrue(response.stream().noneMatch(venue -> "999".equals(venue.getCourtTypeId())));
+        assertTrue(response.stream().allMatch(venue -> "17".equals(venue.getCourtTypeId())));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenues_WithServiceCodeAndCourtTypeIdWithoutEpimms_WhenFiltersDoNotMatch_ShouldReturn404()
+        throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?service_code=AAA6&court_type_id=999",
+                                                         ErrorResponse.class, path);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.NOT_FOUND);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(String.format(NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE_AND_COURT_TYPE_ID, "AAA6", "999"),
+                     errorResponse.getErrorDescription());
     }
 
     @Test
