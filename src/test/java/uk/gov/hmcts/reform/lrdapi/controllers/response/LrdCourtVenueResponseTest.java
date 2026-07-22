@@ -35,6 +35,7 @@ class LrdCourtVenueResponseTest {
 
         CourtVenue courtVenue = CourtVenue.builder()
             .courtType(courtType)
+            .serviceCode("ABA5")
             .siteName("Aberdeen Tribunal Hearing Centre 1")
             .openForPublic(Boolean.TRUE)
             .region(region)
@@ -75,6 +76,7 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getIsCaseManagementLocation());
         assertNotNull(courtVenueResponse.getIsHearingLocation());
         assertNotNull(courtVenueResponse.getWelshVenueName());
+        assertNotNull(courtVenueResponse.getServiceCode());
         assertNotNull(courtVenueResponse.getIsTemporaryLocation());
         assertNotNull(courtVenueResponse.getIsNightingaleCourt());
         assertNotNull(courtVenueResponse.getLocationType());
@@ -112,6 +114,7 @@ class LrdCourtVenueResponseTest {
         CourtVenue courtVenue = CourtVenue.builder()
             .courtType(courtType)
             .siteName("Aberdeen Tribunal Hearing Centre 1")
+            .serviceCode("AAA6")
             .openForPublic(Boolean.FALSE)
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 1")
             .courtStatus("Open")
@@ -154,6 +157,7 @@ class LrdCourtVenueResponseTest {
         assertNotNull(courtVenueResponse.getIsTemporaryLocation());
         assertNotNull(courtVenueResponse.getIsNightingaleCourt());
         assertNotNull(courtVenueResponse.getLocationType());
+        assertNotNull(courtVenueResponse.getServiceCode());
         assertNotNull(courtVenueResponse.getParentLocation());
         assertNotNull(courtVenueResponse.getWelshCourtName());
         assertNotNull(courtVenueResponse.getUprn());
@@ -188,6 +192,7 @@ class LrdCourtVenueResponseTest {
 
         courtVenue.setCourtVenueId(1L);
         courtVenue.setSiteName("siteName");
+        courtVenue.setServiceCode("ABA3");
         courtVenue.setRegion(region);
         courtVenue.setCourtType(courtType);
         courtVenue.setCluster(cluster);
@@ -227,6 +232,7 @@ class LrdCourtVenueResponseTest {
         assertEquals("N",courtVenueResponse.getIsTemporaryLocation());
         assertEquals("N",courtVenueResponse.getIsNightingaleCourt());
         assertEquals("Court",courtVenueResponse.getLocationType());
+        assertEquals("ABA3",courtVenueResponse.getServiceCode());
         assertEquals("",courtVenueResponse.getParentLocation());
         assertEquals("welshCourtName1", courtVenueResponse.getWelshCourtName());
         assertEquals("1234", courtVenueResponse.getUprn());

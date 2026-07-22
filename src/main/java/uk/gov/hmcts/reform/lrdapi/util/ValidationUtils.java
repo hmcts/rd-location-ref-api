@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
@@ -33,6 +34,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_WHITE_SPACE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SEARCH_STRING_VALUE_ERROR_MESSAGE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.SERVICE_CODE_START_END_WITH_COMMA;
 
 public class ValidationUtils {
 
@@ -80,6 +82,15 @@ public class ValidationUtils {
         });
     }
 
+    public static void validateServiceCodes(String serviceCodes) {
+        checkIfStringStartsAndEndsWithComma(serviceCodes, SERVICE_CODE_START_END_WITH_COMMA);
+        Arrays.stream(serviceCodes.strip().split(REG_EXP_COMMA_DILIMETER)).forEach(c -> {
+            if (!isRegexSatisfied(c.trim(), ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE)) {
+                throw new InvalidRequestException(String.format(SERVICE_CODE_START_END_WITH_COMMA, serviceCodes));
+            }
+        });
+    }
+
     /**
      * Method to check if the passed {@link String} varargs contains a single value.
      * If more than one value is present, this method throws an {@link InvalidRequestException}
@@ -109,11 +120,11 @@ public class ValidationUtils {
     }
 
 
-    public static boolean checkBothValuesPresent(String... params) {
-        long requestParamSize = Arrays.stream(params)
-            .filter(p -> StringUtils.isNotBlank(p) && !p.equals("null"))
-            .count();
-        return (requestParamSize == 2);
+    public static boolean checkBothValuesPresent(String epimmsIds, String courtTypeId, String serviceCode) {
+        boolean epimmsPresent = StringUtils.isNotBlank(epimmsIds) && !"null".equals(epimmsIds);
+        boolean courtTypePresent = StringUtils.isNotBlank(courtTypeId) && !"null".equals(courtTypeId);
+        boolean serviceCodePresent = StringUtils.isNotBlank(serviceCode) && !"null".equals(serviceCode);
+        return epimmsPresent && (courtTypePresent || serviceCodePresent);
     }
 
     public static void checkIfMultipleValuePresentForVenue(final String oneMandatory,String... params) {
