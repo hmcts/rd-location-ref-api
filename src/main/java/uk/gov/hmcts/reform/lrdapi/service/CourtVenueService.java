@@ -17,14 +17,15 @@ public interface CourtVenueService {
      * @param courtTypeId           court type identifier
      * @param regionId              region identifier
      * @param clusterId             cluster identifier
-     * @param epimmsIdwithCourtType api with epimmsId with court Type
+     * @param epimmsIdWithCourtTypeOrServiceCodePresent api with epimmsId with court Type
      * @return list of court venues
      */
-    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, Integer regionId,
-                                                          Integer clusterId, String courtVenueName,
-                                                          boolean epimmsIdwithCourtType,
+    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, String serviceCode,
+                                                          Integer regionId,Integer clusterId, String courtVenueName,
+                                                          boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                           CourtVenueRequestParam courtVenueRequestParam);
 
     List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
+                                                                  String serviceCode,
                                                                   CourtVenueRequestParam requestParam);
 }
