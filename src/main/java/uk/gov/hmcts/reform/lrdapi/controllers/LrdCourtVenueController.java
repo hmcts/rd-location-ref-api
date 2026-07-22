@@ -58,6 +58,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequ
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtTypeId;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchString;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 
 @RequestMapping(
@@ -67,12 +68,16 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStri
 @Slf4j
 public class LrdCourtVenueController {
 
+    private static final String DEPRECATED_COURT_TYPE_ID = "Deprecated parameter, please use `service_code` instead.";
+    private static final String WARNING_COURT_VENUE_ID = "&#9888; **Note: the `court_venue_id` property returned "
+        + "should not be used: as it is an internal value that may change.**";
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
 
     @Autowired
     CourtVenueService courtVenueService;
+
 
     @Operation(
         summary = "This API will retrieve Court Venues for the request provided",
@@ -81,13 +86,13 @@ public class LrdCourtVenueController {
             + RET_LOC_VEN_NOTES_8 + RET_LOC_VEN_NOTES_9 + RET_LOC_VEN_NOTES_10 + RET_LOC_VEN_NOTES_11
             + RET_LOC_VEN_NOTES_12 + RET_LOC_VEN_NOTES_13 + RET_LOC_VEN_NOTES_14 + RET_LOC_VEN_NOTES_15
             + RET_LOC_VEN_NOTES_16 + RET_LOC_VEN_NOTES_17 + RET_LOC_VEN_NOTES_18 + RET_LOC_VEN_NOTES_19
-            + RET_LOC_VEN_NOTES_20 + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22,
+            + RET_LOC_VEN_NOTES_20 + RET_LOC_VEN_NOTES_21 + RET_LOC_VEN_NOTES_22
+            + "<br/><br/>" + WARNING_COURT_VENUE_ID,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
         }
     )
-
     @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for the request provided",
@@ -113,12 +118,13 @@ public class LrdCourtVenueController {
             description = "Internal Server Error",
             content = @Content
         )
-
     @GetMapping(
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<LrdCourtVenueResponse>> retrieveCourtVenues(
         @RequestParam(value = "epimms_id", required = false) String epimmsIds,
+        @RequestParam(value = "service_code", required = false) String serviceCode,
+        @Parameter(name = "court_type_id", description = DEPRECATED_COURT_TYPE_ID, deprecated = true)
         @RequestParam(value = "court_type_id", required = false) Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) Integer regionId,
         @RequestParam(value = "cluster_id", required = false) Integer clusterId,
@@ -130,15 +136,21 @@ public class LrdCourtVenueController {
 
         log.info("{} : Inside retrieveCourtVenues", loggingComponentName);
 
-        boolean epimmsIdWithCourtType = checkBothValuesPresent(epimmsIds, String.valueOf(courtTypeId));
+        boolean epimmsIdWithCourtTypeOrServiceCodePresent = checkBothValuesPresent(epimmsIds,
+                                                                                   String.valueOf(courtTypeId),
+                                                               String.valueOf(serviceCode));
 
-        if (epimmsIdWithCourtType) {
+        if (epimmsIdWithCourtTypeOrServiceCodePresent) {
             checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, EPPIMS_ID_WITH_COURT_TYPE,
                                       String.valueOf(regionId), String.valueOf(clusterId), courtVenueName
             );
         } else {
+            String eitherServiceCodeOrCourtTypeId = StringUtils.isNotBlank(serviceCode)
+                ? serviceCode : String.valueOf(courtTypeId);
+
             checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds,
-                String.valueOf(courtTypeId), String.valueOf(regionId), String.valueOf(clusterId), courtVenueName);
+                                                eitherServiceCodeOrCourtTypeId, String.valueOf(regionId),
+                                                String.valueOf(clusterId), courtVenueName);
         }
 
         CourtVenueRequestParam courtVenueRequestParam =
@@ -154,11 +166,10 @@ public class LrdCourtVenueController {
         validateCourtVenueFilters(result);
 
         log.info("{} : Calling retrieveCourtVenues", loggingComponentName);
-        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds,
-                                                                                 courtTypeId, regionId, clusterId,
-                                                                                 courtVenueName, epimmsIdWithCourtType,
-                                                                                 result
-        );
+        var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenueDetails(epimmsIds, courtTypeId, serviceCode,
+                                                                                 regionId,clusterId, courtVenueName,
+                                                                              epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                                              result);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 
@@ -166,13 +177,12 @@ public class LrdCourtVenueController {
 
     @Operation(
         summary = "This API will retrieve Court Venues for given Service Code",
-        description = "No roles required to access this API",
+        description = "No roles required to access this API<br/><br/>" + WARNING_COURT_VENUE_ID,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
         }
     )
-
     @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for given Service Code",
@@ -198,7 +208,6 @@ public class LrdCourtVenueController {
             description = "Internal Server Error",
             content = @Content
         )
-
     @GetMapping(
         path = "/services",
         produces = APPLICATION_JSON_VALUE
@@ -207,9 +216,7 @@ public class LrdCourtVenueController {
         @RequestParam(value = "service_code") @NotBlank String serviceCode) {
 
         log.info("{} : Inside retrieveCourtVenuesByServiceCode", loggingComponentName);
-        String trimmedServiceCode = serviceCode.strip();
-
-        validateServiceCode(trimmedServiceCode);
+        String trimmedServiceCode = validateServiceCode(serviceCode);
 
         log.info("{} : Calling retrieveCourtVenuesByServiceCode", loggingComponentName);
         LrdCourtVenuesByServiceCodeResponse response = courtVenueService
@@ -218,17 +225,17 @@ public class LrdCourtVenueController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
     @Operation(
         summary = "This endpoint will be used for Court Venues search based on partial query. When the consumers "
             + "inputs any 3 characters, they will call this api to fetch "
             + "the required result.",
-        description = "No roles required to access this API",
+        description = "No roles required to access this API<br/><br/>" + WARNING_COURT_VENUE_ID,
         security = {
             @SecurityRequirement(name = "ServiceAuthorization"),
             @SecurityRequirement(name = "Authorization")
         }
     )
-
     @ApiResponse(
             responseCode = "200",
             description = "Successfully retrieved list of Court Venues for the request provided",
@@ -249,7 +256,6 @@ public class LrdCourtVenueController {
             description = "Internal Server Error",
             content = @Content
         )
-
     @GetMapping(
         path = "/venue-search",
         produces = APPLICATION_JSON_VALUE
@@ -263,8 +269,13 @@ public class LrdCourtVenueController {
         String searchString,
         @RequestParam(value = "court-type-id", required = false)
         @Parameter(name = "court-type-id",
-            description = "Alphabets and Numeric values only allowed in comma separated format")
+            description = "Alphabets and Numeric values only allowed in comma separated format. <br/><br/>"
+             + DEPRECATED_COURT_TYPE_ID, deprecated = true)
         String courtTypeId,
+        @RequestParam(value = "service_code", required = false)
+        @Parameter(name = "service_code",
+            description = "Alphabets and Numeric values only allowed in comma separated format")
+        String serviceCode,
         @RequestParam(value = "is_hearing_location", required = false)
         @Parameter(name = "is_hearing_location",
             description = "Allowed values are \"Y\" or \"N\"")
@@ -289,6 +300,10 @@ public class LrdCourtVenueController {
             validateCourtTypeId(courtTypeId);
         }
 
+        if (StringUtils.isNotBlank(serviceCode)) {
+            validateServiceCodes(serviceCode);
+        }
+
         CourtVenueRequestParam requestParam = CourtVenueRequestParam
             .builder()
             .isHearingLocation(isHearingLocation)
@@ -299,7 +314,7 @@ public class LrdCourtVenueController {
 
         log.info("{} : Calling retrieveCourtVenuesBySearchString", loggingComponentName);
         var lrdCourtVenueResponses = courtVenueService.retrieveCourtVenuesBySearchString(
-            trimmedSearchString, courtTypeId, requestParam);
+            trimmedSearchString, courtTypeId, serviceCode, requestParam);
         return ResponseEntity.status(HttpStatus.OK).body(lrdCourtVenueResponses);
     }
 }
