@@ -77,7 +77,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
 
     @Test
-    @Disabled("FIXME: unreliable test")
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
@@ -99,7 +98,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     }
 
     @Test
-    @Disabled("FIXME: unreliable test")
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_MultipleParamsAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
