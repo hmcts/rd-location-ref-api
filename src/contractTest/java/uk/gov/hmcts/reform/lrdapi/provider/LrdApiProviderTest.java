@@ -282,6 +282,26 @@ public class LrdApiProviderTest {
 
         courtType.setCourtVenues(courtVenues);
 
+        mockCourtVenueRepositoryResponses(courtVenues);
+    }
+
+    @State({"There are court locations to be returned"})
+    public void toReturnCivilCourtVenues() {
+        Cluster cluster = getCluster();
+
+        Region region = getRegion();
+
+        CourtType courtType = getCourtType();
+
+        CourtVenue courtVenue = getMultipleCourtVenues(cluster, region, courtType).get(0);
+        List<CourtVenue> courtVenues = List.of(courtVenue);
+
+        courtType.setCourtVenues(courtVenues);
+
+        mockCourtVenueRepositoryResponses(courtVenues);
+    }
+
+    private void mockCourtVenueRepositoryResponses(List<CourtVenue> courtVenues) {
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(courtVenues);
         when(courtVenueRepository.findAllWithOpenCourtStatus()).thenReturn(courtVenues);
         when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
