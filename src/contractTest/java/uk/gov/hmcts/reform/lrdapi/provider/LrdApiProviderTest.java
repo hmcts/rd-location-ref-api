@@ -314,6 +314,11 @@ public class LrdApiProviderTest {
             .thenReturn(courtVenues);
     }
 
+    @State({"There are court locations to be returned"})
+    public void toReturnCivilCourtVenues() {
+        toReturnCourtVenues();
+    }
+
     @State({"Court Venues exist for the search string provided"})
     public void toReturnCourtVenuesBySearchString() {
         Cluster cluster = getCluster();
