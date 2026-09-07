@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.lrdapi;
 import io.restassured.response.Response;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -77,7 +76,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
 
     @Test
-    @Disabled("FIXME: unreliable test")
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
@@ -99,7 +97,6 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     }
 
     @Test
-    @Disabled("FIXME: unreliable test")
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_MultipleParamsAndSearchString_WithStatusCode_200() {
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
