@@ -296,7 +296,19 @@ public class LrdApiProviderTest {
 
     @State({"There are court locations to be returned"})
     public void toReturnCivilCourtVenues() {
-        toReturnCourtVenues();
+        Cluster cluster = getCluster();
+
+        Region region = getRegion();
+
+        CourtType courtType = getCourtType();
+
+        var courtVenues = getMultipleCourtVenues(cluster, region, courtType);
+        var openCourtVenues = List.of(courtVenues.get(0));
+
+        courtVenues.forEach(courtVenue -> courtVenue.setServiceCode("AAA6"));
+        courtType.setCourtVenues(courtVenues);
+
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString())).thenReturn(openCourtVenues);
     }
 
     @State({"Court Venues exist for the search string provided"})
