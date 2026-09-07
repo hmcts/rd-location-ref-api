@@ -14,8 +14,12 @@ import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
 import uk.gov.hmcts.reform.lrdapi.util.FeatureToggleConditionExtension;
 import uk.gov.hmcts.reform.lrdapi.util.ToggleEnable;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,19 +82,23 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_CourtTypeIdAndSearchString_WithStatusCode_200() {
+        var searchString = "Abe";
+        var matchingVenue = retrieveMatchingVenue(
+            searchString,
+            venue -> isNotBlank(venue.getCourtTypeId())
+        );
+
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                        "?court-type-id=23&search-string=Arn", LrdCourtVenueResponse[].class, path);
+                        "?court-type-id=" + matchingVenue.getCourtTypeId() + "&search-string=" + searchString,
+                        LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotEmpty();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-                                                            venue.getCourtTypeId().equals("23")));
-        assertTrue(courtVenueResponse.stream().allMatch(venue ->
-               venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
-            || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
-            || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
-            || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
+                                                            venue.getCourtTypeId()
+                                                                .equals(matchingVenue.getCourtTypeId())));
+        assertTrue(courtVenueResponse.stream().allMatch(venue -> venueContains(venue, searchString)));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                                                             venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
@@ -99,25 +107,34 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
     @Test
     @ToggleEnable(mapKey = mapKey, withFeature = true)
     void shouldRetrieveCourtVenues_By_MultipleParamsAndSearchString_WithStatusCode_200() {
+        var searchString = "Abe";
+        var matchingVenue = retrieveMatchingVenue(
+            searchString,
+            venue -> isNotBlank(venue.getCourtTypeId())
+                && isNotBlank(venue.getIsCaseManagementLocation())
+                && isNotBlank(venue.getLocationType())
+        );
+
         final var response = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK,
-                "?court-type-id=23&is_case_management_location=y&location_type=NBC&search-string=Arn",
-                        LrdCourtVenueResponse[].class, path);
+                "?court-type-id=" + matchingVenue.getCourtTypeId()
+                    + "&is_case_management_location=" + matchingVenue.getIsCaseManagementLocation()
+                    + "&location_type=" + encode(matchingVenue.getLocationType())
+                    + "&search-string=" + searchString,
+                LrdCourtVenueResponse[].class, path);
 
         assertThat(response).isNotNull();
 
         var courtVenueResponse = new ArrayList<>(Arrays.asList(response));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-                                                            venue.getCourtTypeId().equals("23")));
-        assertTrue(courtVenueResponse.stream().allMatch(venue ->
-               venue.getCourtName().strip().toLowerCase().contains("Arn".toLowerCase())
-                   || venue.getSiteName().strip().toLowerCase().contains("Arn".toLowerCase())
-                   || venue.getCourtAddress().strip().toLowerCase().contains("Arn".toLowerCase())
-                   || venue.getPostcode().strip().toLowerCase().contains("Arn".toLowerCase())));
+                                                            venue.getCourtTypeId()
+                                                                .equals(matchingVenue.getCourtTypeId())));
+        assertTrue(courtVenueResponse.stream().allMatch(venue -> venueContains(venue, searchString)));
         assertTrue(courtVenueResponse.stream()
                        .allMatch(venue -> venue.getIsCaseManagementLocation()
-                           .equalsIgnoreCase("y")));
+                           .equalsIgnoreCase(matchingVenue.getIsCaseManagementLocation())));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
-                                                            venue.getLocationType().equals("NBC")));
+                                                            venue.getLocationType()
+                                                                .equalsIgnoreCase(matchingVenue.getLocationType())));
         assertTrue(courtVenueResponse.stream().allMatch(venue ->
                                                             venue.getCourtStatus().equals("Open")));
         assertThat(courtVenueResponse.size()).isPositive();
@@ -209,5 +226,38 @@ class RetrieveCourtVenuesBySearchStringFunctionalTest extends AuthorizationFunct
 
         assertNotNull(response);
         assertEquals(HttpStatus.UNAUTHORIZED.value(), response.getStatusCode());
+    }
+
+    private LrdCourtVenueResponse retrieveMatchingVenue(String searchString, Predicate<LrdCourtVenueResponse> filter) {
+        final var searchResponse = (LrdCourtVenueResponse[]) lrdApiClient.retrieveResponseForGivenRequest(
+            HttpStatus.OK,
+            "?search-string=" + searchString,
+            LrdCourtVenueResponse[].class,
+            path
+        );
+
+        return Arrays.stream(searchResponse)
+            .filter(filter)
+            .findFirst()
+            .orElseThrow(() -> new AssertionError("No court venue test data found for search string " + searchString));
+    }
+
+    private boolean venueContains(LrdCourtVenueResponse venue, String searchString) {
+        return containsIgnoreCase(venue.getCourtName(), searchString)
+            || containsIgnoreCase(venue.getSiteName(), searchString)
+            || containsIgnoreCase(venue.getCourtAddress(), searchString)
+            || containsIgnoreCase(venue.getPostcode(), searchString);
+    }
+
+    private boolean containsIgnoreCase(String value, String searchString) {
+        return value != null && value.strip().toLowerCase(Locale.ROOT).contains(searchString.toLowerCase(Locale.ROOT));
+    }
+
+    private boolean isNotBlank(String value) {
+        return value != null && !value.isBlank();
+    }
+
+    private String encode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 }
