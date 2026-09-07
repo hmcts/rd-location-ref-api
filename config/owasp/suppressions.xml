@@ -70,4 +70,26 @@
         <cve>CVE-2026-59270</cve>
         <cve>CVE-2026-59276</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+          Reviewed 2026-09-07
+          CVE-2026-47834 applies when untrusted Sort/Pageable input is used with native SQL repository methods.
+          This service has no @NativeQuery, nativeQuery=true, Pageable, or Sort repository usage.
+          The corresponding Spring Data JPA 3.5.x fixed version is Enterprise Support Only.
+        ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.data/spring-data-jpa@.*$</packageUrl>
+    <cve>CVE-2026-47834</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+          Reviewed 2026-09-07
+          CVE-2026-47841 applies to Spring Security WebAuthn with distributed HTTP session storage.
+          CVE-2026-47842 applies to deprecated AesBytesEncryptor/Encryptors APIs.
+          This service has no WebAuthn, AesBytesEncryptor, or Encryptors usage.
+          The corresponding Spring Security 6.5.x fixed version is Enterprise Support Only.
+        ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.springframework\.security/spring-security-.*@.*$</packageUrl>
+    <cve>CVE-2026-47841</cve>
+    <cve>CVE-2026-47842</cve>
+  </suppress>
 </suppressions>
