@@ -89,7 +89,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenues_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(
-                "1234", null, null, null, null, null, "Y",
+                "1234", null, null, null, null, null, null, "Y",
                 "Y", "CTSC", "Y"
             );
 
@@ -101,6 +101,7 @@ class LrdCourtVenueControllerTest {
             ArgumentCaptor.forClass(CourtVenueRequestParam.class);
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
@@ -122,7 +123,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenueswitEpimmsIdAndCourtType_returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(
-                "1234", null, 13, null, null, null, "Y",
+                "1234", null, null, 13, null, null, null, "Y",
                 "Y", "CTSC", "Y"
             );
 
@@ -134,6 +135,7 @@ class LrdCourtVenueControllerTest {
             ArgumentCaptor.forClass(CourtVenueRequestParam.class);
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
@@ -152,10 +154,37 @@ class LrdCourtVenueControllerTest {
     }
 
     @Test
+    void testGetCourtVenues_WithMrdVenueId_Returns200() {
+        ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
+            lrdCourtVenueController.retrieveCourtVenues(
+                null, "MRD123", null, null, null, null, null, "Y",
+                "Y", "CTSC", "Y"
+            );
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ArgumentCaptor<String> mrdVenueIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            isNull(),
+            mrdVenueIdCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
+        );
+        assertEquals("MRD123", mrdVenueIdCaptor.getValue());
+    }
+
+    @Test
     void testGetCourtVenues_WithServiceCode_Returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(
-                "1234", "ABC1", null, null, null, null, "Y",
+                "1234", null, "ABC1", null, null, null, null, "Y",
                 "Y", "CTSC", "Y"
             );
 
@@ -168,6 +197,7 @@ class LrdCourtVenueControllerTest {
         ArgumentCaptor<Boolean> booleanCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             serviceCodeCaptor.capture(),
@@ -186,7 +216,7 @@ class LrdCourtVenueControllerTest {
     void testGetCourtVenues_WithServiceCodeAndCourtTypeWithoutEpimms_Returns200() {
         ResponseEntity<List<LrdCourtVenueResponse>> responseEntity =
             lrdCourtVenueController.retrieveCourtVenues(
-                null, "ABC1", 13, null, null, null, "Y",
+                null, null, "ABC1", 13, null, null, null, "Y",
                 "Y", "CTSC", "Y"
             );
 
@@ -200,6 +230,7 @@ class LrdCourtVenueControllerTest {
         ArgumentCaptor<Boolean> booleanCaptor = ArgumentCaptor.forClass(Boolean.class);
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
+            isNull(),
             isNull(),
             courtTypeIdCaptor.capture(),
             serviceCodeCaptor.capture(),
@@ -218,13 +249,14 @@ class LrdCourtVenueControllerTest {
     @Test
     void testGetCourtVenues_WithMultipleParams_Returns400() {
         Exception exception = assertThrows(InvalidRequestException.class, () ->
-            lrdCourtVenueController.retrieveCourtVenues("12345", null, null, 12,
+            lrdCourtVenueController.retrieveCourtVenues("12345", null, null, null, 12,
             null, null, null, null, null,
                                                         null));
 
         assertNotNull(exception);
-        assertEquals("Please provide only 1 of 4 values of params: (1.epimms_id and "
-                         + "[court_type_id or service_code]), (2.region_id), (3.cluster_id), (4.court_venue_name).",
+        assertEquals("Please provide only 1 of 5 values of params: (1.epimms_id and "
+                         + "[court_type_id or service_code]), (2.mrd_venue_id), (3.region_id), (4.cluster_id), "
+                         + "(5.court_venue_name).",
                      exception.getMessage());
     }
 
