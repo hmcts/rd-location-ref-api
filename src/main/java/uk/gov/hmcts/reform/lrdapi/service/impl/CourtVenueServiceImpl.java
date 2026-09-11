@@ -31,6 +31,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_NO_VALID_MRD_VENUE_ID_PASSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_CASE_MANAGEMENT_LOCATION_Y;
@@ -43,6 +44,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_VENUE_NAME;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_MRD_VENUE_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_REGION_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_SERVICE_CODE;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkForInvalidIdentifiersAndRemoveFromIdList;
@@ -148,9 +150,10 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
-    public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
-                                                                 String serviceCode, Integer regionId,
-                                                                 Integer clusterId, String courtVenueName,
+    public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, String mrdVenueId,
+                                                                 Integer courtTypeId, String serviceCode,
+                                                                 Integer regionId, Integer clusterId,
+                                                                 String courtVenueName,
                                                                  boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                                  CourtVenueRequestParam courtVenueRequestParam) {
 
@@ -168,6 +171,12 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                 courtVenueRequestParam
             );
 
+        }
+        if (isNotBlank(mrdVenueId)) {
+            return getLrdCourtVenueResponses(
+                retrieveCourtVenuesByMrdVenueId(mrdVenueId),
+                courtVenueRequestParam
+            );
         }
         if (isNotEmpty(serviceCode)) {
             log.info("{} : Obtaining court venues for service codes: {}", loggingComponentName, serviceCode);
@@ -251,6 +260,25 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         handleIfCourtVenuesEmpty(
             () -> isEmpty(courtVenues), NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID, epimsIdList.toString()
+        );
+
+        return getCourtVenueListResponse(courtVenues);
+    }
+
+    private List<LrdCourtVenueResponse> retrieveCourtVenuesByMrdVenueId(String mrdVenueId) {
+        log.info("{} : Obtaining court venue for mrd venue id: {}", loggingComponentName, mrdVenueId);
+
+        String trimmedMrdVenueId = mrdVenueId.strip();
+        if (!isRegexSatisfied(trimmedMrdVenueId, ALPHA_NUMERIC_REGEX)) {
+            throw new InvalidRequestException(
+                String.format(EXCEPTION_MSG_NO_VALID_MRD_VENUE_ID_PASSED, mrdVenueId)
+            );
+        }
+
+        List<CourtVenue> courtVenues = courtVenueRepository.findByMrdVenueId(trimmedMrdVenueId);
+
+        handleIfCourtVenuesEmpty(
+            () -> isEmpty(courtVenues), NO_COURT_VENUES_FOUND_FOR_MRD_VENUE_ID, trimmedMrdVenueId
         );
 
         return getCourtVenueListResponse(courtVenues);

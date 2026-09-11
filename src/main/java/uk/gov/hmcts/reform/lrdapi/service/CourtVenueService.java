@@ -20,8 +20,9 @@ public interface CourtVenueService {
      * @param epimmsIdWithCourtTypeOrServiceCodePresent api with epimmsId with court Type
      * @return list of court venues
      */
-    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, String serviceCode,
-                                                          Integer regionId,Integer clusterId, String courtVenueName,
+    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, String mrdVenueId, Integer courtTypeId,
+                                                          String serviceCode, Integer regionId, Integer clusterId,
+                                                          String courtVenueName,
                                                           boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                           CourtVenueRequestParam courtVenueRequestParam);
 
