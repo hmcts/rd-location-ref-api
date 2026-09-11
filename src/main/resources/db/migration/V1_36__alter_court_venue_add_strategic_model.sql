@@ -5,6 +5,14 @@ ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS district_registry_venue_id VARC
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS appeal_centre_venue_id VARCHAR(16);
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS effective_from_date DATE;
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS effective_to_date DATE;
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS district_registry_site_name VARCHAR(256);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS district_registry_welsh_site_name VARCHAR(256);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS district_registry_external_short_name VARCHAR(256);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS district_registry_welsh_external_short_name VARCHAR(256);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS contact_email VARCHAR(256);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS breathing_space_email VARCHAR(256);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS is_district_registry VARCHAR(1);
+ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS is_appeal_centre VARCHAR(1);
 
 UPDATE court_venue
 SET mrd_venue_id = NULL
@@ -137,11 +145,11 @@ CREATE TABLE IF NOT EXISTS contact_type (
     CONSTRAINT contact_type_pk PRIMARY KEY (contact_type_code)
 );
 
-CREATE TABLE IF NOT EXISTS court_use_type (
+CREATE TABLE IF NOT EXISTS use_type (
     use_type_code VARCHAR(64) NOT NULL,
     language_code VARCHAR(2) NOT NULL DEFAULT 'EN',
     use_type_desc VARCHAR(256) NOT NULL,
-    CONSTRAINT court_use_type_pk PRIMARY KEY (use_type_code)
+    CONSTRAINT use_type_pk PRIMARY KEY (use_type_code)
 );
 
 CREATE TABLE IF NOT EXISTS court_venue_name (
@@ -158,10 +166,12 @@ CREATE TABLE IF NOT EXISTS court_venue_name (
 
 CREATE TABLE IF NOT EXISTS address (
     mrd_venue_id VARCHAR(16) NOT NULL,
+    address_type VARCHAR(64) NOT NULL,
+    language_code VARCHAR(2) NOT NULL DEFAULT 'EN',
     address VARCHAR(512) NOT NULL,
     post_code VARCHAR(8),
     uprn VARCHAR(16),
-    CONSTRAINT address_pk PRIMARY KEY (mrd_venue_id),
+    CONSTRAINT address_pk PRIMARY KEY (mrd_venue_id, address_type, language_code),
     CONSTRAINT address_mrd_venue_id_fk FOREIGN KEY (mrd_venue_id)
         REFERENCES court_venue (mrd_venue_id)
 );
@@ -187,7 +197,7 @@ CREATE TABLE IF NOT EXISTS court_use_mapping (
     CONSTRAINT court_use_mapping_mrd_venue_id_fk FOREIGN KEY (mrd_venue_id)
         REFERENCES court_venue (mrd_venue_id),
     CONSTRAINT court_use_mapping_type_fk FOREIGN KEY (use_type_code)
-        REFERENCES court_use_type (use_type_code)
+        REFERENCES use_type (use_type_code)
 );
 
 INSERT INTO court_name_type (court_name_type, court_name_type_desc)
@@ -212,7 +222,7 @@ VALUES
     ('BREATHING_SPACE', 'EN', 'Breathing Space')
 ON CONFLICT (contact_type_code) DO NOTHING;
 
-INSERT INTO court_use_type (use_type_code, language_code, use_type_desc)
+INSERT INTO use_type (use_type_code, language_code, use_type_desc)
 VALUES
     ('CASE_MANAGEMENT', 'EN', 'Case Management Location'),
     ('HEARING', 'EN', 'Hearing Location'),
@@ -286,13 +296,53 @@ WHERE mrd_venue_id IS NOT NULL
   AND trim(welsh_external_short_name) <> ''
 ON CONFLICT (mrd_venue_id, court_name_type, language_code) DO NOTHING;
 
-INSERT INTO address (mrd_venue_id, address, post_code, uprn)
-SELECT mrd_venue_id, court_address, postcode, uprn
+INSERT INTO court_venue_name (mrd_venue_id, court_name_type, language_code, name_desc)
+SELECT mrd_venue_id, 'DISTRICT_REGISTRY_SITE', 'EN', district_registry_site_name
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND district_registry_site_name IS NOT NULL
+  AND trim(district_registry_site_name) <> ''
+ON CONFLICT (mrd_venue_id, court_name_type, language_code) DO NOTHING;
+
+INSERT INTO court_venue_name (mrd_venue_id, court_name_type, language_code, name_desc)
+SELECT mrd_venue_id, 'DISTRICT_REGISTRY_SITE', 'CY', district_registry_welsh_site_name
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND district_registry_welsh_site_name IS NOT NULL
+  AND trim(district_registry_welsh_site_name) <> ''
+ON CONFLICT (mrd_venue_id, court_name_type, language_code) DO NOTHING;
+
+INSERT INTO court_venue_name (mrd_venue_id, court_name_type, language_code, name_desc)
+SELECT mrd_venue_id, 'DISTRICT_REGISTRY_EXTERNAL_SHORT', 'EN', district_registry_external_short_name
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND district_registry_external_short_name IS NOT NULL
+  AND trim(district_registry_external_short_name) <> ''
+ON CONFLICT (mrd_venue_id, court_name_type, language_code) DO NOTHING;
+
+INSERT INTO court_venue_name (mrd_venue_id, court_name_type, language_code, name_desc)
+SELECT mrd_venue_id, 'DISTRICT_REGISTRY_EXTERNAL_SHORT', 'CY', district_registry_welsh_external_short_name
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND district_registry_welsh_external_short_name IS NOT NULL
+  AND trim(district_registry_welsh_external_short_name) <> ''
+ON CONFLICT (mrd_venue_id, court_name_type, language_code) DO NOTHING;
+
+INSERT INTO address (mrd_venue_id, address_type, language_code, address, post_code, uprn)
+SELECT mrd_venue_id, 'MAILING', 'EN', court_address, postcode, uprn
 FROM court_venue
 WHERE mrd_venue_id IS NOT NULL
   AND court_address IS NOT NULL
   AND trim(court_address) <> ''
-ON CONFLICT (mrd_venue_id) DO NOTHING;
+ON CONFLICT (mrd_venue_id, address_type, language_code) DO NOTHING;
+
+INSERT INTO address (mrd_venue_id, address_type, language_code, address, post_code, uprn)
+SELECT mrd_venue_id, 'MAILING', 'CY', welsh_court_address, postcode, uprn
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND welsh_court_address IS NOT NULL
+  AND trim(welsh_court_address) <> ''
+ON CONFLICT (mrd_venue_id, address_type, language_code) DO NOTHING;
 
 INSERT INTO contact_details (mrd_venue_id, contact_method_code, contact_type_code, contact_value)
 SELECT mrd_venue_id, 'PHONE', 'CONTACT_SERVICE', phone_number
@@ -300,6 +350,22 @@ FROM court_venue
 WHERE mrd_venue_id IS NOT NULL
   AND phone_number IS NOT NULL
   AND trim(phone_number) <> ''
+ON CONFLICT (mrd_venue_id, contact_method_code, contact_type_code) DO NOTHING;
+
+INSERT INTO contact_details (mrd_venue_id, contact_method_code, contact_type_code, contact_value)
+SELECT mrd_venue_id, 'EMAIL', 'CONTACT_SERVICE', contact_email
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND contact_email IS NOT NULL
+  AND trim(contact_email) <> ''
+ON CONFLICT (mrd_venue_id, contact_method_code, contact_type_code) DO NOTHING;
+
+INSERT INTO contact_details (mrd_venue_id, contact_method_code, contact_type_code, contact_value)
+SELECT mrd_venue_id, 'EMAIL', 'BREATHING_SPACE', breathing_space_email
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND breathing_space_email IS NOT NULL
+  AND trim(breathing_space_email) <> ''
 ON CONFLICT (mrd_venue_id, contact_method_code, contact_type_code) DO NOTHING;
 
 INSERT INTO court_use_mapping (mrd_venue_id, use_type_code)
@@ -328,6 +394,20 @@ SELECT mrd_venue_id, 'NIGHTINGALE'
 FROM court_venue
 WHERE mrd_venue_id IS NOT NULL
   AND upper(is_nightingale_court) = 'Y'
+ON CONFLICT (mrd_venue_id, use_type_code) DO NOTHING;
+
+INSERT INTO court_use_mapping (mrd_venue_id, use_type_code)
+SELECT mrd_venue_id, 'DISTRICT_REGISTRY'
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND upper(is_district_registry) = 'Y'
+ON CONFLICT (mrd_venue_id, use_type_code) DO NOTHING;
+
+INSERT INTO court_use_mapping (mrd_venue_id, use_type_code)
+SELECT mrd_venue_id, 'APPEAL_CENTRE'
+FROM court_venue
+WHERE mrd_venue_id IS NOT NULL
+  AND upper(is_appeal_centre) = 'Y'
 ON CONFLICT (mrd_venue_id, use_type_code) DO NOTHING;
 
 INSERT INTO reference_codes (mrd_venue_id, reference_code_type, reference_code)
@@ -379,7 +459,7 @@ SELECT mrd_venue_id, court_name_type, language_code, name_desc
 FROM locrefdata.court_venue_name;
 
 CREATE OR REPLACE VIEW rdlocationreport.vw_address AS
-SELECT mrd_venue_id, address, post_code, uprn
+SELECT mrd_venue_id, address_type, language_code, address, post_code, uprn
 FROM locrefdata.address;
 
 CREATE OR REPLACE VIEW rdlocationreport.vw_contact_method AS
@@ -394,9 +474,9 @@ CREATE OR REPLACE VIEW rdlocationreport.vw_contact_details AS
 SELECT mrd_venue_id, contact_method_code, contact_type_code, contact_value
 FROM locrefdata.contact_details;
 
-CREATE OR REPLACE VIEW rdlocationreport.vw_court_use_type AS
+CREATE OR REPLACE VIEW rdlocationreport.vw_use_type AS
 SELECT use_type_code, language_code, use_type_desc
-FROM locrefdata.court_use_type;
+FROM locrefdata.use_type;
 
 CREATE OR REPLACE VIEW rdlocationreport.vw_court_use_mapping AS
 SELECT mrd_venue_id, use_type_code
@@ -414,5 +494,7 @@ SELECT site_name, region_id, court_type_id, cluster_id, open_for_public, court_a
        welsh_court_name, uprn, venue_ou_code, mrd_building_location_id, mrd_venue_id, service_url, fact_url,
        external_short_name, welsh_external_short_name, service_code, court_status_code, open_date, parent_id,
        district_registry_venue_id, appeal_centre_venue_id, effective_from_date, effective_to_date,
-       mrd_created_time, mrd_updated_time, mrd_deleted_time
+       district_registry_site_name, district_registry_welsh_site_name, district_registry_external_short_name,
+       district_registry_welsh_external_short_name, contact_email, breathing_space_email,
+       is_district_registry, is_appeal_centre, mrd_created_time, mrd_updated_time, mrd_deleted_time
 FROM locrefdata.court_venue;
