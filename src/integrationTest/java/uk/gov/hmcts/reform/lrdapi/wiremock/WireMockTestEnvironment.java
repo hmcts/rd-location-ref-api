@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.nimbusds.jose.JOSEException;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 public final class WireMockTestEnvironment {
@@ -17,7 +19,7 @@ public final class WireMockTestEnvironment {
     private static final WireMockServer S2S_MOCK_SERVER =
             new WireMockServer(wireMockConfig().dynamicPort());
 
-    private static boolean started;
+    private static final AtomicBoolean STARTED = new AtomicBoolean(false);
 
     private WireMockTestEnvironment() {
     }
@@ -29,7 +31,7 @@ public final class WireMockTestEnvironment {
     }
 
     public static void start() {
-        if (started) {
+        if (!STARTED.compareAndSet(false, true)) {
             return;
         }
 
@@ -37,8 +39,6 @@ public final class WireMockTestEnvironment {
             startOidcMockServer();
             startIdamMockServer();
             startS2sMockServer();
-
-            started = true;
         } catch (RuntimeException ex) {
             stop();
             throw ex;
@@ -98,7 +98,7 @@ public final class WireMockTestEnvironment {
         stopServer(IDAM_MOCK_SERVER);
         stopServer(S2S_MOCK_SERVER);
 
-        started = false;
+        STARTED.set(false);
     }
 
     private static void stopServer(WireMockServer server) {
