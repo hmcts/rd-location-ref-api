@@ -28,7 +28,7 @@ public final class WireMockTestEnvironment {
         );
     }
 
-    public static synchronized void start() {
+    public static void start() {
         if (started) {
             return;
         }
@@ -93,7 +93,7 @@ public final class WireMockTestEnvironment {
         return "http://127.0.0.1:" + S2S_MOCK_SERVER.port();
     }
 
-    public static synchronized void stop() {
+    public static void stop() {
         stopServer(OIDC_MOCK_SERVER);
         stopServer(IDAM_MOCK_SERVER);
         stopServer(S2S_MOCK_SERVER);

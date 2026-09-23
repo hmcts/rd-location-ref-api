@@ -39,7 +39,6 @@ public final class JwtTokenUtil {
                                            boolean isExpired,
                                            String userId,
                                            String role) {
-
         Instant now = Instant.now();
 
         Instant issuedAt = isExpired
@@ -72,7 +71,6 @@ public final class JwtTokenUtil {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     private static JWTClaimsSet.Builder getJwtClaimsBuilder(Date issuedAt,

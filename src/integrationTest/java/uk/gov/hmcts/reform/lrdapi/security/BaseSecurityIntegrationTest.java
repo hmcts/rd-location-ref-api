@@ -15,19 +15,16 @@ public class BaseSecurityIntegrationTest extends LrdAuthorizationEnabledIntegrat
     protected RequestSpecification jwtRequest(
             String issuer,
             boolean expired) {
-
         return SerenityRest.given()
             .baseUri(testApplicationServer.getBaseUrl())
             .headers(getHttpHeaders(issuer, expired, null, "lrd-admin"));
     }
 
     protected RequestSpecification unexpiredJwt(String issuer) {
-
         return jwtRequest(issuer, false);
     }
 
     protected RequestSpecification expiredJwt(String issuer) {
-
         return jwtRequest(issuer, true);
     }
 }

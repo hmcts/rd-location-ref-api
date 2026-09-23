@@ -89,7 +89,6 @@ public class JwtIssuerValidationEnabledIntegrationTest extends BaseSecurityInteg
                                                             boolean tokenExpired,
                                                             int expectedStatusCode) throws Exception {
         mockRegions();
-
         RequestSpecification jwtRequestSpecification =
                 tokenExpired
                         ? expiredJwt(jwtIssuer)

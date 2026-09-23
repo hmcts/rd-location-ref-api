@@ -17,7 +17,6 @@ public final class IdamWireMockStubs {
     }
 
     public static void registerDefaults(WireMockServer server) {
-
         server.stubFor(
                 get(urlPathEqualTo("/o/userinfo"))
                         .atPriority(10)
@@ -42,7 +41,6 @@ public final class IdamWireMockStubs {
             data.put("roles", List.of("%s"));
 
             return getObjectMapper().writeValueAsString(data);
-
         } catch (Exception e) {
             throw new IllegalStateException("Unable to create IDAM userinfo response", e);
         }
