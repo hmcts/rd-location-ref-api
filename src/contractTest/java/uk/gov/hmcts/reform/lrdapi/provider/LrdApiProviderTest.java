@@ -2,7 +2,6 @@ package uk.gov.hmcts.reform.lrdapi.provider;
 
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
-import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify;
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
@@ -64,7 +63,6 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration(classes = {LrdApiController.class, LrdCourtVenueController.class, LrdServiceImpl.class,
     LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class, CourtVenueServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
-@IgnoreNoPactsToVerify
 public class LrdApiProviderTest {
 
     @PactBrokerConsumerVersionSelectors
@@ -333,6 +331,33 @@ public class LrdApiProviderTest {
 
         when(courtVenueRepository.findBySearchStringAndCourtTypeId(
             any(),any(),any(),any(),any(),any(),any())).thenReturn(courtVenues);
+    }
+
+    @State({"Search for locations"})
+    public void searchForLocations() {
+        Cluster cluster = getCluster();
+        Region region = getRegion();
+        CourtType courtType = getCourtType();
+        CourtVenue courtVenue = getCourtVenue(cluster, region, courtType);
+
+        courtVenue.setCluster(null);
+        courtVenue.setClosedDate(null);
+        courtVenue.setWelshCourtAddress("");
+        courtVenue.setWelshSiteName("");
+        courtVenue.setServiceCode("BFA1");
+        courtVenue.setServiceUrl("");
+        courtVenue.setFactUrl("");
+
+        courtType.setCourtVenues(Collections.singletonList(courtVenue));
+        CourtTypeServiceAssoc courtTypeServiceAssoc = new CourtTypeServiceAssoc();
+        courtTypeServiceAssoc.setCourtType(courtType);
+
+        when(courtTypeServiceAssocRepository.findByServiceCode(anyString())).thenReturn(courtTypeServiceAssoc);
+        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId(
+            any(),any(),any(),any(),any(),any(),any())).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString())).thenReturn(List.of(courtVenue));
     }
 
     private CourtVenue getCourtVenue(Cluster cluster, Region region, CourtType courtType) {
