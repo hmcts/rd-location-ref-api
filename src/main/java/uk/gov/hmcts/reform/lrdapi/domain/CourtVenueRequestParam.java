@@ -18,6 +18,8 @@ public class CourtVenueRequestParam {
     private String isHearingLocation;
     private String locationType;
     private String isTemporaryLocation;
+    private String isDistrictRegistry;
+    private String isAppealCentre;
 
 
 }
