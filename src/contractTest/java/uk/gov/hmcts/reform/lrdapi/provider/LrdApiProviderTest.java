@@ -5,8 +5,6 @@ import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvide
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
 import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
-import au.com.dius.pact.provider.junitsupport.loader.PactBrokerConsumerVersionSelectors;
-import au.com.dius.pact.provider.junitsupport.loader.SelectorBuilder;
 import au.com.dius.pact.provider.spring.junit5.MockMvcTestTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
@@ -64,15 +62,6 @@ import static org.mockito.Mockito.when;
     LrdBuildingLocationServiceImpl.class, RegionServiceImpl.class, CourtVenueServiceImpl.class})
 @TestPropertySource(properties = {"loggingComponentName=LrdApiProviderTest"})
 public class LrdApiProviderTest {
-
-    @PactBrokerConsumerVersionSelectors
-    public static SelectorBuilder consumerVersionSelectors() {
-        String branch = System.getProperty("pactbroker.consumerBranch", "");
-        if (!branch.isBlank()) {
-            return new SelectorBuilder().branch(branch);
-        }
-        return new SelectorBuilder().tag(System.getProperty("pactbroker.consumerTag", "master"));
-    }
 
     public static final String CLUSTER_NAME = "ClusterXYZ";
     public static final String REGION = "Region XYZ";
