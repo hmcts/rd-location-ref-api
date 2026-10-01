@@ -136,6 +136,36 @@ public class LrdCourtVenueResponse implements Serializable {
     @JsonProperty("welsh_external_short_name")
     private String welshExternalShortName;
 
+    @JsonProperty("court_status_code")
+    private String courtStatusCode;
+
+    @JsonProperty("open_date")
+    private String openDate;
+
+    @JsonProperty("parent_id")
+    private String parentId;
+
+    @JsonProperty("district_registry_venue_id")
+    private String districtRegistryVenueId;
+
+    @JsonProperty("appeal_centre_venue_id")
+    private String appealCentreVenueId;
+
+    @JsonProperty("effective_from_date")
+    private String effectiveFromDate;
+
+    @JsonProperty("effective_to_date")
+    private String effectiveToDate;
+
+    @JsonProperty("mrd_created_time")
+    private String mrdCreatedTime;
+
+    @JsonProperty("mrd_updated_time")
+    private String mrdUpdatedTime;
+
+    @JsonProperty("mrd_deleted_time")
+    private String mrdDeletedTime;
+
     public LrdCourtVenueResponse(CourtVenue courtVenue) {
 
         if (nonNull(courtVenue)) {
@@ -178,6 +208,28 @@ public class LrdCourtVenueResponse implements Serializable {
             this.factUrl = courtVenue.getFactUrl();
             this.externalShortName = courtVenue.getExternalShortName();
             this.welshExternalShortName = courtVenue.getWelshExternalShortName();
+            this.courtStatusCode = courtVenue.getCourtStatusCode();
+            if (nonNull(courtVenue.getOpenDate())) {
+                this.openDate = courtVenue.getOpenDate().toString();
+            }
+            this.parentId = courtVenue.getParentId();
+            this.districtRegistryVenueId = courtVenue.getDistrictRegistryVenueId();
+            this.appealCentreVenueId = courtVenue.getAppealCentreVenueId();
+            if (nonNull(courtVenue.getEffectiveFromDate())) {
+                this.effectiveFromDate = courtVenue.getEffectiveFromDate().toString();
+            }
+            if (nonNull(courtVenue.getEffectiveToDate())) {
+                this.effectiveToDate = courtVenue.getEffectiveToDate().toString();
+            }
+            if (nonNull(courtVenue.getMrdCreatedTime())) {
+                this.mrdCreatedTime = courtVenue.getMrdCreatedTime().toString();
+            }
+            if (nonNull(courtVenue.getMrdUpdatedTime())) {
+                this.mrdUpdatedTime = courtVenue.getMrdUpdatedTime().toString();
+            }
+            if (nonNull(courtVenue.getMrdDeletedTime())) {
+                this.mrdDeletedTime = courtVenue.getMrdDeletedTime().toString();
+            }
             courtVenue.getRegion().ifPresent(reg -> {
                 region = reg.getDescription();
                 regionId = reg.getRegionId();

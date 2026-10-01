@@ -69,6 +69,9 @@ public class LocationRefConstants {
     public static final String NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID =
         "No court venues found for epimms id: %s";
 
+    public static final String NO_COURT_VENUES_FOUND_FOR_MRD_VENUE_ID =
+        "No court venues found for mrd venue id: %s";
+
     public static final String NO_COURT_VENUES_FOUND =
         "There are no court venues found";
 
@@ -83,6 +86,9 @@ public class LocationRefConstants {
 
     public static final String SERVICE_CODE_START_END_WITH_COMMA =
         "Invalid service codes: %s";
+
+    public static final String EXCEPTION_MSG_NO_VALID_MRD_VENUE_ID_PASSED = BAD_REQUEST_STR
+        + "Invalid mrd venue id: %s passed.";
 
     public static final String IS_HEARING_LOCATION_Y = "Y";
     public static final String IS_HEARING_LOCATION_N = "N";
@@ -105,8 +111,9 @@ public class LocationRefConstants {
     public static final String IS_Y = "Y";
     public static final String IS_N = "N";
 
-    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "Please provide only 1 of 4 values of params:"
-        + " (1.epimms_id and [court_type_id or service_code]), (2.region_id), (3.cluster_id), (4.court_venue_name).";
+    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "Please provide only 1 of 5 values of params:"
+        + " (1.epimms_id and [court_type_id or service_code]), (2.mrd_venue_id), (3.region_id), (4.cluster_id), "
+        + "(5.court_venue_name).";
 
     public static final String EPPIMS_ID_WITH_COURT_TYPE = "epimms_id_with_court_type";
     public static final String ONLY_ONE_PARAM_REQUIRED_REGION  = "region, regionId";
@@ -145,6 +152,8 @@ public class LocationRefConstants {
         + "single epimms_id or a list of epimms_ids separated by comas";
     public static final String RET_LOC_VEN_NOTES_3 = " can be passed. In any of these cases, a list of associated "
         + "court venues would be returned.<br>";
+    public static final String RET_LOC_VEN_NOTES_3_1 = "For the request param 'mrd_venue_id', a single strategic "
+        + "venue identifier can be passed and associated court venues would be returned.<br>";
     public static final String RET_LOC_VEN_NOTES_4 = "Additionally, if 'ALL' is passed as the epimms_id value, then "
         + "all the available court venues";
     public static final String RET_LOC_VEN_NOTES_5 = " associated with the available list of epimms_id are returned "
@@ -180,7 +189,7 @@ public class LocationRefConstants {
         + "are 'is_hearing_location','is_case_management_location','location_type'";
     public static final String RET_LOC_VEN_NOTES_20 = "and 'is_temporary_location'.<br>";
     public static final String RET_LOC_VEN_NOTES_21 = "At a time only one param is allowed "
-        + "from 'region_id','cluster_id',";
+        + "from 'mrd_venue_id','region_id','cluster_id',";
     public static final String RET_LOC_VEN_NOTES_22 = "'court_venue_name'. 'epimms_id' can be passed along with "
         + "'court_type_id' or 'service_code'.";
 }
