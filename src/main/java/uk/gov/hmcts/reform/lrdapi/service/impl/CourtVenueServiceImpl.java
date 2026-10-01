@@ -9,18 +9,29 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueAddressProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueContactProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueNameProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -57,6 +68,18 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenue
 @Slf4j
 @Service
 public class CourtVenueServiceImpl implements CourtVenueService {
+
+    private static final String USE_APPEAL_CENTRE = "APPEAL_CENTRE";
+    private static final String USE_CASE_MANAGEMENT = "CASE_MANAGEMENT";
+    private static final String USE_DISTRICT_REGISTRY = "DISTRICT_REGISTRY";
+    private static final String USE_HEARING = "HEARING";
+    private static final String USE_NIGHTINGALE = "NIGHTINGALE";
+    private static final String USE_TEMPORARY = "TEMPORARY";
+    private static final String URL_TYPE_FACT = "FACT";
+    private static final String URL_TYPE_SERVICE = "SERVICE";
+    private static final String REFERENCE_CODE_VENUE_OU_CODE = "VENUE_OU_CODE";
+    private static final String VALUE_Y = "Y";
+    private static final String VALUE_N = "N";
 
     @Autowired
     CourtVenueRepository courtVenueRepository;
@@ -234,6 +257,62 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return getLrdCourtVenueResponses(initialResult, courtVenueRequestParam);
     }
 
+    @Override
+    public List<LrdCourtVenueV2Response> retrieveCourtVenueDetailsV2(String epimmsIds, String mrdVenueId,
+                                                                     Integer courtTypeId, String serviceCode,
+                                                                     Integer regionId, Integer clusterId,
+                                                                     String courtVenueName,
+                                                                     boolean epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                                     CourtVenueRequestParam courtVenueRequestParam) {
+
+        List<LrdCourtVenueResponse> legacyResponses = retrieveCourtVenueDetails(
+            epimmsIds,
+            mrdVenueId,
+            courtTypeId,
+            serviceCode,
+            regionId,
+            clusterId,
+            courtVenueName,
+            epimmsIdWithCourtTypeOrServiceCodePresent,
+            courtVenueRequestParam
+        );
+
+        List<String> mrdVenueIds = legacyResponses.stream()
+            .map(LrdCourtVenueResponse::getMrdVenueId)
+            .filter(StringUtils::isNotBlank)
+            .map(String::toUpperCase)
+            .distinct()
+            .toList();
+
+        if (mrdVenueIds.isEmpty()) {
+            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+        }
+
+        Map<String, CourtVenue> courtVenuesByMrdVenueId = courtVenueRepository.findByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.toMap(
+                courtVenue -> courtVenue.getMrdVenueId().toUpperCase(),
+                courtVenue -> courtVenue,
+                (first, second) -> first
+            ));
+
+        CourtVenueV2Lookups lookups = getCourtVenueV2Lookups(mrdVenueIds);
+
+        List<LrdCourtVenueV2Response> responses = legacyResponses.stream()
+            .map(LrdCourtVenueResponse::getMrdVenueId)
+            .filter(StringUtils::isNotBlank)
+            .map(mrdId -> courtVenuesByMrdVenueId.get(mrdId.toUpperCase()))
+            .filter(Objects::nonNull)
+            .map(courtVenue -> buildCourtVenueV2Response(courtVenue, lookups))
+            .toList();
+
+        if (responses.isEmpty()) {
+            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+        }
+
+        return responses;
+    }
+
 
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
@@ -333,6 +412,175 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .stream()
             .map(LrdCourtVenueResponse::new)
             .toList();
+    }
+
+    private CourtVenueV2Lookups getCourtVenueV2Lookups(List<String> mrdVenueIds) {
+        Map<String, List<LrdCourtVenueV2Response.Name>> namesByMrdVenueId = courtVenueRepository
+            .findNamesByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                projection -> projection.getMrdVenueId().toUpperCase(),
+                Collectors.mapping(this::toNameResponse, Collectors.toList())
+            ));
+
+        Map<String, List<LrdCourtVenueV2Response.Address>> addressesByMrdVenueId = courtVenueRepository
+            .findAddressesByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                projection -> projection.getMrdVenueId().toUpperCase(),
+                Collectors.mapping(this::toAddressResponse, Collectors.toList())
+            ));
+
+        Map<String, List<LrdCourtVenueV2Response.Contact>> contactsByMrdVenueId = courtVenueRepository
+            .findContactsByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                projection -> projection.getMrdVenueId().toUpperCase(),
+                Collectors.mapping(this::toContactResponse, Collectors.toList())
+            ));
+
+        Map<String, Set<String>> usesByMrdVenueId = courtVenueRepository
+            .findUsesByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                projection -> projection.getMrdVenueId().toUpperCase(),
+                Collectors.mapping(CourtVenueUseProjection::getUseType, Collectors.toSet())
+            ));
+
+        Map<String, Map<String, String>> urlsByMrdVenueId = courtVenueRepository
+            .findUrlsByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                projection -> projection.getMrdVenueId().toUpperCase(),
+                Collectors.toMap(CourtVenueUrlProjection::getType, CourtVenueUrlProjection::getUrl,
+                                 (first, second) -> first)
+            ));
+
+        Map<String, Map<String, String>> referenceCodesByMrdVenueId = courtVenueRepository
+            .findReferenceCodesByMrdVenueIdIn(mrdVenueIds)
+            .stream()
+            .collect(Collectors.groupingBy(
+                projection -> projection.getMrdVenueId().toUpperCase(),
+                Collectors.toMap(CourtVenueReferenceCodeProjection::getType,
+                                 CourtVenueReferenceCodeProjection::getValue,
+                                 (first, second) -> first)
+            ));
+
+        return new CourtVenueV2Lookups(
+            namesByMrdVenueId,
+            addressesByMrdVenueId,
+            contactsByMrdVenueId,
+            usesByMrdVenueId,
+            urlsByMrdVenueId,
+            referenceCodesByMrdVenueId
+        );
+    }
+
+    private LrdCourtVenueV2Response buildCourtVenueV2Response(CourtVenue courtVenue, CourtVenueV2Lookups lookups) {
+        String mrdVenueId = courtVenue.getMrdVenueId();
+        String mrdVenueIdKey = mrdVenueId.toUpperCase();
+        Set<String> useTypes = lookups.usesByMrdVenueId().getOrDefault(mrdVenueIdKey, Set.of());
+        Map<String, String> urls = lookups.urlsByMrdVenueId().getOrDefault(mrdVenueIdKey, Map.of());
+        Map<String, String> referenceCodes = lookups.referenceCodesByMrdVenueId().getOrDefault(mrdVenueIdKey, Map.of());
+
+        return LrdCourtVenueV2Response.builder()
+            .mrdVenueId(mrdVenueId)
+            .epimsId(courtVenue.getEpimmsId())
+            .mrdBuildingId(courtVenue.getMrdBuildingLocationId())
+            .serviceCode(courtVenue.getServiceCode())
+            .courtStatus(getCourtStatus(courtVenue))
+            .openDate(nonBlank(courtVenue.getOpenDate() == null ? null : courtVenue.getOpenDate().toString()))
+            .closedDate(courtVenue.getClosedDate().map(date -> date.toLocalDate().toString()).orElse(null))
+            .openForPublic(toYesNo(courtVenue.getOpenForPublic()))
+            .dxAddress(courtVenue.getDxAddress())
+            .region(courtVenue.getRegionId())
+            .cluster(courtVenue.getClusterId())
+            .locationType(courtVenue.getLocationType())
+            .courtUse(buildCourtUse(courtVenue, useTypes))
+            .parentLocation(courtVenue.getParentLocation())
+            .parentVenueId(courtVenue.getParentId())
+            .districtRegistryVenueId(courtVenue.getDistrictRegistryVenueId())
+            .appealCentreVenueId(courtVenue.getAppealCentreVenueId())
+            .venueOuCode(referenceCodes.getOrDefault(REFERENCE_CODE_VENUE_OU_CODE, courtVenue.getVenueOuCode()))
+            .serviceUrl(urls.getOrDefault(URL_TYPE_SERVICE, courtVenue.getServiceUrl()))
+            .factUrl(urls.getOrDefault(URL_TYPE_FACT, courtVenue.getFactUrl()))
+            .names(lookups.namesByMrdVenueId().getOrDefault(mrdVenueIdKey, List.of()))
+            .addresses(lookups.addressesByMrdVenueId().getOrDefault(mrdVenueIdKey, List.of()))
+            .contacts(lookups.contactsByMrdVenueId().getOrDefault(mrdVenueIdKey, List.of()))
+            .build();
+    }
+
+    private LrdCourtVenueV2Response.CourtUse buildCourtUse(CourtVenue courtVenue, Set<String> useTypes) {
+        return LrdCourtVenueV2Response.CourtUse.builder()
+            .hearingLocation(isUseEnabled(useTypes, USE_HEARING, courtVenue.getIsHearingLocation()))
+            .caseManagementLocation(isUseEnabled(useTypes, USE_CASE_MANAGEMENT,
+                                                 courtVenue.getIsCaseManagementLocation()))
+            .districtRegistry(isUseEnabled(useTypes, USE_DISTRICT_REGISTRY, courtVenue.getIsDistrictRegistry()))
+            .temporaryLocation(isUseEnabled(useTypes, USE_TEMPORARY, courtVenue.getIsTemporaryLocation()))
+            .nightingaleCourt(isUseEnabled(useTypes, USE_NIGHTINGALE, courtVenue.getIsNightingaleCourt()))
+            .appealCentre(isUseEnabled(useTypes, USE_APPEAL_CENTRE, courtVenue.getIsAppealCentre()))
+            .build();
+    }
+
+    private boolean isUseEnabled(Set<String> useTypes, String useType, String fallbackFlag) {
+        if (useTypes.isEmpty()) {
+            return VALUE_Y.equalsIgnoreCase(fallbackFlag);
+        }
+        return useTypes.contains(useType);
+    }
+
+    private String getCourtStatus(CourtVenue courtVenue) {
+        if (StringUtils.isNotBlank(courtVenue.getCourtStatusCode())) {
+            return courtVenue.getCourtStatusCode();
+        }
+        return courtVenue.getCourtStatus();
+    }
+
+    private String toYesNo(Boolean value) {
+        if (value == null) {
+            return null;
+        }
+        return Boolean.TRUE.equals(value) ? VALUE_Y : VALUE_N;
+    }
+
+    private String nonBlank(String value) {
+        return StringUtils.isBlank(value) ? null : value;
+    }
+
+    private LrdCourtVenueV2Response.Name toNameResponse(CourtVenueNameProjection projection) {
+        return LrdCourtVenueV2Response.Name.builder()
+            .type(projection.getType())
+            .language(projection.getLanguage())
+            .name(projection.getName())
+            .build();
+    }
+
+    private LrdCourtVenueV2Response.Address toAddressResponse(CourtVenueAddressProjection projection) {
+        return LrdCourtVenueV2Response.Address.builder()
+            .type(projection.getType())
+            .address(projection.getAddress())
+            .postCode(projection.getPostCode())
+            .uprn(projection.getUprn())
+            .language(projection.getLanguage())
+            .build();
+    }
+
+    private LrdCourtVenueV2Response.Contact toContactResponse(CourtVenueContactProjection projection) {
+        return LrdCourtVenueV2Response.Contact.builder()
+            .method(projection.getMethod())
+            .type(projection.getType())
+            .value(projection.getValue())
+            .build();
+    }
+
+    private record CourtVenueV2Lookups(
+        Map<String, List<LrdCourtVenueV2Response.Name>> namesByMrdVenueId,
+        Map<String, List<LrdCourtVenueV2Response.Address>> addressesByMrdVenueId,
+        Map<String, List<LrdCourtVenueV2Response.Contact>> contactsByMrdVenueId,
+        Map<String, Set<String>> usesByMrdVenueId,
+        Map<String, Map<String, String>> urlsByMrdVenueId,
+        Map<String, Map<String, String>> referenceCodesByMrdVenueId
+    ) {
     }
 
     private void handleIfCourtVenuesEmpty(BooleanSupplier courtVenueResponseVerifier,
