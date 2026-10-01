@@ -23,3 +23,4 @@ public class LrdApiApplication {
         SpringApplication.run(LrdApiApplication.class, args);
     }
 }
+
