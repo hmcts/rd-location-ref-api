@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
@@ -19,7 +20,14 @@ import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueAddressProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueContactProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueNameProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -177,7 +185,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123", null, null, null, null, null,
+                .retrieveCourtVenueDetails("123", null, null, null, null, null, null,
                         false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -191,9 +199,100 @@ class CourtVenueServiceImplTest {
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123,1234", null, null, null, null, null,
+                .retrieveCourtVenueDetails("123,1234", null, null, null, null, null, null,
                         false, courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesByMrdVenueId() {
+        when(courtVenueRepository.findByMrdVenueId(anyString())).thenReturn(prepareCourtVenue());
+
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails("", " 765 ", null, null, null, null, null,
+                                           false, courtVenueRequestParam);
+
+        verify(courtVenueRepository, times(1)).findByMrdVenueId("765");
+        verifySingleResponse(courtVenueResponses.get(0));
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesV2ByMrdVenueId() {
+        CourtVenue courtVenue = CourtVenue.builder()
+            .courtVenueId(5L)
+            .mrdVenueId("MRD-000123")
+            .epimmsId("815833")
+            .mrdBuildingLocationId("BLDG-0876")
+            .serviceCode("AAA5")
+            .courtStatusCode("OPEN")
+            .openDate(LocalDate.of(2018, 4, 1))
+            .openForPublic(true)
+            .dxAddress("HAGRD354")
+            .regionId("5")
+            .clusterId("1")
+            .locationType("Court")
+            .parentId("MRD-000436")
+            .districtRegistryVenueId("MRD-000456")
+            .appealCentreVenueId("MRD-000789")
+            .courtType(getCourtType())
+            .build();
+
+        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findByMrdVenueIdIn(anyList())).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findNamesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            new TestNameProjection("MRD-000123", "SITE", "EN", "54 Hagley Road (Birmingham Offices)"),
+            new TestNameProjection("MRD-000123", "EXTERNAL_SHORT", "CY", "Canol Llundain")
+        ));
+        when(courtVenueRepository.findAddressesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            new TestAddressProjection("MRD-000123", "MAILING", "Hagley Road, Birmingham", "B16 8PE",
+                                      "100070123456", "EN")
+        ));
+        when(courtVenueRepository.findContactsByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            new TestContactProjection("MRD-000123", "PHONE", "CONTACT_SERVICE", "0300 123 4567"),
+            new TestContactProjection("MRD-000123", "EMAIL", "BREATHING_SPACE", "breathing.space@example.gov.uk")
+        ));
+        when(courtVenueRepository.findUsesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            new TestUseProjection("MRD-000123", "HEARING"),
+            new TestUseProjection("MRD-000123", "TEMPORARY")
+        ));
+        when(courtVenueRepository.findUrlsByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            new TestUrlProjection("MRD-000123", "SERVICE", "https://service.example.gov.uk"),
+            new TestUrlProjection("MRD-000123", "FACT", "https://fact.example.gov.uk")
+        ));
+        when(courtVenueRepository.findReferenceCodesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            new TestReferenceCodeProjection("MRD-000123", "VENUE_OU_CODE", "venue-ou-code")
+        ));
+
+        List<LrdCourtVenueV2Response> courtVenueResponses =
+            courtVenueService.retrieveCourtVenueDetailsV2("815833", null, null, null, null, null, null,
+                                                          false, courtVenueRequestParam);
+
+        LrdCourtVenueV2Response response = courtVenueResponses.get(0);
+        assertThat(response.getMrdVenueId()).isEqualTo("MRD-000123");
+        assertThat(response.getEpimsId()).isEqualTo("815833");
+        assertThat(response.getMrdBuildingId()).isEqualTo("BLDG-0876");
+        assertThat(response.getCourtStatus()).isEqualTo("OPEN");
+        assertThat(response.getOpenDate()).isEqualTo("2018-04-01");
+        assertThat(response.getOpenForPublic()).isEqualTo("Y");
+        assertThat(response.getCourtUse().isHearingLocation()).isTrue();
+        assertThat(response.getCourtUse().isCaseManagementLocation()).isFalse();
+        assertThat(response.getCourtUse().isTemporaryLocation()).isTrue();
+        assertThat(response.getNames()).hasSize(2);
+        assertThat(response.getAddresses()).hasSize(1);
+        assertThat(response.getContacts()).hasSize(2);
+        assertThat(response.getVenueOuCode()).isEqualTo("venue-ou-code");
+        assertThat(response.getServiceUrl()).isEqualTo("https://service.example.gov.uk");
+        assertThat(response.getFactUrl()).isEqualTo("https://fact.example.gov.uk");
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesByMrdVenueId_InvalidValue() {
+        assertThrows(InvalidRequestException.class, () -> courtVenueService
+            .retrieveCourtVenueDetails("", "{765}", null, null, null, null, null,
+                                       false, courtVenueRequestParam));
+
+        verify(courtVenueRepository, times(0)).findByMrdVenueId(anyString());
     }
 
     @Test
@@ -202,7 +301,7 @@ class CourtVenueServiceImplTest {
             .thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("All", null, null, null, null, null,
+                .retrieveCourtVenueDetails("All", null, null, null, null, null, null,
                                            false, courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
     }
@@ -213,7 +312,7 @@ class CourtVenueServiceImplTest {
             .thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("All,123", null, null, null, null, null,
+                .retrieveCourtVenueDetails("All,123", null, null, null, null, null, null,
                                            false, courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
     }
@@ -228,7 +327,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123", 123, null, null, null, null,
+                .retrieveCourtVenueDetails("123", null, 123, null, null, null, null,
                                            true, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -244,7 +343,7 @@ class CourtVenueServiceImplTest {
             .thenReturn(prepareMultiCourtVenueResponse());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123,1234", 123, null, null, null, null,
+                .retrieveCourtVenueDetails("123,1234", null, 123, null, null, null, null,
                                            true, courtVenueRequestParam);
         verifyMultiResponse(courtVenueResponses);
     }
@@ -258,7 +357,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123", null, "abC1", null, null, null,
+                .retrieveCourtVenueDetails("123", null, null, "abC1", null, null, null,
                                            true, courtVenueRequestParam);
 
         verify(courtVenueRepository, times(1))
@@ -275,7 +374,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("123", 123, "abC1", null, null, null,
+                .retrieveCourtVenueDetails("123", null, 123, "abC1", null, null, null,
                                            true, courtVenueRequestParam);
 
         verify(courtVenueRepository, times(1))
@@ -287,8 +386,8 @@ class CourtVenueServiceImplTest {
     @ValueSource(strings = {"All","All,123"})
     void testGetAllCourtVenuesEpimmsIdAllAndCourtTyepId(String epimmsIds) {
         assertThrows(InvalidRequestException.class, () ->
-            courtVenueService.retrieveCourtVenueDetails(epimmsIds, 123, null, null,
-                                                        null, null, true, courtVenueRequestParam));
+            courtVenueService.retrieveCourtVenueDetails(epimmsIds, null, 123, null,
+                                                        null, null, null, true, courtVenueRequestParam));
     }
 
     @Test
@@ -297,7 +396,7 @@ class CourtVenueServiceImplTest {
             .thenReturn(prepareCourtVenue());
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null, null, null, null, null,
+                .retrieveCourtVenueDetails("", null, null, null, null, null, null,
                                            false, courtVenueRequestParam);
         verifySingleResponse(courtVenueResponses.get(0));
     }
@@ -309,7 +408,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null, null, 1, null, null,
+                .retrieveCourtVenueDetails("", null, null, null, 1, null, null,
                                            false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -324,7 +423,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null, null, null, 1, null,
+                .retrieveCourtVenueDetails("", null, null, null, null, 1, null,
                                            false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -339,7 +438,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", 1, null, null, null, null,
+                .retrieveCourtVenueDetails("", null, 1, null, null, null, null,
                                            false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -354,7 +453,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null, "AAA6", null, null, null,
+                .retrieveCourtVenueDetails("", null, null, "AAA6", null, null, null,
                                            false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -377,7 +476,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", 17, "AAA6", null, null, null,
+                .retrieveCourtVenueDetails("", null, 17, "AAA6", null, null, null,
                                            false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -400,7 +499,7 @@ class CourtVenueServiceImplTest {
 
         List<LrdCourtVenueResponse> courtVenueResponses =
             courtVenueService
-                .retrieveCourtVenueDetails("", null, null, null, null, "Court ABC",
+                .retrieveCourtVenueDetails("", null, null, null, null, null, "Court ABC",
                                            false, courtVenueRequestParam);
 
         LrdCourtVenueResponse courtVenueResponse = courtVenueResponses.get(0);
@@ -412,7 +511,7 @@ class CourtVenueServiceImplTest {
     void test_RetrieveCourtVenuesByEpimmsId_NotFound() {
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("123", null, null, null, null, null,
+            .retrieveCourtVenueDetails("123", null, null, null, null, null, null,
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(1)).findByEpimmsIdIn(anyList());
@@ -426,7 +525,7 @@ class CourtVenueServiceImplTest {
     @Test
     void test_RetrieveCourtVenuesByEpimmsId_InvalidList() {
         assertThrows(InvalidRequestException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("{123}", null, null, null, null, null,
+            .retrieveCourtVenueDetails("{123}", null, null, null, null, null, null,
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -441,7 +540,7 @@ class CourtVenueServiceImplTest {
     void test_RetrieveCourtVenuesByClusterId_NotFound() {
         when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", null, null, null, 1, null,
+            .retrieveCourtVenueDetails("", null, null, null, null, 1, null,
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -456,7 +555,7 @@ class CourtVenueServiceImplTest {
     void test_RetrieveCourtVenuesByRegionId_NotFound() {
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", null, null, 1, null, null,
+            .retrieveCourtVenueDetails("", null, null, null, 1, null, null,
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -471,7 +570,7 @@ class CourtVenueServiceImplTest {
     void test_RetrieveCourtVenuesByCourtTypeId_NotFound() {
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", 1, null, null, null, null,
+            .retrieveCourtVenueDetails("", null, 1, null, null, null, null,
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -487,7 +586,7 @@ class CourtVenueServiceImplTest {
     void test_RetrieveCourtVenuesByServiceCode_NotFound() {
         when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus(anyString())).thenReturn(null);
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", null, "AAA6", null, null, null,
+            .retrieveCourtVenueDetails("", null, null, "AAA6", null, null, null,
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -503,7 +602,7 @@ class CourtVenueServiceImplTest {
     @Test
     void test_RetrieveCourtVenuesByCourtVenueName_NotFound() {
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService
-            .retrieveCourtVenueDetails("", null, null, null, null, "test-name",
+            .retrieveCourtVenueDetails("", null, null, null, null, null, "test-name",
                                        false, courtVenueRequestParam));
 
         verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
@@ -645,6 +744,8 @@ class CourtVenueServiceImplTest {
         assertThat(lrdCourtVenueResponse.getIsCaseManagementLocation()).isEqualTo("Y");
         assertThat(lrdCourtVenueResponse.getIsHearingLocation()).isEqualTo("Y");
         assertThat(lrdCourtVenueResponse.getServiceCode()).isEqualTo("AAA2");
+        assertThat(lrdCourtVenueResponse.getDistrictRegistryVenueId()).isEqualTo("DR123");
+        assertThat(lrdCourtVenueResponse.getAppealCentreVenueId()).isEqualTo("AC123");
     }
 
     private List<CourtVenue> prepareCourtVenue() {
@@ -678,6 +779,8 @@ class CourtVenueServiceImplTest {
                             .mrdVenueId("765")
                             .serviceUrl("https://serviceurl.com")
                             .factUrl("https://facturl.com")
+                            .districtRegistryVenueId("DR123")
+                            .appealCentreVenueId("AC123")
                             .serviceCode("AAA2")
                             .build());
 
@@ -738,5 +841,137 @@ class CourtVenueServiceImplTest {
         courtType.setTypeOfCourt("courtType");
         courtType.setCourtTypeId("courtTypeId");
         return courtType;
+    }
+
+    private record TestNameProjection(String mrdVenueId, String type, String language, String name)
+        implements CourtVenueNameProjection {
+
+        @Override
+        public String getMrdVenueId() {
+            return mrdVenueId;
+        }
+
+        @Override
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public String getLanguage() {
+            return language;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+    }
+
+    private record TestAddressProjection(String mrdVenueId, String type, String address, String postCode, String uprn,
+                                         String language) implements CourtVenueAddressProjection {
+
+        @Override
+        public String getMrdVenueId() {
+            return mrdVenueId;
+        }
+
+        @Override
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public String getAddress() {
+            return address;
+        }
+
+        @Override
+        public String getPostCode() {
+            return postCode;
+        }
+
+        @Override
+        public String getUprn() {
+            return uprn;
+        }
+
+        @Override
+        public String getLanguage() {
+            return language;
+        }
+    }
+
+    private record TestContactProjection(String mrdVenueId, String method, String type, String value)
+        implements CourtVenueContactProjection {
+
+        @Override
+        public String getMrdVenueId() {
+            return mrdVenueId;
+        }
+
+        @Override
+        public String getMethod() {
+            return method;
+        }
+
+        @Override
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
+    }
+
+    private record TestUseProjection(String mrdVenueId, String useType) implements CourtVenueUseProjection {
+
+        @Override
+        public String getMrdVenueId() {
+            return mrdVenueId;
+        }
+
+        @Override
+        public String getUseType() {
+            return useType;
+        }
+    }
+
+    private record TestUrlProjection(String mrdVenueId, String type, String url) implements CourtVenueUrlProjection {
+
+        @Override
+        public String getMrdVenueId() {
+            return mrdVenueId;
+        }
+
+        @Override
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public String getUrl() {
+            return url;
+        }
+    }
+
+    private record TestReferenceCodeProjection(String mrdVenueId, String type, String value)
+        implements CourtVenueReferenceCodeProjection {
+
+        @Override
+        public String getMrdVenueId() {
+            return mrdVenueId;
+        }
+
+        @Override
+        public String getType() {
+            return type;
+        }
+
+        @Override
+        public String getValue() {
+            return value;
+        }
     }
 }

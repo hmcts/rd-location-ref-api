@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service;
 
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 
@@ -20,10 +21,17 @@ public interface CourtVenueService {
      * @param epimmsIdWithCourtTypeOrServiceCodePresent api with epimmsId with court Type
      * @return list of court venues
      */
-    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, String serviceCode,
-                                                          Integer regionId,Integer clusterId, String courtVenueName,
+    List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, String mrdVenueId, Integer courtTypeId,
+                                                          String serviceCode, Integer regionId, Integer clusterId,
+                                                          String courtVenueName,
                                                           boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                           CourtVenueRequestParam courtVenueRequestParam);
+
+    List<LrdCourtVenueV2Response> retrieveCourtVenueDetailsV2(String epimmsId, String mrdVenueId, Integer courtTypeId,
+                                                              String serviceCode, Integer regionId, Integer clusterId,
+                                                              String courtVenueName,
+                                                              boolean epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                              CourtVenueRequestParam courtVenueRequestParam);
 
     List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
                                                                   String serviceCode,
