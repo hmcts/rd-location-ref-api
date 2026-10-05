@@ -21,6 +21,7 @@ public class CourtVenueRequestParam {
     private String isDistrictRegistry;
     private String isAppealCentre;
     private String mrdBuildingId;
+    private String courtStatus;
 
 
 }

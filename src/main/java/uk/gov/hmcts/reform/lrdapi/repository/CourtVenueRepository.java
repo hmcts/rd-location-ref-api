@@ -34,6 +34,11 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + "where cv.courtTypeId = :courtTypeId and cv.courtStatus='Open'")
     List<CourtVenue> findByCourtTypeIdWithOpenCourtStatus(String courtTypeId);
 
+    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
+        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
+        + "where cv.courtTypeId = :courtTypeId")
+    List<CourtVenue> findByCourtTypeId(String courtTypeId);
+
     @Query(value = """
              select cv from court_venue cv LEFT JOIN FETCH cv.courtType
              LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region
@@ -47,17 +52,39 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
                                                                                 String courtTypeId,
                                                                      String serviceCode);
 
+    @Query(value = """
+             select cv from court_venue cv LEFT JOIN FETCH cv.courtType
+             LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region
+             where (:serviceCode is null or upper(cv.serviceCode) = :serviceCode)
+             and (:courtTypeId is null or cv.courtTypeId = :courtTypeId)
+             and (:epimmsIdList is null or cv.epimmsId in (:epimmsIdList))
+             and (:courtTypeId is not null or :epimmsIdList is not null)
+             """)
+    List<CourtVenue> findByCourtTypeIdServiceCodeAndEpimmsId(List<String> epimmsIdList,
+                                                             String courtTypeId,
+                                                             String serviceCode);
+
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.regionId = :regionId and cv.courtStatus='Open'")
     List<CourtVenue> findByRegionIdWithOpenCourtStatus(String regionId);
 
+    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
+        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
+        + "where cv.regionId = :regionId")
+    List<CourtVenue> findByRegionId(String regionId);
+
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.clusterId = :clusterId and cv.courtStatus='Open'")
     List<CourtVenue> findByClusterIdWithOpenCourtStatus(String clusterId);
+
+    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
+        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
+        + "where cv.clusterId = :clusterId")
+    List<CourtVenue> findByClusterId(String clusterId);
 
     @Query(value = "select cv from court_venue cv "
         + "where upper(cv.courtName) = upper(:courtVenueName) "
@@ -68,6 +95,10 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.courtStatus='Open'")
     List<CourtVenue> findAllWithOpenCourtStatus();
+
+    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
+        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region ")
+    List<CourtVenue> findAllCourtVenues();
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "

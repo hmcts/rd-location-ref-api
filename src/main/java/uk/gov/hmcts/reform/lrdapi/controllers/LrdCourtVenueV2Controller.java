@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,8 +36,6 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenue
 @RestController
 @Slf4j
 public class LrdCourtVenueV2Controller {
-
-    private static final String DEPRECATED_COURT_TYPE_ID = "Deprecated parameter, please use `service_code` instead.";
 
     @Value("${loggingComponentName}")
     private String loggingComponentName;
@@ -86,7 +83,6 @@ public class LrdCourtVenueV2Controller {
         @RequestParam(value = "epimms_id", required = false) String epimmsIds,
         @RequestParam(value = "mrd_venue_id", required = false) String mrdVenueId,
         @RequestParam(value = "service_code", required = false) String serviceCode,
-        @Parameter(name = "court_type_id", description = DEPRECATED_COURT_TYPE_ID, deprecated = true)
         @RequestParam(value = "court_type_id", required = false) Integer courtTypeId,
         @RequestParam(value = "region_id", required = false) Integer regionId,
         @RequestParam(value = "cluster_id", required = false) Integer clusterId,
@@ -95,7 +91,8 @@ public class LrdCourtVenueV2Controller {
         @RequestParam(value = "is_case_management_location", required = false) String isCaseManagementLocation,
         @RequestParam(value = "location_type", required = false) String locationType,
         @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation,
-        @RequestParam(value = "mrd_building_id", required = false) String mrdBuildingId) {
+        @RequestParam(value = "mrd_building_id", required = false) String mrdBuildingId,
+        @RequestParam(value = "court_status", required = false) String courtStatus) {
 
         log.info("{} : Inside retrieveCourtVenues V2", loggingComponentName);
 
@@ -122,6 +119,7 @@ public class LrdCourtVenueV2Controller {
         courtVenueRequestParam.setLocationType(locationType);
         courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
         courtVenueRequestParam.setMrdBuildingId(mrdBuildingId);
+        courtVenueRequestParam.setCourtStatus(courtStatus);
 
         CourtVenueRequestParam result = trimCourtVenueRequestParam(courtVenueRequestParam);
         validateCourtVenueFilters(result);

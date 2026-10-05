@@ -97,6 +97,8 @@ public class LocationRefConstants {
     public static final String IS_CASE_MANAGEMENT_LOCATION_N = "N";
     public static final String IS_TEMPORARY_LOCATION_Y = "Y";
     public static final String IS_TEMPORARY_LOCATION_N = "N";
+    public static final String COURT_STATUS_OPEN = "Open";
+    public static final String COURT_STATUS_CLOSED = "Closed";
 
     public static final String FILTER_IS_HEARING_LOCATION =
         "is_hearing_location";
@@ -110,6 +112,8 @@ public class LocationRefConstants {
         "Invalid %s. Allowed values are Y OR N";
     public static final String INVALID_MRD_BUILDING_ID =
         "Invalid mrd_building_id. Expected format is MRD-BLD-<digits>";
+    public static final String INVALID_COURT_STATUS =
+        "Invalid court_status. Allowed values are Open OR Closed";
 
     public static final String IS_Y = "Y";
     public static final String IS_N = "N";
@@ -117,6 +121,9 @@ public class LocationRefConstants {
     public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "Please provide only 1 of 5 values of params:"
         + " (1.epimms_id and [court_type_id or service_code]), (2.mrd_venue_id), (3.region_id), (4.cluster_id), "
         + "(5.court_venue_name).";
+    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE_V1 = "Please provide only 1 of 4 values of params:"
+        + " (1.epimms_id and [court_type_id or service_code]), (2.region_id), (3.cluster_id), "
+        + "(4.court_venue_name).";
 
     public static final String EPPIMS_ID_WITH_COURT_TYPE = "epimms_id_with_court_type";
     public static final String ONLY_ONE_PARAM_REQUIRED_REGION  = "region, regionId";
@@ -192,7 +199,7 @@ public class LocationRefConstants {
         + "are 'is_hearing_location','is_case_management_location','location_type'";
     public static final String RET_LOC_VEN_NOTES_20 = "and 'is_temporary_location'.<br>";
     public static final String RET_LOC_VEN_NOTES_21 = "At a time only one param is allowed "
-        + "from 'mrd_venue_id','region_id','cluster_id',";
+        + "from 'region_id','cluster_id',";
     public static final String RET_LOC_VEN_NOTES_22 = "'court_venue_name'. 'epimms_id' can be passed along with "
         + "'court_type_id' or 'service_code'.";
 }

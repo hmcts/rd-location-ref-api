@@ -349,6 +349,40 @@ class CourtVenueServiceImplTest {
         assertThat(courtVenueResponses.get(0).getMrdBuildingLocationId()).isEqualTo("MRD-BLD-38");
     }
 
+    @Test
+    void testRetrieveCourtVenuesFiltersByClosedCourtStatus() {
+        List<CourtVenue> courtVenues = List.of(
+            CourtVenue.builder()
+                .courtVenueId(5L)
+                .epimmsId("123")
+                .courtType(getCourtType())
+                .openForPublic(true)
+                .courtStatus("Open")
+                .mrdVenueId("MRD-000123")
+                .build(),
+            CourtVenue.builder()
+                .courtVenueId(6L)
+                .epimmsId("456")
+                .courtType(getCourtType())
+                .openForPublic(true)
+                .courtStatus("Closed")
+                .mrdVenueId("MRD-000456")
+                .build()
+        );
+        courtVenueRequestParam.setCourtStatus("Closed");
+        when(courtVenueRepository.findAllCourtVenues()).thenReturn(courtVenues);
+
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails(null, null, null, null, null, null, null,
+                                           false, courtVenueRequestParam);
+
+        assertThat(courtVenueResponses).hasSize(1);
+        assertThat(courtVenueResponses.get(0).getCourtStatus()).isEqualTo("Closed");
+        verify(courtVenueRepository, times(1)).findAllCourtVenues();
+        verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
+    }
+
 
     @Test
     void test_RetrieveCourtVenuesByEpimsIDsAndCourtTypeID_OneIdPassed() {

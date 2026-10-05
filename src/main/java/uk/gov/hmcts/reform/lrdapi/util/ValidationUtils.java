@@ -20,12 +20,15 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_STATUS_CLOSED;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_STATUS_OPEN;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_CASE_MANAGEMENT_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_COURT_STATUS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_MRD_BUILDING_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
@@ -268,11 +271,20 @@ public class ValidationUtils {
         }
         validateSingleFilters(requestParam.getIsTemporaryLocation(), FILTER_IS_TEMPORARY_LOCATION);
         validateMrdBuildingId(requestParam.getMrdBuildingId());
+        validateCourtStatus(requestParam.getCourtStatus());
     }
 
     private static void validateMrdBuildingId(String mrdBuildingId) {
         if (ObjectUtils.isNotEmpty(mrdBuildingId) && !isRegexSatisfied(mrdBuildingId, MRD_BUILDING_ID_REGEX)) {
             throw new InvalidRequestException(INVALID_MRD_BUILDING_ID);
+        }
+    }
+
+    private static void validateCourtStatus(String courtStatus) {
+        if (ObjectUtils.isNotEmpty(courtStatus)
+            && !Strings.CI.equals(courtStatus, COURT_STATUS_OPEN)
+            && !Strings.CI.equals(courtStatus, COURT_STATUS_CLOSED)) {
+            throw new InvalidRequestException(INVALID_COURT_STATUS);
         }
     }
 
@@ -301,6 +313,9 @@ public class ValidationUtils {
                                          : null);
         result.setMrdBuildingId(ObjectUtils.isNotEmpty(requestParam.getMrdBuildingId())
                                          ? StringUtils.strip(requestParam.getMrdBuildingId())
+                                         : null);
+        result.setCourtStatus(ObjectUtils.isNotEmpty(requestParam.getCourtStatus())
+                                         ? StringUtils.strip(requestParam.getCourtStatus())
                                          : null);
         return result;
     }
