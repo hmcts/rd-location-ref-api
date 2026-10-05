@@ -661,6 +661,14 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             );
 
         }
+
+        String mrdBuildingIdValue = courtVenueRequestParam.getMrdBuildingId();
+
+        if (StringUtils.isNotBlank(mrdBuildingIdValue)) {
+            allPredicates.add(
+                courtVenue -> mrdBuildingIdValue.equalsIgnoreCase(courtVenue.getMrdBuildingLocationId())
+            );
+        }
         return allPredicates;
     }
 }

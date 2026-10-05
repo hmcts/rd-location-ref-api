@@ -26,8 +26,10 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_MRD_BUILDING_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.MRD_BUILDING_ID_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_ORG_SERVICES;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGEX_FOR_BUILDING_LOCATION_SEARCH;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
@@ -265,6 +267,13 @@ public class ValidationUtils {
             checkSpecialCharacters(requestParam.getLocationType());
         }
         validateSingleFilters(requestParam.getIsTemporaryLocation(), FILTER_IS_TEMPORARY_LOCATION);
+        validateMrdBuildingId(requestParam.getMrdBuildingId());
+    }
+
+    private static void validateMrdBuildingId(String mrdBuildingId) {
+        if (ObjectUtils.isNotEmpty(mrdBuildingId) && !isRegexSatisfied(mrdBuildingId, MRD_BUILDING_ID_REGEX)) {
+            throw new InvalidRequestException(INVALID_MRD_BUILDING_ID);
+        }
     }
 
     private static void validateSingleFilters(String value, String filterString) {
@@ -289,6 +298,9 @@ public class ValidationUtils {
                                          : null);
         result.setIsTemporaryLocation(ObjectUtils.isNotEmpty(requestParam.getIsTemporaryLocation())
                                          ? StringUtils.strip(requestParam.getIsTemporaryLocation())
+                                         : null);
+        result.setMrdBuildingId(ObjectUtils.isNotEmpty(requestParam.getMrdBuildingId())
+                                         ? StringUtils.strip(requestParam.getMrdBuildingId())
                                          : null);
         return result;
     }

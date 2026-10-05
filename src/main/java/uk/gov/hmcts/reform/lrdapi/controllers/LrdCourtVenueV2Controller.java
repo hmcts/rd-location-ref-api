@@ -94,7 +94,8 @@ public class LrdCourtVenueV2Controller {
         @RequestParam(value = "is_hearing_location", required = false) String isHearingLocation,
         @RequestParam(value = "is_case_management_location", required = false) String isCaseManagementLocation,
         @RequestParam(value = "location_type", required = false) String locationType,
-        @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation) {
+        @RequestParam(value = "is_temporary_location", required = false) String isTemporaryLocation,
+        @RequestParam(value = "mrd_building_id", required = false) String mrdBuildingId) {
 
         log.info("{} : Inside retrieveCourtVenues V2", loggingComponentName);
 
@@ -120,6 +121,7 @@ public class LrdCourtVenueV2Controller {
         courtVenueRequestParam.setIsCaseManagementLocation(isCaseManagementLocation);
         courtVenueRequestParam.setLocationType(locationType);
         courtVenueRequestParam.setIsTemporaryLocation(isTemporaryLocation);
+        courtVenueRequestParam.setMrdBuildingId(mrdBuildingId);
 
         CourtVenueRequestParam result = trimCourtVenueRequestParam(courtVenueRequestParam);
         validateCourtVenueFilters(result);

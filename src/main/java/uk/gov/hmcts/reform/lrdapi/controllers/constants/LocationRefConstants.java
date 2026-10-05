@@ -10,7 +10,7 @@ public class LocationRefConstants {
     public static final String REG_EXP_COMMA_DILIMETER = ",(?!\\\\s)";
     public static final String REG_EXP_SPCL_CHAR = "^[^<>{}\"/|;:.~!?@#$%^=&*\\]\\\\()\\[¿§«»ω⊙¤°℃℉€¥£¢¡®©+]*$";
     public static final String REG_EXP_WHITE_SPACE = "\\s";
-    public static final String ALPHA_NUMERIC_REGEX = "[0-9a-zA-Z_]+";
+    public static final String ALPHA_NUMERIC_REGEX = "^[A-Za-z0-9-]+$";
     public static final String ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX = "^(?![-_.@,'&()])(?!.*[-_.@,'&()]{2})"
         + "[A-Za-z0-9_@.,'&() -]{3,}$";
 
@@ -20,6 +20,7 @@ public class LocationRefConstants {
     public static final String ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE = "[0-9a-zA-Z]+";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
     public static final String NUMERIC_REGEX = "\\d+";
+    public static final String MRD_BUILDING_ID_REGEX = "^MRD-BLD-\\d+$";
     public static final String BAD_REQUEST_STR = "Bad Request - ";
     public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = BAD_REQUEST_STR
         + "Invalid epims id(s): %s  passed.";
@@ -107,6 +108,8 @@ public class LocationRefConstants {
 
     public static final String INVALID_ADDITIONAL_FILTER =
         "Invalid %s. Allowed values are Y OR N";
+    public static final String INVALID_MRD_BUILDING_ID =
+        "Invalid mrd_building_id. Expected format is MRD-BLD-<digits>";
 
     public static final String IS_Y = "Y";
     public static final String IS_N = "N";

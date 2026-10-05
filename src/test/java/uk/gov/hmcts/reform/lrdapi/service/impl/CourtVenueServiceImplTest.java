@@ -317,6 +317,38 @@ class CourtVenueServiceImplTest {
         verifyMultiResponse(courtVenueResponses);
     }
 
+    @Test
+    void testRetrieveCourtVenuesFiltersByMrdBuildingId() {
+        List<CourtVenue> courtVenues = List.of(
+            CourtVenue.builder()
+                .courtVenueId(5L)
+                .epimmsId("123")
+                .courtType(getCourtType())
+                .openForPublic(true)
+                .mrdBuildingLocationId("MRD-BLD-38")
+                .mrdVenueId("MRD-000123")
+                .build(),
+            CourtVenue.builder()
+                .courtVenueId(6L)
+                .epimmsId("456")
+                .courtType(getCourtType())
+                .openForPublic(true)
+                .mrdBuildingLocationId("MRD-BLD-3851")
+                .mrdVenueId("MRD-000456")
+                .build()
+        );
+        courtVenueRequestParam.setMrdBuildingId("MRD-BLD-38");
+        when(courtVenueRepository.findAllWithOpenCourtStatus()).thenReturn(courtVenues);
+
+        List<LrdCourtVenueResponse> courtVenueResponses =
+            courtVenueService
+                .retrieveCourtVenueDetails(null, null, null, null, null, null, null,
+                                           false, courtVenueRequestParam);
+
+        assertThat(courtVenueResponses).hasSize(1);
+        assertThat(courtVenueResponses.get(0).getMrdBuildingLocationId()).isEqualTo("MRD-BLD-38");
+    }
+
 
     @Test
     void test_RetrieveCourtVenuesByEpimsIDsAndCourtTypeID_OneIdPassed() {

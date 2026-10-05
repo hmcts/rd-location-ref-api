@@ -20,6 +20,7 @@ public class CourtVenueRequestParam {
     private String isTemporaryLocation;
     private String isDistrictRegistry;
     private String isAppealCentre;
+    private String mrdBuildingId;
 
 
 }
