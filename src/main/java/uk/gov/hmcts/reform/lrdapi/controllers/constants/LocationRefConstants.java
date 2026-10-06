@@ -122,12 +122,12 @@ public class LocationRefConstants {
     public static final String IS_Y = "Y";
     public static final String IS_N = "N";
 
-    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "Please provide only 1 of 5 values of params:"
-        + " (1.epimms_id and [court_type_id or service_code]), (2.mrd_venue_id), (3.region_id), (4.cluster_id), "
-        + "(5.court_venue_name).";
-    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE_V1 = "Please provide only 1 of 4 values of params:"
+    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE = "Please provide only 1 of 4 values of params:"
         + " (1.epimms_id and [court_type_id or service_code]), (2.region_id), (3.cluster_id), "
         + "(4.court_venue_name).";
+    public static final String ONLY_ONE_PARAM_REQUIRED_COURT_VENUE_V2 = "Please provide only 1 of 5 values of params:"
+        + " (1.epimms_id and [court_type_id or service_code]), (2.mrd_venue_id), (3.region_id), (4.cluster_id), "
+        + "(5.court_venue_name).";
 
     public static final String EPPIMS_ID_WITH_COURT_TYPE = "epimms_id_with_court_type";
     public static final String ONLY_ONE_PARAM_REQUIRED_REGION  = "region, regionId";

@@ -102,7 +102,6 @@ class LrdCourtVenueControllerTest {
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
             ArgumentCaptor.forClass(String.class).capture(),
-            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
@@ -135,7 +134,6 @@ class LrdCourtVenueControllerTest {
             ArgumentCaptor.forClass(CourtVenueRequestParam.class);
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
-            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             ArgumentCaptor.forClass(String.class).capture(),
@@ -171,7 +169,6 @@ class LrdCourtVenueControllerTest {
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
             ArgumentCaptor.forClass(String.class).capture(),
-            ArgumentCaptor.forClass(String.class).capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
             serviceCodeCaptor.capture(),
             ArgumentCaptor.forClass(Integer.class).capture(),
@@ -204,7 +201,6 @@ class LrdCourtVenueControllerTest {
 
         verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetails(
             isNull(),
-            isNull(),
             courtTypeIdCaptor.capture(),
             serviceCodeCaptor.capture(),
             isNull(),
@@ -228,8 +224,7 @@ class LrdCourtVenueControllerTest {
 
         assertNotNull(exception);
         assertEquals("Please provide only 1 of 4 values of params: (1.epimms_id and "
-                         + "[court_type_id or service_code]), (2.region_id), (3.cluster_id), "
-                         + "(4.court_venue_name).",
+                         + "[court_type_id or service_code]), (2.region_id), (3.cluster_id), (4.court_venue_name).",
                      exception.getMessage());
     }
 

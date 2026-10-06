@@ -24,7 +24,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EPPIMS_ID_WITH_COURT_TYPE;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE_V2;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkBothValuesPresent;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.checkIfMultipleValuePresentForVenue;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
@@ -101,14 +101,14 @@ public class LrdCourtVenueV2Controller {
                                                                                    String.valueOf(serviceCode));
 
         if (epimmsIdWithCourtTypeOrServiceCodePresent) {
-            checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, EPPIMS_ID_WITH_COURT_TYPE,
+            checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE_V2, EPPIMS_ID_WITH_COURT_TYPE,
                                                 mrdVenueId, String.valueOf(regionId), String.valueOf(clusterId),
                                                 courtVenueName);
         } else {
             String eitherServiceCodeOrCourtTypeId = StringUtils.isNotBlank(serviceCode)
                 ? serviceCode : String.valueOf(courtTypeId);
 
-            checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE, epimmsIds,
+            checkIfMultipleValuePresentForVenue(ONLY_ONE_PARAM_REQUIRED_COURT_VENUE_V2, epimmsIds,
                                                 mrdVenueId, eitherServiceCodeOrCourtTypeId,
                                                 String.valueOf(regionId), String.valueOf(clusterId),
                                                 courtVenueName);

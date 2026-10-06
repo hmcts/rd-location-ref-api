@@ -175,12 +175,30 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
-    public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, String mrdVenueId,
-                                                                 Integer courtTypeId, String serviceCode,
-                                                                 Integer regionId, Integer clusterId,
-                                                                 String courtVenueName,
+    public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
+                                                                 String serviceCode, Integer regionId,
+                                                                 Integer clusterId, String courtVenueName,
                                                                  boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                                  CourtVenueRequestParam courtVenueRequestParam) {
+        return retrieveCourtVenueDetailsForV2(
+            epimmsIds,
+            null,
+            courtTypeId,
+            serviceCode,
+            regionId,
+            clusterId,
+            courtVenueName,
+            epimmsIdWithCourtTypeOrServiceCodePresent,
+            courtVenueRequestParam
+        );
+    }
+
+    private List<LrdCourtVenueResponse> retrieveCourtVenueDetailsForV2(String epimmsIds, String mrdVenueId,
+                                                                       Integer courtTypeId, String serviceCode,
+                                                                       Integer regionId, Integer clusterId,
+                                                                       String courtVenueName,
+                                                                       boolean epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                                       CourtVenueRequestParam courtVenueRequestParam) {
 
 
         if (epimmsIdWithCourtTypeOrServiceCodePresent) {
@@ -279,7 +297,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                                                      boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                                      CourtVenueRequestParam courtVenueRequestParam) {
 
-        List<LrdCourtVenueResponse> legacyResponses = retrieveCourtVenueDetails(
+        List<LrdCourtVenueResponse> legacyResponses = retrieveCourtVenueDetailsForV2(
             epimmsIds,
             mrdVenueId,
             courtTypeId,
@@ -700,7 +718,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             || COURT_STATUS_CLOSED.equalsIgnoreCase(courtStatusValue)) {
             allPredicates.add(
                 courtVenue -> courtStatusValue.equalsIgnoreCase(courtVenue.getCourtStatus())
-                    || courtStatusValue.equalsIgnoreCase(courtVenue.getCourtStatusCode())
             );
         }
         return allPredicates;
