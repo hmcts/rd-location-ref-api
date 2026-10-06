@@ -90,6 +90,10 @@ public class LocationRefConstants {
 
     public static final String EXCEPTION_MSG_NO_VALID_MRD_VENUE_ID_PASSED = BAD_REQUEST_STR
         + "Invalid mrd venue id: %s passed.";
+    public static final String EXCEPTION_MSG_NO_VALID_COURT_VENUE_NAME_PASSED = BAD_REQUEST_STR
+        + "Invalid court venue name: %s passed.";
+    public static final String INVALID_COURT_TYPE_ID =
+        "Invalid court type id passed - %s";
 
     public static final String IS_HEARING_LOCATION_Y = "Y";
     public static final String IS_HEARING_LOCATION_N = "N";

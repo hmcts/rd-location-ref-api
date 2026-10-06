@@ -275,7 +275,7 @@ public class ValidationUtils {
     }
 
     private static void validateMrdBuildingId(String mrdBuildingId) {
-        if (ObjectUtils.isNotEmpty(mrdBuildingId) && !isRegexSatisfied(mrdBuildingId, MRD_BUILDING_ID_REGEX)) {
+        if (mrdBuildingId != null && !isRegexSatisfied(mrdBuildingId, MRD_BUILDING_ID_REGEX)) {
             throw new InvalidRequestException(INVALID_MRD_BUILDING_ID);
         }
     }
