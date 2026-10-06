@@ -52,6 +52,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_HEARING_LOCATION_Y;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_TEMPORARY_LOCATION_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.MRD_VENUE_ID_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_CLUSTER_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_COURT_TYPE_ID;
@@ -197,11 +198,11 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                                                        Integer courtTypeId, String serviceCode,
                                                                        Integer regionId, Integer clusterId,
                                                                        String courtVenueName,
-                                                                       boolean epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                                       boolean epimmsIdWithCourtTypeOrServiceCode,
                                                                        CourtVenueRequestParam courtVenueRequestParam) {
 
 
-        if (epimmsIdWithCourtTypeOrServiceCodePresent) {
+        if (epimmsIdWithCourtTypeOrServiceCode) {
             return getLrdCourtVenueResponses(
                 retrieveCourtVenuesByEpimmsIdAndCourtType(epimmsIds, courtTypeId, serviceCode,
                                                           courtVenueRequestParam),
@@ -380,7 +381,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         log.info("{} : Obtaining court venue for mrd venue id: {}", loggingComponentName, mrdVenueId);
 
         String trimmedMrdVenueId = mrdVenueId.strip();
-        if (!isRegexSatisfied(trimmedMrdVenueId, ALPHA_NUMERIC_REGEX)) {
+        if (!isRegexSatisfied(trimmedMrdVenueId, MRD_VENUE_ID_REGEX)) {
             throw new InvalidRequestException(
                 String.format(EXCEPTION_MSG_NO_VALID_MRD_VENUE_ID_PASSED, mrdVenueId)
             );
