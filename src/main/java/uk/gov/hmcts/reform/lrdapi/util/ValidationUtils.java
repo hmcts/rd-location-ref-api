@@ -19,9 +19,9 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_STATUS_CLOSED;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_STATUS_OPEN;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_CASE_MANAGEMENT_LOCATION;

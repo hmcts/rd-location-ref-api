@@ -63,42 +63,28 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
-    void testGetCourtVenuesWithInvalidPrimaryStringParamsThrows400() {
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues("$", null, null, null, null, null, null,
-                                      null, null, null, null, null, null),
-            "Bad Request - Invalid epims id(s): [$]  passed."
+    void testGetCourtVenuesWithPrimaryStringParamsUsesV1Validation() {
+        retrieveCourtVenues(null, "MRD@123", null, null, null, null, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<String> mrdVenueIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            mrdVenueIdCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
         );
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, "{MRD-1}", null, null, null, null, null,
-                                      null, null, null, null, null, null),
-            "Bad Request - Invalid mrd venue id: {MRD-1} passed."
-        );
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, null, "ABC!", null, null, null, null,
-                                      null, null, null, null, null, null),
-            "Invalid service codes: ABC!"
-        );
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, null, null, null, null, null, "<court>",
-                                      null, null, null, null, null, null),
-            "Bad Request - Invalid court venue name: <court> passed."
-        );
-        verifyNoInteractions(courtVenueServiceMock);
+        assertThat(mrdVenueIdCaptor.getValue()).isEqualTo("MRD@123");
     }
 
     @Test
-    void testGetCourtVenuesWithSpecialCharactersForServiceMrdVenueAndMrdBuildingThrows400() {
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, null, "ABC@", null, null, null, null,
-                                      null, null, null, null, null, null),
-            "Invalid service codes: ABC@"
-        );
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, "MRD@123", null, null, null, null, null,
-                                      null, null, null, null, null, null),
-            "Bad Request - Invalid mrd venue id: MRD@123 passed."
-        );
+    void testGetCourtVenuesWithSpecialCharactersForMrdBuildingThrows400() {
         assertInvalidRequestMessage(
             () -> retrieveCourtVenues(null, null, null, null, null, null, null,
                                       null, null, null, null, "MRD-BLD-@123", null),
@@ -108,12 +94,28 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
-    void testGetCourtVenuesWithBlankMrdVenueAndMrdBuildingThrows400() {
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, "   ", null, null, null, null, null,
-                                      null, null, null, null, null, null),
-            "Bad Request - Invalid mrd venue id:  passed."
+    void testGetCourtVenuesWithBlankMrdVenuePassesValueToService() {
+        retrieveCourtVenues(null, "   ", null, null, null, null, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<String> mrdVenueIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            mrdVenueIdCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
         );
+        assertThat(mrdVenueIdCaptor.getValue()).isEqualTo("   ");
+    }
+
+    @Test
+    void testGetCourtVenuesWithBlankMrdBuildingThrows400() {
         assertInvalidRequestMessage(
             () -> retrieveCourtVenues(null, null, null, null, null, null, null,
                                       null, null, null, null, "   ", null),
@@ -165,23 +167,24 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
-    void testGetCourtVenuesWithInvalidNumberParamsThrows400() {
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, null, null, 0, null, null, null,
-                                      null, null, null, null, null, null),
-            "Invalid court type id passed - 0"
+    void testGetCourtVenuesWithNumberParamsUsesV1Validation() {
+        retrieveCourtVenues(null, null, null, 0, null, null, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<Integer> courtTypeIdCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            isNull(),
+            courtTypeIdCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
         );
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, null, null, null, -1, null, null,
-                                      null, null, null, null, null, null),
-            "Invalid region id passed - -1"
-        );
-        assertInvalidRequestMessage(
-            () -> retrieveCourtVenues(null, null, null, null, null, 0, null,
-                                      null, null, null, null, null, null),
-            "Invalid cluster id passed - 0"
-        );
-        verifyNoInteractions(courtVenueServiceMock);
+        assertThat(courtTypeIdCaptor.getValue()).isZero();
     }
 
     @Test
