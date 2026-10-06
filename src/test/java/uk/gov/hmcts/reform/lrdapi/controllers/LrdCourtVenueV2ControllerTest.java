@@ -63,6 +63,27 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
+    void testGetCourtVenuesWithSpecialCharactersInEpimmsIdUsesV1Validation() {
+        retrieveCourtVenues("%$^", null, null, null, null, null, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<String> epimmsIdCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            epimmsIdCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
+        );
+        assertThat(epimmsIdCaptor.getValue()).isEqualTo("%$^");
+    }
+
+    @Test
     void testGetCourtVenuesWithPrimaryStringParamsUsesV1Validation() {
         retrieveCourtVenues(null, "MRD@123", null, null, null, null, null,
                             null, null, null, null, null, null);
@@ -94,6 +115,27 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
+    void testGetCourtVenuesWithSpecialCharactersInCourtVenueNameUsesV1Validation() {
+        retrieveCourtVenues(null, null, null, null, null, null, "<court>",
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<String> courtVenueNameCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            courtVenueNameCaptor.capture(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
+        );
+        assertThat(courtVenueNameCaptor.getValue()).isEqualTo("<court>");
+    }
+
+    @Test
     void testGetCourtVenuesWithBlankMrdVenuePassesValueToService() {
         retrieveCourtVenues(null, "   ", null, null, null, null, null,
                             null, null, null, null, null, null);
@@ -122,6 +164,27 @@ class LrdCourtVenueV2ControllerTest {
             "Invalid mrd_building_id. Expected format is MRD-BLD-<digits>"
         );
         verifyNoInteractions(courtVenueServiceMock);
+    }
+
+    @Test
+    void testGetCourtVenuesWithSpecialCharactersInServiceCodeUsesV1Validation() {
+        retrieveCourtVenues(null, null, "ABC@", null, null, null, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<String> serviceCodeCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            isNull(),
+            isNull(),
+            serviceCodeCaptor.capture(),
+            isNull(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
+        );
+        assertThat(serviceCodeCaptor.getValue()).isEqualTo("ABC@");
     }
 
     @Test
@@ -167,7 +230,7 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
-    void testGetCourtVenuesWithNumberParamsUsesV1Validation() {
+    void testGetCourtVenuesWithCourtTypeIdUsesV1Validation() {
         retrieveCourtVenues(null, null, null, 0, null, null, null,
                             null, null, null, null, null, null);
 
@@ -185,6 +248,48 @@ class LrdCourtVenueV2ControllerTest {
             ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
         );
         assertThat(courtTypeIdCaptor.getValue()).isZero();
+    }
+
+    @Test
+    void testGetCourtVenuesWithRegionIdUsesV1Validation() {
+        retrieveCourtVenues(null, null, null, null, -1, null, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<Integer> regionIdCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            regionIdCaptor.capture(),
+            isNull(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
+        );
+        assertThat(regionIdCaptor.getValue()).isEqualTo(-1);
+    }
+
+    @Test
+    void testGetCourtVenuesWithClusterIdUsesV1Validation() {
+        retrieveCourtVenues(null, null, null, null, null, -2, null,
+                            null, null, null, null, null, null);
+
+        ArgumentCaptor<Integer> clusterIdCaptor = ArgumentCaptor.forClass(Integer.class);
+
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenueDetailsV2(
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            clusterIdCaptor.capture(),
+            isNull(),
+            ArgumentCaptor.forClass(Boolean.class).capture(),
+            ArgumentCaptor.forClass(CourtVenueRequestParam.class).capture()
+        );
+        assertThat(clusterIdCaptor.getValue()).isEqualTo(-2);
     }
 
     @Test
