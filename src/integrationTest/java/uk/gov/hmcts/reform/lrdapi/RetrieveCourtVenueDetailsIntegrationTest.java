@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
     private static final String HTTP_STATUS_STR = "http_status";
     private static final String path = "/court-venues";
+    private static final String pathV2 = "/v2/court-venues";
 
     @ParameterizedTest
     @ValueSource(strings = {"123462"})
@@ -632,6 +634,63 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertEquals("AAA6", venueResponse.getServiceCode());
         assertEquals("17", venueResponse.getCourtTypeId());
         assertEquals("123456789", venueResponse.getEpimmsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenuesV2_WithEpimmsId_ShouldReturnV2ResponseList() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueV2Response>)
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?epimms_id=123456789",
+                                                                     LrdCourtVenueV2Response[].class, pathV2);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        LrdCourtVenueV2Response venueResponse = response.get(0);
+        assertEquals("MRD-123456789", venueResponse.getMrdVenueId());
+        assertEquals("123456789", venueResponse.getEpimsId());
+        assertEquals("MRD-BLD-385", venueResponse.getMrdBuildingId());
+        assertEquals("AAA6", venueResponse.getServiceCode());
+        assertEquals("OPEN", venueResponse.getCourtStatus());
+        assertEquals("Y", venueResponse.getOpenForPublic());
+        assertThat(venueResponse.getNames()).extracting(LrdCourtVenueV2Response.Name::getName)
+            .contains("Aberdeen Tribunal Hearing Centre 3", "ABERDEEN TRIBUNAL HEARING CENTRE 3");
+        assertThat(venueResponse.getAddresses()).extracting(LrdCourtVenueV2Response.Address::getPostCode)
+            .contains("AB11 8IP");
+        assertThat(venueResponse.getContacts()).extracting(LrdCourtVenueV2Response.Contact::getValue)
+            .contains("contact@example.gov.uk", "breathing.space@example.gov.uk");
+        assertNotNull(venueResponse.getCourtUse());
+        assertTrue(venueResponse.getCourtUse().isHearingLocation());
+        assertTrue(venueResponse.getCourtUse().isCaseManagementLocation());
+        assertEquals("VOU123456", venueResponse.getVenueOuCode());
+        assertEquals("https://service.example.gov.uk", venueResponse.getServiceUrl());
+        assertEquals("https://fact.example.gov.uk", venueResponse.getFactUrl());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenuesV2_WithMrdVenueId_ShouldReturnV2ResponseList() throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueV2Response>)
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?mrd_venue_id=MRD-123456789",
+                                                                     LrdCourtVenueV2Response[].class, pathV2);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertEquals("MRD-123456789", response.get(0).getMrdVenueId());
+        assertEquals("123456789", response.get(0).getEpimsId());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void retrieveCourtVenuesV2_WithEpimmsIdAndServiceCode_ShouldReturnV2ResponseList()
+        throws JsonProcessingException {
+
+        final var response = (List<LrdCourtVenueV2Response>)
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=AAA6&epimms_id=123456789",
+                                                                     LrdCourtVenueV2Response[].class, pathV2);
+
+        assertThat(response).isNotEmpty().hasSize(1);
+        assertEquals("AAA6", response.get(0).getServiceCode());
+        assertEquals("123456789", response.get(0).getEpimsId());
     }
 
     @Test

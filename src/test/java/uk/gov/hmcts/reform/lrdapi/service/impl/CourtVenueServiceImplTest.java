@@ -294,6 +294,34 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
+    void test_RetrieveCourtVenuesV2ByServiceCodeReturnsV2ResponseList() {
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus("AAA2")).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByMrdVenueIdIn(List.of("765"))).thenReturn(prepareCourtVenue());
+        stubEmptyV2Lookups();
+
+        List<LrdCourtVenueV2Response> courtVenueResponses =
+            courtVenueService.retrieveCourtVenueDetailsV2("", null, null, "AAA2", null, null, null,
+                                                          false, courtVenueRequestParam);
+
+        assertThat(courtVenueResponses).hasSize(1);
+        assertThat(courtVenueResponses.get(0).getMrdVenueId()).isEqualTo("765");
+        assertThat(courtVenueResponses.get(0).getServiceCode()).isEqualTo("AAA2");
+        verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA2");
+        verify(courtVenueRepository, times(1)).findByMrdVenueIdIn(List.of("765"));
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesV2ThrowsNotFoundWhenV2VenueLookupIsEmpty() {
+        when(courtVenueRepository.findByServiceCodeWithOpenCourtStatus("AAA2")).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByMrdVenueIdIn(List.of("765"))).thenReturn(List.of());
+        stubEmptyV2Lookups();
+
+        assertThrows(ResourceNotFoundException.class, () ->
+            courtVenueService.retrieveCourtVenueDetailsV2("", null, null, "AAA2", null, null, null,
+                                                          false, courtVenueRequestParam));
+    }
+
+    @Test
     void test_RetrieveCourtVenuesByMrdVenueId_InvalidValue() {
         assertThrows(InvalidRequestException.class, () -> courtVenueService
             .retrieveCourtVenueDetailsV2("", "{765}", null, null, null, null, null,
@@ -912,6 +940,15 @@ class CourtVenueServiceImplTest {
         courtType.setTypeOfCourt("courtType");
         courtType.setCourtTypeId("courtTypeId");
         return courtType;
+    }
+
+    private void stubEmptyV2Lookups() {
+        when(courtVenueRepository.findNamesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findAddressesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findContactsByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findUsesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findUrlsByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findReferenceCodesByMrdVenueIdIn(anyList())).thenReturn(List.of());
     }
 
     private record TestNameProjection(String mrdVenueId, String type, String language, String name)

@@ -19,10 +19,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LrdCourtVenueV2ControllerTest {
@@ -32,6 +35,34 @@ class LrdCourtVenueV2ControllerTest {
 
     @Mock
     CourtVenueService courtVenueServiceMock;
+
+    @Test
+    void testGetCourtVenuesReturnsV2ResponseListFromService() {
+        LrdCourtVenueV2Response courtVenueResponse = LrdCourtVenueV2Response.builder()
+            .mrdVenueId("MRD-123456789")
+            .epimsId("123456789")
+            .build();
+
+        when(courtVenueServiceMock.retrieveCourtVenueDetailsV2(
+            eq("123456789"),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            isNull(),
+            eq(false),
+            any(CourtVenueRequestParam.class)
+        )).thenReturn(List.of(courtVenueResponse));
+
+        ResponseEntity<List<LrdCourtVenueV2Response>> responseEntity =
+            retrieveCourtVenues("123456789", null, null, null, null, null, null,
+                                null, null, null, null, null, null);
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertThat(responseEntity.getBody()).containsExactly(courtVenueResponse);
+    }
 
     @Test
     void testGetCourtVenuesWithCourtStatusReturns200() {
