@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
@@ -169,47 +168,6 @@ class CourtVenueServiceImplTest {
         when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(List.of());
 
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
-    }
-
-    @Test
-    void testRetrieveCourtVenuesByServiceCodeV2ReturnsV2ResponseList() {
-        when(courtVenueRepository.findByServiceCode("AAA2")).thenReturn(prepareCourtVenue());
-        when(courtVenueRepository.findByMrdVenueIdIn(List.of("765"))).thenReturn(prepareCourtVenue());
-        stubEmptyV2Lookups();
-
-        List<LrdCourtVenueV2Response> courtVenueResponses =
-            courtVenueService.retrieveCourtVenuesByServiceCodeV2(" AAA2 ");
-
-        assertThat(courtVenueResponses).hasSize(1);
-        assertThat(courtVenueResponses.get(0).getMrdVenueId()).isEqualTo("765");
-        assertThat(courtVenueResponses.get(0).getServiceCode()).isEqualTo("AAA2");
-        verify(courtVenueRepository, times(1)).findByServiceCode("AAA2");
-        verify(courtVenueRepository, times(0)).findByServiceCodeWithOpenCourtStatus(anyString());
-    }
-
-    @Test
-    void testRetrieveCourtVenuesByServiceCodeV2WithNoCourtVenuesThrowsNotFound() {
-        when(courtVenueRepository.findByServiceCode("53453")).thenReturn(List.of());
-
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> courtVenueService.retrieveCourtVenuesByServiceCodeV2("53453")
-        );
-
-        assertThat(exception.getMessage()).isEqualTo("No court venues found for the given service code 53453");
-    }
-
-    @Test
-    void testRetrieveCourtVenuesByServiceCodeV2WithNullLiteralThrowsNotFound() {
-        when(courtVenueRepository.findByServiceCode("NULL")).thenReturn(List.of());
-
-        ResourceNotFoundException exception = assertThrows(
-            ResourceNotFoundException.class,
-            () -> courtVenueService.retrieveCourtVenuesByServiceCodeV2("null")
-        );
-
-        assertThat(exception.getMessage()).isEqualTo("No court venues found for the given service code null");
-        verify(courtVenueRepository, times(1)).findByServiceCode("NULL");
     }
 
     @Test
@@ -848,15 +806,6 @@ class CourtVenueServiceImplTest {
         courtType.setTypeOfCourt("courtType");
         courtType.setCourtTypeId("courtTypeId");
         return courtType;
-    }
-
-    private void stubEmptyV2Lookups() {
-        when(courtVenueRepository.findNamesByMrdVenueIdIn(anyList())).thenReturn(List.of());
-        when(courtVenueRepository.findAddressesByMrdVenueIdIn(anyList())).thenReturn(List.of());
-        when(courtVenueRepository.findContactsByMrdVenueIdIn(anyList())).thenReturn(List.of());
-        when(courtVenueRepository.findUsesByMrdVenueIdIn(anyList())).thenReturn(List.of());
-        when(courtVenueRepository.findUrlsByMrdVenueIdIn(anyList())).thenReturn(List.of());
-        when(courtVenueRepository.findReferenceCodesByMrdVenueIdIn(anyList())).thenReturn(List.of());
     }
 
 }

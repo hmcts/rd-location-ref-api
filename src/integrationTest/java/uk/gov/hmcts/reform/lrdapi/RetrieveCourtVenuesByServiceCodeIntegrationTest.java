@@ -13,7 +13,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.UNKNOWN_EXCEPTION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
@@ -37,7 +35,6 @@ import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDD
 class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEnabledIntegrationTest {
 
     public static final String HTTP_STATUS = "http_status";
-    private static final String V2_PATH = "/v2/court-venues/services";
 
     @ParameterizedTest
     @ValueSource(strings = {"AAA3","aaa3"})
@@ -89,86 +86,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"AAA6","aaa6"})
-    void returnsCourtVenuesByServiceCodeV2WithStatusCode_200(String serviceCode)
-        throws JsonProcessingException {
-
-        final var response = (List<LrdCourtVenueV2Response>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=" + serviceCode,
-                                                                     LrdCourtVenueV2Response[].class, V2_PATH);
-
-        assertThat(response).isNotEmpty();
-        assertThat(response).extracting(LrdCourtVenueV2Response::getServiceCode).contains("AAA6");
-        assertThat(response).extracting(LrdCourtVenueV2Response::getMrdVenueId).contains("MRD-123456789");
-    }
-
-    @Test
-    void returnsCourtVenuesByUnknownServiceCodeV2WithStatusCode_404() throws JsonProcessingException {
-
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=53453", ErrorResponse.class,
-                                                                     V2_PATH);
-
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
-        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
-        assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals("No court venues found for the given service code 53453",
-                     errorResponse.getErrorDescription());
-    }
-
-    @Test
-    void returnsCourtVenuesByNullLiteralServiceCodeV2WithStatusCode_404() throws JsonProcessingException {
-
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=null", ErrorResponse.class,
-                                                                     V2_PATH);
-
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
-        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
-        assertEquals("No court venues found for the given service code null",
-                     errorResponse.getErrorDescription());
-    }
-
-    @Test
-    void returnsCourtVenuesByInvalidServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
-
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=@$ABC", ErrorResponse.class,
-                                                                     V2_PATH);
-
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
-        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
-        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, errorResponse.getErrorDescription());
-    }
-
-    @Test
-    void returnsCourtVenuesByMissingServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
-
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("", ErrorResponse.class, V2_PATH);
-
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_500() throws JsonProcessingException {
-
-        Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=", ErrorResponse.class, V2_PATH);
-
-        assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
-        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
-        assertEquals(UNKNOWN_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals("400 BAD_REQUEST \"Validation failure\"", errorResponse.getErrorDescription());
     }
 
     @Test

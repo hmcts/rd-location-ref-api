@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationBySearchResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdBuildingLocationResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdOrgInfoServiceResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdRegionResponse;
@@ -104,17 +103,6 @@ public class LrdApiClient {
             responseEntity = getRequest(APP_BASE_PATH + path, clazz, "");
         }
         return mapCourtVenueResponse(responseEntity, clazz);
-    }
-
-    public Object retrieveCourtVenueV2ResponseForGivenRequest(String queryParam, Class<?> clazz, String path)
-        throws JsonProcessingException {
-        ResponseEntity<Object> responseEntity = null;
-        if (StringUtils.isNotBlank(queryParam)) {
-            responseEntity = getRequest(APP_BASE_PATH + path + queryParam, clazz, "");
-        } else {
-            responseEntity = getRequest(APP_BASE_PATH + path, clazz, "");
-        }
-        return mapCourtVenueV2Response(responseEntity, clazz);
     }
 
     public Object findRegionDetailsByDescription(String region, Class expectedClass) throws
@@ -280,27 +268,6 @@ public class LrdApiClient {
         } else {
             Map<String, Object> errorResponseMap = new HashMap<>();
             errorResponseMap.put("response_body",  objectMapper.readValue(
-                responseEntity.getBody().toString(), ErrorResponse.class));
-            errorResponseMap.put("http_status", status);
-            return errorResponseMap;
-        }
-    }
-
-    private Object mapCourtVenueV2Response(ResponseEntity<Object> responseEntity, Class clazz)
-        throws JsonProcessingException {
-
-        HttpStatusCode status = responseEntity.getStatusCode();
-
-        if (status.is2xxSuccessful()) {
-            if (clazz.isArray()) {
-                return Arrays.asList((LrdCourtVenueV2Response[])
-                                         objectMapper.convertValue(responseEntity.getBody(), clazz));
-            } else {
-                return objectMapper.convertValue(responseEntity.getBody(), clazz);
-            }
-        } else {
-            Map<String, Object> errorResponseMap = new HashMap<>();
-            errorResponseMap.put("response_body", objectMapper.readValue(
                 responseEntity.getBody().toString(), ErrorResponse.class));
             errorResponseMap.put("http_status", status);
             return errorResponseMap;

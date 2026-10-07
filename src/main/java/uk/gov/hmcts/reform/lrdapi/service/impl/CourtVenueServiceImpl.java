@@ -127,26 +127,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
-    public List<LrdCourtVenueV2Response> retrieveCourtVenuesByServiceCodeV2(String serviceCode) {
-
-        String trimmedServiceCode = validateServiceCode(serviceCode);
-
-        String serviceCodeIgnoreCase = trimmedServiceCode.toUpperCase();
-
-        log.info("{} : Obtaining court venues v2 for service code: {}", loggingComponentName, trimmedServiceCode);
-
-        List<CourtVenue> courtVenues = courtVenueRepository.findByServiceCode(serviceCodeIgnoreCase);
-
-        handleIfCourtVenuesEmpty(
-            () -> isEmpty(courtVenues),
-            "No court venues found for the given service code " + trimmedServiceCode,
-            trimmedServiceCode
-        );
-
-        return buildCourtVenueV2Responses(getCourtVenueListResponse(courtVenues));
-    }
-
-    @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
                                                                          String serviceCodes,
                                                                          CourtVenueRequestParam requestParam) {
@@ -220,7 +200,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                                                                        String courtVenueName,
                                                                        boolean epimmsIdWithCourtTypeOrServiceCode,
                                                                        CourtVenueRequestParam courtVenueRequestParam) {
-
 
         if (epimmsIdWithCourtTypeOrServiceCode) {
             return getLrdCourtVenueResponses(
@@ -309,7 +288,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             );
         return getLrdCourtVenueResponses(initialResult, courtVenueRequestParam);
     }
-
 
     private List<LrdCourtVenueV2Response> buildCourtVenueV2Responses(List<LrdCourtVenueResponse> legacyResponses) {
         List<String> mrdVenueIds = legacyResponses.stream()
