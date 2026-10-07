@@ -20,6 +20,7 @@ public class LocationRefConstants {
     public static final String ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE = "[0-9a-zA-Z]+";
     public static final String REGION_NAME_REGEX = "^[a-zA-Z' -]+";
     public static final String NUMERIC_REGEX = "\\d+";
+    public static final String MRD_VENUE_ID_REGEX = "^[A-Za-z0-9-]+$";
     public static final String BAD_REQUEST_STR = "Bad Request - ";
     public static final String EXCEPTION_MSG_NO_VALID_EPIM_ID_PASSED = BAD_REQUEST_STR
         + "Invalid epims id(s): %s  passed.";
@@ -96,6 +97,8 @@ public class LocationRefConstants {
     public static final String IS_CASE_MANAGEMENT_LOCATION_N = "N";
     public static final String IS_TEMPORARY_LOCATION_Y = "Y";
     public static final String IS_TEMPORARY_LOCATION_N = "N";
+    public static final String COURT_STATUS_OPEN = "Open";
+    public static final String COURT_STATUS_CLOSED = "Closed";
 
     public static final String FILTER_IS_HEARING_LOCATION =
         "is_hearing_location";
