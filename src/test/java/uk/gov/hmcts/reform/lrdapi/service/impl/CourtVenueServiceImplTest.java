@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -696,11 +697,17 @@ class CourtVenueServiceImplTest {
         assertThat(courtVenueResponses.get(0).getCourtUse().isCaseManagementLocation()).isTrue();
     }
 
-    @Test
-    void test_RetrieveCourtVenuesBySearchStringV2WithInvalidAdditionalFilter() {
-        var param = CourtVenueRequestParam.builder()
-            .isNightingaleCourt("P")
-            .build();
+    @ParameterizedTest
+    @CsvSource({
+        "is_hearing_location,P",
+        "is_case_management_location,P",
+        "is_temporary_location,P",
+        "is_nightingale_court,P",
+        "is_district_registry,P",
+        "is_appeal_centre,P"
+    })
+    void test_RetrieveCourtVenuesBySearchStringV2WithInvalidAdditionalFilter(String filterName, String filterValue) {
+        var param = buildRequestParamForFilter(filterName, filterValue);
 
         assertThrows(InvalidRequestException.class, () ->
             courtVenueService.retrieveCourtVenuesBySearchStringV2("ABC", null, null, param));
@@ -887,6 +894,20 @@ class CourtVenueServiceImplTest {
                 return useType;
             }
         };
+    }
+
+    private CourtVenueRequestParam buildRequestParamForFilter(String filterName, String filterValue) {
+        CourtVenueRequestParam.CourtVenueRequestParamBuilder builder = CourtVenueRequestParam.builder();
+        switch (filterName) {
+            case "is_hearing_location" -> builder.isHearingLocation(filterValue);
+            case "is_case_management_location" -> builder.isCaseManagementLocation(filterValue);
+            case "is_temporary_location" -> builder.isTemporaryLocation(filterValue);
+            case "is_nightingale_court" -> builder.isNightingaleCourt(filterValue);
+            case "is_district_registry" -> builder.isDistrictRegistry(filterValue);
+            case "is_appeal_centre" -> builder.isAppealCentre(filterValue);
+            default -> throw new IllegalArgumentException("Unsupported filter: " + filterName);
+        }
+        return builder.build();
     }
 
 }

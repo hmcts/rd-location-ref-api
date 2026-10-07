@@ -57,10 +57,16 @@ class RetrieveCourtVenuesBySearchStringV2IntegrationTest extends LrdAuthorizatio
     @ParameterizedTest
     @CsvSource({
         "is_case_management_location,Y",
+        "is_case_management_location,N",
         "is_hearing_location,Y",
+        "is_hearing_location,N",
         "is_temporary_location,Y",
+        "is_temporary_location,N",
+        "is_nightingale_court,Y",
         "is_nightingale_court,N",
+        "is_district_registry,Y",
         "is_district_registry,N",
+        "is_appeal_centre,Y",
         "is_appeal_centre,N"
     })
     void shouldRetrieveCourtVenuesByCourtUseFilterWithStatusCode_200(String filterName, String filterValue)
