@@ -1,10 +1,9 @@
 package uk.gov.hmcts.reform.lrdapi;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.opentelemetry.api.internal.StringUtils;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -12,7 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 
 import java.util.List;
 import java.util.Map;
@@ -61,7 +59,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getEpimmsId().equals("123456789")
-            && StringUtils.isNullOrEmpty(venue.getExternalShortName())));
+            && StringUtils.isEmpty(venue.getExternalShortName())));
     }
 
     @ParameterizedTest
@@ -197,7 +195,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(8);
         assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals(id.trim())
-            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+            && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @ParameterizedTest
@@ -259,7 +257,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
             .equals("ABERDEEN TRIBUNAL HEARING CENTRE 1")
-            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+            && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -310,7 +308,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
             && venue.getLocationType().equalsIgnoreCase("CTSC")
             && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
-                && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+                && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -354,7 +352,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
             && venue.getIsCaseManagementLocation().equalsIgnoreCase("Y")
             && venue.getLocationType().equalsIgnoreCase("CTSC")
             && venue.getIsTemporaryLocation().equalsIgnoreCase("Y")
-            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+            && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -393,7 +391,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertThat(response).isNotEmpty().hasSize(2);
         assertTrue(response.stream().allMatch(venue ->
              venue.getIsHearingLocation().equalsIgnoreCase("Y")
-             && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+             && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -426,7 +424,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(8);
         assertTrue(response.stream().allMatch(venue -> venue.getRegionId().equals("1")
-            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+            && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -442,7 +440,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(6);
         assertTrue(response.stream().allMatch(venue -> venue.getClusterId().equals("2")
-            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+            && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -460,7 +458,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertThat(response).isNotEmpty().hasSize(1);
         assertTrue(response.stream().allMatch(venue -> venue.getCourtName()
             .equals("ABERDEEN TRIBUNAL HEARING CENTRE 10")
-            && StringUtils.isNullOrEmpty(venue.getWelshExternalShortName())));
+            && StringUtils.isEmpty(venue.getWelshExternalShortName())));
     }
 
     @Test
@@ -636,62 +634,6 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertEquals("123456789", venueResponse.getEpimmsId());
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    void retrieveCourtVenuesV2_WithEpimmsId_ShouldReturnV2ResponseList() throws JsonProcessingException {
-
-        final var response = (List<LrdCourtVenueV2Response>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?epimms_id=123463",
-                                                                     LrdCourtVenueV2Response[].class, pathV2);
-
-        assertThat(response).isNotEmpty().hasSize(1);
-        LrdCourtVenueV2Response venueResponse = response.get(0);
-        assertEquals("MRD-123456789", venueResponse.getMrdVenueId());
-        assertEquals("123463", venueResponse.getEpimsId());
-        assertEquals("MRD-BLD-385", venueResponse.getMrdBuildingId());
-        assertEquals("AAA6", venueResponse.getServiceCode());
-        assertEquals("OPEN", venueResponse.getCourtStatus());
-        assertEquals("Y", venueResponse.getOpenForPublic());
-        assertThat(venueResponse.getNames()).extracting(LrdCourtVenueV2Response.Name::getName)
-            .contains("Aberdeen Tribunal Hearing Centre 7", "ABERDEEN TRIBUNAL HEARING CENTRE 23");
-        assertThat(venueResponse.getAddresses()).extracting(LrdCourtVenueV2Response.Address::getPostCode)
-            .contains("AB11 1TY");
-        assertThat(venueResponse.getContacts()).extracting(LrdCourtVenueV2Response.Contact::getValue)
-            .contains("contact@example.gov.uk", "breathing.space@example.gov.uk");
-        assertNotNull(venueResponse.getCourtUse());
-        assertTrue(venueResponse.getCourtUse().isHearingLocation());
-        assertTrue(venueResponse.getCourtUse().isCaseManagementLocation());
-        assertEquals("VOU123456", venueResponse.getVenueOuCode());
-        assertEquals("https://service.example.gov.uk", venueResponse.getServiceUrl());
-        assertEquals("https://fact.example.gov.uk", venueResponse.getFactUrl());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void retrieveCourtVenuesV2_WithMrdVenueId_ShouldReturnV2ResponseList() throws JsonProcessingException {
-
-        final var response = (List<LrdCourtVenueV2Response>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?mrd_venue_id=MRD-123456789",
-                                                                     LrdCourtVenueV2Response[].class, pathV2);
-
-        assertThat(response).isNotEmpty().hasSize(1);
-        assertEquals("MRD-123456789", response.get(0).getMrdVenueId());
-        assertEquals("123463", response.get(0).getEpimsId());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    void retrieveCourtVenuesV2_WithEpimmsIdAndServiceCode_ShouldReturnV2ResponseList()
-        throws JsonProcessingException {
-
-        final var response = (List<LrdCourtVenueV2Response>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=AAA6&epimms_id=123463",
-                                                                     LrdCourtVenueV2Response[].class, pathV2);
-
-        assertThat(response).isNotEmpty().hasSize(1);
-        assertEquals("AAA6", response.get(0).getServiceCode());
-        assertEquals("123463", response.get(0).getEpimsId());
-    }
 
     @Test
     @SuppressWarnings("unchecked")

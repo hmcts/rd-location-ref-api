@@ -158,6 +158,16 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
+    void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=", ErrorResponse.class, V2_PATH);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     void returnsCourtVenuesByServiceCode_LdFlagOff_WithStatusCode_403()
         throws Exception {
         Map<String, String> launchDarklyMap = new HashMap<>();
