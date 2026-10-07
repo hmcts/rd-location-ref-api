@@ -127,6 +127,26 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
+    public List<LrdCourtVenueV2Response> retrieveCourtVenuesByServiceCodeV2(String serviceCode) {
+
+        String trimmedServiceCode = validateServiceCode(serviceCode);
+
+        String serviceCodeIgnoreCase = trimmedServiceCode.toUpperCase();
+
+        log.info("{} : Obtaining court venues v2 for service code: {}", loggingComponentName, trimmedServiceCode);
+
+        List<CourtVenue> courtVenues = courtVenueRepository.findByServiceCode(serviceCodeIgnoreCase);
+
+        handleIfCourtVenuesEmpty(
+            () -> isEmpty(courtVenues),
+            "No court venues found for the given service code " + trimmedServiceCode,
+            trimmedServiceCode
+        );
+
+        return buildCourtVenueV2Responses(getCourtVenueListResponse(courtVenues));
+    }
+
+    @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
                                                                          String serviceCodes,
                                                                          CourtVenueRequestParam requestParam) {
@@ -290,26 +310,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return getLrdCourtVenueResponses(initialResult, courtVenueRequestParam);
     }
 
-    @Override
-    public List<LrdCourtVenueV2Response> retrieveCourtVenueDetailsV2(String epimmsIds, String mrdVenueId,
-                                                                     Integer courtTypeId, String serviceCode,
-                                                                     Integer regionId, Integer clusterId,
-                                                                     String courtVenueName,
-                                                                     boolean epimmsIdWithCourtTypeOrServiceCodePresent,
-                                                                     CourtVenueRequestParam courtVenueRequestParam) {
 
-        List<LrdCourtVenueResponse> legacyResponses = retrieveCourtVenueDetailsForV2(
-            epimmsIds,
-            mrdVenueId,
-            courtTypeId,
-            serviceCode,
-            regionId,
-            clusterId,
-            courtVenueName,
-            epimmsIdWithCourtTypeOrServiceCodePresent,
-            courtVenueRequestParam
-        );
-
+    private List<LrdCourtVenueV2Response> buildCourtVenueV2Responses(List<LrdCourtVenueResponse> legacyResponses) {
         List<String> mrdVenueIds = legacyResponses.stream()
             .map(LrdCourtVenueResponse::getMrdVenueId)
             .filter(StringUtils::isNotBlank)
@@ -345,8 +347,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         return responses;
     }
-
-
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
         log.info("{} : Obtaining court venue for epimms id(s): {}", loggingComponentName, epimmsId);

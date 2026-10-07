@@ -11,6 +11,8 @@ public interface CourtVenueService {
 
     LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode);
 
+    List<LrdCourtVenueV2Response> retrieveCourtVenuesByServiceCodeV2(String serviceCode);
+
     /**
      * Method to retrieve the court venues for the request provided.
      *

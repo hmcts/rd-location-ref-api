@@ -179,6 +179,34 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
+    void testRetrieveCourtVenuesByServiceCodeV2ReturnsV2ResponseList() {
+        when(courtVenueRepository.findByServiceCode("AAA2")).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByMrdVenueIdIn(List.of("765"))).thenReturn(prepareCourtVenue());
+        stubEmptyV2Lookups();
+
+        List<LrdCourtVenueV2Response> courtVenueResponses =
+            courtVenueService.retrieveCourtVenuesByServiceCodeV2(" AAA2 ");
+
+        assertThat(courtVenueResponses).hasSize(1);
+        assertThat(courtVenueResponses.get(0).getMrdVenueId()).isEqualTo("765");
+        assertThat(courtVenueResponses.get(0).getServiceCode()).isEqualTo("AAA2");
+        verify(courtVenueRepository, times(1)).findByServiceCode("AAA2");
+        verify(courtVenueRepository, times(0)).findByServiceCodeWithOpenCourtStatus(anyString());
+    }
+
+    @Test
+    void testRetrieveCourtVenuesByServiceCodeV2WithNoCourtVenuesThrowsNotFound() {
+        when(courtVenueRepository.findByServiceCode("53453")).thenReturn(List.of());
+
+        ResourceNotFoundException exception = assertThrows(
+            ResourceNotFoundException.class,
+            () -> courtVenueService.retrieveCourtVenuesByServiceCodeV2("53453")
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("No court venues found for the given service code 53453");
+    }
+
+    @Test
     void test_RetrieveCourtVenuesByEpimsIDs_OneIdPassed() {
 
         when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(prepareCourtVenue());

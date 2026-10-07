@@ -65,6 +65,43 @@ class LrdCourtVenueV2ControllerTest {
     }
 
     @Test
+    void testGetCourtVenuesByServiceCodeV2Returns200() {
+        LrdCourtVenueV2Response courtVenueResponse = LrdCourtVenueV2Response.builder()
+            .mrdVenueId("MRD-123456789")
+            .serviceCode("BFA1")
+            .build();
+
+        when(courtVenueServiceMock.retrieveCourtVenuesByServiceCodeV2("BFA1"))
+            .thenReturn(List.of(courtVenueResponse));
+
+        ResponseEntity<List<LrdCourtVenueV2Response>> responseEntity =
+            lrdCourtVenueV2Controller.retrieveCourtVenuesByServiceCodeV2(" BFA1 ");
+
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertThat(responseEntity.getBody()).containsExactly(courtVenueResponse);
+        verify(courtVenueServiceMock, times(1)).retrieveCourtVenuesByServiceCodeV2("BFA1");
+    }
+
+    @Test
+    void testGetCourtVenuesByServiceCodeV2WithBlankServiceCodeThrows400() {
+        assertInvalidRequestMessage(
+            () -> lrdCourtVenueV2Controller.retrieveCourtVenuesByServiceCodeV2(""),
+            "No service code provided"
+        );
+        verifyNoInteractions(courtVenueServiceMock);
+    }
+
+    @Test
+    void testGetCourtVenuesByServiceCodeV2WithInvalidServiceCodeThrows400() {
+        assertInvalidRequestMessage(
+            () -> lrdCourtVenueV2Controller.retrieveCourtVenuesByServiceCodeV2("@AB_C"),
+            "Invalid service code. Please provide service code without special characters"
+        );
+        verifyNoInteractions(courtVenueServiceMock);
+    }
+
+    @Test
     void testGetCourtVenuesWithCourtStatusReturns200() {
         ResponseEntity<List<LrdCourtVenueV2Response>> responseEntity =
             lrdCourtVenueV2Controller.retrieveCourtVenues(
