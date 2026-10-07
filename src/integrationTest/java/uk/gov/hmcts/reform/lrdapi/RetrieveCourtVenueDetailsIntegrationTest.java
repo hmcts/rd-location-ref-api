@@ -641,21 +641,21 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
     void retrieveCourtVenuesV2_WithEpimmsId_ShouldReturnV2ResponseList() throws JsonProcessingException {
 
         final var response = (List<LrdCourtVenueV2Response>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?epimms_id=123456789",
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?epimms_id=123463",
                                                                      LrdCourtVenueV2Response[].class, pathV2);
 
         assertThat(response).isNotEmpty().hasSize(1);
         LrdCourtVenueV2Response venueResponse = response.get(0);
         assertEquals("MRD-123456789", venueResponse.getMrdVenueId());
-        assertEquals("123456789", venueResponse.getEpimsId());
+        assertEquals("123463", venueResponse.getEpimsId());
         assertEquals("MRD-BLD-385", venueResponse.getMrdBuildingId());
         assertEquals("AAA6", venueResponse.getServiceCode());
         assertEquals("OPEN", venueResponse.getCourtStatus());
         assertEquals("Y", venueResponse.getOpenForPublic());
         assertThat(venueResponse.getNames()).extracting(LrdCourtVenueV2Response.Name::getName)
-            .contains("Aberdeen Tribunal Hearing Centre 3", "ABERDEEN TRIBUNAL HEARING CENTRE 3");
+            .contains("Aberdeen Tribunal Hearing Centre 7", "ABERDEEN TRIBUNAL HEARING CENTRE 23");
         assertThat(venueResponse.getAddresses()).extracting(LrdCourtVenueV2Response.Address::getPostCode)
-            .contains("AB11 8IP");
+            .contains("AB11 1TY");
         assertThat(venueResponse.getContacts()).extracting(LrdCourtVenueV2Response.Contact::getValue)
             .contains("contact@example.gov.uk", "breathing.space@example.gov.uk");
         assertNotNull(venueResponse.getCourtUse());
@@ -676,7 +676,7 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertEquals("MRD-123456789", response.get(0).getMrdVenueId());
-        assertEquals("123456789", response.get(0).getEpimsId());
+        assertEquals("123463", response.get(0).getEpimsId());
     }
 
     @Test
@@ -685,12 +685,12 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         throws JsonProcessingException {
 
         final var response = (List<LrdCourtVenueV2Response>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=AAA6&epimms_id=123456789",
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=AAA6&epimms_id=123463",
                                                                      LrdCourtVenueV2Response[].class, pathV2);
 
         assertThat(response).isNotEmpty().hasSize(1);
         assertEquals("AAA6", response.get(0).getServiceCode());
-        assertEquals("123456789", response.get(0).getEpimsId());
+        assertEquals("123463", response.get(0).getEpimsId());
     }
 
     @Test
