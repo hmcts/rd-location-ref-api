@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.UNKNOWN_EXCEPTION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
@@ -158,13 +159,16 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
+    void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_500() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=", ErrorResponse.class, V2_PATH);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(UNKNOWN_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals("400 BAD_REQUEST \"Validation failure\"", errorResponse.getErrorDescription());
     }
 
     @Test

@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.UNKNOWN_EXCEPTION;
 
 @ExtendWith(MockitoExtension.class)
 class ExceptionMapperTest {
@@ -162,7 +163,9 @@ class ExceptionMapperTest {
 
         ResponseEntity<Object> responseEntity = exceptionMapper.handleHandlerMethodValidationException(exception);
 
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
+        assertEquals(UNKNOWN_EXCEPTION.getErrorMessage(), ((ErrorResponse) responseEntity.getBody())
+            .getErrorMessage());
         assertEquals(exception.getMessage(), ((ErrorResponse) responseEntity.getBody()).getErrorDescription());
     }
 
