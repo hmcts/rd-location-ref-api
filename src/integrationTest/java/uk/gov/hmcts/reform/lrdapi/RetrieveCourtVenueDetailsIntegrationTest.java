@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.NO_COURT_VENUES_FOUND_FOR_FOR_EPIMMS_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_REQUIRED_COURT_VENUE;
 
@@ -691,6 +692,20 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertThat(response).isNotEmpty().hasSize(1);
         assertEquals("AAA6", response.get(0).getServiceCode());
         assertEquals("123463", response.get(0).getEpimsId());
+    }
+
+    @Test
+    void retrieveCourtVenuesV2_WithSpecialCharactersInLocationType_ShouldReturn400() throws JsonProcessingException {
+
+        Map<String, Object> errorResponseMap = (Map<String, Object>)
+            lrdApiClient.retrieveResponseForGivenRequest("?location_type=%25%24%5E%24",
+                                                         ErrorResponse.class, pathV2);
+
+        assertNotNull(errorResponseMap);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS_STR, HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(EXCEPTION_MSG_SPCL_CHAR, errorResponse.getErrorDescription());
     }
 
     @Test
