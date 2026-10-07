@@ -112,6 +112,12 @@ public class LocationRefConstants {
         "is_case_management_location";
     public static final String FILTER_IS_TEMPORARY_LOCATION =
         "is_temporary_location";
+    public static final String FILTER_IS_NIGHTINGALE_COURT =
+        "is_nightingale_court";
+    public static final String FILTER_IS_DISTRICT_REGISTRY =
+        "is_district_registry";
+    public static final String FILTER_IS_APPEAL_CENTRE =
+        "is_appeal_centre";
 
     public static final String INVALID_ADDITIONAL_FILTER =
         "Invalid %s. Allowed values are Y OR N";

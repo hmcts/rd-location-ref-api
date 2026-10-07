@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.Cluster;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtType;
@@ -19,6 +20,7 @@ import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -664,6 +666,62 @@ class CourtVenueServiceImplTest {
                                                                                 null);
     }
 
+    @Test
+    void test_RetrieveCourtVenuesBySearchStringV2() {
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC",
+                                                                   List.of("1", "2"),
+                                                                   List.of("AAA2"),
+                                                                   null,
+                                                                   null,
+                                                                   "COURT",
+                                                                   null)).thenReturn(prepareCourtVenue());
+        when(courtVenueRepository.findByMrdVenueIdIn(List.of("765"))).thenReturn(prepareCourtVenue());
+        stubV2LookupsWithUses(
+            courtVenueUseProjection("765", "CASE_MANAGEMENT"),
+            courtVenueUseProjection("765", "HEARING")
+        );
+        var param = CourtVenueRequestParam.builder()
+            .isHearingLocation("Y")
+            .isCaseManagementLocation("Y")
+            .locationType("Court")
+            .build();
+
+        List<LrdCourtVenueV2Response> courtVenueResponses =
+            courtVenueService.retrieveCourtVenuesBySearchStringV2("ABC", "1,2", "aaa2", param);
+
+        assertThat(courtVenueResponses).hasSize(1);
+        assertThat(courtVenueResponses.get(0).getMrdVenueId()).isEqualTo("765");
+        assertThat(courtVenueResponses.get(0).getServiceCode()).isEqualTo("AAA2");
+        assertThat(courtVenueResponses.get(0).getCourtUse().isHearingLocation()).isTrue();
+        assertThat(courtVenueResponses.get(0).getCourtUse().isCaseManagementLocation()).isTrue();
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesBySearchStringV2WithInvalidAdditionalFilter() {
+        var param = CourtVenueRequestParam.builder()
+            .isNightingaleCourt("P")
+            .build();
+
+        assertThrows(InvalidRequestException.class, () ->
+            courtVenueService.retrieveCourtVenuesBySearchStringV2("ABC", null, null, param));
+    }
+
+    @Test
+    void test_RetrieveCourtVenuesBySearchStringV2WithNoResultsReturnsEmptyList() {
+        when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC",
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null)).thenReturn(List.of());
+
+        List<LrdCourtVenueV2Response> courtVenueResponses =
+            courtVenueService.retrieveCourtVenuesBySearchStringV2("ABC", null, null, new CourtVenueRequestParam());
+
+        assertThat(courtVenueResponses).isEmpty();
+    }
+
 
     private void verifyMultiResponse(List<LrdCourtVenueResponse> courtVenueResponses) {
         assertThat(courtVenueResponses).hasSize(2);
@@ -806,6 +864,29 @@ class CourtVenueServiceImplTest {
         courtType.setTypeOfCourt("courtType");
         courtType.setCourtTypeId("courtTypeId");
         return courtType;
+    }
+
+    private void stubV2LookupsWithUses(CourtVenueUseProjection... uses) {
+        when(courtVenueRepository.findNamesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findAddressesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findContactsByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findUsesByMrdVenueIdIn(anyList())).thenReturn(List.of(uses));
+        when(courtVenueRepository.findUrlsByMrdVenueIdIn(anyList())).thenReturn(List.of());
+        when(courtVenueRepository.findReferenceCodesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+    }
+
+    private CourtVenueUseProjection courtVenueUseProjection(String mrdVenueId, String useType) {
+        return new CourtVenueUseProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getUseType() {
+                return useType;
+            }
+        };
     }
 
 }

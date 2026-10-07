@@ -24,8 +24,11 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_APPEAL_CENTRE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_CASE_MANAGEMENT_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_DISTRICT_REGISTRY;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_NIGHTINGALE_COURT;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_COURT_STATUS;
@@ -270,6 +273,9 @@ public class ValidationUtils {
             checkSpecialCharacters(requestParam.getLocationType());
         }
         validateSingleFilters(requestParam.getIsTemporaryLocation(), FILTER_IS_TEMPORARY_LOCATION);
+        validateSingleFilters(requestParam.getIsNightingaleCourt(), FILTER_IS_NIGHTINGALE_COURT);
+        validateSingleFilters(requestParam.getIsDistrictRegistry(), FILTER_IS_DISTRICT_REGISTRY);
+        validateSingleFilters(requestParam.getIsAppealCentre(), FILTER_IS_APPEAL_CENTRE);
         validateMrdBuildingId(requestParam.getMrdBuildingId());
         validateCourtStatus(requestParam.getCourtStatus());
     }
@@ -310,6 +316,15 @@ public class ValidationUtils {
                                          : null);
         result.setIsTemporaryLocation(ObjectUtils.isNotEmpty(requestParam.getIsTemporaryLocation())
                                          ? StringUtils.strip(requestParam.getIsTemporaryLocation())
+                                         : null);
+        result.setIsNightingaleCourt(ObjectUtils.isNotEmpty(requestParam.getIsNightingaleCourt())
+                                         ? StringUtils.strip(requestParam.getIsNightingaleCourt())
+                                         : null);
+        result.setIsDistrictRegistry(ObjectUtils.isNotEmpty(requestParam.getIsDistrictRegistry())
+                                         ? StringUtils.strip(requestParam.getIsDistrictRegistry())
+                                         : null);
+        result.setIsAppealCentre(ObjectUtils.isNotEmpty(requestParam.getIsAppealCentre())
+                                         ? StringUtils.strip(requestParam.getIsAppealCentre())
                                          : null);
         result.setMrdBuildingId(ObjectUtils.isNotEmpty(requestParam.getMrdBuildingId())
                                          ? StringUtils.strip(requestParam.getMrdBuildingId())

@@ -176,6 +176,49 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     @Override
+    public List<LrdCourtVenueV2Response> retrieveCourtVenuesBySearchStringV2(String searchString, String courtTypeId,
+                                                                             String serviceCodes,
+                                                                             CourtVenueRequestParam requestParam) {
+        log.info("{} : Obtaining V2 court venue for search String: searchString: {}, courtTypeId: {}, "
+                     + "serviceCodes: {}, isHearingLocation: {}, isCaseManagementLocation: {}, locationType: {}, "
+                     + "isTemporaryLocation: {}, isNightingaleCourt: {}, isDistrictRegistry: {}, "
+                     + "isAppealCentre: {} ",
+                 loggingComponentName, searchString, courtTypeId, serviceCodes, requestParam.getIsHearingLocation(),
+                 requestParam.getIsCaseManagementLocation(), requestParam.getLocationType(),
+                 requestParam.getIsTemporaryLocation(), requestParam.getIsNightingaleCourt(),
+                 requestParam.getIsDistrictRegistry(), requestParam.getIsAppealCentre());
+
+        var result = trimCourtVenueRequestParam(requestParam);
+        validateCourtVenueFilters(result);
+
+        List<String> courtTypeIdList = StringUtils.isEmpty(courtTypeId) ? null :
+            Arrays.stream(courtTypeId.split(COMMA)).map(String::strip).toList();
+
+        List<String> serviceCodeList = StringUtils.isEmpty(serviceCodes) ? null :
+            Arrays.stream(serviceCodes.split(COMMA)).map(String::strip).map(String::toUpperCase).toList();
+
+        String locationType = (StringUtils.isNotEmpty(result.getLocationType()))
+            ? result.getLocationType().toUpperCase()
+            : result.getLocationType();
+
+        List<CourtVenue> courtVenues = courtVenueRepository.findBySearchStringAndCourtTypeId(
+            searchString.toUpperCase(),
+            courtTypeIdList,
+            serviceCodeList,
+            null,
+            null,
+            locationType,
+            null
+        );
+
+        if (courtVenues.isEmpty()) {
+            return List.of();
+        }
+
+        return applyCourtUseFilters(buildCourtVenueV2Responses(getCourtVenueListResponse(courtVenues)), result);
+    }
+
+    @Override
     public List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsIds, Integer courtTypeId,
                                                                  String serviceCode, Integer regionId,
                                                                  Integer clusterId, String courtVenueName,
@@ -298,7 +341,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .toList();
 
         if (mrdVenueIds.isEmpty()) {
-            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+            return List.of();
         }
 
         Map<String, CourtVenue> courtVenuesByMrdVenueId = courtVenueRepository.findByMrdVenueIdIn(mrdVenueIds)
@@ -320,10 +363,47 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .toList();
 
         if (responses.isEmpty()) {
-            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+            return List.of();
         }
 
         return responses;
+    }
+
+    private List<LrdCourtVenueV2Response> applyCourtUseFilters(List<LrdCourtVenueV2Response> responses,
+                                                               CourtVenueRequestParam requestParam) {
+        return responses.stream()
+            .filter(response -> matchesFlag(
+                requestParam.getIsHearingLocation(),
+                response.getCourtUse().isHearingLocation()
+            ))
+            .filter(response -> matchesFlag(
+                requestParam.getIsCaseManagementLocation(),
+                response.getCourtUse().isCaseManagementLocation()
+            ))
+            .filter(response -> matchesFlag(
+                requestParam.getIsTemporaryLocation(),
+                response.getCourtUse().isTemporaryLocation()
+            ))
+            .filter(response -> matchesFlag(
+                requestParam.getIsNightingaleCourt(),
+                response.getCourtUse().isNightingaleCourt()
+            ))
+            .filter(response -> matchesFlag(
+                requestParam.getIsDistrictRegistry(),
+                response.getCourtUse().isDistrictRegistry()
+            ))
+            .filter(response -> matchesFlag(
+                requestParam.getIsAppealCentre(),
+                response.getCourtUse().isAppealCentre()
+            ))
+            .toList();
+    }
+
+    private boolean matchesFlag(String requestedValue, boolean actualValue) {
+        if (StringUtils.isBlank(requestedValue)) {
+            return true;
+        }
+        return VALUE_Y.equalsIgnoreCase(requestedValue) == actualValue;
     }
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByEpimmsId(String epimmsId) {
@@ -544,10 +624,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     private boolean isUseEnabled(Set<String> useTypes, String useType, String fallbackFlag) {
-        if (useTypes.isEmpty()) {
-            return VALUE_Y.equalsIgnoreCase(fallbackFlag);
-        }
-        return useTypes.contains(useType);
+        return useTypes.contains(useType) || VALUE_Y.equalsIgnoreCase(fallbackFlag);
     }
 
     private String getCourtStatus(CourtVenue courtVenue) {
