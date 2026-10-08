@@ -1,27 +1,18 @@
-UPDATE court_venue
-SET welsh_court_name = 'Llys Sirol Abertawe',
-    uprn = '100070987654',
-    venue_ou_code = 'VOU987654',
-    mrd_building_location_id = 'MRD-BLD-987',
-    mrd_venue_id = 'MRD-987654321',
-    service_url = 'https://service-secondary.example.gov.uk',
-    fact_url = 'https://fact-secondary.example.gov.uk',
-    court_status_code = 'OPEN',
-    open_date = '2021-07-05',
-    parent_id = null,
-    district_registry_venue_id = null,
-    appeal_centre_venue_id = null,
-    contact_email = 'secondary.contact@example.gov.uk',
-    breathing_space_email = 'secondary.breathing.space@example.gov.uk',
-    is_case_management_location = 'N',
-    is_hearing_location = 'N',
-    is_temporary_location = 'N',
-    is_nightingale_court = 'N',
-    is_district_registry = 'N',
-    is_appeal_centre = 'N',
-    location_type = 'Court'
-WHERE court_venue_id = 14
-  AND epimms_id = '123462';
+INSERT INTO court_venue (
+    court_venue_id, epimms_id, site_name, created_time, updated_time, region_id, court_type_id, cluster_id,
+    open_for_public, court_address, postcode, court_status, court_name, is_case_management_location,
+    is_hearing_location, is_temporary_location, is_nightingale_court, location_type, service_code,
+    welsh_court_name, uprn, venue_ou_code, mrd_building_location_id, mrd_venue_id, service_url, fact_url,
+    court_status_code, open_date, contact_email, breathing_space_email, is_district_registry, is_appeal_centre
+)
+VALUES (
+    16, '223462', 'Aberdeen Tribunal Hearing Centre 8', '2021-07-05 09:50:46.269032',
+    '2021-07-05 09:50:46.269032', '4', '17', '1', true, 'AB8, 54 HUNTLY STREET, ABERDEEN',
+    'AB11 1TY', 'Open', 'ABERDEEN TRIBUNAL HEARING CENTRE 24', 'N', 'N', 'N', 'N', 'Court', 'SVC9',
+    'Llys Sirol Abertawe', '100070987654', 'VOU987654', 'MRD-BLD-987', 'MRD-987654321',
+    'https://service-secondary.example.gov.uk', 'https://fact-secondary.example.gov.uk', 'OPEN', '2021-07-05',
+    'secondary.contact@example.gov.uk', 'secondary.breathing.space@example.gov.uk', 'N', 'N'
+) ON CONFLICT (court_venue_id) DO NOTHING;
 
 UPDATE court_venue
 SET welsh_court_name = 'Llys Sirol Caerdydd',
