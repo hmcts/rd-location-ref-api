@@ -128,7 +128,6 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Override
     public List<LrdCourtVenueV2Response> retrieveCourtVenuesByServiceCodeV2(String serviceCode) {
-
         String trimmedServiceCode = validateServiceCode(serviceCode);
 
         String serviceCodeIgnoreCase = trimmedServiceCode.toUpperCase();
@@ -378,8 +377,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
     }
 
     private List<LrdCourtVenueResponse> retrieveCourtVenuesByMrdVenueId(String mrdVenueId) {
-        log.info("{} : Obtaining court venue for mrd venue id: {}", loggingComponentName, mrdVenueId);
-
+        log.debug("{} : Obtaining court venue for mrd venue id: {}", loggingComponentName, mrdVenueId);
         String trimmedMrdVenueId = mrdVenueId.strip();
         if (!isRegexSatisfied(trimmedMrdVenueId, MRD_VENUE_ID_REGEX)) {
             throw new InvalidRequestException(
