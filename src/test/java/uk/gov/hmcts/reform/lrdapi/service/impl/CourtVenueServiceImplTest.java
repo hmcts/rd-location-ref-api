@@ -165,7 +165,6 @@ class CourtVenueServiceImplTest {
 
     @Test
     void testRetrieveCourtVenuesByServiceCode_WithNoCourtVenues() {
-
         when(courtVenueRepository.findByServiceCode(anyString())).thenReturn(List.of());
 
         assertThrows(ResourceNotFoundException.class, () -> courtVenueService.retrieveCourtVenuesByServiceCode("ABC1"));
@@ -190,7 +189,6 @@ class CourtVenueServiceImplTest {
     @Test
     void testRetrieveCourtVenuesByServiceCodeV2WithNoCourtVenuesThrowsNotFound() {
         when(courtVenueRepository.findByServiceCode("53453")).thenReturn(List.of());
-
         ResourceNotFoundException exception = assertThrows(
             ResourceNotFoundException.class,
             () -> courtVenueService.retrieveCourtVenuesByServiceCodeV2("53453")
@@ -202,7 +200,6 @@ class CourtVenueServiceImplTest {
     @Test
     void testRetrieveCourtVenuesByServiceCodeV2WithNullLiteralThrowsNotFound() {
         when(courtVenueRepository.findByServiceCode("NULL")).thenReturn(List.of());
-
         ResourceNotFoundException exception = assertThrows(
             ResourceNotFoundException.class,
             () -> courtVenueService.retrieveCourtVenuesByServiceCodeV2("null")
