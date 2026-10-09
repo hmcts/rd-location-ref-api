@@ -117,8 +117,8 @@ public class ExceptionMapper {
     public ResponseEntity<Object> handleHandlerMethodValidationException(Exception ex) {
         return errorDetailsResponseEntity(
             ex,
-            INTERNAL_SERVER_ERROR,
-            ErrorConstants.UNKNOWN_EXCEPTION.getErrorMessage()
+            BAD_REQUEST,
+            ErrorConstants.INVALID_REQUEST_EXCEPTION.getErrorMessage()
         );
     }
 
