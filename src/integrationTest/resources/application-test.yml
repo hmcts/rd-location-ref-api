@@ -4,7 +4,7 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:tc:postgresql:16:///locrefdata}
     username: ${DB_USERNAME:dbrdlocationref}
-    password: ${DB_PASSWORD:dbrdlocationref}
+    password: ${DB_PASSWORD:${random.uuid}}
   jpa:
     show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
