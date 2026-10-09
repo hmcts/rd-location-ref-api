@@ -28,7 +28,7 @@ While not essential, it is highly recommended to use the pre-push git hook inclu
 
 If running locally for development or testing you will need to set the following environment variables
 
-* export POSTGRES_USERNAME=dbrefdata
+* export POSTGRES_USERNAME=<The database username. Please check with the dev team for more information.>
 * export POSTGRES_PASSWORD=<The database password. Please check with the dev team for more information.>
 * export client-secret=<The actual client-secret. Please check with the dev team for more information.>
 * export totp_secret=<The actual totp_secret. Please check with the dev team for more information.>
