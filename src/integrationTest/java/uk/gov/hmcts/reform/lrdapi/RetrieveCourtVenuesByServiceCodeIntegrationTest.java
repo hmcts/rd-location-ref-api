@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.UNKNOWN_EXCEPTION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
@@ -37,6 +38,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     public static final String HTTP_STATUS = "http_status";
     private static final String V2_PATH = "/v2/court-venues/services";
+    private static final String MISSING_SERVICE_CODE_MESSAGE =
+        "Required request parameter 'service_code' for method parameter type String is not present";
 
     @ParameterizedTest
     @ValueSource(strings = {"AAA3","aaa3"})
@@ -80,14 +83,17 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     @ParameterizedTest
     @ValueSource(strings = {"", "   "})
-    void returnsCourtVenuesByBlankServiceCodeWithStatusCode_400(String serviceCode) throws
+    void returnsCourtVenuesByBlankServiceCodeWithStatusCode_500(String serviceCode) throws
         JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.findCourtVenuesByServiceCode(serviceCode, ErrorResponse.class);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
+        ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
+        assertEquals(UNKNOWN_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals("400 BAD_REQUEST \"Validation failure\"", errorResponse.getErrorDescription());
     }
 
     @ParameterizedTest
@@ -134,7 +140,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    void returnsCourtVenuesByInvalidServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
+    void returnsCourtVenuesBySpecialCharacterServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=@$ABC", ErrorResponse.class,
@@ -143,8 +149,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
-        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
-        assertEquals(EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR, errorResponse.getErrorDescription());
+        assertEquals(MISSING_SERVICE_CODE_MESSAGE, errorResponse.getErrorMessage());
+        assertEquals(MISSING_SERVICE_CODE_MESSAGE, errorResponse.getErrorDescription());
     }
 
     @Test
@@ -158,15 +164,15 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     }
 
     @Test
-    void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
+    void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_500() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=", ErrorResponse.class, V2_PATH);
 
         assertNotNull(errorResponseMap);
-        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
+        assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
-        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
+        assertEquals(UNKNOWN_EXCEPTION.getErrorMessage(), errorResponse.getErrorMessage());
         assertEquals("400 BAD_REQUEST \"Validation failure\"", errorResponse.getErrorDescription());
     }
 

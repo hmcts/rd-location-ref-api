@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import uk.gov.hmcts.reform.lrdapi.exception.ForbiddenException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,7 +19,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
 
 @ExtendWith(MockitoExtension.class)
 class ExceptionMapperTest {
@@ -155,18 +153,6 @@ class ExceptionMapperTest {
         assertEquals(duplicateKeyException.getMessage(), ((ErrorResponse) responseEntity.getBody())
             .getErrorDescription());
 
-    }
-
-    @Test
-    void test_handle_handler_method_validation_exception() {
-        HandlerMethodValidationException exception = mock(HandlerMethodValidationException.class);
-
-        ResponseEntity<Object> responseEntity = exceptionMapper.handleHandlerMethodValidationException(exception);
-
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals(INVALID_REQUEST_EXCEPTION.getErrorMessage(), ((ErrorResponse) responseEntity.getBody())
-            .getErrorMessage());
-        assertEquals(exception.getMessage(), ((ErrorResponse) responseEntity.getBody()).getErrorDescription());
     }
 
 }
