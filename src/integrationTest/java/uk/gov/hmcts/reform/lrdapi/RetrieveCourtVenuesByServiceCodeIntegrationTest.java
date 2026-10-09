@@ -104,7 +104,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         final var response = (List<LrdCourtVenueV2Response>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=" + serviceCode,
                                                                      LrdCourtVenueV2Response[].class, V2_PATH);
-
         assertThat(response).isNotEmpty();
         assertThat(response).extracting(LrdCourtVenueV2Response::getServiceCode).contains("AAA6");
         assertThat(response).extracting(LrdCourtVenueV2Response::getMrdVenueId).contains("MRD-123456789");
@@ -116,7 +115,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=53453", ErrorResponse.class,
                                                                      V2_PATH);
-
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
@@ -131,7 +129,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=null", ErrorResponse.class,
                                                                      V2_PATH);
-
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
@@ -141,11 +138,9 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     @Test
     void returnsCourtVenuesBySpecialCharacterServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
-
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=@$ABC", ErrorResponse.class,
                                                                      V2_PATH);
-
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
@@ -155,7 +150,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     @Test
     void returnsCourtVenuesByMissingServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
-
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("", ErrorResponse.class, V2_PATH);
 
@@ -165,7 +159,6 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
     @Test
     void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_500() throws JsonProcessingException {
-
         Map<String, Object> errorResponseMap = (Map<String, Object>)
             lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=", ErrorResponse.class, V2_PATH);
 

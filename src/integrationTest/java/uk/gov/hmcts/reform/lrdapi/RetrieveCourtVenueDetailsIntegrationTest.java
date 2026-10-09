@@ -634,7 +634,6 @@ class RetrieveCourtVenueDetailsIntegrationTest extends LrdAuthorizationEnabledIn
         assertEquals("123456789", venueResponse.getEpimmsId());
     }
 
-
     @Test
     @SuppressWarnings("unchecked")
     void retrieveCourtVenues_WithEpimmsIdAndServiceCodeAndCourtTypeId_WhenFiltersDoNotMatch_ShouldReturn404()

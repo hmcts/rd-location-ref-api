@@ -29,7 +29,6 @@ class RetrieveCourtVenuesByServiceCodeV2FunctionalTest extends AuthorizationFunc
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.OK, "?service_code=AAA6",
                                                          LrdCourtVenueV2Response[].class,
                                                          PATH);
-
         assertNotNull(response);
         assertThat(response).isNotEmpty();
         assertThat(response).extracting(LrdCourtVenueV2Response::getServiceCode).contains("AAA6");
@@ -42,7 +41,6 @@ class RetrieveCourtVenuesByServiceCodeV2FunctionalTest extends AuthorizationFunc
             lrdApiClient.retrieveResponseForGivenRequest(HttpStatus.NOT_FOUND, "?service_code=53453",
                                                          ErrorResponse.class,
                                                          PATH);
-
         assertNotNull(response);
         assertEquals(EMPTY_RESULT_DATA_ACCESS.getErrorMessage(), response.getErrorMessage());
         assertEquals("No court venues found for the given service code 53453",

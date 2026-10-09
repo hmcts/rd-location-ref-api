@@ -288,7 +288,6 @@ public class LrdApiClient {
 
     private Object mapCourtVenueV2Response(ResponseEntity<Object> responseEntity, Class clazz)
         throws JsonProcessingException {
-
         HttpStatusCode status = responseEntity.getStatusCode();
 
         if (status.is2xxSuccessful()) {
