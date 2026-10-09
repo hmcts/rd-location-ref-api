@@ -29,7 +29,8 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.EMPTY_RESULT_DATA_ACCESS;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.INVALID_REQUEST_EXCEPTION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.ErrorConstants.UNKNOWN_EXCEPTION;
-import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants
+    .EXCEPTION_MSG_SERVICE_CODE_SPCL_CHAR;
 import static uk.gov.hmcts.reform.lrdapi.util.FeatureConditionEvaluation.FORBIDDEN_EXCEPTION_LD;
 
 @WithTags({@WithTag("testType:Integration")})
@@ -113,8 +114,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     void returnsCourtVenuesByUnknownServiceCodeV2WithStatusCode_404() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=53453", ErrorResponse.class,
-                                                                     V2_PATH);
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=53453",
+                                                                     ErrorResponse.class, V2_PATH);
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
@@ -127,8 +128,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     void returnsCourtVenuesByNullLiteralServiceCodeV2WithStatusCode_404() throws JsonProcessingException {
 
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=null", ErrorResponse.class,
-                                                                     V2_PATH);
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=null",
+                                                                     ErrorResponse.class, V2_PATH);
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.NOT_FOUND);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
@@ -139,8 +140,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     @Test
     void returnsCourtVenuesBySpecialCharacterServiceCodeV2WithStatusCode_400() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=@$ABC", ErrorResponse.class,
-                                                                     V2_PATH);
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=@$ABC",
+                                                                     ErrorResponse.class, V2_PATH);
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.BAD_REQUEST);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
@@ -160,8 +161,8 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
     @Test
     void returnsCourtVenuesByBlankServiceCodeV2WithStatusCode_500() throws JsonProcessingException {
         Map<String, Object> errorResponseMap = (Map<String, Object>)
-            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=", ErrorResponse.class, V2_PATH);
-
+            lrdApiClient.retrieveCourtVenueV2ResponseForGivenRequest("?service_code=",
+                                                                     ErrorResponse.class, V2_PATH);
         assertNotNull(errorResponseMap);
         assertThat(errorResponseMap).containsEntry(HTTP_STATUS, HttpStatus.INTERNAL_SERVER_ERROR);
         ErrorResponse errorResponse = (ErrorResponse) errorResponseMap.get("response_body");
