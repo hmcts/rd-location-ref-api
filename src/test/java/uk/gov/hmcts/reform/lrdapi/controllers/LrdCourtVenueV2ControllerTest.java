@@ -2,11 +2,13 @@ package uk.gov.hmcts.reform.lrdapi.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
@@ -32,7 +34,7 @@ class LrdCourtVenueV2ControllerTest {
     CourtVenueService courtVenueServiceMock;
 
     @Test
-    void testGetCourtVenuesByServiceCodeV2Returns200() {
+    void testGetCourtVenuesByServiceCodeV2Returns200() throws MissingServletRequestParameterException {
         LrdCourtVenueV2Response courtVenueResponse = LrdCourtVenueV2Response.builder()
             .mrdVenueId("MRD-123456789")
             .serviceCode("BFA1")
@@ -61,15 +63,19 @@ class LrdCourtVenueV2ControllerTest {
 
     @Test
     void testGetCourtVenuesByServiceCodeV2WithInvalidServiceCodeThrows400() {
-        assertInvalidRequestMessage(
+        MissingServletRequestParameterException exception = assertThrows(
+            MissingServletRequestParameterException.class,
             () -> lrdCourtVenueV2Controller.retrieveCourtVenuesByServiceCodeV2("@AB_C"),
-            "Invalid service code. Please provide service code without special characters"
+            "Expected MissingServletRequestParameterException"
+        );
+        assertThat(exception.getMessage()).isEqualTo(
+            "Required request parameter 'service_code' for method parameter type String is not present"
         );
         verifyNoInteractions(courtVenueServiceMock);
     }
 
-    private void assertInvalidRequestMessage(Runnable request, String expectedMessage) {
-        InvalidRequestException exception = assertThrows(InvalidRequestException.class, request::run);
+    private void assertInvalidRequestMessage(Executable request, String expectedMessage) {
+        InvalidRequestException exception = assertThrows(InvalidRequestException.class, request);
         assertThat(exception.getMessage()).isEqualTo(expectedMessage);
     }
 }

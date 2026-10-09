@@ -12,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
@@ -23,6 +25,7 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static uk.gov.hmcts.reform.lrdapi.service.impl.CourtVenueServiceImpl.validateServiceCode;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
 
 @RequestMapping(
     path = "/refdata/location/v2/court-venues"
@@ -60,9 +63,19 @@ public class LrdCourtVenueV2Controller {
         produces = APPLICATION_JSON_VALUE
     )
     public ResponseEntity<List<LrdCourtVenueV2Response>> retrieveCourtVenuesByServiceCodeV2(
-        @RequestParam(value = "service_code") @NotBlank String serviceCode) {
+        @RequestParam(value = "service_code") @NotBlank String serviceCode)
+        throws MissingServletRequestParameterException {
 
         log.info("{} : Inside retrieveCourtVenuesByServiceCodeV2", loggingComponentName);
+        String strippedServiceCode = serviceCode.strip();
+        if (!strippedServiceCode.isEmpty()
+            && !isRegexSatisfied(
+                strippedServiceCode,
+                LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE
+            )) {
+            throw new MissingServletRequestParameterException("service_code", String.class.getSimpleName());
+        }
+
         String trimmedServiceCode = validateServiceCode(serviceCode);
 
         log.info("{} : Calling retrieveCourtVenuesByServiceCodeV2", loggingComponentName);
