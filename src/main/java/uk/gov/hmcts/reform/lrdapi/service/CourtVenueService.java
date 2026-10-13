@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.service;
 
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
 import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 
@@ -9,6 +10,8 @@ import java.util.List;
 public interface CourtVenueService {
 
     LrdCourtVenuesByServiceCodeResponse retrieveCourtVenuesByServiceCode(String serviceCode);
+
+    List<LrdCourtVenueV2Response> retrieveCourtVenuesByServiceCodeV2(String serviceCode);
 
     /**
      * Method to retrieve the court venues for the request provided.
@@ -21,7 +24,8 @@ public interface CourtVenueService {
      * @return list of court venues
      */
     List<LrdCourtVenueResponse> retrieveCourtVenueDetails(String epimmsId, Integer courtTypeId, String serviceCode,
-                                                          Integer regionId,Integer clusterId, String courtVenueName,
+                                                          Integer regionId, Integer clusterId,
+                                                          String courtVenueName,
                                                           boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                           CourtVenueRequestParam courtVenueRequestParam);
 
