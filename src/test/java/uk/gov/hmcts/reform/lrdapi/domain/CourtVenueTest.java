@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.lrdapi.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,6 +61,16 @@ class CourtVenueTest {
         courtVenue.setLocationType("Court");
         courtVenue.setParentLocation("");
         courtVenue.setServiceCode("AAA2");
+        courtVenue.setCourtStatusCode("OPEN");
+        courtVenue.setOpenDate(LocalDate.now());
+        courtVenue.setParentId("PARENT123");
+        courtVenue.setDistrictRegistryVenueId("DR123");
+        courtVenue.setAppealCentreVenueId("AC123");
+        courtVenue.setEffectiveFromDate(LocalDate.now());
+        courtVenue.setEffectiveToDate(LocalDate.now());
+        courtVenue.setMrdCreatedTime(now);
+        courtVenue.setMrdUpdatedTime(now);
+        courtVenue.setMrdDeletedTime(now);
 
         assertEquals("1", courtVenue.getCourtVenueId().toString());
         assertEquals("siteName", courtVenue.getSiteName());
@@ -86,6 +97,16 @@ class CourtVenueTest {
         assertEquals(now, courtVenue.getCreatedTime());
         assertEquals(now, courtVenue.getUpdatedTime());
         assertEquals("AAA2",courtVenue.getServiceCode());
+        assertEquals("OPEN", courtVenue.getCourtStatusCode());
+        assertEquals(LocalDate.now(), courtVenue.getOpenDate());
+        assertEquals("PARENT123", courtVenue.getParentId());
+        assertEquals("DR123", courtVenue.getDistrictRegistryVenueId());
+        assertEquals("AC123", courtVenue.getAppealCentreVenueId());
+        assertEquals(LocalDate.now(), courtVenue.getEffectiveFromDate());
+        assertEquals(LocalDate.now(), courtVenue.getEffectiveToDate());
+        assertEquals(now, courtVenue.getMrdCreatedTime());
+        assertEquals(now, courtVenue.getMrdUpdatedTime());
+        assertEquals(now, courtVenue.getMrdDeletedTime());
 
     }
 
@@ -150,6 +171,13 @@ class CourtVenueTest {
             .locationType("Court")
             .parentLocation("100")
             .serviceCode("AAA3")
+            .courtStatusCode("OPEN")
+            .openDate(LocalDate.now())
+            .parentId("PARENT456")
+            .districtRegistryVenueId("DR456")
+            .appealCentreVenueId("AC456")
+            .effectiveFromDate(LocalDate.now())
+            .effectiveToDate(LocalDate.now())
             .build();
 
         assertEquals(2L, courtVenue.getCourtVenueId());
@@ -176,6 +204,13 @@ class CourtVenueTest {
         assertEquals("Court", courtVenue.getLocationType());
         assertEquals("100", courtVenue.getParentLocation());
         assertEquals("AAA3", courtVenue.getServiceCode());
+        assertEquals("OPEN", courtVenue.getCourtStatusCode());
+        assertEquals(LocalDate.now(), courtVenue.getOpenDate());
+        assertEquals("PARENT456", courtVenue.getParentId());
+        assertEquals("DR456", courtVenue.getDistrictRegistryVenueId());
+        assertEquals("AC456", courtVenue.getAppealCentreVenueId());
+        assertEquals(LocalDate.now(), courtVenue.getEffectiveFromDate());
+        assertEquals(LocalDate.now(), courtVenue.getEffectiveToDate());
     }
 
     @Test
