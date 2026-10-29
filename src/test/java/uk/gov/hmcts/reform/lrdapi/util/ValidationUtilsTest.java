@@ -24,6 +24,7 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsText
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateSearchStringForBuildingLocationDetails;
+import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateServiceCodes;
 
 class ValidationUtilsTest {
 
@@ -85,15 +86,29 @@ class ValidationUtilsTest {
 
 
     @Test
-    void testCheckBothValuesPresents() {
-        assertThat(checkBothValuesPresent("asd", "123"))
+    void testCheckBothValuesPresents_WithCourtType() {
+        assertThat(checkBothValuesPresent("asd", "123", ""))
             .isTrue();
     }
 
 
     @Test
-    void testCheckBothValuesPresentsFalse() {
-        assertThat(checkBothValuesPresent("", "123"))
+    void testCheckBothValuesPresents_WithServiceCode() {
+        assertThat(checkBothValuesPresent("asd", "", "SRV1"))
+            .isTrue();
+    }
+
+
+    @Test
+    void testCheckBothValuesPresentsFalse_EpimmsMissing() {
+        assertThat(checkBothValuesPresent("", "123", "SRV1"))
+            .isFalse();
+    }
+
+
+    @Test
+    void testCheckBothValuesPresentsFalse_NoCourtTypeOrServiceCode() {
+        assertThat(checkBothValuesPresent("asd", "", ""))
             .isFalse();
     }
 
@@ -400,6 +415,19 @@ class ValidationUtilsTest {
     void testValidateSearchStringForBuildingLocationDetailsSuccess() {
         assertDoesNotThrow(() ->
                                validateSearchStringForBuildingLocationDetails("asdc"));
+    }
+
+    @Test
+    void testValidateServiceCodes_WithValidServiceCodes_ShouldNotThrowException() {
+        assertDoesNotThrow(() -> validateServiceCodes("AAA3, ABA4"));
+    }
+
+    @Test
+    void testValidateServiceCodes_WithInvalidServiceCodes_ShouldThrowException() {
+        assertThrows(
+            InvalidRequestException.class,
+            () -> validateServiceCodes("AAA3, AB_4")
+        );
     }
 
     private List<String> getSingleInvalidIdList() {

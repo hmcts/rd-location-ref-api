@@ -1,7 +1,7 @@
 #!groovy
 import uk.gov.hmcts.contino.AppPipelineDsl
 
-@Library("Infrastructure")
+@Library("Infrastructure@2.12.2")
 
 def type = "java"
 def product = "rd"
@@ -33,7 +33,7 @@ def vaultOverrides = [
 ]
 
 // Configure branches to sync with master branch
-def branchesToSync = []
+def branchesToSync = ['demo', 'ithc', 'perftest']
 
 // Var for testcontainers.org
 env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX = "hmctsprod.azurecr.io/imported/"
@@ -127,7 +127,7 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "target/site/serenity/",
             reportFiles          : "index.html",
-            reportName           : "Functional Tests Report"
+            reportName           : "Functional Tests (Serenity) Report"
         ]
     }
 
@@ -139,7 +139,7 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "target/site/serenity/",
             reportFiles          : "index.html",
-            reportName           : "Functional Tests Report"
+            reportName           : "Functional Tests (Serenity) Report"
         ]
     }
 

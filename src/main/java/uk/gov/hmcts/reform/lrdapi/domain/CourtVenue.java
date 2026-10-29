@@ -29,7 +29,7 @@ import java.util.Optional;
 @Setter
 @Builder
 @EqualsAndHashCode
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"epimms_id","site_name","court_type_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"epimms_id","service_code"}))
 public class CourtVenue implements Serializable {
 
     @Id
@@ -41,6 +41,9 @@ public class CourtVenue implements Serializable {
 
     @Column(name = "epimms_id")
     private String epimmsId;
+
+    @Column(name = "service_code")
+    private String serviceCode;
 
     @CreatedDate
     private LocalDateTime createdTime;

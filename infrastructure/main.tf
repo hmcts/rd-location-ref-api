@@ -55,7 +55,7 @@ module "db-rd-location-ref-api-v16" {
 
   # Trigger to the force user permission script to rerun
   force_user_permissions_trigger = "3"
-  # Trigger to rerun and grant Access Reader role to the specified tables in the list report_privilege_tables  
+  # Trigger to rerun and grant Access Reader role to the specified tables in the list report_privilege_tables
   force_db_report_privileges_trigger = "2"
 
   # Sets correct DB owner after migration to fix permissions

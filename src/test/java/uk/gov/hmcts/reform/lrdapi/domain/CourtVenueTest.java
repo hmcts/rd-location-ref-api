@@ -59,6 +59,7 @@ class CourtVenueTest {
         courtVenue.setIsNightingaleCourt("N");
         courtVenue.setLocationType("Court");
         courtVenue.setParentLocation("");
+        courtVenue.setServiceCode("AAA2");
 
         assertEquals("1", courtVenue.getCourtVenueId().toString());
         assertEquals("siteName", courtVenue.getSiteName());
@@ -84,6 +85,7 @@ class CourtVenueTest {
         assertEquals(now,courtVenue.getCourtOpenDate().get());
         assertEquals(now, courtVenue.getCreatedTime());
         assertEquals(now, courtVenue.getUpdatedTime());
+        assertEquals("AAA2",courtVenue.getServiceCode());
 
     }
 
@@ -102,6 +104,97 @@ class CourtVenueTest {
         assertEquals("N", courtVenueRequestParam.getIsTemporaryLocation());
         assertEquals("CTSC", courtVenueRequestParam.getLocationType());
 
+    }
+
+    @Test
+    void testCourtVenueBuilderWithServiceCode() {
+        Region region = new Region();
+        region.setDescription("regionDescription");
+        region.setRegionId("789");
+
+        CourtType courtType = new CourtType();
+        courtType.setCourtTypeId("20");
+        courtType.setTypeOfCourt("courtType2");
+
+        Cluster cluster = new Cluster();
+        cluster.setClusterId("789");
+        cluster.setClusterName("clusterName2");
+
+        LocalDateTime now = LocalDateTime.now();
+
+        CourtVenue courtVenue = CourtVenue.builder()
+            .courtVenueId(2L)
+            .siteName("siteName2")
+            .region(region)
+            .courtType(courtType)
+            .cluster(cluster)
+            .openForPublic(Boolean.FALSE)
+            .courtAddress("courtAddress2")
+            .postcode("AB CDE")
+            .phoneNumber("987654321")
+            .courtLocationCode("courtLocationCode2")
+            .dxAddress("dxAddress2")
+            .welshSiteName("welshSiteName2")
+            .welshCourtAddress("welshCourtAddress2")
+            .courtStatus("Open")
+            .courtOpenDate(now)
+            .courtName("courtName2")
+            .createdTime(now)
+            .updatedTime(now)
+            .venueName("venueName2")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("Y")
+            .welshVenueName("welshVenueName2")
+            .isTemporaryLocation("Y")
+            .isNightingaleCourt("N")
+            .locationType("Court")
+            .parentLocation("100")
+            .serviceCode("AAA3")
+            .build();
+
+        assertEquals(2L, courtVenue.getCourtVenueId());
+        assertEquals("siteName2", courtVenue.getSiteName());
+        assertEquals("789", courtVenue.getRegion().get().getRegionId());
+        assertEquals("20", courtVenue.getCourtType().getCourtTypeId());
+        assertEquals("789", courtVenue.getCluster().get().getClusterId());
+        assertTrue(!courtVenue.getOpenForPublic());
+        assertEquals("courtAddress2", courtVenue.getCourtAddress());
+        assertEquals("AB CDE", courtVenue.getPostcode());
+        assertEquals("987654321", courtVenue.getPhoneNumber());
+        assertEquals("courtLocationCode2", courtVenue.getCourtLocationCode());
+        assertEquals("dxAddress2", courtVenue.getDxAddress());
+        assertEquals("welshSiteName2", courtVenue.getWelshSiteName());
+        assertEquals("welshCourtAddress2", courtVenue.getWelshCourtAddress());
+        assertEquals("Open", courtVenue.getCourtStatus());
+        assertEquals("courtName2", courtVenue.getCourtName());
+        assertEquals("venueName2", courtVenue.getVenueName());
+        assertEquals("N", courtVenue.getIsCaseManagementLocation());
+        assertEquals("Y", courtVenue.getIsHearingLocation());
+        assertEquals("welshVenueName2", courtVenue.getWelshVenueName());
+        assertEquals("Y", courtVenue.getIsTemporaryLocation());
+        assertEquals("N", courtVenue.getIsNightingaleCourt());
+        assertEquals("Court", courtVenue.getLocationType());
+        assertEquals("100", courtVenue.getParentLocation());
+        assertEquals("AAA3", courtVenue.getServiceCode());
+    }
+
+    @Test
+    void testCourtVenueServiceCodeValidation() {
+        CourtVenue courtVenue1 = new CourtVenue();
+        courtVenue1.setServiceCode("AAA2");
+        assertEquals("AAA2", courtVenue1.getServiceCode());
+
+        CourtVenue courtVenue2 = CourtVenue.builder()
+            .courtVenueId(1L)
+            .serviceCode("AAA6")
+            .build();
+        assertEquals("AAA6", courtVenue2.getServiceCode());
+
+        CourtVenue courtVenue3 = CourtVenue.builder()
+            .courtVenueId(2L)
+            .serviceCode("ABA4")
+            .build();
+        assertEquals("ABA4", courtVenue3.getServiceCode());
     }
 
 }
