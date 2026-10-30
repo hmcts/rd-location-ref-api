@@ -282,6 +282,8 @@ class ValidationUtilsTest {
         courtVenueRequestParam.setIsCaseManagementLocation("Y");
         courtVenueRequestParam.setLocationType("CTSC");
         courtVenueRequestParam.setIsTemporaryLocation("Y");
+        courtVenueRequestParam.setMrdBuildingId("MRD-BLD-385");
+        courtVenueRequestParam.setCourtStatus("Open");
 
 
         validateCourtVenueFilters(courtVenueRequestParam);
@@ -320,6 +322,54 @@ class ValidationUtilsTest {
         validateCourtVenueFilters(courtVenueRequestParam);
 
         assertTrue(true);
+    }
+
+    @Test
+    void testValidateCourtVenueRequestParamAllowsVariableLengthMrdBuildingIdDigits() {
+        CourtVenueRequestParam courtVenueRequestParam = new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setMrdBuildingId("MRD-BLD-1");
+        assertDoesNotThrow(() -> validateCourtVenueFilters(courtVenueRequestParam));
+
+        courtVenueRequestParam.setMrdBuildingId("MRD-BLD-12345");
+        assertDoesNotThrow(() -> validateCourtVenueFilters(courtVenueRequestParam));
+    }
+
+    @Test
+    void testValidateCourtVenueRequestParamInvalidMrdBuildingId() {
+        CourtVenueRequestParam courtVenueRequestParam = new CourtVenueRequestParam();
+        courtVenueRequestParam.setMrdBuildingId("MRD-BLD-ABC");
+
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> validateCourtVenueFilters(courtVenueRequestParam)
+        );
+
+        assertEquals("Invalid mrd_building_id. Expected format is MRD-BLD-<digits>", exception.getMessage());
+    }
+
+    @Test
+    void testValidateCourtVenueRequestParamAllowsCourtStatusValues() {
+        CourtVenueRequestParam courtVenueRequestParam = new CourtVenueRequestParam();
+
+        courtVenueRequestParam.setCourtStatus("Open");
+        assertDoesNotThrow(() -> validateCourtVenueFilters(courtVenueRequestParam));
+
+        courtVenueRequestParam.setCourtStatus("Closed");
+        assertDoesNotThrow(() -> validateCourtVenueFilters(courtVenueRequestParam));
+    }
+
+    @Test
+    void testValidateCourtVenueRequestParamInvalidCourtStatus() {
+        CourtVenueRequestParam courtVenueRequestParam = new CourtVenueRequestParam();
+        courtVenueRequestParam.setCourtStatus("Pending");
+
+        InvalidRequestException exception = assertThrows(
+            InvalidRequestException.class,
+            () -> validateCourtVenueFilters(courtVenueRequestParam)
+        );
+
+        assertEquals("Invalid court_status. Allowed values are Open OR Closed", exception.getMessage());
     }
 
     @Test
@@ -391,6 +441,8 @@ class ValidationUtilsTest {
         courtVenueRequestParam.setIsCaseManagementLocation("    Y    ");
         courtVenueRequestParam.setLocationType("     CTSC    ");
         courtVenueRequestParam.setIsTemporaryLocation("Y    ");
+        courtVenueRequestParam.setMrdBuildingId("    MRD-BLD-385    ");
+        courtVenueRequestParam.setCourtStatus("    Closed    ");
 
 
         CourtVenueRequestParam response1 = trimCourtVenueRequestParam(courtVenueRequestParam);
@@ -399,6 +451,8 @@ class ValidationUtilsTest {
         assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
         assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
         assertThat(response1.getIsHearingLocation()).isEqualTo("Y");
+        assertThat(response1.getMrdBuildingId()).isEqualTo("MRD-BLD-385");
+        assertThat(response1.getCourtStatus()).isEqualTo("Closed");
 
 
     }
