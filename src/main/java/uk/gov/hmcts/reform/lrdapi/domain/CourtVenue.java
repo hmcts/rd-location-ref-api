@@ -19,6 +19,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -29,10 +30,16 @@ import java.util.Optional;
 @Setter
 @Builder
 @EqualsAndHashCode
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"epimms_id","service_code"}))
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"epimms_id","service_code"}),
+    @UniqueConstraint(columnNames = {"mrd_venue_id"})
+})
 public class CourtVenue implements Serializable {
 
     @Id
+    @Column(name = "mrd_venue_id")
+    private String mrdVenueId;
+
     @Column(name = "court_venue_id")
     private Long courtVenueId;
 
@@ -129,14 +136,35 @@ public class CourtVenue implements Serializable {
     @Column(name = "mrd_building_location_id")
     private String mrdBuildingLocationId;
 
-    @Column(name = "mrd_venue_id")
-    private String mrdVenueId;
-
     @Column(name = "service_url")
     private String serviceUrl;
 
     @Column(name = "fact_url")
     private String factUrl;
+
+    @Column(name = "court_status_code")
+    private String courtStatusCode;
+
+    @Column(name = "district_registry_venue_id")
+    private String districtRegistryVenueId;
+
+    @Column(name = "appeal_centre_venue_id")
+    private String appealCentreVenueId;
+
+    @Column(name = "effective_from_date")
+    private LocalDate effectiveFromDate;
+
+    @Column(name = "effective_to_date")
+    private LocalDate effectiveToDate;
+
+    @Column(name = "mrd_created_time")
+    private LocalDateTime mrdCreatedTime;
+
+    @Column(name = "mrd_updated_time")
+    private LocalDateTime mrdUpdatedTime;
+
+    @Column(name = "mrd_deleted_time")
+    private LocalDateTime mrdDeletedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "court_type_id", referencedColumnName = "court_type_id",
