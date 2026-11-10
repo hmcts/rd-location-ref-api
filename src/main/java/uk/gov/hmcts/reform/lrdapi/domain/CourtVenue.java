@@ -36,7 +36,6 @@ import java.util.Optional;
 })
 public class CourtVenue implements Serializable {
 
-    @Id
     @Column(name = "court_venue_id")
     private Long courtVenueId;
 
@@ -133,6 +132,7 @@ public class CourtVenue implements Serializable {
     @Column(name = "mrd_building_location_id")
     private String mrdBuildingLocationId;
 
+    @Id
     @Column(name = "mrd_venue_id")
     private String mrdVenueId;
 
@@ -145,41 +145,11 @@ public class CourtVenue implements Serializable {
     @Column(name = "court_status_code")
     private String courtStatusCode;
 
-    @Column(name = "open_date")
-    private LocalDate openDate;
-
-    @Column(name = "parent_id")
-    private String parentId;
-
     @Column(name = "district_registry_venue_id")
     private String districtRegistryVenueId;
 
     @Column(name = "appeal_centre_venue_id")
     private String appealCentreVenueId;
-
-    @Column(name = "district_registry_site_name")
-    private String districtRegistrySiteName;
-
-    @Column(name = "district_registry_welsh_site_name")
-    private String districtRegistryWelshSiteName;
-
-    @Column(name = "district_registry_external_short_name")
-    private String districtRegistryExternalShortName;
-
-    @Column(name = "district_registry_welsh_external_short_name")
-    private String districtRegistryWelshExternalShortName;
-
-    @Column(name = "contact_email")
-    private String contactEmail;
-
-    @Column(name = "breathing_space_email")
-    private String breathingSpaceEmail;
-
-    @Column(name = "is_district_registry")
-    private String isDistrictRegistry;
-
-    @Column(name = "is_appeal_centre")
-    private String isAppealCentre;
 
     @Column(name = "effective_from_date")
     private LocalDate effectiveFromDate;

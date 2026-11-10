@@ -329,7 +329,10 @@ public class CourtVenueServiceImpl implements CourtVenueService {
                 (first, second) -> first
             ));
 
-        CourtVenueV2Lookups lookups = getCourtVenueV2Lookups(mrdVenueIds);
+        Map<String, String> parentVenueIdsByEpimmsId =
+            getParentVenueIdsByEpimmsId(List.copyOf(courtVenuesByMrdVenueId.values()));
+
+        CourtVenueV2Lookups lookups = getCourtVenueV2Lookups(mrdVenueIds, parentVenueIdsByEpimmsId);
 
         List<LrdCourtVenueV2Response> responses = legacyResponses.stream()
             .map(LrdCourtVenueResponse::getMrdVenueId)
@@ -457,7 +460,30 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return courtVenueRequestParam != null && StringUtils.isNotBlank(courtVenueRequestParam.getCourtStatus());
     }
 
-    private CourtVenueV2Lookups getCourtVenueV2Lookups(List<String> mrdVenueIds) {
+    private Map<String, String> getParentVenueIdsByEpimmsId(List<CourtVenue> courtVenues) {
+        List<String> parentEpimmsIds = courtVenues.stream()
+            .map(CourtVenue::getParentLocation)
+            .filter(StringUtils::isNotBlank)
+            .distinct()
+            .toList();
+
+        if (parentEpimmsIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return courtVenueRepository.findByEpimmsIdIn(parentEpimmsIds)
+            .stream()
+            .filter(courtVenue -> StringUtils.isNotBlank(courtVenue.getEpimmsId())
+                && StringUtils.isNotBlank(courtVenue.getMrdVenueId()))
+            .collect(Collectors.toMap(
+                courtVenue -> courtVenue.getEpimmsId().toUpperCase(),
+                CourtVenue::getMrdVenueId,
+                (first, second) -> first
+            ));
+    }
+
+    private CourtVenueV2Lookups getCourtVenueV2Lookups(List<String> mrdVenueIds,
+                                                       Map<String, String> parentVenueIdsByEpimmsId) {
         Map<String, List<LrdCourtVenueV2Response.Name>> namesByMrdVenueId = courtVenueRepository
             .findNamesByMrdVenueIdIn(mrdVenueIds)
             .stream()
@@ -515,7 +541,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             contactsByMrdVenueId,
             usesByMrdVenueId,
             urlsByMrdVenueId,
-            referenceCodesByMrdVenueId
+            referenceCodesByMrdVenueId,
+            parentVenueIdsByEpimmsId
         );
     }
 
@@ -532,7 +559,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .mrdBuildingId(courtVenue.getMrdBuildingLocationId())
             .serviceCode(courtVenue.getServiceCode())
             .courtStatus(getCourtStatus(courtVenue))
-            .openDate(nonBlank(courtVenue.getOpenDate() == null ? null : courtVenue.getOpenDate().toString()))
+            .openDate(courtVenue.getCourtOpenDate().map(date -> date.toLocalDate().toString()).orElse(null))
             .closedDate(courtVenue.getClosedDate().map(date -> date.toLocalDate().toString()).orElse(null))
             .openForPublic(toYesNo(courtVenue.getOpenForPublic()))
             .dxAddress(courtVenue.getDxAddress())
@@ -541,7 +568,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .locationType(courtVenue.getLocationType())
             .courtUse(buildCourtUse(courtVenue, useTypes))
             .parentLocation(courtVenue.getParentLocation())
-            .parentVenueId(courtVenue.getParentId())
+            .parentVenueId(getParentVenueId(courtVenue.getParentLocation(), lookups.parentVenueIdsByEpimmsId()))
             .districtRegistryVenueId(courtVenue.getDistrictRegistryVenueId())
             .appealCentreVenueId(courtVenue.getAppealCentreVenueId())
             .venueOuCode(referenceCodes.getOrDefault(REFERENCE_CODE_VENUE_OU_CODE, courtVenue.getVenueOuCode()))
@@ -558,10 +585,10 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .hearingLocation(isUseEnabled(useTypes, USE_HEARING, courtVenue.getIsHearingLocation()))
             .caseManagementLocation(isUseEnabled(useTypes, USE_CASE_MANAGEMENT,
                                                  courtVenue.getIsCaseManagementLocation()))
-            .districtRegistry(isUseEnabled(useTypes, USE_DISTRICT_REGISTRY, courtVenue.getIsDistrictRegistry()))
+            .districtRegistry(useTypes.contains(USE_DISTRICT_REGISTRY))
             .temporaryLocation(isUseEnabled(useTypes, USE_TEMPORARY, courtVenue.getIsTemporaryLocation()))
             .nightingaleCourt(isUseEnabled(useTypes, USE_NIGHTINGALE, courtVenue.getIsNightingaleCourt()))
-            .appealCentre(isUseEnabled(useTypes, USE_APPEAL_CENTRE, courtVenue.getIsAppealCentre()))
+            .appealCentre(useTypes.contains(USE_APPEAL_CENTRE))
             .build();
     }
 
@@ -579,15 +606,18 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         return courtVenue.getCourtStatus();
     }
 
+    private String getParentVenueId(String parentLocation, Map<String, String> parentVenueIdsByEpimmsId) {
+        if (StringUtils.isBlank(parentLocation)) {
+            return null;
+        }
+        return parentVenueIdsByEpimmsId.get(parentLocation.toUpperCase());
+    }
+
     private String toYesNo(Boolean value) {
         if (value == null) {
             return null;
         }
         return Boolean.TRUE.equals(value) ? VALUE_Y : VALUE_N;
-    }
-
-    private String nonBlank(String value) {
-        return StringUtils.isBlank(value) ? null : value;
     }
 
     private LrdCourtVenueV2Response.Name toNameResponse(CourtVenueNameProjection projection) {
@@ -622,7 +652,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         Map<String, List<LrdCourtVenueV2Response.Contact>> contactsByMrdVenueId,
         Map<String, Set<String>> usesByMrdVenueId,
         Map<String, Map<String, String>> urlsByMrdVenueId,
-        Map<String, Map<String, String>> referenceCodesByMrdVenueId
+        Map<String, Map<String, String>> referenceCodesByMrdVenueId,
+        Map<String, String> parentVenueIdsByEpimmsId
     ) {
     }
 

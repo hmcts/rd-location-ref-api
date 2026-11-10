@@ -233,19 +233,27 @@ class CourtVenueServiceImplTest {
             .mrdBuildingLocationId("BLDG-0876")
             .serviceCode("AAA5")
             .courtStatusCode("OPEN")
-            .openDate(LocalDate.of(2018, 4, 1))
+            .courtOpenDate(LocalDate.of(2018, 4, 1).atStartOfDay())
             .openForPublic(true)
             .dxAddress("HAGRD354")
             .regionId("5")
             .clusterId("1")
             .locationType("Court")
-            .parentId("MRD-000436")
+            .parentLocation("100000")
             .districtRegistryVenueId("MRD-000456")
             .appealCentreVenueId("MRD-000789")
             .courtType(getCourtType())
             .build();
 
-        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(List.of(courtVenue));
+        CourtVenue parentCourtVenue = CourtVenue.builder()
+            .mrdVenueId("MRD-000436")
+            .epimmsId("100000")
+            .build();
+
+        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenAnswer(invocation -> {
+            List<String> epimmsIds = invocation.getArgument(0);
+            return epimmsIds.contains("100000") ? List.of(parentCourtVenue) : List.of(courtVenue);
+        });
         when(courtVenueRepository.findByMrdVenueIdIn(anyList())).thenReturn(List.of(courtVenue));
         when(courtVenueRepository.findNamesByMrdVenueIdIn(anyList())).thenReturn(List.of(
             new TestNameProjection("MRD-000123", "SITE", "EN", "54 Hagley Road (Birmingham Offices)"),
@@ -281,6 +289,8 @@ class CourtVenueServiceImplTest {
         assertThat(response.getMrdBuildingId()).isEqualTo("BLDG-0876");
         assertThat(response.getCourtStatus()).isEqualTo("OPEN");
         assertThat(response.getOpenDate()).isEqualTo("2018-04-01");
+        assertThat(response.getParentLocation()).isEqualTo("100000");
+        assertThat(response.getParentVenueId()).isEqualTo("MRD-000436");
         assertThat(response.getOpenForPublic()).isEqualTo("Y");
         assertThat(response.getCourtUse().isHearingLocation()).isTrue();
         assertThat(response.getCourtUse().isCaseManagementLocation()).isFalse();

@@ -12,7 +12,7 @@ import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 
 import java.util.List;
 
-public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
+public interface CourtVenueRepository extends JpaRepository<CourtVenue, String> {
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "

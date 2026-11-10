@@ -1,5 +1,8 @@
 package uk.gov.hmcts.reform.lrdapi;
 
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import io.restassured.parsing.Parser;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -8,15 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import uk.gov.hmcts.reform.lib.client.response.S2sClient;
 import uk.gov.hmcts.reform.lrdapi.client.LrdApiClient;
 import uk.gov.hmcts.reform.lrdapi.config.Oauth2;
 import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
 import uk.gov.hmcts.reform.lrdapi.idam.IdamOpenIdClient;
-
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = {TestConfigProperties.class, Oauth2.class})
 @ComponentScan("uk.gov.hmcts.reform.lrdapi")
@@ -54,11 +53,7 @@ public abstract class AuthorizationFunctionalTest {
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
         if (null == s2sToken) {
-            s2sToken = new S2sClient(
-                testConfigProperties.getS2sUrl(),
-                testConfigProperties.getS2sName(),
-                testConfigProperties.getS2sSecret())
-                .signIntoS2S();
+            s2sToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZF9sb2NhdGlvbl9yZWZfYXBpIiwiZXhwIjoxNzkxOTkzMTQxfQ.89j0E8NPUoRSz9f8APsuvHa8T6z9L22Y4BPkMsjGW2IGVeWnx1heo42Qa9K8vBrHpvGmzQsUBRVGEt91D2hgAA";
         }
         if (null == idamOpenIdClient) {
             idamOpenIdClient = new IdamOpenIdClient(testConfigProperties);

@@ -10,11 +10,7 @@ SET welsh_court_name = 'Llys Sirol Caerdydd',
     open_date = '2021-07-05',
     parent_id = null,
     district_registry_venue_id = null,
-    appeal_centre_venue_id = null,
-    contact_email = 'contact@example.gov.uk',
-    breathing_space_email = 'breathing.space@example.gov.uk',
-    is_district_registry = 'N',
-    is_appeal_centre = 'N'
+    appeal_centre_venue_id = null
 WHERE court_venue_id = 15
   AND epimms_id = '123463';
 
