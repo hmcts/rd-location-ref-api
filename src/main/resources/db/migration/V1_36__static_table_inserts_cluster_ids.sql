@@ -1,4 +1,3 @@
-
 insert into cluster(
     cluster_id,
     cluster_name,
