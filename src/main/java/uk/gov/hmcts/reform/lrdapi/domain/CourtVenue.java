@@ -37,6 +37,9 @@ import java.util.Optional;
 public class CourtVenue implements Serializable {
 
     @Id
+    @Column(name = "mrd_venue_id")
+    private String mrdVenueId;
+
     @Column(name = "court_venue_id")
     private Long courtVenueId;
 
@@ -132,10 +135,6 @@ public class CourtVenue implements Serializable {
 
     @Column(name = "mrd_building_location_id")
     private String mrdBuildingLocationId;
-
-    @Id
-    @Column(name = "mrd_venue_id")
-    private String mrdVenueId;
 
     @Column(name = "service_url")
     private String serviceUrl;

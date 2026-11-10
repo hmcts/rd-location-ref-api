@@ -1,6 +1,4 @@
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS court_status_code VARCHAR(32);
-ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS open_date DATE;
-ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS parent_id VARCHAR(16);
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS district_registry_venue_id VARCHAR(16);
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS appeal_centre_venue_id VARCHAR(16);
 ALTER TABLE court_venue ADD COLUMN IF NOT EXISTS effective_from_date DATE;

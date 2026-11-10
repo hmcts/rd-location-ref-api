@@ -142,7 +142,7 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             trimmedServiceCode
         );
 
-        return buildCourtVenueV2Responses(getCourtVenueListResponse(courtVenues));
+        return buildCourtVenueV2Responses(courtVenues);
     }
 
     @Override
@@ -311,11 +311,11 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
     @Override
     public List<LrdCourtVenueV2Response> retrieveCourtVenueDetailsV2(String epimmsIds, String mrdVenueId,
-                                                                     Integer courtTypeId, String serviceCode,
-                                                                     Integer regionId, Integer clusterId,
-                                                                     String courtVenueName,
-                                                                     boolean epimmsIdWithCourtTypeOrServiceCodePresent,
-                                                                     CourtVenueRequestParam courtVenueRequestParam) {
+                                                                      Integer courtTypeId, String serviceCode,
+                                                                      Integer regionId, Integer clusterId,
+                                                                      String courtVenueName,
+                                                                      boolean epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                                      CourtVenueRequestParam courtVenueRequestParam) {
 
         List<LrdCourtVenueResponse> legacyResponses = retrieveCourtVenueDetailsForV2(
             epimmsIds,
@@ -340,6 +340,25 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
         }
 
+        List<CourtVenue> courtVenues = courtVenueRepository.findByMrdVenueIdIn(mrdVenueIds);
+
+        handleIfCourtVenuesEmpty(() -> isEmpty(courtVenues), NO_COURT_VENUES_FOUND, null);
+
+        return buildCourtVenueV2Responses(courtVenues);
+    }
+
+    private List<LrdCourtVenueV2Response> buildCourtVenueV2Responses(List<CourtVenue> courtVenues) {
+        List<String> mrdVenueIds = courtVenues.stream()
+            .map(CourtVenue::getMrdVenueId)
+            .filter(StringUtils::isNotBlank)
+            .map(String::toUpperCase)
+            .distinct()
+            .toList();
+
+        if (mrdVenueIds.isEmpty()) {
+            throw new ResourceNotFoundException(NO_COURT_VENUES_FOUND);
+        }
+
         Map<String, CourtVenue> courtVenuesByMrdVenueId = courtVenueRepository.findByMrdVenueIdIn(mrdVenueIds)
             .stream()
             .collect(Collectors.toMap(
@@ -353,8 +372,8 @@ public class CourtVenueServiceImpl implements CourtVenueService {
 
         CourtVenueV2Lookups lookups = getCourtVenueV2Lookups(mrdVenueIds, parentVenueIdsByEpimmsId);
 
-        List<LrdCourtVenueV2Response> responses = legacyResponses.stream()
-            .map(LrdCourtVenueResponse::getMrdVenueId)
+        List<LrdCourtVenueV2Response> responses = courtVenues.stream()
+            .map(CourtVenue::getMrdVenueId)
             .filter(StringUtils::isNotBlank)
             .map(mrdId -> courtVenuesByMrdVenueId.get(mrdId.toUpperCase()))
             .filter(Objects::nonNull)

@@ -29,6 +29,13 @@ public interface CourtVenueService {
                                                           boolean epimmsIdWithCourtTypeOrServiceCodePresent,
                                                           CourtVenueRequestParam courtVenueRequestParam);
 
+    List<LrdCourtVenueV2Response> retrieveCourtVenueDetailsV2(String epimmsIds, String mrdVenueId,
+                                                              Integer courtTypeId, String serviceCode,
+                                                              Integer regionId, Integer clusterId,
+                                                              String courtVenueName,
+                                                              boolean epimmsIdWithCourtTypeOrServiceCodePresent,
+                                                              CourtVenueRequestParam courtVenueRequestParam);
+
     List<LrdCourtVenueResponse> retrieveCourtVenuesBySearchString(String searchString, String courtTypeId,
                                                                   String serviceCode,
                                                                   CourtVenueRequestParam requestParam);
