@@ -53,7 +53,11 @@ public abstract class AuthorizationFunctionalTest {
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
         if (null == s2sToken) {
-            s2sToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZF9sb2NhdGlvbl9yZWZfYXBpIiwiZXhwIjoxNzkxOTkzMTQxfQ.89j0E8NPUoRSz9f8APsuvHa8T6z9L22Y4BPkMsjGW2IGVeWnx1heo42Qa9K8vBrHpvGmzQsUBRVGEt91D2hgAA";
+         s2sToken = new S2sClient(
+                testConfigProperties.getS2sUrl(),
+                testConfigProperties.getS2sName(),
+                testConfigProperties.getS2sSecret())
+                .signIntoS2S();    
         }
         if (null == idamOpenIdClient) {
             idamOpenIdClient = new IdamOpenIdClient(testConfigProperties);
