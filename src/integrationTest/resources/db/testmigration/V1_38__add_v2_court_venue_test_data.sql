@@ -7,7 +7,6 @@ SET welsh_court_name = 'Llys Sirol Caerdydd',
     service_url = 'https://service.example.gov.uk',
     fact_url = 'https://fact.example.gov.uk',
     court_status_code = 'OPEN',
-    parent_id = null,
     district_registry_venue_id = null,
     appeal_centre_venue_id = null
 WHERE court_venue_id = 15

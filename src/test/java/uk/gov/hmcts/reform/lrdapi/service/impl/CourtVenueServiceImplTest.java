@@ -20,6 +20,12 @@ import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
 import uk.gov.hmcts.reform.lrdapi.domain.Region;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtTypeServiceAssocRepository;
 import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueAddressProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueContactProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueNameProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -207,6 +213,109 @@ class CourtVenueServiceImplTest {
 
         assertThat(exception.getMessage()).isEqualTo("No court venues found for the given service code null");
         verify(courtVenueRepository, times(1)).findByServiceCode("NULL");
+    }
+
+    @Test
+    void testRetrieveCourtVenuesByServiceCodeV2EnrichesFromV2ChildTables() {
+        CourtVenue courtVenue = CourtVenue.builder()
+            .courtVenueId(15L)
+            .epimmsId("123463")
+            .serviceCode("AAA6")
+            .courtStatus("Open")
+            .courtStatusCode("OPEN")
+            .isCaseManagementLocation("N")
+            .isHearingLocation("N")
+            .isTemporaryLocation("Y")
+            .isNightingaleCourt("N")
+            .locationType("CTSC")
+            .parentLocation("366559")
+            .venueOuCode("87675")
+            .mrdBuildingLocationId("MRD-BLD-385")
+            .mrdVenueId("MRD-1")
+            .serviceUrl("https://service.courtvenue.com")
+            .factUrl("https://fact.courtvenue.com")
+            .build();
+
+        CourtVenue parentVenue = CourtVenue.builder()
+            .courtVenueId(1L)
+            .epimmsId("366559")
+            .mrdVenueId("MRD-PARENT")
+            .build();
+
+        when(courtVenueRepository.findByServiceCode("AAA6")).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findByMrdVenueIdIn(List.of("MRD-1"))).thenReturn(List.of(courtVenue));
+        when(courtVenueRepository.findByEpimmsIdIn(List.of("366559"))).thenReturn(List.of(parentVenue));
+        when(courtVenueRepository.findNamesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            nameProjection("MRD-1", "SITE", "EN", "Aberdeen Tribunal Hearing Centre 7"),
+            nameProjection("MRD-1", "COURT", "EN", "ABERDEEN TRIBUNAL HEARING CENTRE 23"),
+            nameProjection("MRD-1", "COURT", "CY", "Llys Sirol Caerdydd")
+        ));
+        when(courtVenueRepository.findAddressesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            addressProjection("MRD-1", "MAILING", "AB7, 54 HUNTLY STREET, ABERDEEN", "AB11 1TY",
+                              "100070123456", "EN")
+        ));
+        when(courtVenueRepository.findContactsByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            contactProjection("MRD-1", "EMAIL", "CONTACT_SERVICE", "contact@example.gov.uk"),
+            contactProjection("MRD-1", "EMAIL", "BREATHING_SPACE", "breathing.space@example.gov.uk")
+        ));
+        when(courtVenueRepository.findUsesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            useProjection("MRD-1", "CASE_MANAGEMENT"),
+            useProjection("MRD-1", "HEARING")
+        ));
+        when(courtVenueRepository.findUrlsByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            urlProjection("MRD-1", "SERVICE", "https://service.child.example.gov.uk"),
+            urlProjection("MRD-1", "FACT", "https://fact.child.example.gov.uk")
+        ));
+        when(courtVenueRepository.findReferenceCodesByMrdVenueIdIn(anyList())).thenReturn(List.of(
+            referenceCodeProjection("MRD-1", "VENUE_OU_CODE", "VOU123456")
+        ));
+
+        List<LrdCourtVenueV2Response> responses =
+            courtVenueService.retrieveCourtVenuesByServiceCodeV2("AAA6");
+
+        assertThat(responses).hasSize(1);
+        LrdCourtVenueV2Response response = responses.get(0);
+        assertThat(response.getMrdVenueId()).isEqualTo("MRD-1");
+        assertThat(response.getEpimsId()).isEqualTo("123463");
+        assertThat(response.getServiceCode()).isEqualTo("AAA6");
+        assertThat(response.getCourtStatus()).isEqualTo("OPEN");
+        assertThat(response.getMrdBuildingId()).isEqualTo("MRD-BLD-385");
+
+        assertThat(response.getNames()).hasSize(3);
+        assertThat(response.getNames()).containsExactly(
+            LrdCourtVenueV2Response.Name.builder()
+                .type("SITE").language("EN").name("Aberdeen Tribunal Hearing Centre 7").build(),
+            LrdCourtVenueV2Response.Name.builder()
+                .type("COURT").language("EN").name("ABERDEEN TRIBUNAL HEARING CENTRE 23").build(),
+            LrdCourtVenueV2Response.Name.builder()
+                .type("COURT").language("CY").name("Llys Sirol Caerdydd").build()
+        );
+
+        assertThat(response.getAddresses()).containsExactly(
+            LrdCourtVenueV2Response.Address.builder()
+                .type("MAILING").address("AB7, 54 HUNTLY STREET, ABERDEEN")
+                .postCode("AB11 1TY").uprn("100070123456").language("EN").build()
+        );
+
+        assertThat(response.getContacts()).containsExactly(
+            LrdCourtVenueV2Response.Contact.builder()
+                .method("EMAIL").type("CONTACT_SERVICE").value("contact@example.gov.uk").build(),
+            LrdCourtVenueV2Response.Contact.builder()
+                .method("EMAIL").type("BREATHING_SPACE").value("breathing.space@example.gov.uk").build()
+        );
+
+        assertThat(response.getCourtUse().isHearingLocation()).isTrue();
+        assertThat(response.getCourtUse().isCaseManagementLocation()).isTrue();
+        assertThat(response.getCourtUse().isTemporaryLocation()).isFalse();
+        assertThat(response.getCourtUse().isNightingaleCourt()).isFalse();
+        assertThat(response.getCourtUse().isDistrictRegistry()).isFalse();
+        assertThat(response.getCourtUse().isAppealCentre()).isFalse();
+
+        assertThat(response.getParentLocation()).isEqualTo("366559");
+        assertThat(response.getParentVenueId()).isEqualTo("MRD-PARENT");
+        assertThat(response.getVenueOuCode()).isEqualTo("VOU123456");
+        assertThat(response.getServiceUrl()).isEqualTo("https://service.child.example.gov.uk");
+        assertThat(response.getFactUrl()).isEqualTo("https://fact.child.example.gov.uk");
     }
 
     @Test
@@ -854,6 +963,143 @@ class CourtVenueServiceImplTest {
         when(courtVenueRepository.findUsesByMrdVenueIdIn(anyList())).thenReturn(List.of());
         when(courtVenueRepository.findUrlsByMrdVenueIdIn(anyList())).thenReturn(List.of());
         when(courtVenueRepository.findReferenceCodesByMrdVenueIdIn(anyList())).thenReturn(List.of());
+    }
+
+    private CourtVenueNameProjection nameProjection(String mrdVenueId, String type, String language, String name) {
+        return new CourtVenueNameProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getType() {
+                return type;
+            }
+
+            @Override
+            public String getLanguage() {
+                return language;
+            }
+
+            @Override
+            public String getName() {
+                return name;
+            }
+        };
+    }
+
+    private CourtVenueAddressProjection addressProjection(String mrdVenueId, String type, String address,
+                                                          String postCode, String uprn, String language) {
+        return new CourtVenueAddressProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getType() {
+                return type;
+            }
+
+            @Override
+            public String getAddress() {
+                return address;
+            }
+
+            @Override
+            public String getPostCode() {
+                return postCode;
+            }
+
+            @Override
+            public String getUprn() {
+                return uprn;
+            }
+
+            @Override
+            public String getLanguage() {
+                return language;
+            }
+        };
+    }
+
+    private CourtVenueContactProjection contactProjection(String mrdVenueId, String method, String type,
+                                                          String value) {
+        return new CourtVenueContactProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getMethod() {
+                return method;
+            }
+
+            @Override
+            public String getType() {
+                return type;
+            }
+
+            @Override
+            public String getValue() {
+                return value;
+            }
+        };
+    }
+
+    private CourtVenueUseProjection useProjection(String mrdVenueId, String useType) {
+        return new CourtVenueUseProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getUseType() {
+                return useType;
+            }
+        };
+    }
+
+    private CourtVenueUrlProjection urlProjection(String mrdVenueId, String type, String url) {
+        return new CourtVenueUrlProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getType() {
+                return type;
+            }
+
+            @Override
+            public String getUrl() {
+                return url;
+            }
+        };
+    }
+
+    private CourtVenueReferenceCodeProjection referenceCodeProjection(String mrdVenueId, String type,
+                                                                      String value) {
+        return new CourtVenueReferenceCodeProjection() {
+            @Override
+            public String getMrdVenueId() {
+                return mrdVenueId;
+            }
+
+            @Override
+            public String getType() {
+                return type;
+            }
+
+            @Override
+            public String getValue() {
+                return value;
+            }
+        };
     }
 
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -106,7 +107,58 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
                                                                      LrdCourtVenueV2Response[].class, V2_PATH);
         assertThat(response).isNotEmpty();
         assertThat(response).extracting(LrdCourtVenueV2Response::getServiceCode).contains("AAA6");
-        assertThat(response).extracting(LrdCourtVenueV2Response::getMrdVenueId).contains("MRD-123456789");
+        assertThat(response).extracting(LrdCourtVenueV2Response::getMrdVenueId)
+            .contains("MRD-3", "MRD-7", "MRD-11", "MRD-123456789");
+
+        final var enrichedVenue = response.stream()
+            .filter(venue -> "MRD-123456789".equals(venue.getMrdVenueId()))
+            .findFirst()
+            .orElseThrow();
+
+        assertThat(enrichedVenue.getEpimsId()).isEqualTo("123463");
+        assertThat(enrichedVenue.getMrdBuildingId()).isEqualTo("MRD-BLD-385");
+        assertThat(enrichedVenue.getCourtStatus()).isEqualTo("OPEN");
+        assertThat(enrichedVenue.getLocationType()).isEqualTo("CTSC");
+        assertThat(enrichedVenue.getRegion()).isEqualTo("4");
+        assertThat(enrichedVenue.getCluster()).isEqualTo("1");
+        assertThat(enrichedVenue.getVenueOuCode()).isEqualTo("VOU123456");
+        assertThat(enrichedVenue.getServiceUrl()).isEqualTo("https://service.example.gov.uk");
+        assertThat(enrichedVenue.getFactUrl()).isEqualTo("https://fact.example.gov.uk");
+
+        assertThat(enrichedVenue.getCourtUse().isHearingLocation()).isTrue();
+        assertThat(enrichedVenue.getCourtUse().isCaseManagementLocation()).isTrue();
+        assertThat(enrichedVenue.getCourtUse().isTemporaryLocation()).isFalse();
+        assertThat(enrichedVenue.getCourtUse().isNightingaleCourt()).isFalse();
+        assertThat(enrichedVenue.getCourtUse().isDistrictRegistry()).isFalse();
+        assertThat(enrichedVenue.getCourtUse().isAppealCentre()).isFalse();
+
+        assertThat(enrichedVenue.getNames()).hasSize(3);
+        assertThat(enrichedVenue.getNames()).extracting(
+            LrdCourtVenueV2Response.Name::getType,
+            LrdCourtVenueV2Response.Name::getLanguage,
+            LrdCourtVenueV2Response.Name::getName
+        ).containsExactlyInAnyOrder(
+            tuple("SITE", "EN", "Aberdeen Tribunal Hearing Centre 7"),
+            tuple("COURT", "EN", "ABERDEEN TRIBUNAL HEARING CENTRE 23"),
+            tuple("COURT", "CY", "Llys Sirol Caerdydd")
+        );
+
+        assertThat(enrichedVenue.getAddresses()).hasSize(1);
+        assertThat(enrichedVenue.getAddresses().get(0).getType()).isEqualTo("MAILING");
+        assertThat(enrichedVenue.getAddresses().get(0).getAddress()).isEqualTo("AB7, 54 HUNTLY STREET, ABERDEEN");
+        assertThat(enrichedVenue.getAddresses().get(0).getPostCode()).isEqualTo("AB11 1TY");
+        assertThat(enrichedVenue.getAddresses().get(0).getUprn()).isEqualTo("100070123456");
+        assertThat(enrichedVenue.getAddresses().get(0).getLanguage()).isEqualTo("EN");
+
+        assertThat(enrichedVenue.getContacts()).hasSize(2);
+        assertThat(enrichedVenue.getContacts()).extracting(
+            LrdCourtVenueV2Response.Contact::getMethod,
+            LrdCourtVenueV2Response.Contact::getType,
+            LrdCourtVenueV2Response.Contact::getValue
+        ).containsExactlyInAnyOrder(
+            tuple("EMAIL", "CONTACT_SERVICE", "contact@example.gov.uk"),
+            tuple("EMAIL", "BREATHING_SPACE", "breathing.space@example.gov.uk")
+        );
     }
 
     @Test
@@ -217,6 +269,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtStatus("Open")
             .postcode("AB11 7KT")
             .courtAddress("AB2, 49 HUNTLY STREET, ABERDEEN")
+            .mrdVenueId("MRD-2")
             .serviceCode("AAA3")
             .build();
 
@@ -233,6 +286,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .courtStatus("Open")
             .postcode("AB11 7GQ")
             .courtAddress("AB6, 53 HUNTLY STREET, ABERDEEN")
+            .mrdVenueId("MRD-6")
             .serviceCode("AAA3")
             .build();
 
@@ -255,6 +309,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .isHearingLocation("Y")
             .locationType("CTSC")
             .isTemporaryLocation("Y")
+            .mrdVenueId("MRD-10")
             .serviceCode("AAA3")
             .build();
 
@@ -276,6 +331,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
             .serviceCode("AAA3")
             .externalShortName("Aberdeen Tribunal External")
             .welshExternalShortName("Welsh External Short Name")
+            .mrdVenueId("MRD-14")
             .build();
 
         expectedCourtVenueResponses.add(response1);
