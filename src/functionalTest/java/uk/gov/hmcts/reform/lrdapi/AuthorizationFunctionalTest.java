@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.lib.client.response.S2sClient;
 import uk.gov.hmcts.reform.lrdapi.client.LrdApiClient;
 import uk.gov.hmcts.reform.lrdapi.config.Oauth2;
 import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
@@ -53,7 +54,11 @@ public abstract class AuthorizationFunctionalTest {
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
         if (null == s2sToken) {
-            s2sToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJyZF9sb2NhdGlvbl9yZWZfYXBpIiwiZXhwIjoxNzkxOTkzMTQxfQ.89j0E8NPUoRSz9f8APsuvHa8T6z9L22Y4BPkMsjGW2IGVeWnx1heo42Qa9K8vBrHpvGmzQsUBRVGEt91D2hgAA";
+            s2sToken = new S2sClient(
+                testConfigProperties.getS2sUrl(),
+                testConfigProperties.getS2sName(),
+                testConfigProperties.getS2sSecret())
+                .signIntoS2S();
         }
         if (null == idamOpenIdClient) {
             idamOpenIdClient = new IdamOpenIdClient(testConfigProperties);
