@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import uk.gov.hmcts.reform.lrdapi.client.LrdApiClient;
 import uk.gov.hmcts.reform.lib.client.response.S2sClient;
+import uk.gov.hmcts.reform.lrdapi.client.LrdApiClient;
 import uk.gov.hmcts.reform.lrdapi.config.Oauth2;
 import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
@@ -58,7 +58,7 @@ public abstract class AuthorizationFunctionalTest {
                 testConfigProperties.getS2sUrl(),
                 testConfigProperties.getS2sName(),
                 testConfigProperties.getS2sSecret())
-                .signIntoS2S();    
+                .signIntoS2S();
         }
         if (null == idamOpenIdClient) {
             idamOpenIdClient = new IdamOpenIdClient(testConfigProperties);
