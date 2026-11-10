@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.lrdapi.client.LrdApiClient;
+import uk.gov.hmcts.reform.lib.client.response.S2sClient;
 import uk.gov.hmcts.reform.lrdapi.config.Oauth2;
 import uk.gov.hmcts.reform.lrdapi.config.TestConfigProperties;
 import uk.gov.hmcts.reform.lrdapi.controllers.advice.ErrorResponse;
@@ -53,7 +54,7 @@ public abstract class AuthorizationFunctionalTest {
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
         if (null == s2sToken) {
-         s2sToken = new S2sClient(
+            s2sToken = new S2sClient(
                 testConfigProperties.getS2sUrl(),
                 testConfigProperties.getS2sName(),
                 testConfigProperties.getS2sSecret())
