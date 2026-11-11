@@ -199,4 +199,5 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         order by mrd_venue_id, reference_code_type, reference_code
         """, nativeQuery = true)
     List<CourtVenueReferenceCodeProjection> findReferenceCodesByMrdVenueIdIn(List<String> mrdVenueIds);
+
 }
