@@ -1,5 +1,27 @@
 package uk.gov.hmcts.reform.lrdapi.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
+import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
+import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
+import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
+import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
+import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueAddressProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueContactProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueNameProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
+import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
+import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,28 +67,6 @@ import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isListContainsText
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.isRegexSatisfied;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.trimCourtVenueRequestParam;
 import static uk.gov.hmcts.reform.lrdapi.util.ValidationUtils.validateCourtVenueFilters;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import uk.gov.hmcts.reform.lrdapi.controllers.advice.InvalidRequestException;
-import uk.gov.hmcts.reform.lrdapi.controllers.advice.ResourceNotFoundException;
-import uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueResponse;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenueV2Response;
-import uk.gov.hmcts.reform.lrdapi.controllers.response.LrdCourtVenuesByServiceCodeResponse;
-import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
-import uk.gov.hmcts.reform.lrdapi.domain.CourtVenueRequestParam;
-import uk.gov.hmcts.reform.lrdapi.repository.CourtVenueRepository;
-import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueAddressProjection;
-import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueContactProjection;
-import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueNameProjection;
-import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeProjection;
-import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
-import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
-import uk.gov.hmcts.reform.lrdapi.service.CourtVenueService;
 
 @Slf4j
 @Service
@@ -582,8 +582,9 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .stream()
             .collect(Collectors.groupingBy(
                 projection -> projection.getMrdVenueId().toUpperCase(),
-                Collectors.toMap(CourtVenueUrlProjection::getType, CourtVenueUrlProjection::getUrl,
-                                 (first, second) -> first)
+                Collectors.toMap(
+                    CourtVenueUrlProjection::getType, CourtVenueUrlProjection::getUrl,
+                    (first, second) -> first)
             ));
 
         Map<String, Map<String, String>> referenceCodesByMrdVenueId = courtVenueRepository
@@ -591,9 +592,10 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .stream()
             .collect(Collectors.groupingBy(
                 projection -> projection.getMrdVenueId().toUpperCase(),
-                Collectors.toMap(CourtVenueReferenceCodeProjection::getType,
-                                 CourtVenueReferenceCodeProjection::getValue,
-                                 (first, second) -> first)
+                Collectors.toMap(
+                    CourtVenueReferenceCodeProjection::getType,
+                    CourtVenueReferenceCodeProjection::getValue,
+                    (first, second) -> first)
             ));
 
         return new CourtVenueV2Lookups(

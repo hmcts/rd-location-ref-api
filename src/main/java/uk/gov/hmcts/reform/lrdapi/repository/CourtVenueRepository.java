@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.lrdapi.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
@@ -12,7 +10,9 @@ import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeP
 import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
 import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 
-public interface CourtVenueRepository extends JpaRepository<CourtVenue, String> {
+import java.util.List;
+
+public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
