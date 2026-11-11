@@ -146,15 +146,21 @@ public class CourtVenueServiceImpl implements CourtVenueService {
         List<String> serviceCodeList = StringUtils.isEmpty(serviceCodes) ? null :
             Arrays.stream(serviceCodes.split(COMMA)).map(String::strip).toList();
 
-        Boolean isCaseManagementLocation = toBooleanFlag(result.getIsCaseManagementLocation());
+        String isCaseManagementLocation = (StringUtils.isNotEmpty(result.getIsCaseManagementLocation()))
+            ? result.getIsCaseManagementLocation().toUpperCase()
+            : result.getIsCaseManagementLocation();
 
-        Boolean isHearingLocation = toBooleanFlag(result.getIsHearingLocation());
+        String isHearingLocation = (StringUtils.isNotEmpty(result.getIsHearingLocation()))
+            ? result.getIsHearingLocation().toUpperCase()
+            : result.getIsHearingLocation();
 
         String locationType = (StringUtils.isNotEmpty(result.getLocationType()))
             ? result.getLocationType().toUpperCase()
             : result.getLocationType();
 
-        Boolean isTemporaryLocation = toBooleanFlag(result.getIsTemporaryLocation());
+        String isTemporaryLocation = (StringUtils.isNotEmpty(result.getIsTemporaryLocation()))
+            ? result.getIsTemporaryLocation().toUpperCase()
+            : result.getIsTemporaryLocation();
 
         List<CourtVenue> courtVenues = courtVenueRepository.findBySearchStringAndCourtTypeId(
             searchString.toUpperCase(),
@@ -647,18 +653,11 @@ public class CourtVenueServiceImpl implements CourtVenueService {
             .build();
     }
 
-    private boolean isUseEnabled(Set<String> useTypes, String useType, Boolean fallbackFlag) {
+    private boolean isUseEnabled(Set<String> useTypes, String useType, String fallbackFlag) {
         if (useTypes.isEmpty()) {
-            return Boolean.TRUE.equals(fallbackFlag);
+            return VALUE_Y.equalsIgnoreCase(fallbackFlag);
         }
         return useTypes.contains(useType);
-    }
-
-    private Boolean toBooleanFlag(String value) {
-        if (StringUtils.isEmpty(value)) {
-            return null;
-        }
-        return VALUE_Y.equalsIgnoreCase(value);
     }
 
     private String getCourtStatus(CourtVenue courtVenue) {

@@ -180,8 +180,8 @@ public class LrdApiProviderTest {
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
             .venueName(VENUE_NAME)
-            .isCaseManagementLocation(Boolean.TRUE)
-            .isHearingLocation(Boolean.TRUE)
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .welshCourtName(WELSH_COURT_NAME_1)
             .uprn("1234")
             .venueOuCode(VENUE_CODE)
@@ -277,13 +277,13 @@ public class LrdApiProviderTest {
 
         courtType.setCourtVenues(courtVenues);
 
-        when(courtVenueRepository.findByEpimmsIdInWithOpenCourtStatus(anyList())).thenReturn(courtVenues);
+        when(courtVenueRepository.findByEpimmsIdIn(anyList())).thenReturn(courtVenues);
         when(courtVenueRepository.findAllWithOpenCourtStatus()).thenReturn(courtVenues);
         when(courtVenueRepository.findByClusterIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
-        when(courtVenueRepository.findByCourtVenueNameOrSiteNameWithOpenCourtStatus(anyString()))
+        when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString()))
             .thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtTypeIdServiceCodeAndEpimmsIdWithOpenCourtStatus(anyList(),
                                                                                              anyString(), any()))
@@ -368,11 +368,11 @@ public class LrdApiProviderTest {
             .courtStatus("Open")
             .courtName("courtName1")
             .venueName(VENUE_NAME)
-            .isCaseManagementLocation(Boolean.TRUE)
-            .isHearingLocation(Boolean.TRUE)
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .welshVenueName("testVenue")
-            .isTemporaryLocation(Boolean.FALSE)
-            .isNightingaleCourt(Boolean.FALSE)
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
             .locationType(COURT)
             .parentLocation("366559")
             .welshCourtName(WELSH_COURT_NAME_1)
@@ -403,11 +403,11 @@ public class LrdApiProviderTest {
             .courtStatus("Open")
             .courtName("courtName")
             .venueName(VENUE_NAME)
-            .isCaseManagementLocation(Boolean.TRUE)
-            .isHearingLocation(Boolean.TRUE)
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .welshVenueName("testVenue1")
-            .isTemporaryLocation(Boolean.FALSE)
-            .isNightingaleCourt(Boolean.FALSE)
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
             .locationType(COURT)
             .parentLocation("366559")
             .welshCourtName(WELSH_COURT_NAME_1)
@@ -436,11 +436,11 @@ public class LrdApiProviderTest {
             .courtStatus("Closed")
             .courtName("courtName")
             .venueName(VENUE_NAME)
-            .isCaseManagementLocation(Boolean.TRUE)
-            .isHearingLocation(Boolean.TRUE)
+            .isCaseManagementLocation("Y")
+            .isHearingLocation("Y")
             .welshVenueName("testVenue2")
-            .isTemporaryLocation(Boolean.FALSE)
-            .isNightingaleCourt(Boolean.FALSE)
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
             .locationType(COURT)
             .parentLocation("372653")
             .welshCourtName(WELSH_COURT_NAME_1)

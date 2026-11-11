@@ -114,9 +114,9 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, String> 
         + "or upper(cv.postcode) like %:searchString% "
         + "or upper(cv.courtAddress) like %:searchString%)")
     List<CourtVenue> findBySearchStringAndCourtTypeId(String searchString, List<String> courtTypeId,
-                                                      List<String> serviceCode, Boolean isCaseManagementLocation,
-                                                      Boolean isHearingLocation, String locationType,
-                                                      Boolean isTemporaryLocation);
+                                                      List<String> serviceCode, String isCaseManagementLocation,
+                                                      String isHearingLocation, String locationType,
+                                                      String isTemporaryLocation);
 
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"

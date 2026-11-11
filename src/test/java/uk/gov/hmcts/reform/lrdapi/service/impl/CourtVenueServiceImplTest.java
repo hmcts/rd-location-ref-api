@@ -103,8 +103,8 @@ class CourtVenueServiceImplTest {
             .courtType(courtType)
             .openForPublic(Boolean.TRUE)
             .welshVenueName("testVenue")
-            .isTemporaryLocation(Boolean.FALSE)
-            .isNightingaleCourt(Boolean.FALSE)
+            .isTemporaryLocation("N")
+            .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("366559")
             .welshCourtName("welshCourtName1")
@@ -432,13 +432,13 @@ class CourtVenueServiceImplTest {
 
         verifySingleResponse(courtVenueResponse);
         verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA6");
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
         verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
         verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
-        verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteNameWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteName(anyString());
     }
 
     @Test
@@ -455,13 +455,13 @@ class CourtVenueServiceImplTest {
 
         verifySingleResponse(courtVenueResponse);
         verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA6");
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
         verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
         verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
-        verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteNameWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteName(anyString());
     }
 
     @Test
@@ -501,7 +501,7 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("{123}", null, null, null, null, null,
                                        false, courtVenueRequestParam));
 
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
             .findByClusterIdWithOpenCourtStatus(anyString());
@@ -516,7 +516,7 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("", null, null, null, 1, null,
                                        false, courtVenueRequestParam));
 
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(1))
             .findByClusterIdWithOpenCourtStatus(anyString());
@@ -531,7 +531,7 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("", null, null, 1, null, null,
                                        false, courtVenueRequestParam));
 
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(1)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
             .findByClusterIdWithOpenCourtStatus(anyString());
@@ -546,7 +546,7 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("", 1, null, null, null, null,
                                        false, courtVenueRequestParam));
 
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
             .findByClusterIdWithOpenCourtStatus(anyString());
@@ -562,14 +562,14 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("", null, "AAA6", null, null, null,
                                        false, courtVenueRequestParam));
 
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findByClusterIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0)).findAll();
         verify(courtVenueRepository, times(0)).findAllWithOpenCourtStatus();
         verify(courtVenueRepository, times(0)).findByCourtTypeIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(1)).findByServiceCodeWithOpenCourtStatus("AAA6");
-        verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteNameWithOpenCourtStatus(anyString());
+        verify(courtVenueRepository, times(0)).findByCourtVenueNameOrSiteName(anyString());
     }
 
     @Test
@@ -578,7 +578,7 @@ class CourtVenueServiceImplTest {
             .retrieveCourtVenueDetails("", null, null, null, null, "test-name",
                                        false, courtVenueRequestParam));
 
-        verify(courtVenueRepository, times(0)).findByEpimmsIdInWithOpenCourtStatus(anyList());
+        verify(courtVenueRepository, times(0)).findByEpimmsIdIn(anyList());
         verify(courtVenueRepository, times(0)).findByRegionIdWithOpenCourtStatus(anyString());
         verify(courtVenueRepository, times(0))
             .findByClusterIdWithOpenCourtStatus(anyString());
@@ -613,10 +613,10 @@ class CourtVenueServiceImplTest {
         verify(courtVenueRepository, times(1)).findBySearchStringAndCourtTypeId("ABC",
                                                                                 List.of("1", "2"),
                                                                                 List.of("AAA2"),
-                                                                                Boolean.TRUE,
-                                                                                Boolean.TRUE,
+                                                                                "Y",
+                                                                                "Y",
                                                                                 "TEST",
-                                                                                Boolean.TRUE);
+                                                                                "Y");
     }
 
     @Test
@@ -679,7 +679,7 @@ class CourtVenueServiceImplTest {
                                                                    null,
                                                                    "COURT",
                                                                    null)).thenReturn(prepareCourtVenue());
-        when(courtVenueRepository.findByMrdVenueIdInWithOpenCourtStatus(List.of("765")))
+        when(courtVenueRepository.findByMrdVenueIdIn(List.of("765")))
             .thenReturn(prepareCourtVenue());
         stubV2LookupsWithUses(
             courtVenueUseProjection("765", "CASE_MANAGEMENT"),
@@ -718,7 +718,7 @@ class CourtVenueServiceImplTest {
     }
 
     @Test
-    void test_RetrieveCourtVenuesBySearchStringV2WithNoResultsReturnsEmptyList() {
+    void test_RetrieveCourtVenuesBySearchStringV2WithNoResultsThrowsNotFound() {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId("ABC",
                                                                    null,
                                                                    null,
@@ -727,10 +727,8 @@ class CourtVenueServiceImplTest {
                                                                    null,
                                                                    null)).thenReturn(List.of());
 
-        List<LrdCourtVenueV2Response> courtVenueResponses =
-            courtVenueService.retrieveCourtVenuesBySearchStringV2("ABC", null, null, new CourtVenueRequestParam());
-
-        assertThat(courtVenueResponses).isEmpty();
+        assertThrows(ResourceNotFoundException.class, () ->
+            courtVenueService.retrieveCourtVenuesBySearchStringV2("ABC", null, null, new CourtVenueRequestParam()));
     }
 
 
@@ -799,11 +797,11 @@ class CourtVenueServiceImplTest {
                             .courtName("Court ABC")
                             .siteName("COURT ABC")
                             .venueName("venueName")
-                            .isCaseManagementLocation(Boolean.TRUE)
-                            .isHearingLocation(Boolean.TRUE)
+                            .isCaseManagementLocation("Y")
+                            .isHearingLocation("Y")
                             .welshVenueName("testVenue")
-                            .isTemporaryLocation(Boolean.FALSE)
-                            .isNightingaleCourt(Boolean.FALSE)
+                            .isTemporaryLocation("N")
+                            .isNightingaleCourt("N")
                             .locationType("Court")
                             .parentLocation("366559")
                             .welshCourtName("welshCourtName1")
@@ -835,11 +833,11 @@ class CourtVenueServiceImplTest {
                             .courtType(getCourtType())
                             .openForPublic(true)
                             .venueName("venueName1")
-                            .isCaseManagementLocation(Boolean.FALSE)
-                            .isHearingLocation(Boolean.FALSE)
+                            .isCaseManagementLocation("N")
+                            .isHearingLocation("N")
                             .welshVenueName("testVenue")
-                            .isTemporaryLocation(Boolean.FALSE)
-                            .isNightingaleCourt(Boolean.FALSE)
+                            .isTemporaryLocation("N")
+                            .isNightingaleCourt("N")
                             .locationType("Court")
                             .parentLocation("366559")
                             .welshCourtName("welshCourtName1")

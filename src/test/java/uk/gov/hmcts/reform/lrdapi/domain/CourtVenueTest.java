@@ -53,17 +53,15 @@ class CourtVenueTest {
         courtVenue.setCreatedTime(now);
         courtVenue.setUpdatedTime(now);
         courtVenue.setVenueName("venueName");
-        courtVenue.setIsCaseManagementLocation(Boolean.TRUE);
-        courtVenue.setIsHearingLocation(Boolean.TRUE);
+        courtVenue.setIsCaseManagementLocation("Y");
+        courtVenue.setIsHearingLocation("Y");
         courtVenue.setWelshVenueName("");
-        courtVenue.setIsTemporaryLocation(Boolean.FALSE);
-        courtVenue.setIsNightingaleCourt(Boolean.FALSE);
+        courtVenue.setIsTemporaryLocation("N");
+        courtVenue.setIsNightingaleCourt("N");
         courtVenue.setLocationType("Court");
         courtVenue.setParentLocation("");
         courtVenue.setServiceCode("AAA2");
         courtVenue.setCourtStatusCode("OPEN");
-        courtVenue.setOpenDate(LocalDate.now());
-        courtVenue.setParentId("PARENT123");
         courtVenue.setDistrictRegistryVenueId("DR123");
         courtVenue.setAppealCentreVenueId("AC123");
         courtVenue.setEffectiveFromDate(LocalDate.now());
@@ -88,18 +86,16 @@ class CourtVenueTest {
         assertEquals("Open",courtVenue.getCourtStatus());
         assertEquals("courtName",courtVenue.getCourtName());
         assertEquals("venueName",courtVenue.getVenueName());
-        assertEquals(Boolean.TRUE,courtVenue.getIsCaseManagementLocation());
-        assertEquals(Boolean.TRUE,courtVenue.getIsHearingLocation());
+        assertEquals("Y",courtVenue.getIsCaseManagementLocation());
+        assertEquals("Y",courtVenue.getIsHearingLocation());
         assertEquals("",courtVenue.getWelshVenueName());
-        assertEquals(Boolean.FALSE,courtVenue.getIsTemporaryLocation());
+        assertEquals("N",courtVenue.getIsTemporaryLocation());
         assertEquals(now,courtVenue.getClosedDate().get());
         assertEquals(now,courtVenue.getCourtOpenDate().get());
         assertEquals(now, courtVenue.getCreatedTime());
         assertEquals(now, courtVenue.getUpdatedTime());
         assertEquals("AAA2",courtVenue.getServiceCode());
         assertEquals("OPEN", courtVenue.getCourtStatusCode());
-        assertEquals(LocalDate.now(), courtVenue.getOpenDate());
-        assertEquals("PARENT123", courtVenue.getParentId());
         assertEquals("DR123", courtVenue.getDistrictRegistryVenueId());
         assertEquals("AC123", courtVenue.getAppealCentreVenueId());
         assertEquals(LocalDate.now(), courtVenue.getEffectiveFromDate());
@@ -163,17 +159,15 @@ class CourtVenueTest {
             .createdTime(now)
             .updatedTime(now)
             .venueName("venueName2")
-            .isCaseManagementLocation(Boolean.FALSE)
-            .isHearingLocation(Boolean.TRUE)
+            .isCaseManagementLocation("N")
+            .isHearingLocation("Y")
             .welshVenueName("welshVenueName2")
-            .isTemporaryLocation(Boolean.TRUE)
-            .isNightingaleCourt(Boolean.FALSE)
+            .isTemporaryLocation("Y")
+            .isNightingaleCourt("N")
             .locationType("Court")
             .parentLocation("100")
             .serviceCode("AAA3")
             .courtStatusCode("OPEN")
-            .openDate(LocalDate.now())
-            .parentId("PARENT456")
             .districtRegistryVenueId("DR456")
             .appealCentreVenueId("AC456")
             .effectiveFromDate(LocalDate.now())
@@ -196,17 +190,15 @@ class CourtVenueTest {
         assertEquals("Open", courtVenue.getCourtStatus());
         assertEquals("courtName2", courtVenue.getCourtName());
         assertEquals("venueName2", courtVenue.getVenueName());
-        assertEquals(Boolean.FALSE, courtVenue.getIsCaseManagementLocation());
-        assertEquals(Boolean.TRUE, courtVenue.getIsHearingLocation());
+        assertEquals("N", courtVenue.getIsCaseManagementLocation());
+        assertEquals("Y", courtVenue.getIsHearingLocation());
         assertEquals("welshVenueName2", courtVenue.getWelshVenueName());
-        assertEquals(Boolean.TRUE, courtVenue.getIsTemporaryLocation());
-        assertEquals(Boolean.FALSE, courtVenue.getIsNightingaleCourt());
+        assertEquals("Y", courtVenue.getIsTemporaryLocation());
+        assertEquals("N", courtVenue.getIsNightingaleCourt());
         assertEquals("Court", courtVenue.getLocationType());
         assertEquals("100", courtVenue.getParentLocation());
         assertEquals("AAA3", courtVenue.getServiceCode());
         assertEquals("OPEN", courtVenue.getCourtStatusCode());
-        assertEquals(LocalDate.now(), courtVenue.getOpenDate());
-        assertEquals("PARENT456", courtVenue.getParentId());
         assertEquals("DR456", courtVenue.getDistrictRegistryVenueId());
         assertEquals("AC456", courtVenue.getAppealCentreVenueId());
         assertEquals(LocalDate.now(), courtVenue.getEffectiveFromDate());
