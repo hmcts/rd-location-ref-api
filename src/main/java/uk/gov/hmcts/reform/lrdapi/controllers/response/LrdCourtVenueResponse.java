@@ -162,11 +162,11 @@ public class LrdCourtVenueResponse implements Serializable {
             this.postcode = courtVenue.getPostcode();
             this.welshSiteName = courtVenue.getWelshSiteName();
             this.venueName = courtVenue.getVenueName();
-            this.isCaseManagementLocation = courtVenue.getIsCaseManagementLocation();
-            this.isHearingLocation = courtVenue.getIsHearingLocation();
+            this.isCaseManagementLocation = toYesNo(courtVenue.getIsCaseManagementLocation());
+            this.isHearingLocation = toYesNo(courtVenue.getIsHearingLocation());
             this.welshVenueName = courtVenue.getWelshVenueName();
-            this.isTemporaryLocation = courtVenue.getIsTemporaryLocation();
-            this.isNightingaleCourt = courtVenue.getIsNightingaleCourt();
+            this.isTemporaryLocation = toYesNo(courtVenue.getIsTemporaryLocation());
+            this.isNightingaleCourt = toYesNo(courtVenue.getIsNightingaleCourt());
             this.locationType = courtVenue.getLocationType();
             this.parentLocation = courtVenue.getParentLocation();
             this.welshCourtName = courtVenue.getWelshCourtName();
@@ -183,6 +183,13 @@ public class LrdCourtVenueResponse implements Serializable {
                 regionId = reg.getRegionId();
             });
         }
+    }
+
+    private String toYesNo(Boolean value) {
+        if (value == null) {
+            return null;
+        }
+        return Boolean.TRUE.equals(value) ? "Y" : "N";
     }
 
 }

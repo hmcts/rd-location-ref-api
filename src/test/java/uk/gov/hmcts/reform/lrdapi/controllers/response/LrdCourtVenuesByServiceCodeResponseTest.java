@@ -94,8 +94,8 @@ class LrdCourtVenuesByServiceCodeResponseTest {
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
             .venueName("venueName")
-            .isCaseManagementLocation("Y")
-            .isHearingLocation("Y")
+            .isCaseManagementLocation(Boolean.TRUE)
+            .isHearingLocation(Boolean.TRUE)
             .serviceCode("ABC1")
             .build();
 

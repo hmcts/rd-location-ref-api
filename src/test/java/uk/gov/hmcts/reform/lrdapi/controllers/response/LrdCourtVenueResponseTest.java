@@ -45,11 +45,11 @@ class LrdCourtVenueResponseTest {
             .courtAddress("AB1, 48 HUNTLY STREET, ABERDEEN")
             .courtVenueId(1L)
             .venueName("venueName")
-            .isCaseManagementLocation("Y")
-            .isHearingLocation("Y")
+            .isCaseManagementLocation(Boolean.TRUE)
+            .isHearingLocation(Boolean.TRUE)
             .welshVenueName("testVenue")
-            .isTemporaryLocation("N")
-            .isNightingaleCourt("N")
+            .isTemporaryLocation(Boolean.FALSE)
+            .isNightingaleCourt(Boolean.FALSE)
             .locationType("Court")
             .parentLocation("366559")
             .welshCourtName("welshCourtName1")
@@ -125,11 +125,11 @@ class LrdCourtVenueResponseTest {
             .courtOpenDate(now)
             .closedDate(now)
             .venueName("venueName")
-            .isCaseManagementLocation("Y")
-            .isHearingLocation("Y")
+            .isCaseManagementLocation(Boolean.TRUE)
+            .isHearingLocation(Boolean.TRUE)
             .welshVenueName("testVenue")
-            .isTemporaryLocation("N")
-            .isNightingaleCourt("N")
+            .isTemporaryLocation(Boolean.FALSE)
+            .isNightingaleCourt(Boolean.FALSE)
             .locationType("Court")
             .parentLocation("366559")
             .welshCourtName("welshCourtName1")
@@ -211,11 +211,11 @@ class LrdCourtVenueResponseTest {
         courtVenue.setCreatedTime(now);
         courtVenue.setUpdatedTime(now);
         courtVenue.setVenueName("venueName");
-        courtVenue.setIsCaseManagementLocation("Y");
-        courtVenue.setIsHearingLocation("Y");
+        courtVenue.setIsCaseManagementLocation(Boolean.TRUE);
+        courtVenue.setIsHearingLocation(Boolean.TRUE);
         courtVenue.setWelshVenueName("");
-        courtVenue.setIsTemporaryLocation("N");
-        courtVenue.setIsNightingaleCourt("N");
+        courtVenue.setIsTemporaryLocation(Boolean.FALSE);
+        courtVenue.setIsNightingaleCourt(Boolean.FALSE);
         courtVenue.setLocationType("Court");
         courtVenue.setParentLocation("");
         courtVenue.setWelshCourtName("welshCourtName1");

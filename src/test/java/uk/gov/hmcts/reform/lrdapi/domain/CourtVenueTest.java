@@ -53,11 +53,11 @@ class CourtVenueTest {
         courtVenue.setCreatedTime(now);
         courtVenue.setUpdatedTime(now);
         courtVenue.setVenueName("venueName");
-        courtVenue.setIsCaseManagementLocation("Y");
-        courtVenue.setIsHearingLocation("Y");
+        courtVenue.setIsCaseManagementLocation(Boolean.TRUE);
+        courtVenue.setIsHearingLocation(Boolean.TRUE);
         courtVenue.setWelshVenueName("");
-        courtVenue.setIsTemporaryLocation("N");
-        courtVenue.setIsNightingaleCourt("N");
+        courtVenue.setIsTemporaryLocation(Boolean.FALSE);
+        courtVenue.setIsNightingaleCourt(Boolean.FALSE);
         courtVenue.setLocationType("Court");
         courtVenue.setParentLocation("");
         courtVenue.setServiceCode("AAA2");
@@ -88,10 +88,10 @@ class CourtVenueTest {
         assertEquals("Open",courtVenue.getCourtStatus());
         assertEquals("courtName",courtVenue.getCourtName());
         assertEquals("venueName",courtVenue.getVenueName());
-        assertEquals("Y",courtVenue.getIsCaseManagementLocation());
-        assertEquals("Y",courtVenue.getIsHearingLocation());
+        assertEquals(Boolean.TRUE,courtVenue.getIsCaseManagementLocation());
+        assertEquals(Boolean.TRUE,courtVenue.getIsHearingLocation());
         assertEquals("",courtVenue.getWelshVenueName());
-        assertEquals("N",courtVenue.getIsTemporaryLocation());
+        assertEquals(Boolean.FALSE,courtVenue.getIsTemporaryLocation());
         assertEquals(now,courtVenue.getClosedDate().get());
         assertEquals(now,courtVenue.getCourtOpenDate().get());
         assertEquals(now, courtVenue.getCreatedTime());
@@ -163,11 +163,11 @@ class CourtVenueTest {
             .createdTime(now)
             .updatedTime(now)
             .venueName("venueName2")
-            .isCaseManagementLocation("N")
-            .isHearingLocation("Y")
+            .isCaseManagementLocation(Boolean.FALSE)
+            .isHearingLocation(Boolean.TRUE)
             .welshVenueName("welshVenueName2")
-            .isTemporaryLocation("Y")
-            .isNightingaleCourt("N")
+            .isTemporaryLocation(Boolean.TRUE)
+            .isNightingaleCourt(Boolean.FALSE)
             .locationType("Court")
             .parentLocation("100")
             .serviceCode("AAA3")
@@ -196,11 +196,11 @@ class CourtVenueTest {
         assertEquals("Open", courtVenue.getCourtStatus());
         assertEquals("courtName2", courtVenue.getCourtName());
         assertEquals("venueName2", courtVenue.getVenueName());
-        assertEquals("N", courtVenue.getIsCaseManagementLocation());
-        assertEquals("Y", courtVenue.getIsHearingLocation());
+        assertEquals(Boolean.FALSE, courtVenue.getIsCaseManagementLocation());
+        assertEquals(Boolean.TRUE, courtVenue.getIsHearingLocation());
         assertEquals("welshVenueName2", courtVenue.getWelshVenueName());
-        assertEquals("Y", courtVenue.getIsTemporaryLocation());
-        assertEquals("N", courtVenue.getIsNightingaleCourt());
+        assertEquals(Boolean.TRUE, courtVenue.getIsTemporaryLocation());
+        assertEquals(Boolean.FALSE, courtVenue.getIsNightingaleCourt());
         assertEquals("Court", courtVenue.getLocationType());
         assertEquals("100", courtVenue.getParentLocation());
         assertEquals("AAA3", courtVenue.getServiceCode());

@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -102,8 +103,8 @@ class CourtVenueServiceImplTest {
             .courtType(courtType)
             .openForPublic(Boolean.TRUE)
             .welshVenueName("testVenue")
-            .isTemporaryLocation("N")
-            .isNightingaleCourt("N")
+            .isTemporaryLocation(Boolean.FALSE)
+            .isNightingaleCourt(Boolean.FALSE)
             .locationType("Court")
             .parentLocation("366559")
             .welshCourtName("welshCourtName1")
@@ -592,10 +593,10 @@ class CourtVenueServiceImplTest {
         when(courtVenueRepository.findBySearchStringAndCourtTypeId(anyString(),
                                                                    anyList(),
                                                                    anyList(),
-                                                                   anyString(),
-                                                                   anyString(),
-                                                                   anyString(),
-                                                                   anyString())).thenReturn(prepareCourtVenue());
+                                                                   any(),
+                                                                   any(),
+                                                                   any(),
+                                                                   any())).thenReturn(prepareCourtVenue());
         var param = new CourtVenueRequestParam();
         param.setIsHearingLocation("Y");
         param.setLocationType("test");
@@ -612,10 +613,10 @@ class CourtVenueServiceImplTest {
         verify(courtVenueRepository, times(1)).findBySearchStringAndCourtTypeId("ABC",
                                                                                 List.of("1", "2"),
                                                                                 List.of("AAA2"),
-                                                                                "Y",
-                                                                                "Y",
+                                                                                Boolean.TRUE,
+                                                                                Boolean.TRUE,
                                                                                 "TEST",
-                                                                                "Y");
+                                                                                Boolean.TRUE);
     }
 
     @Test
@@ -798,11 +799,11 @@ class CourtVenueServiceImplTest {
                             .courtName("Court ABC")
                             .siteName("COURT ABC")
                             .venueName("venueName")
-                            .isCaseManagementLocation("Y")
-                            .isHearingLocation("Y")
+                            .isCaseManagementLocation(Boolean.TRUE)
+                            .isHearingLocation(Boolean.TRUE)
                             .welshVenueName("testVenue")
-                            .isTemporaryLocation("N")
-                            .isNightingaleCourt("N")
+                            .isTemporaryLocation(Boolean.FALSE)
+                            .isNightingaleCourt(Boolean.FALSE)
                             .locationType("Court")
                             .parentLocation("366559")
                             .welshCourtName("welshCourtName1")
@@ -834,11 +835,11 @@ class CourtVenueServiceImplTest {
                             .courtType(getCourtType())
                             .openForPublic(true)
                             .venueName("venueName1")
-                            .isCaseManagementLocation("N")
-                            .isHearingLocation("N")
+                            .isCaseManagementLocation(Boolean.FALSE)
+                            .isHearingLocation(Boolean.FALSE)
                             .welshVenueName("testVenue")
-                            .isTemporaryLocation("N")
-                            .isNightingaleCourt("N")
+                            .isTemporaryLocation(Boolean.FALSE)
+                            .isNightingaleCourt(Boolean.FALSE)
                             .locationType("Court")
                             .parentLocation("366559")
                             .welshCourtName("welshCourtName1")

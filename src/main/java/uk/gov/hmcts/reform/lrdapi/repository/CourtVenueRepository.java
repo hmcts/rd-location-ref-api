@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.lrdapi.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import uk.gov.hmcts.reform.lrdapi.domain.CourtVenue;
@@ -10,9 +12,7 @@ import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueReferenceCodeP
 import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUrlProjection;
 import uk.gov.hmcts.reform.lrdapi.repository.projection.CourtVenueUseProjection;
 
-import java.util.List;
-
-public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
+public interface CourtVenueRepository extends JpaRepository<CourtVenue, String> {
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
@@ -21,28 +21,13 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
-        + "where cv.epimmsId in (:epimmsIdList) and cv.courtStatus='Open'")
-    List<CourtVenue> findByEpimmsIdInWithOpenCourtStatus(List<String> epimmsIdList);
-
-    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
-        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where upper(cv.mrdVenueId) = upper(:mrdVenueId)")
     List<CourtVenue> findByMrdVenueId(String mrdVenueId);
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
-        + "where upper(cv.mrdVenueId) = upper(:mrdVenueId) and cv.courtStatus='Open'")
-    List<CourtVenue> findByMrdVenueIdWithOpenCourtStatus(String mrdVenueId);
-
-    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
-        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where upper(cv.mrdVenueId) in (:mrdVenueIds)")
     List<CourtVenue> findByMrdVenueIdIn(List<String> mrdVenueIds);
-
-    @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
-        + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
-        + "where upper(cv.mrdVenueId) in (:mrdVenueIds) and cv.courtStatus='Open'")
-    List<CourtVenue> findByMrdVenueIdInWithOpenCourtStatus(List<String> mrdVenueIds);
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
@@ -65,7 +50,7 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
              """)
     List<CourtVenue> findByCourtTypeIdServiceCodeAndEpimmsIdWithOpenCourtStatus(List<String> epimmsIdList,
                                                                                 String courtTypeId,
-                                                                     String serviceCode);
+                                                                                String serviceCode);
 
     @Query(value = """
              select cv from court_venue cv LEFT JOIN FETCH cv.courtType
@@ -106,12 +91,6 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + "or upper(cv.siteName) = upper(:courtVenueName)")
     List<CourtVenue> findByCourtVenueNameOrSiteName(String courtVenueName);
 
-    @Query(value = "select cv from court_venue cv "
-        + "where (upper(cv.courtName) = upper(:courtVenueName) "
-        + "or upper(cv.siteName) = upper(:courtVenueName)) "
-        + "and cv.courtStatus='Open'")
-    List<CourtVenue> findByCourtVenueNameOrSiteNameWithOpenCourtStatus(String courtVenueName);
-
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
         + " LEFT JOIN FETCH cv.cluster LEFT JOIN FETCH cv.region "
         + "where cv.courtStatus='Open'")
@@ -135,9 +114,9 @@ public interface CourtVenueRepository extends JpaRepository<CourtVenue, Long> {
         + "or upper(cv.postcode) like %:searchString% "
         + "or upper(cv.courtAddress) like %:searchString%)")
     List<CourtVenue> findBySearchStringAndCourtTypeId(String searchString, List<String> courtTypeId,
-                                                      List<String> serviceCode,String isCaseManagementLocation,
-                                                      String isHearingLocation,String locationType,
-                                                      String isTemporaryLocation);
+                                                      List<String> serviceCode, Boolean isCaseManagementLocation,
+                                                      Boolean isHearingLocation, String locationType,
+                                                      Boolean isTemporaryLocation);
 
 
     @Query(value = "select cv from court_venue cv LEFT JOIN FETCH cv.courtType"
