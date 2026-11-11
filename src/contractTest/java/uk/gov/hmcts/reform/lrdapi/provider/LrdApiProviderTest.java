@@ -283,7 +283,8 @@ public class LrdApiProviderTest {
         when(courtVenueRepository.findByCourtTypeIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findByRegionIdWithOpenCourtStatus(anyString())).thenReturn(courtVenues);
         when(courtVenueRepository.findAll()).thenReturn(courtVenues);
-        when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString())).thenReturn(courtVenues);
+        when(courtVenueRepository.findByCourtVenueNameOrSiteName(anyString()))
+            .thenReturn(courtVenues);
         when(courtVenueRepository.findByCourtTypeIdServiceCodeAndEpimmsIdWithOpenCourtStatus(anyList(),
                                                                                              anyString(), any()))
             .thenReturn(courtVenues);
