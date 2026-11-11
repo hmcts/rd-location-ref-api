@@ -1,4 +1,3 @@
-
 insert into cluster(
   cluster_id,
   cluster_name,
@@ -24,4 +23,3 @@ values(
         '24',
         'Northern Ireland',
         now());
-
