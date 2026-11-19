@@ -123,6 +123,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
         List<LrdCourtVenueResponse> expectedCourtVenueResponses = new ArrayList<>();
         LrdCourtVenueResponse response1 = LrdCourtVenueResponse.builder()
             .courtVenueId("2")
+            .mrdVenueId("MRD-2")
             .siteName("Aberdeen Tribunal Hearing Centre 2")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 2")
             .epimmsId("123456788")
@@ -141,6 +142,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
         LrdCourtVenueResponse response2 = LrdCourtVenueResponse.builder()
             .courtVenueId("6")
+            .mrdVenueId("MRD-6")
             .siteName("Aberdeen Tribunal Hearing Centre 6")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 6")
             .epimmsId("epimmsId1236")
@@ -157,6 +159,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
         LrdCourtVenueResponse response3 = LrdCourtVenueResponse.builder()
             .courtVenueId("10")
+            .mrdVenueId("MRD-10")
             .siteName("Aberdeen Tribunal Hearing Centre 10")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 10")
             .epimmsId("123458")
@@ -179,6 +182,7 @@ class RetrieveCourtVenuesByServiceCodeIntegrationTest extends LrdAuthorizationEn
 
         LrdCourtVenueResponse response4 = LrdCourtVenueResponse.builder()
             .courtVenueId("14")
+            .mrdVenueId("MRD-14")
             .siteName("Aberdeen Tribunal Hearing Centre 7")
             .courtName("ABERDEEN TRIBUNAL HEARING CENTRE 22")
             .epimmsId("123462")
