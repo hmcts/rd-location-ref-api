@@ -115,7 +115,11 @@ public class ExceptionMapper {
 
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<Object> handleHandlerMethodValidationException(Exception ex) {
-        return errorDetailsResponseEntity(ex, BAD_REQUEST, ex.getMessage());
+        return errorDetailsResponseEntity(
+            ex,
+            BAD_REQUEST,
+            ErrorConstants.INVALID_REQUEST_EXCEPTION.getErrorMessage()
+        );
     }
 
     private String getTimeStamp() {

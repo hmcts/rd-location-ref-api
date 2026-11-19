@@ -19,15 +19,23 @@ import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConsta
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_REGEX_WITHOUT_UNDERSCORE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ALPHA_NUMERIC_WITH_SPECIAL_CHAR_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COMMA;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_STATUS_CLOSED;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_STATUS_OPEN;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.COURT_TYPE_ID_START_END_WITH_COMMA;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_ONLY_ONE_OF_GIVEN_PARAM;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.EXCEPTION_MSG_SPCL_CHAR;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_APPEAL_CENTRE;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_CASE_MANAGEMENT_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_DISTRICT_REGISTRY;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_HEARING_LOCATION;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_NIGHTINGALE_COURT;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.FILTER_IS_TEMPORARY_LOCATION;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_ADDITIONAL_FILTER;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_COURT_STATUS;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.INVALID_MRD_BUILDING_ID;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_N;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.IS_Y;
+import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.MRD_BUILDING_ID_REGEX;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.ONLY_ONE_PARAM_ORG_SERVICES;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REGEX_FOR_BUILDING_LOCATION_SEARCH;
 import static uk.gov.hmcts.reform.lrdapi.controllers.constants.LocationRefConstants.REG_EXP_COMMA_DILIMETER;
@@ -265,6 +273,25 @@ public class ValidationUtils {
             checkSpecialCharacters(requestParam.getLocationType());
         }
         validateSingleFilters(requestParam.getIsTemporaryLocation(), FILTER_IS_TEMPORARY_LOCATION);
+        validateSingleFilters(requestParam.getIsNightingaleCourt(), FILTER_IS_NIGHTINGALE_COURT);
+        validateSingleFilters(requestParam.getIsDistrictRegistry(), FILTER_IS_DISTRICT_REGISTRY);
+        validateSingleFilters(requestParam.getIsAppealCentre(), FILTER_IS_APPEAL_CENTRE);
+        validateMrdBuildingId(requestParam.getMrdBuildingId());
+        validateCourtStatus(requestParam.getCourtStatus());
+    }
+
+    private static void validateMrdBuildingId(String mrdBuildingId) {
+        if (mrdBuildingId != null && !isRegexSatisfied(mrdBuildingId, MRD_BUILDING_ID_REGEX)) {
+            throw new InvalidRequestException(INVALID_MRD_BUILDING_ID);
+        }
+    }
+
+    private static void validateCourtStatus(String courtStatus) {
+        if (ObjectUtils.isNotEmpty(courtStatus)
+            && !Strings.CI.equals(courtStatus, COURT_STATUS_OPEN)
+            && !Strings.CI.equals(courtStatus, COURT_STATUS_CLOSED)) {
+            throw new InvalidRequestException(INVALID_COURT_STATUS);
+        }
     }
 
     private static void validateSingleFilters(String value, String filterString) {
@@ -289,6 +316,21 @@ public class ValidationUtils {
                                          : null);
         result.setIsTemporaryLocation(ObjectUtils.isNotEmpty(requestParam.getIsTemporaryLocation())
                                          ? StringUtils.strip(requestParam.getIsTemporaryLocation())
+                                         : null);
+        result.setIsNightingaleCourt(ObjectUtils.isNotEmpty(requestParam.getIsNightingaleCourt())
+                                         ? StringUtils.strip(requestParam.getIsNightingaleCourt())
+                                         : null);
+        result.setIsDistrictRegistry(ObjectUtils.isNotEmpty(requestParam.getIsDistrictRegistry())
+                                         ? StringUtils.strip(requestParam.getIsDistrictRegistry())
+                                         : null);
+        result.setIsAppealCentre(ObjectUtils.isNotEmpty(requestParam.getIsAppealCentre())
+                                         ? StringUtils.strip(requestParam.getIsAppealCentre())
+                                         : null);
+        result.setMrdBuildingId(ObjectUtils.isNotEmpty(requestParam.getMrdBuildingId())
+                                         ? StringUtils.strip(requestParam.getMrdBuildingId())
+                                         : null);
+        result.setCourtStatus(ObjectUtils.isNotEmpty(requestParam.getCourtStatus())
+                                         ? StringUtils.strip(requestParam.getCourtStatus())
                                          : null);
         return result;
     }
